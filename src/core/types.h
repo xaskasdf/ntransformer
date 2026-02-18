@@ -1,0 +1,212 @@
+#pragma once
+
+#include <cstdint>
+#include <cstddef>
+#include <cassert>
+#include <cstring>
+#include <cstdio>
+
+// FP16 type alias - use CUDA's half when compiling with nvcc
+#ifdef __CUDACC__
+#include <cuda_fp16.h>
+using float16_t = half;
+#else
+using float16_t = uint16_t;
+#endif
+
+namespace nt {
+
+// ============================================================
+// Data types
+// ============================================================
+enum class DType : uint8_t {
+    F32    = 0,
+    F16    = 1,
+    Q8_0   = 2,
+    Q4_0   = 3,
+    Q4_K_M = 4,
+    Q6_K   = 5,
+    Q2_K   = 6,  // For KV-cache RotateKV
+    I32    = 7,
+    COUNT
+};
+
+inline size_t dtype_size(DType dt) {
+    switch (dt) {
+        case DType::F32:  return 4;
+        case DType::F16:  return 2;
+        case DType::I32:  return 4;
+        // Quantized types return block size
+        case DType::Q8_0:   return sizeof(float) + 32;           // scale + 32 bytes
+        case DType::Q4_0:   return sizeof(float16_t) + 16;       // half scale + 16 bytes (32 nibbles)
+        case DType::Q4_K_M: return 144;                          // K-quant block
+        case DType::Q6_K:   return 210;
+        case DType::Q2_K:   return 84;
+        default: return 0;
+    }
+}
+
+inline size_t dtype_block_size(DType dt) {
+    switch (dt) {
+        case DType::F32:    return 1;
+        case DType::F16:    return 1;
+        case DType::I32:    return 1;
+        case DType::Q8_0:   return 32;
+        case DType::Q4_0:   return 32;
+        case DType::Q4_K_M: return 256;
+        case DType::Q6_K:   return 256;
+        case DType::Q2_K:   return 256;
+        default: return 1;
+    }
+}
+
+inline const char* dtype_name(DType dt) {
+    switch (dt) {
+        case DType::F32:    return "F32";
+        case DType::F16:    return "F16";
+        case DType::Q8_0:   return "Q8_0";
+        case DType::Q4_0:   return "Q4_0";
+        case DType::Q4_K_M: return "Q4_K_M";
+        case DType::Q6_K:   return "Q6_K";
+        case DType::Q2_K:   return "Q2_K";
+        case DType::I32:    return "I32";
+        default: return "UNKNOWN";
+    }
+}
+
+// Bytes needed for `n` elements of a given dtype
+inline size_t dtype_row_size(DType dt, size_t n) {
+    size_t bs = dtype_block_size(dt);
+    assert(n % bs == 0);
+    return (n / bs) * dtype_size(dt);
+}
+
+// ============================================================
+// Quantization block layouts (GGUF compatible)
+// ============================================================
+
+// Q4_0: 32 weights per block
+// Layout: half scale, 16 bytes of packed nibbles
+struct BlockQ4_0 {
+    uint16_t d;        // FP16 scale (delta)
+    uint8_t  qs[16];   // nibbles: 32 x 4-bit
+};
+static_assert(sizeof(BlockQ4_0) == 18, "BlockQ4_0 size mismatch");
+
+// Q8_0: 32 weights per block
+// Layout: float scale, 32 x int8
+struct BlockQ8_0 {
+    float   d;         // scale (delta)
+    int8_t  qs[32];    // quantized values
+};
+static_assert(sizeof(BlockQ8_0) == 36, "BlockQ8_0 size mismatch");
+
+// Q4_K_M: 256 weights per block (super-block with sub-blocks)
+// Simplified layout for GGUF compatibility
+struct BlockQ4_K {
+    uint16_t d;            // super-block scale (FP16)
+    uint16_t dmin;         // super-block min (FP16)
+    uint8_t  scales[12];   // sub-block scales and mins
+    uint8_t  qs[128];      // nibbles: 256 x 4-bit
+};
+static_assert(sizeof(BlockQ4_K) == 144, "BlockQ4_K size mismatch");
+
+// Q6_K: 256 weights per block
+struct BlockQ6_K {
+    uint8_t  ql[128];     // lower 4 bits
+    uint8_t  qh[64];      // upper 2 bits
+    int8_t   scales[16];  // scales
+    uint16_t d;            // super-block scale (FP16)
+};
+static_assert(sizeof(BlockQ6_K) == 210, "BlockQ6_K size mismatch");
+
+// ============================================================
+// Device enum
+// ============================================================
+enum class Device : uint8_t {
+    CPU  = 0,
+    CUDA = 1,
+};
+
+// ============================================================
+// GGUF constants
+// ============================================================
+constexpr uint32_t GGUF_MAGIC = 0x46475547;  // "GGUF"
+constexpr uint32_t GGUF_VERSION_3 = 3;
+
+enum class GGUFType : uint32_t {
+    UINT8   = 0,
+    INT8    = 1,
+    UINT16  = 2,
+    INT16   = 3,
+    UINT32  = 4,
+    INT32   = 5,
+    FLOAT32 = 6,
+    BOOL    = 7,
+    STRING  = 8,
+    ARRAY   = 9,
+    UINT64  = 10,
+    INT64   = 11,
+    FLOAT64 = 12,
+};
+
+// GGML tensor types -> our DType mapping
+enum class GGMLType : uint32_t {
+    F32     = 0,
+    F16     = 1,
+    Q4_0    = 2,
+    Q4_1    = 3,
+    Q5_0    = 6,
+    Q5_1    = 7,
+    Q8_0    = 8,
+    Q8_1    = 9,
+    Q2_K    = 10,
+    Q3_K    = 11,
+    Q4_K    = 12,
+    Q5_K    = 13,
+    Q6_K    = 14,
+    Q8_K    = 15,
+    IQ2_XXS = 16,
+    IQ2_XS  = 17,
+    IQ3_XXS = 18,
+    IQ1_S   = 19,
+    IQ4_NL  = 20,
+    IQ3_S   = 21,
+    IQ2_S   = 22,
+    IQ4_XS  = 23,
+    I8      = 24,
+    I16     = 25,
+    I32     = 26,
+    I64     = 27,
+    F64     = 28,
+    IQ1_M   = 29,
+};
+
+inline DType ggml_to_dtype(GGMLType t) {
+    switch (t) {
+        case GGMLType::F32:  return DType::F32;
+        case GGMLType::F16:  return DType::F16;
+        case GGMLType::Q8_0: return DType::Q8_0;
+        case GGMLType::Q4_0: return DType::Q4_0;
+        case GGMLType::Q4_K: return DType::Q4_K_M;
+        case GGMLType::Q6_K: return DType::Q6_K;
+        case GGMLType::Q2_K: return DType::Q2_K;
+        case GGMLType::I32:  return DType::I32;
+        default:             return DType::F32;  // fallback
+    }
+}
+
+// ============================================================
+// Utility macros
+// ============================================================
+#define NT_CHECK(cond, msg) \
+    do { if (!(cond)) { fprintf(stderr, "NT ERROR: %s at %s:%d\n", msg, __FILE__, __LINE__); abort(); } } while(0)
+
+#ifdef __CUDACC__
+#define NT_CUDA_CHECK(err) \
+    do { cudaError_t e = (err); if (e != cudaSuccess) { \
+        fprintf(stderr, "CUDA error: %s at %s:%d\n", cudaGetErrorString(e), __FILE__, __LINE__); abort(); \
+    } } while(0)
+#endif
+
+} // namespace nt
