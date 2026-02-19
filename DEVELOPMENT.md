@@ -72,16 +72,36 @@ High-efficiency LLM inference engine in C++/CUDA designed to run Llama 70B at Q8
 - [x] `include/ntransformer.h` - Public C API header
 - [x] `tests/test_tensor.cpp` - Tensor unit tests
 - [x] `tests/test_gemm.cpp` - GEMM/kernel unit tests
-- [ ] `tests/test_tensor.cpp` - Tensor unit tests
-- [ ] `tests/test_gemm.cpp` - GEMM kernel tests
 
 ### Validation Results
 - [x] Run Llama 3.1 8B Instruct Q8_0 GGUF successfully
 - [x] Correct factual completions verified ("capital of France" → "Paris")
 - [x] All unit tests passing (7/7 tensor, 4/4 kernel)
-- VRAM: 10.1 GB (8B Q8_0, ctx=2048) — higher than target due to larger model + Q8_0
-- Decode: 15.8 tok/s — below 30-50 target (unoptimized kernels)
-- Prefill: 16.6 tok/s — below 500+ target (GEMV-per-token, no batched GEMM)
+- VRAM: 10.9 GB (8B Q8_0, ctx=4096) — higher than target due to larger model + Q8_0
+- Decode: **38.8 tok/s** — within 30-50 target ✅ (was 15.8 before kernel optimization)
+- Prefill: **42.5 tok/s** — below 500+ target (GEMV-per-token, no batched GEMM)
+
+### Kernel Optimization (Post Phase 1)
+
+Applied to `src/cuda/gemm.cu` — all GEMV kernels (Q4_0, Q8_0, Q4_K_M, F16, F32):
+
+1. **Shared memory x cache** — input vector loaded once into shared memory,
+   shared by all warps. Eliminates redundant global memory reads (8x savings).
+2. **8 warps per block** (was 4) — better latency hiding and SM occupancy.
+3. **Dynamic shared memory** + `cudaFuncSetAttribute` for FFN layers
+   (in_features=14336 needs 56KB, exceeds default 48KB limit).
+4. **Vectorized half2 loads** for F16 GEMV (LM head: output.weight).
+5. **Vectorized float4 loads** for x into shared memory.
+
+**Results: 2.5x speedup on decode (15.8 → 38.8 tok/s)**
+
+| Metric | Before | After | Speedup |
+|--------|--------|-------|---------|
+| Prefill | 16.6 tok/s | 42.5 tok/s | 2.56x |
+| Decode  | 15.8 tok/s | 38.8 tok/s | 2.46x |
+
+Bandwidth analysis: 38.8 tok/s × ~8 GB/token = 310 GB/s effective (33% of RTX 3090 theoretical 936 GB/s).
+Remaining gap is from non-GEMV overhead (attention, norms, kernel launches) and memory access patterns.
 
 ---
 
