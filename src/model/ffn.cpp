@@ -28,6 +28,23 @@ void FFN::init(
     }
 }
 
+void FFN::init_streaming(const ModelConfig& config, int layer_idx) {
+    hidden_size_       = config.hidden_size;
+    intermediate_size_ = config.intermediate_size;
+    layer_idx_         = layer_idx;
+}
+
+void FFN::set_weights(const void* gate, const void* up, const void* down,
+                      DType gate_dt, DType up_dt, DType down_dt) {
+    gate_dtype_ = gate_dt;
+    up_dtype_   = up_dt;
+    down_dtype_ = down_dt;
+
+    w_gate_ = Tensor::from_ptr(const_cast<void*>(gate), {intermediate_size_, hidden_size_}, gate_dt, Device::CUDA);
+    w_up_   = Tensor::from_ptr(const_cast<void*>(up),   {intermediate_size_, hidden_size_}, up_dt,   Device::CUDA);
+    w_down_ = Tensor::from_ptr(const_cast<void*>(down), {hidden_size_, intermediate_size_}, down_dt, Device::CUDA);
+}
+
 size_t FFN::workspace_size(int seq_len) const {
     // gate_buf: [seq_len * intermediate_size]
     // up_buf:   [seq_len * intermediate_size]

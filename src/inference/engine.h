@@ -34,7 +34,7 @@ public:
     ~Engine() = default;
 
     // Load model from GGUF file
-    bool load(const std::string& model_path, int max_context = 4096);
+    bool load(const std::string& model_path, int max_context = 4096, bool streaming = false);
 
     // Generate text from a prompt
     std::string generate(const std::string& prompt, const GenerateConfig& config,

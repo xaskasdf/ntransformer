@@ -6,6 +6,7 @@
 #include "norm.h"
 #include "attention.h"
 #include "ffn.h"
+#include "../memory/streamer.h"
 #include <vector>
 #include <memory>
 
@@ -30,10 +31,11 @@ struct TransformerLayer {
 class Transformer {
 public:
     Transformer() = default;
-    ~Transformer() = default;
+    ~Transformer();
 
     // Load model from GGUF
-    bool load(const std::string& gguf_path, int max_context = 4096);
+    // streaming: if true, use SLEP double-buffer streaming (Phase 2)
+    bool load(const std::string& gguf_path, int max_context = 4096, bool streaming = false);
 
     // Forward pass
     // tokens: [seq_len] token IDs (on CPU)
@@ -47,6 +49,8 @@ public:
     // For engine to access raw logits
     float* logits_ptr() { return logits_; }
 
+    bool is_streaming() const { return streaming_mode_; }
+
 private:
     ModelConfig config_;
     GGUFLoader loader_;
@@ -54,7 +58,7 @@ private:
     // Model components
     std::vector<TransformerLayer> layers_;
     RMSNorm output_norm_;
-    Tensor token_embedding_;    // [vocab, hidden] on GPU (F16 or quantized)
+    Tensor token_embedding_;    // [vocab, hidden] on CPU (mmap'd)
     Tensor output_weight_;      // [vocab, hidden] on GPU (may share with embedding)
 
     // KV cache
@@ -72,9 +76,19 @@ private:
     // Positions buffer on GPU
     Tensor positions_gpu_;
 
+    // === Phase 2: SLEP streaming ===
+    bool streaming_mode_ = false;
+    LayerStreamer streamer_;
+    void* norm_weights_gpu_ = nullptr;   // preloaded norm weights for all layers
+    size_t norm_weights_size_ = 0;
+
+    // Streaming-specific forward pass
+    float* forward_streaming(const int* tokens, int seq_len, int start_pos);
+
     // Internal
     void allocate_buffers();
     void load_layer(int layer_idx);
+    void load_streaming();
     void embed_tokens(const int* tokens, int seq_len, float* output, void* stream);
 
     // Tensor name helpers for GGUF

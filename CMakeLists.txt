@@ -65,6 +65,7 @@ set(CUDA_SOURCES
     src/cuda/gemm.cu
     src/cuda/attention.cu
     src/cuda/elementwise.cu
+    src/memory/streamer.cu
 )
 
 # ============================================================

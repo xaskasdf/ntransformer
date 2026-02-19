@@ -8,14 +8,22 @@
 namespace nt {
 
 // ============================================================
-// Embedding lookup kernel (launched from here, defined inline)
+// Destructor
 // ============================================================
-// We'll use a simple CPU -> GPU approach for embedding:
-// Look up on CPU, copy to GPU. For Phase 1 this is fine.
-// Future: GPU embedding kernel for batched prefill.
+Transformer::~Transformer() {
+    if (norm_weights_gpu_) {
+        nt_cuda_free(norm_weights_gpu_);
+        norm_weights_gpu_ = nullptr;
+    }
+}
 
-bool Transformer::load(const std::string& gguf_path, int max_context) {
-    fprintf(stderr, "Loading model: %s\n", gguf_path.c_str());
+// ============================================================
+// Embedding lookup (CPU -> GPU, unchanged from Phase 1)
+// ============================================================
+
+bool Transformer::load(const std::string& gguf_path, int max_context, bool streaming) {
+    fprintf(stderr, "Loading model: %s%s\n", gguf_path.c_str(),
+        streaming ? " [STREAMING MODE]" : "");
 
     if (!loader_.load(gguf_path)) {
         return false;
@@ -23,7 +31,7 @@ bool Transformer::load(const std::string& gguf_path, int max_context) {
 
     config_ = loader_.config();
 
-    // Cap context size for Phase 1 (avoid OOM on large-context models)
+    // Cap context size
     if (config_.max_seq_len > max_context) {
         fprintf(stderr, "Note: Capping context from %d to %d tokens (use --ctx-size to change)\n",
             config_.max_seq_len, max_context);
@@ -40,18 +48,17 @@ bool Transformer::load(const std::string& gguf_path, int max_context) {
     }
     CUDADevice::instance().print_info();
 
-    // Load embedding table
-    // GGUF name: "token_embd.weight"
+    streaming_mode_ = streaming;
+
+    // Load embedding table (stays on CPU in both modes)
     token_embedding_ = loader_.get_tensor("token_embd.weight");
 
-    // Load output weight (LM head) - must be on GPU for GEMV
-    // Some models share embedding/output, some have separate "output.weight"
+    // Load output weight -> GPU
     auto* out_info = loader_.tensor_info("output.weight");
     if (out_info) {
         Tensor out_w = loader_.get_tensor("output.weight");
         output_weight_ = out_w.to(Device::CUDA);
     } else {
-        // Share with embedding
         Tensor out_w = loader_.get_tensor("token_embd.weight");
         output_weight_ = out_w.to(Device::CUDA);
     }
@@ -62,20 +69,87 @@ bool Transformer::load(const std::string& gguf_path, int max_context) {
         output_norm_.init(std::move(norm_w), config_.norm_eps);
     }
 
-    // Load layers
-    layers_.resize(config_.n_layers);
-    for (int i = 0; i < config_.n_layers; i++) {
-        load_layer(i);
+    if (streaming_mode_) {
+        load_streaming();
+    } else {
+        // Resident mode: load all layers to GPU
+        layers_.resize(config_.n_layers);
+        for (int i = 0; i < config_.n_layers; i++) {
+            load_layer(i);
+        }
     }
 
-    // Allocate inference buffers
+    // Allocate inference buffers (KV cache, workspace, etc.)
     allocate_buffers();
 
-    fprintf(stderr, "Model loaded successfully!\n");
+    fprintf(stderr, "Model loaded successfully!%s\n",
+        streaming_mode_ ? " (streaming mode)" : "");
     fprintf(stderr, "Free VRAM: %.1f GB\n",
         CUDADevice::instance().free_vram() / (1024.0 * 1024 * 1024));
 
     return true;
+}
+
+// ============================================================
+// Streaming mode: init layers without GPU weights, preload norms
+// ============================================================
+void Transformer::load_streaming() {
+    int n_layers = config_.n_layers;
+    layers_.resize(n_layers);
+
+    // Preload all norm weights into a single GPU buffer
+    // Each norm is hidden_size floats = hidden_size * 4 bytes
+    // Two norms per layer (attn_norm + ffn_norm)
+    size_t norm_floats_per_layer = 2 * config_.hidden_size;
+    size_t total_norm_floats = (size_t)n_layers * norm_floats_per_layer;
+    norm_weights_size_ = total_norm_floats * sizeof(float);
+
+    fprintf(stderr, "Preloading norm weights: %.2f MB for %d layers\n",
+        norm_weights_size_ / (1024.0 * 1024.0), n_layers);
+
+    norm_weights_gpu_ = nt_cuda_malloc(norm_weights_size_);
+    NT_CHECK(norm_weights_gpu_ != nullptr, "Failed to allocate norm weights GPU buffer");
+
+    float* norm_gpu = static_cast<float*>(norm_weights_gpu_);
+
+    for (int i = 0; i < n_layers; i++) {
+        std::string pfx = layer_prefix(i);
+        TransformerLayer& layer = layers_[i];
+
+        // Load attn_norm weight -> GPU norm buffer
+        {
+            Tensor w = loader_.get_tensor(pfx + "attn_norm.weight");
+            NT_CHECK(w.dtype() == DType::F32, "Norm weights must be F32");
+            float* dst = norm_gpu + i * norm_floats_per_layer;
+            nt_cuda_memcpy_h2d(dst, w.data(), config_.hidden_size * sizeof(float));
+            layer.attn_norm.init_streaming(config_.hidden_size, config_.norm_eps);
+            layer.attn_norm.set_weight(dst);
+        }
+
+        // Load ffn_norm weight -> GPU norm buffer
+        {
+            Tensor w = loader_.get_tensor(pfx + "ffn_norm.weight");
+            NT_CHECK(w.dtype() == DType::F32, "Norm weights must be F32");
+            float* dst = norm_gpu + i * norm_floats_per_layer + config_.hidden_size;
+            nt_cuda_memcpy_h2d(dst, w.data(), config_.hidden_size * sizeof(float));
+            layer.ffn_norm.init_streaming(config_.hidden_size, config_.norm_eps);
+            layer.ffn_norm.set_weight(dst);
+        }
+
+        // Init attention and FFN in streaming mode (no GPU weights yet)
+        layer.attention.init_streaming(config_, i);
+        layer.ffn.init_streaming(config_, i);
+
+        if ((i + 1) % 10 == 0 || i == n_layers - 1) {
+            fprintf(stderr, "  Initialized layer %d/%d (streaming)\n", i + 1, n_layers);
+        }
+    }
+
+    // Initialize the layer streamer (allocates double buffers)
+    streamer_.init(loader_, config_);
+
+    fprintf(stderr, "Streaming setup complete. Buffer size: %.1f MB x 2\n",
+        streamer_.buffer_size() / (1024.0 * 1024.0));
 }
 
 void Transformer::load_layer(int i) {
@@ -156,11 +230,9 @@ void Transformer::allocate_buffers() {
     fprintf(stderr, "OK\n");
 
     // Workspace for attention + FFN
-    // Attention needs: q/k/v/out buffers
-    // FFN needs: gate/up buffers
     size_t attn_ws = (size_t)max_seq * (config_.n_heads + 2 * n_kv + config_.n_heads) * hd;
     size_t ffn_ws = (size_t)2 * max_seq * config_.intermediate_size;
-    size_t ws_size = std::max(attn_ws, ffn_ws);  // reuse for attn and ffn
+    size_t ws_size = std::max(attn_ws, ffn_ws);
     fprintf(stderr, "  Workspace: %.1f MB (attn=%.1f, ffn=%.1f)... ",
         ws_size * sizeof(float) / (1024.0 * 1024),
         attn_ws * sizeof(float) / (1024.0 * 1024),
@@ -314,7 +386,14 @@ void Transformer::embed_tokens(const int* tokens, int seq_len, float* output, vo
     }
 }
 
+// ============================================================
+// Forward pass: dispatch to resident or streaming
+// ============================================================
 float* Transformer::forward(const int* tokens, int seq_len, int start_pos) {
+    if (streaming_mode_) {
+        return forward_streaming(tokens, seq_len, start_pos);
+    }
+
     void* stream = CUDADevice::instance().stream(STREAM_COMPUTE);
     int hidden = config_.hidden_size;
 
@@ -368,6 +447,101 @@ float* Transformer::forward(const int* tokens, int seq_len, int start_pos) {
     output_norm_.forward(last_hidden, last_hidden, 1, stream);
 
     // 5. LM head (output projection) - only last token
+    cuda::launch_gemv(
+        logits_, output_weight_.data(), last_hidden,
+        config_.vocab_size, hidden, output_weight_.dtype(), stream
+    );
+
+    CUDADevice::instance().synchronize_stream(STREAM_COMPUTE);
+    return logits_;
+}
+
+// ============================================================
+// Streaming forward pass: double-buffer pipeline
+// ============================================================
+float* Transformer::forward_streaming(const int* tokens, int seq_len, int start_pos) {
+    void* stream = CUDADevice::instance().stream(STREAM_COMPUTE);
+    int hidden = config_.hidden_size;
+    int n_layers = config_.n_layers;
+
+    float* hidden_state = hidden_buf_.data_as<float>();
+    float* residual = residual_buf_.data_as<float>();
+
+    // 1. Token embedding (same as resident mode)
+    embed_tokens(tokens, seq_len, hidden_state, stream);
+
+    // 2. Upload positions to GPU
+    std::vector<int> positions(seq_len);
+    for (int i = 0; i < seq_len; i++) {
+        positions[i] = start_pos + i;
+    }
+    nt_cuda_memcpy_h2d(positions_gpu_.data(), positions.data(), seq_len * sizeof(int));
+
+    // 3. Double-buffer pipeline through all layers
+    int n_kv = config_.n_kv_heads;
+    int hd = config_.head_dim;
+    int max_seq = config_.max_seq_len;
+    size_t kv_layer_stride = max_seq * n_kv * hd;
+
+    // Kick off transfer of layer 0 into slot 0
+    streamer_.begin_transfer(0, 0);
+
+    for (int i = 0; i < n_layers; i++) {
+        int slot = i % 2;
+        int next_slot = 1 - slot;
+
+        // Start prefetching next layer while we wait + compute current layer
+        if (i + 1 < n_layers) {
+            streamer_.begin_transfer(i + 1, next_slot);
+        }
+
+        // Wait for current layer's transfer to complete
+        streamer_.wait_transfer(slot);
+
+        // Get weight pointers from GPU buffer
+        LayerWeightPtrs wp = streamer_.get_weights(slot);
+
+        // Set weights on attention and FFN (non-owning views into GPU buffer)
+        TransformerLayer& layer = layers_[i];
+        layer.attention.set_weights(
+            wp.attn_q, wp.attn_k, wp.attn_v, wp.attn_output,
+            wp.attn_q_dtype, wp.attn_k_dtype, wp.attn_v_dtype, wp.attn_o_dtype);
+        layer.ffn.set_weights(
+            wp.ffn_gate, wp.ffn_up, wp.ffn_down,
+            wp.ffn_gate_dtype, wp.ffn_up_dtype, wp.ffn_down_dtype);
+
+        // Norm weights are already preloaded in GPU norm buffer (set during load_streaming)
+
+        int n = seq_len * hidden;
+
+        // === Attention sub-block ===
+        layer.attn_norm.forward(residual, hidden_state, seq_len, stream);
+
+        float* k_cache_layer = k_cache_.data_as<float>() + i * kv_layer_stride;
+        float* v_cache_layer = v_cache_.data_as<float>() + i * kv_layer_stride;
+
+        layer.attention.forward(
+            residual, residual, seq_len, start_pos,
+            k_cache_layer, v_cache_layer,
+            positions_gpu_.data_as<int>(), stream
+        );
+
+        cuda::launch_add_inplace(hidden_state, residual, n, stream);
+
+        // === FFN sub-block ===
+        layer.ffn_norm.forward(residual, hidden_state, seq_len, stream);
+        layer.ffn.forward(residual, residual, seq_len, stream);
+        cuda::launch_add_inplace(hidden_state, residual, n, stream);
+
+        // Signal that compute on this slot is done (safe to overwrite buffer)
+        streamer_.signal_compute_done(slot);
+    }
+
+    // 4. Final norm
+    float* last_hidden = hidden_state + (seq_len - 1) * hidden;
+    output_norm_.forward(last_hidden, last_hidden, 1, stream);
+
+    // 5. LM head
     cuda::launch_gemv(
         logits_, output_weight_.data(), last_hidden,
         config_.vocab_size, hidden, output_weight_.dtype(), stream

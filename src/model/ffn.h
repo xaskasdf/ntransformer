@@ -22,6 +22,13 @@ public:
         int layer_idx
     );
 
+    // Streaming mode: store config only, skip GPU weight transfer
+    void init_streaming(const ModelConfig& config, int layer_idx);
+
+    // Set weights to point at GPU buffer (non-owning views)
+    void set_weights(const void* gate, const void* up, const void* down,
+                     DType gate_dt, DType up_dt, DType down_dt);
+
     void forward(
         float* output,
         const float* input,

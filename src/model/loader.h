@@ -66,6 +66,11 @@ public:
     size_t total_size() const { return file_size_; }
     size_t tensor_data_size() const { return data_size_; }
 
+    // Streaming support: raw mmap pointers for async H2D copies
+    const void* mmap_data_ptr() const { return static_cast<const uint8_t*>(mmap_ptr_) + data_offset_; }
+    size_t data_offset() const { return data_offset_; }
+    const void* mmap_base_ptr() const { return mmap_ptr_; }
+
     void print_info() const;
 
 private:

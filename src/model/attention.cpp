@@ -40,6 +40,35 @@ void Attention::init(
     }
 }
 
+void Attention::init_streaming(const ModelConfig& config, int layer_idx) {
+    hidden_size_      = config.hidden_size;
+    n_heads_          = config.n_heads;
+    n_kv_heads_       = config.n_kv_heads;
+    head_dim_         = config.head_dim;
+    max_seq_          = config.max_seq_len;
+    rope_theta_       = config.rope_theta;
+    rope_freq_scale_  = config.rope_freq_scale;
+    rope_interleaved_ = config.rope_interleaved;
+    scale_            = 1.0f / sqrtf((float)head_dim_);
+    layer_idx_        = layer_idx;
+}
+
+void Attention::set_weights(const void* wq, const void* wk, const void* wv, const void* wo,
+                            DType wq_dt, DType wk_dt, DType wv_dt, DType wo_dt) {
+    wq_dtype_ = wq_dt;
+    wk_dtype_ = wk_dt;
+    wv_dtype_ = wv_dt;
+    wo_dtype_ = wo_dt;
+
+    int q_dim = n_heads_ * head_dim_;
+    int kv_dim = n_kv_heads_ * head_dim_;
+
+    wq_ = Tensor::from_ptr(const_cast<void*>(wq), {q_dim, hidden_size_}, wq_dt, Device::CUDA);
+    wk_ = Tensor::from_ptr(const_cast<void*>(wk), {kv_dim, hidden_size_}, wk_dt, Device::CUDA);
+    wv_ = Tensor::from_ptr(const_cast<void*>(wv), {kv_dim, hidden_size_}, wv_dt, Device::CUDA);
+    wo_ = Tensor::from_ptr(const_cast<void*>(wo), {hidden_size_, q_dim}, wo_dt, Device::CUDA);
+}
+
 size_t Attention::workspace_size(int seq_len) const {
     // Need space for:
     // q_buf: [seq_len, n_heads * head_dim]

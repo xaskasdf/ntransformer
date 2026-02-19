@@ -16,6 +16,7 @@ void print_usage(const char* prog) {
     fprintf(stderr, "  --repeat-penalty <float> Repeat penalty (default: 1.1)\n");
     fprintf(stderr, "  -c, --ctx-size <int>     Context size (default: 4096)\n");
     fprintf(stderr, "  --seed <int>             Random seed (default: 42)\n");
+    fprintf(stderr, "  --streaming              SLEP streaming mode (stream layers from CPU via PCIe)\n");
     fprintf(stderr, "  --benchmark              Run benchmark mode\n");
     fprintf(stderr, "  --chat                   Interactive chat mode\n");
     fprintf(stderr, "  -v, --verbose            Verbose output\n");
@@ -28,6 +29,7 @@ int main(int argc, char** argv) {
     int max_context = 4096;
     bool benchmark_mode = false;
     bool chat_mode = false;
+    bool streaming_mode = false;
 
     nt::GenerateConfig config;
     config.verbose = true;
@@ -57,6 +59,8 @@ int main(int argc, char** argv) {
             if (++i < argc) config.seed = std::stoull(argv[i]);
         } else if (arg == "-c" || arg == "--ctx-size") {
             if (++i < argc) max_context = std::stoi(argv[i]);
+        } else if (arg == "--streaming") {
+            streaming_mode = true;
         } else if (arg == "--benchmark") {
             benchmark_mode = true;
         } else if (arg == "--chat") {
@@ -78,7 +82,7 @@ int main(int argc, char** argv) {
 
     // Load model
     nt::Engine engine;
-    if (!engine.load(model_path, max_context)) {
+    if (!engine.load(model_path, max_context, streaming_mode)) {
         fprintf(stderr, "Failed to load model: %s\n", model_path.c_str());
         return 1;
     }
