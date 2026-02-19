@@ -127,7 +127,7 @@ void* PoolAllocator::raw_alloc(size_t size) {
     if (device_ == Device::CUDA) {
         return nt_cuda_malloc(size);
     } else {
-        return aligned_alloc(256, (size + 255) & ~255);
+        return nt_aligned_alloc(256, (size + 255) & ~255);
     }
 }
 
@@ -135,7 +135,7 @@ void PoolAllocator::raw_free(void* ptr) {
     if (device_ == Device::CUDA) {
         nt_cuda_free(ptr);
     } else {
-        ::free(ptr);
+        nt_aligned_free(ptr);
     }
 }
 

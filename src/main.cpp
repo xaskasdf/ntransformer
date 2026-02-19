@@ -14,6 +14,7 @@ void print_usage(const char* prog) {
     fprintf(stderr, "  --top-k <int>            Top-K sampling (default: 40)\n");
     fprintf(stderr, "  --top-p <float>          Top-P nucleus sampling (default: 0.9)\n");
     fprintf(stderr, "  --repeat-penalty <float> Repeat penalty (default: 1.1)\n");
+    fprintf(stderr, "  -c, --ctx-size <int>     Context size (default: 4096)\n");
     fprintf(stderr, "  --seed <int>             Random seed (default: 42)\n");
     fprintf(stderr, "  --benchmark              Run benchmark mode\n");
     fprintf(stderr, "  --chat                   Interactive chat mode\n");
@@ -24,6 +25,7 @@ void print_usage(const char* prog) {
 int main(int argc, char** argv) {
     std::string model_path;
     std::string prompt;
+    int max_context = 4096;
     bool benchmark_mode = false;
     bool chat_mode = false;
 
@@ -53,6 +55,8 @@ int main(int argc, char** argv) {
             if (++i < argc) config.repeat_penalty = std::stof(argv[i]);
         } else if (arg == "--seed") {
             if (++i < argc) config.seed = std::stoull(argv[i]);
+        } else if (arg == "-c" || arg == "--ctx-size") {
+            if (++i < argc) max_context = std::stoi(argv[i]);
         } else if (arg == "--benchmark") {
             benchmark_mode = true;
         } else if (arg == "--chat") {
@@ -74,7 +78,7 @@ int main(int argc, char** argv) {
 
     // Load model
     nt::Engine engine;
-    if (!engine.load(model_path)) {
+    if (!engine.load(model_path, max_context)) {
         fprintf(stderr, "Failed to load model: %s\n", model_path.c_str());
         return 1;
     }

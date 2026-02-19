@@ -70,7 +70,12 @@ public:
 
 private:
     std::string path_;
+#ifdef _WIN32
+    void* file_handle_ = nullptr;   // HANDLE (INVALID_HANDLE_VALUE)
+    void* mapping_handle_ = nullptr; // HANDLE
+#else
     int fd_ = -1;
+#endif
     void* mmap_ptr_ = nullptr;
     size_t file_size_ = 0;
     size_t data_offset_ = 0;  // byte offset where tensor data begins

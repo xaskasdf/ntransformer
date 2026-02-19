@@ -5,6 +5,11 @@
 #include <cassert>
 #include <cstring>
 #include <cstdio>
+#include <cstdlib>
+
+#ifdef _MSC_VER
+#include <malloc.h>
+#endif
 
 // FP16 type alias - use CUDA's half when compiling with nvcc
 #ifdef __CUDACC__
@@ -37,7 +42,7 @@ inline size_t dtype_size(DType dt) {
         case DType::F16:  return 2;
         case DType::I32:  return 4;
         // Quantized types return block size
-        case DType::Q8_0:   return sizeof(float) + 32;           // scale + 32 bytes
+        case DType::Q8_0:   return sizeof(uint16_t) + 32;         // FP16 scale + 32 bytes = 34
         case DType::Q4_0:   return sizeof(float16_t) + 16;       // half scale + 16 bytes (32 nibbles)
         case DType::Q4_K_M: return 144;                          // K-quant block
         case DType::Q6_K:   return 210;
@@ -94,12 +99,12 @@ struct BlockQ4_0 {
 static_assert(sizeof(BlockQ4_0) == 18, "BlockQ4_0 size mismatch");
 
 // Q8_0: 32 weights per block
-// Layout: float scale, 32 x int8
+// Layout: FP16 scale, 32 x int8 (GGML uses fp16 scale, not float)
 struct BlockQ8_0 {
-    float   d;         // scale (delta)
-    int8_t  qs[32];    // quantized values
+    uint16_t d;        // FP16 scale (delta)
+    int8_t   qs[32];   // quantized values
 };
-static_assert(sizeof(BlockQ8_0) == 36, "BlockQ8_0 size mismatch");
+static_assert(sizeof(BlockQ8_0) == 34, "BlockQ8_0 size mismatch");
 
 // Q4_K_M: 256 weights per block (super-block with sub-blocks)
 // Simplified layout for GGUF compatibility
@@ -131,7 +136,7 @@ enum class Device : uint8_t {
 // ============================================================
 // GGUF constants
 // ============================================================
-constexpr uint32_t GGUF_MAGIC = 0x46475547;  // "GGUF"
+constexpr uint32_t GGUF_MAGIC = 0x46554747;  // "GGUF" in little-endian
 constexpr uint32_t GGUF_VERSION_3 = 3;
 
 enum class GGUFType : uint32_t {
@@ -208,5 +213,24 @@ inline DType ggml_to_dtype(GGMLType t) {
         fprintf(stderr, "CUDA error: %s at %s:%d\n", cudaGetErrorString(e), __FILE__, __LINE__); abort(); \
     } } while(0)
 #endif
+
+// ============================================================
+// Cross-platform aligned memory allocation
+// ============================================================
+inline void* nt_aligned_alloc(size_t alignment, size_t size) {
+#ifdef _MSC_VER
+    return _aligned_malloc(size, alignment);
+#else
+    return aligned_alloc(alignment, size);
+#endif
+}
+
+inline void nt_aligned_free(void* ptr) {
+#ifdef _MSC_VER
+    _aligned_free(ptr);
+#else
+    ::free(ptr);
+#endif
+}
 
 } // namespace nt

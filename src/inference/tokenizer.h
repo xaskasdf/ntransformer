@@ -40,6 +40,7 @@ private:
 
     int bos_id_ = 1;
     int eos_id_ = 2;
+    bool use_gpt2_encoding_ = false;  // true for Llama 3 (GPT-2 BPE), false for Llama 1/2 (SentencePiece)
 
     // BPE merge step
     struct BPEMerge {

@@ -6,6 +6,61 @@
 
 namespace nt {
 
+// ============================================================
+// GPT-2 byte encoder: maps raw bytes to Unicode characters
+// used by Llama 3's tiktoken-based BPE tokenizer
+// ============================================================
+
+static void build_byte_tables(
+    std::string byte_to_unicode[256],
+    std::unordered_map<std::string, uint8_t>& unicode_to_byte
+) {
+    // The GPT-2 bytes_to_unicode mapping:
+    // Printable ASCII (33-126), Latin-1 Supplement (161-172, 174-255) -> identity
+    // Everything else (0-32, 127-160, 173) -> 256+n
+    int n = 0;
+    for (int b = 0; b < 256; b++) {
+        bool identity = (b >= 33 && b <= 126) ||
+                        (b >= 161 && b <= 172) ||
+                        (b >= 174 && b <= 255);
+        uint32_t cp;
+        if (identity) {
+            cp = (uint32_t)b;
+        } else {
+            cp = 256 + n;
+            n++;
+        }
+
+        // Encode code point to UTF-8
+        char utf8[5] = {};
+        if (cp < 0x80) {
+            utf8[0] = (char)cp;
+        } else if (cp < 0x800) {
+            utf8[0] = (char)(0xC0 | (cp >> 6));
+            utf8[1] = (char)(0x80 | (cp & 0x3F));
+        } else {
+            utf8[0] = (char)(0xE0 | (cp >> 12));
+            utf8[1] = (char)(0x80 | ((cp >> 6) & 0x3F));
+            utf8[2] = (char)(0x80 | (cp & 0x3F));
+        }
+
+        byte_to_unicode[b] = std::string(utf8);
+        unicode_to_byte[byte_to_unicode[b]] = (uint8_t)b;
+    }
+}
+
+// Global tables (initialized once)
+static std::string g_byte_to_unicode[256];
+static std::unordered_map<std::string, uint8_t> g_unicode_to_byte;
+static bool g_tables_initialized = false;
+
+static void ensure_tables() {
+    if (!g_tables_initialized) {
+        build_byte_tables(g_byte_to_unicode, g_unicode_to_byte);
+        g_tables_initialized = true;
+    }
+}
+
 void Tokenizer::init(const GGUFVocab& vocab, int bos_id, int eos_id) {
     tokens_ = vocab.tokens;
     scores_ = vocab.scores;
@@ -18,8 +73,16 @@ void Tokenizer::init(const GGUFVocab& vocab, int bos_id, int eos_id) {
         token_to_id_[tokens_[i]] = i;
     }
 
-    fprintf(stderr, "Tokenizer: %d tokens, BOS=%d, EOS=%d\n",
-        (int)tokens_.size(), bos_id_, eos_id_);
+    // Detect tokenizer type: Llama 3 uses GPT-2 byte encoding (has Ġ for space)
+    // Llama 1/2 uses SentencePiece (has ▁ for space)
+    ensure_tables();
+    // Check if vocab contains the GPT-2 encoding of space (Ġ = U+0120)
+    std::string space_encoded = g_byte_to_unicode[0x20]; // Should be Ġ
+    use_gpt2_encoding_ = (token_to_id_.find(space_encoded) != token_to_id_.end());
+
+    fprintf(stderr, "Tokenizer: %d tokens, BOS=%d, EOS=%d, encoding=%s\n",
+        (int)tokens_.size(), bos_id_, eos_id_,
+        use_gpt2_encoding_ ? "GPT2-BPE" : "SentencePiece");
 }
 
 std::vector<int> Tokenizer::encode(const std::string& text, bool add_bos) const {
@@ -36,12 +99,27 @@ std::vector<int> Tokenizer::encode(const std::string& text, bool add_bos) const 
 }
 
 void Tokenizer::bpe_encode(const std::string& text, std::vector<int>& output) const {
-    // SentencePiece-style BPE encoding
-    // 1. Start with each byte/character as a token
-    // 2. Greedily merge the pair with highest score
-    // 3. Repeat until no more merges possible
+    // Convert input text to tokenizer's encoding
+    std::string encoded;
+    if (use_gpt2_encoding_) {
+        // GPT-2 byte encoding: each raw byte maps to a Unicode character
+        encoded.reserve(text.size() * 2);
+        for (size_t i = 0; i < text.size(); i++) {
+            encoded += g_byte_to_unicode[(uint8_t)text[i]];
+        }
+    } else {
+        // SentencePiece: replace spaces with ▁
+        encoded.reserve(text.size() + 16);
+        for (size_t i = 0; i < text.size(); i++) {
+            if (text[i] == ' ') {
+                encoded += "\xe2\x96\x81";  // ▁ in UTF-8
+            } else {
+                encoded += text[i];
+            }
+        }
+    }
 
-    // Initialize: each UTF-8 character or byte becomes a token
+    // Initialize symbols from individual characters/bytes
     struct Symbol {
         int token_id;
         std::string text;
@@ -51,30 +129,13 @@ void Tokenizer::bpe_encode(const std::string& text, std::vector<int>& output) co
 
     std::vector<Symbol> symbols;
 
-    // SentencePiece uses the "▁" (U+2581) prefix for word boundaries
-    // Replace spaces with ▁ at the beginning and before each word
-    std::string processed;
-    processed.reserve(text.size() + 16);
-
-    for (size_t i = 0; i < text.size(); i++) {
-        if (text[i] == ' ') {
-            processed += "\xe2\x96\x81";  // ▁ in UTF-8
-        } else {
-            processed += text[i];
-        }
-    }
-
-    // Initialize symbols from individual characters/bytes
     size_t pos = 0;
-    while (pos < processed.size()) {
+    while (pos < encoded.size()) {
         // Try to find the longest matching token starting at pos
-        // Start with single bytes and try longer
         bool found = false;
-
-        // Try progressively shorter substrings
-        size_t max_len = std::min(processed.size() - pos, (size_t)64);
+        size_t max_len = std::min(encoded.size() - pos, (size_t)64);
         for (size_t len = max_len; len >= 1; len--) {
-            std::string sub = processed.substr(pos, len);
+            std::string sub = encoded.substr(pos, len);
             auto it = token_to_id_.find(sub);
             if (it != token_to_id_.end()) {
                 Symbol sym;
@@ -94,10 +155,10 @@ void Tokenizer::bpe_encode(const std::string& text, std::vector<int>& output) co
 
         if (!found) {
             // Byte-level fallback
-            int bt = byte_token((uint8_t)processed[pos]);
+            int bt = byte_token((uint8_t)encoded[pos]);
             Symbol sym;
             sym.token_id = bt;
-            sym.text = processed.substr(pos, 1);
+            sym.text = encoded.substr(pos, 1);
             sym.prev = symbols.empty() ? -1 : (int)symbols.size() - 1;
             sym.next = -1;
             if (!symbols.empty()) {
@@ -110,13 +171,12 @@ void Tokenizer::bpe_encode(const std::string& text, std::vector<int>& output) co
 
     // BPE merge loop
     while (true) {
-        // Find the best pair to merge (highest score)
         float best_score = -std::numeric_limits<float>::infinity();
         int best_idx = -1;
 
         for (int i = 0; i < (int)symbols.size(); i++) {
             if (symbols[i].next < 0) continue;
-            if (symbols[i].token_id < 0) continue;  // deleted
+            if (symbols[i].token_id < 0) continue;
 
             int j = symbols[i].next;
             std::string merged = symbols[i].text + symbols[j].text;
@@ -131,9 +191,8 @@ void Tokenizer::bpe_encode(const std::string& text, std::vector<int>& output) co
             }
         }
 
-        if (best_idx < 0) break;  // No more merges
+        if (best_idx < 0) break;
 
-        // Perform the merge
         int i = best_idx;
         int j = symbols[i].next;
         std::string merged = symbols[i].text + symbols[j].text;
@@ -146,7 +205,6 @@ void Tokenizer::bpe_encode(const std::string& text, std::vector<int>& output) co
             symbols[symbols[j].next].prev = i;
         }
 
-        // Mark j as deleted
         symbols[j].token_id = -1;
     }
 
@@ -171,7 +229,7 @@ std::string Tokenizer::decode_token(int token_id) const {
         return "";
     }
 
-    // Check if it's a special token
+    // Check if it's a special/control token
     if (!token_types_.empty() && token_id < (int)token_types_.size()) {
         int type = token_types_[token_id];
         if (type == 3 || type == 4) {  // control or unused
@@ -181,42 +239,76 @@ std::string Tokenizer::decode_token(int token_id) const {
 
     std::string token = tokens_[token_id];
 
-    // Check for byte tokens like <0x0A>
-    if (token.size() == 6 && token[0] == '<' && token[1] == '0' && token[2] == 'x' && token[5] == '>') {
-        char hex[3] = {token[3], token[4], 0};
-        char byte = (char)strtol(hex, nullptr, 16);
-        return std::string(1, byte);
-    }
+    if (use_gpt2_encoding_) {
+        // GPT-2 byte decoding: convert each Unicode character back to a raw byte
+        std::string result;
+        size_t pos = 0;
+        while (pos < token.size()) {
+            // Determine the length of the current UTF-8 character
+            uint8_t c = (uint8_t)token[pos];
+            int char_len;
+            if (c < 0x80) char_len = 1;
+            else if ((c & 0xE0) == 0xC0) char_len = 2;
+            else if ((c & 0xF0) == 0xE0) char_len = 3;
+            else if ((c & 0xF8) == 0xF0) char_len = 4;
+            else { pos++; continue; }  // invalid UTF-8
 
-    // Replace ▁ with space
-    std::string result;
-    size_t pos = 0;
-    while (pos < token.size()) {
-        // Check for ▁ (UTF-8: 0xE2 0x96 0x81)
-        if (pos + 2 < token.size() &&
-            (uint8_t)token[pos] == 0xE2 &&
-            (uint8_t)token[pos+1] == 0x96 &&
-            (uint8_t)token[pos+2] == 0x81) {
-            result += ' ';
-            pos += 3;
-        } else {
-            result += token[pos];
-            pos++;
+            if (pos + char_len > token.size()) break;
+
+            std::string ch = token.substr(pos, char_len);
+            auto it = g_unicode_to_byte.find(ch);
+            if (it != g_unicode_to_byte.end()) {
+                result += (char)it->second;
+            } else {
+                // Pass through unchanged
+                result += ch;
+            }
+            pos += char_len;
         }
-    }
+        return result;
+    } else {
+        // SentencePiece: check for byte tokens and replace ▁ with space
+        if (token.size() == 6 && token[0] == '<' && token[1] == '0' && token[2] == 'x' && token[5] == '>') {
+            char hex[3] = {token[3], token[4], 0};
+            char byte = (char)strtol(hex, nullptr, 16);
+            return std::string(1, byte);
+        }
 
-    return result;
+        std::string result;
+        size_t pos = 0;
+        while (pos < token.size()) {
+            if (pos + 2 < token.size() &&
+                (uint8_t)token[pos] == 0xE2 &&
+                (uint8_t)token[pos+1] == 0x96 &&
+                (uint8_t)token[pos+2] == 0x81) {
+                result += ' ';
+                pos += 3;
+            } else {
+                result += token[pos];
+                pos++;
+            }
+        }
+        return result;
+    }
 }
 
 int Tokenizer::byte_token(uint8_t byte) const {
-    // Look for <0xXX> format
+    if (use_gpt2_encoding_) {
+        // In GPT-2 encoding, individual bytes map to their Unicode chars
+        auto it = token_to_id_.find(g_byte_to_unicode[byte]);
+        if (it != token_to_id_.end()) {
+            return it->second;
+        }
+    }
+
+    // SentencePiece byte fallback: <0xXX> format
     char name[8];
     snprintf(name, sizeof(name), "<0x%02X>", byte);
     auto it = token_to_id_.find(name);
     if (it != token_to_id_.end()) {
         return it->second;
     }
-    return 0;  // fallback to token 0
+    return 0;
 }
 
 } // namespace nt

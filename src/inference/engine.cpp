@@ -8,8 +8,8 @@ namespace nt {
 
 using Clock = std::chrono::high_resolution_clock;
 
-bool Engine::load(const std::string& model_path) {
-    if (!model_.load(model_path)) {
+bool Engine::load(const std::string& model_path, int max_context) {
+    if (!model_.load(model_path, max_context)) {
         return false;
     }
 

@@ -33,7 +33,7 @@ public:
     ~Transformer() = default;
 
     // Load model from GGUF
-    bool load(const std::string& gguf_path);
+    bool load(const std::string& gguf_path, int max_context = 4096);
 
     // Forward pass
     // tokens: [seq_len] token IDs (on CPU)

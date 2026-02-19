@@ -7,16 +7,25 @@ project(ntransformer LANGUAGES CXX CUDA)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CUDA_STANDARD 20)
+# nvcc C++20 support is limited and causes cudafe++ crashes with newer MSVC;
+# use C++17 for device code (kernels don't need C++20 features)
+set(CMAKE_CUDA_STANDARD 17)
 set(CMAKE_CUDA_STANDARD_REQUIRED ON)
 
 # CUDA architecture - target SM 86 (RTX 3090) and above
 # Also include SM 80 (A100) for compatibility
 set(CMAKE_CUDA_ARCHITECTURES "80;86;89;90")
 
-# Optimization flags
-set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG -march=native")
-set(CMAKE_CUDA_FLAGS_RELEASE "-O3 -DNDEBUG --use_fast_math")
+# Optimization flags (platform-dependent)
+if(MSVC)
+    set(CMAKE_CXX_FLAGS_RELEASE "/O2 /DNDEBUG /arch:AVX2 /EHsc")
+    set(CMAKE_CUDA_FLAGS_RELEASE "-O3 -DNDEBUG --use_fast_math -Xcompiler=/EHsc")
+    # Suppress some common MSVC warnings in CUDA host code
+    add_compile_options($<$<COMPILE_LANGUAGE:CXX>:/W3>)
+else()
+    set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG -march=native")
+    set(CMAKE_CUDA_FLAGS_RELEASE "-O3 -DNDEBUG --use_fast_math")
+endif()
 
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
@@ -75,7 +84,8 @@ target_link_libraries(ntransformer_lib PUBLIC
 # Enable position-independent code for potential shared library
 set_target_properties(ntransformer_lib PROPERTIES
     POSITION_INDEPENDENT_CODE ON
-    CUDA_SEPARABLE_COMPILATION ON
+    CUDA_SEPARABLE_COMPILATION OFF
+    CUDA_RESOLVE_DEVICE_SYMBOLS ON
 )
 
 # ============================================================

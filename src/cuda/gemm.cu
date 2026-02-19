@@ -94,7 +94,8 @@ __global__ void gemv_q8_0_kernel(
 
     for (int b = tid; b < num_blocks; b += warpSize) {
         const nt::BlockQ8_0& block = row_blocks[b];
-        float d = block.d;
+        // Decode FP16 scale
+        float d = __half2float(*reinterpret_cast<const half*>(&block.d));
         int base = b * 32;
 
         float block_sum = 0.0f;

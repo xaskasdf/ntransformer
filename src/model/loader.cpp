@@ -1,26 +1,77 @@
 #include "loader.h"
 #include <cstdio>
 #include <cstring>
+#include <cinttypes>
+#include <algorithm>
+
+#ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
+#include <windows.h>
+#else
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
-#include <algorithm>
+#endif
 
 namespace nt {
 
 GGUFLoader::~GGUFLoader() {
+#ifdef _WIN32
+    if (mmap_ptr_) {
+        UnmapViewOfFile(mmap_ptr_);
+    }
+    if (mapping_handle_) {
+        CloseHandle(mapping_handle_);
+    }
+    if (file_handle_ && file_handle_ != INVALID_HANDLE_VALUE) {
+        CloseHandle(file_handle_);
+    }
+#else
     if (mmap_ptr_ && mmap_ptr_ != MAP_FAILED) {
         munmap(mmap_ptr_, file_size_);
     }
     if (fd_ >= 0) {
         close(fd_);
     }
+#endif
 }
 
 bool GGUFLoader::load(const std::string& path) {
     path_ = path;
 
+#ifdef _WIN32
+    // Open file
+    file_handle_ = CreateFileA(path.c_str(), GENERIC_READ, FILE_SHARE_READ,
+                               nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+    if (file_handle_ == INVALID_HANDLE_VALUE) {
+        fprintf(stderr, "Failed to open %s (error %lu)\n", path.c_str(), GetLastError());
+        return false;
+    }
+
+    // Get file size
+    LARGE_INTEGER li;
+    if (!GetFileSizeEx(file_handle_, &li)) {
+        fprintf(stderr, "Failed to get size of %s\n", path.c_str());
+        return false;
+    }
+    file_size_ = static_cast<size_t>(li.QuadPart);
+
+    // Create file mapping
+    mapping_handle_ = CreateFileMappingA(file_handle_, nullptr, PAGE_READONLY, 0, 0, nullptr);
+    if (!mapping_handle_) {
+        fprintf(stderr, "Failed to create file mapping for %s (error %lu)\n", path.c_str(), GetLastError());
+        return false;
+    }
+
+    // Map view of file
+    mmap_ptr_ = MapViewOfFile(mapping_handle_, FILE_MAP_READ, 0, 0, 0);
+    if (!mmap_ptr_) {
+        fprintf(stderr, "Failed to map view of %s (error %lu)\n", path.c_str(), GetLastError());
+        return false;
+    }
+#else
     // Open file
     fd_ = open(path.c_str(), O_RDONLY);
     if (fd_ < 0) {
@@ -45,6 +96,7 @@ bool GGUFLoader::load(const std::string& path) {
 
     // Advise kernel for sequential access
     madvise(mmap_ptr_, file_size_, MADV_SEQUENTIAL);
+#endif
 
     // Parse header
     if (!parse_header()) {
@@ -81,7 +133,7 @@ bool GGUFLoader::parse_header() {
     uint64_t n_kv = *reinterpret_cast<const uint64_t*>(ptr);
     ptr += 8;
 
-    fprintf(stderr, "GGUF v%u: %lu tensors, %lu metadata entries\n", version, n_tensors, n_kv);
+    fprintf(stderr, "GGUF v%u: %" PRIu64 " tensors, %" PRIu64 " metadata entries\n", version, n_tensors, n_kv);
 
     // Parse metadata key-value pairs
     std::unordered_map<std::string, std::variant<int, float, std::string, bool>> metadata;
@@ -261,6 +313,16 @@ Tensor GGUFLoader::get_tensor(const std::string& name) const {
     const GGUFTensorInfo& ti = tensors_[it->second];
     DType dt = ggml_to_dtype(ti.ggml_type);
 
+    // Bounds check: verify tensor data is within the mmap'd region
+    size_t tensor_end = data_offset_ + ti.offset + ti.nbytes;
+    if (tensor_end > file_size_) {
+        fprintf(stderr, "\nERROR: Tensor '%s' extends beyond file! "
+            "data_offset=%zu, tensor_offset=%zu, nbytes=%zu, file_size=%zu, overrun=%zu\n",
+            name.c_str(), data_offset_, (size_t)ti.offset, ti.nbytes, file_size_,
+            tensor_end - file_size_);
+        abort();
+    }
+
     void* data = const_cast<void*>(tensor_data(name));
     Tensor t = Tensor::from_ptr(data, ti.shape, dt, Device::CPU);
     t.name = name;
@@ -279,7 +341,7 @@ std::vector<std::string> GGUFLoader::tensor_names() const {
 void GGUFLoader::print_info() const {
     fprintf(stderr, "=== GGUF File: %s ===\n", path_.c_str());
     fprintf(stderr, "File size: %.2f GB\n", file_size_ / (1024.0 * 1024 * 1024));
-    fprintf(stderr, "Tensor data: %.2f GB at offset 0x%lX\n",
+    fprintf(stderr, "Tensor data: %.2f GB at offset 0x%zX\n",
         data_size_ / (1024.0 * 1024 * 1024), data_offset_);
     fprintf(stderr, "Tensors: %zu\n", tensors_.size());
     fprintf(stderr, "Vocab: %zu tokens\n", vocab_.tokens.size());
@@ -290,7 +352,7 @@ void GGUFLoader::print_info() const {
         fprintf(stderr, "  %s: [", t.name.c_str());
         for (int i = 0; i < (int)t.shape.size(); i++) {
             if (i > 0) fprintf(stderr, ", ");
-            fprintf(stderr, "%ld", t.shape[i]);
+            fprintf(stderr, "%" PRId64, t.shape[i]);
         }
         DType dt = ggml_to_dtype(t.ggml_type);
         fprintf(stderr, "] %s (%.2f MB)\n", dtype_name(dt), t.nbytes / (1024.0 * 1024));

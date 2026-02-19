@@ -14,7 +14,7 @@ namespace nt {
 // Look up on CPU, copy to GPU. For Phase 1 this is fine.
 // Future: GPU embedding kernel for batched prefill.
 
-bool Transformer::load(const std::string& gguf_path) {
+bool Transformer::load(const std::string& gguf_path, int max_context) {
     fprintf(stderr, "Loading model: %s\n", gguf_path.c_str());
 
     if (!loader_.load(gguf_path)) {
@@ -22,6 +22,14 @@ bool Transformer::load(const std::string& gguf_path) {
     }
 
     config_ = loader_.config();
+
+    // Cap context size for Phase 1 (avoid OOM on large-context models)
+    if (config_.max_seq_len > max_context) {
+        fprintf(stderr, "Note: Capping context from %d to %d tokens (use --ctx-size to change)\n",
+            config_.max_seq_len, max_context);
+        config_.max_seq_len = max_context;
+    }
+
     config_.print();
     loader_.print_info();
 
@@ -36,14 +44,16 @@ bool Transformer::load(const std::string& gguf_path) {
     // GGUF name: "token_embd.weight"
     token_embedding_ = loader_.get_tensor("token_embd.weight");
 
-    // Load output weight (LM head)
+    // Load output weight (LM head) - must be on GPU for GEMV
     // Some models share embedding/output, some have separate "output.weight"
     auto* out_info = loader_.tensor_info("output.weight");
     if (out_info) {
-        output_weight_ = loader_.get_tensor("output.weight");
+        Tensor out_w = loader_.get_tensor("output.weight");
+        output_weight_ = out_w.to(Device::CUDA);
     } else {
         // Share with embedding
-        output_weight_ = loader_.get_tensor("token_embd.weight");
+        Tensor out_w = loader_.get_tensor("token_embd.weight");
+        output_weight_ = out_w.to(Device::CUDA);
     }
 
     // Load output norm
@@ -71,14 +81,17 @@ bool Transformer::load(const std::string& gguf_path) {
 void Transformer::load_layer(int i) {
     std::string pfx = layer_prefix(i);
     TransformerLayer& layer = layers_[i];
+    fprintf(stderr, "  Loading layer %d: ", i); fflush(stderr);
 
     // Attention norm
+    fprintf(stderr, "norm "); fflush(stderr);
     {
         Tensor w = loader_.get_tensor(pfx + "attn_norm.weight");
         layer.attn_norm.init(std::move(w), config_.norm_eps);
     }
 
     // Attention weights
+    fprintf(stderr, "attn "); fflush(stderr);
     {
         Tensor wq = loader_.get_tensor(pfx + "attn_q.weight");
         Tensor wk = loader_.get_tensor(pfx + "attn_k.weight");
@@ -88,12 +101,14 @@ void Transformer::load_layer(int i) {
     }
 
     // FFN norm
+    fprintf(stderr, "ffn_norm "); fflush(stderr);
     {
         Tensor w = loader_.get_tensor(pfx + "ffn_norm.weight");
         layer.ffn_norm.init(std::move(w), config_.norm_eps);
     }
 
     // FFN weights
+    fprintf(stderr, "ffn "); fflush(stderr);
     {
         Tensor gate = loader_.get_tensor(pfx + "ffn_gate.weight");
         Tensor up   = loader_.get_tensor(pfx + "ffn_up.weight");
@@ -101,9 +116,10 @@ void Transformer::load_layer(int i) {
         layer.ffn.init(config_, std::move(gate), std::move(up), std::move(down), i);
     }
 
-    if ((i + 1) % 10 == 0 || i == config_.n_layers - 1) {
-        fprintf(stderr, "  Loaded layer %d/%d\n", i + 1, config_.n_layers);
-    }
+    fprintf(stderr, "  Loaded layer %d/%d (VRAM free: %.1f GB)\n",
+        i + 1, config_.n_layers,
+        CUDADevice::instance().free_vram() / (1024.0 * 1024 * 1024));
+    fflush(stderr);
 }
 
 void Transformer::allocate_buffers() {
@@ -113,30 +129,45 @@ void Transformer::allocate_buffers() {
     int hd = config_.head_dim;
     int n_layers = config_.n_layers;
 
+    fprintf(stderr, "Allocating buffers (max_seq=%d, hidden=%d, n_kv=%d, hd=%d)...\n",
+        max_seq, hidden, n_kv, hd);
+
     // KV cache: [n_layers, max_seq, n_kv_heads, head_dim] for both K and V
-    size_t kv_layer_size = max_seq * n_kv * hd;
+    size_t kv_layer_size = (size_t)max_seq * n_kv * hd;
+    fprintf(stderr, "  KV cache: %.1f MB total... ",
+        kv_layer_size * sizeof(float) * 2 * n_layers / (1024.0 * 1024));
+    fflush(stderr);
     k_cache_ = Tensor::zeros({n_layers, max_seq, n_kv, hd}, DType::F32, Device::CUDA);
     v_cache_ = Tensor::zeros({n_layers, max_seq, n_kv, hd}, DType::F32, Device::CUDA);
-
-    fprintf(stderr, "KV cache: %.1f MB per layer, %.1f MB total\n",
-        kv_layer_size * sizeof(float) * 2 / (1024.0 * 1024),
-        kv_layer_size * sizeof(float) * 2 * n_layers / (1024.0 * 1024));
+    fprintf(stderr, "OK\n");
 
     // Hidden state buffers
+    fprintf(stderr, "  Hidden buffers... ");
+    fflush(stderr);
     hidden_buf_ = Tensor::empty({max_seq, hidden}, DType::F32, Device::CUDA);
     residual_buf_ = Tensor::empty({max_seq, hidden}, DType::F32, Device::CUDA);
+    fprintf(stderr, "OK\n");
 
     // Logits buffer
+    fprintf(stderr, "  Logits buffer (%d)... ", config_.vocab_size);
+    fflush(stderr);
     logits_buf_ = Tensor::empty({config_.vocab_size}, DType::F32, Device::CUDA);
     logits_ = logits_buf_.data_as<float>();
+    fprintf(stderr, "OK\n");
 
     // Workspace for attention + FFN
     // Attention needs: q/k/v/out buffers
     // FFN needs: gate/up buffers
-    int attn_ws = max_seq * (config_.n_heads + 2 * n_kv + config_.n_heads) * hd;
-    int ffn_ws = 2 * max_seq * config_.intermediate_size;
-    int ws_size = std::max(attn_ws, ffn_ws);  // reuse for attn and ffn
-    workspace_ = Tensor::empty({ws_size}, DType::F32, Device::CUDA);
+    size_t attn_ws = (size_t)max_seq * (config_.n_heads + 2 * n_kv + config_.n_heads) * hd;
+    size_t ffn_ws = (size_t)2 * max_seq * config_.intermediate_size;
+    size_t ws_size = std::max(attn_ws, ffn_ws);  // reuse for attn and ffn
+    fprintf(stderr, "  Workspace: %.1f MB (attn=%.1f, ffn=%.1f)... ",
+        ws_size * sizeof(float) / (1024.0 * 1024),
+        attn_ws * sizeof(float) / (1024.0 * 1024),
+        ffn_ws * sizeof(float) / (1024.0 * 1024));
+    fflush(stderr);
+    workspace_ = Tensor::empty({(int64_t)ws_size}, DType::F32, Device::CUDA);
+    fprintf(stderr, "OK\n");
 
     // Set workspace for all layers
     for (auto& layer : layers_) {
@@ -147,7 +178,8 @@ void Transformer::allocate_buffers() {
     // Positions buffer
     positions_gpu_ = Tensor::empty({max_seq}, DType::I32, Device::CUDA);
 
-    fprintf(stderr, "Workspace: %.1f MB\n", ws_size * sizeof(float) / (1024.0 * 1024));
+    fprintf(stderr, "All buffers allocated. Free VRAM: %.1f GB\n",
+        CUDADevice::instance().free_vram() / (1024.0 * 1024 * 1024));
 }
 
 void Transformer::embed_tokens(const int* tokens, int seq_len, float* output, void* stream) {
@@ -201,14 +233,83 @@ void Transformer::embed_tokens(const int* tokens, int seq_len, float* output, vo
             }
         }
         nt_cuda_memcpy_h2d(output, cpu_buf.data(), seq_len * hidden * sizeof(float));
-    } else {
-        // Quantized embeddings - dequantize on CPU
-        // For Q4_0, Q8_0, etc. - we handle the common case
-        fprintf(stderr, "Warning: Quantized embedding lookup not fully optimized (dtype=%s)\n",
-            dtype_name(emb_dtype));
+    } else if (emb_dtype == DType::Q8_0) {
+        // Q8_0 embedding: 32 weights per block, uint16_t(FP16) scale + 32 int8
+        const uint8_t* raw = static_cast<const uint8_t*>(emb_data);
+        int blocks_per_row = hidden / 32;
+        size_t row_bytes = (size_t)blocks_per_row * sizeof(BlockQ8_0);
 
-        // Fallback: treat as raw data and copy row bytes, then dequant
-        // For now, just zero the output
+        std::vector<float> cpu_buf(seq_len * hidden);
+        for (int t = 0; t < seq_len; t++) {
+            const uint8_t* row_ptr = raw + (size_t)tokens[t] * row_bytes;
+            float* out = cpu_buf.data() + t * hidden;
+
+            for (int b = 0; b < blocks_per_row; b++) {
+                const BlockQ8_0* block = reinterpret_cast<const BlockQ8_0*>(row_ptr + b * sizeof(BlockQ8_0));
+                // Decode FP16 scale on CPU
+                uint16_t h = block->d;
+                uint32_t sign = (h >> 15) & 1;
+                int32_t  exp  = (h >> 10) & 0x1F;
+                uint32_t mant = h & 0x3FF;
+                uint32_t f;
+                if (exp == 0) {
+                    f = (mant == 0) ? (sign << 31) : 0;  // zero or subnormal (rare for scales)
+                } else if (exp == 31) {
+                    f = (sign << 31) | 0x7F800000 | (mant << 13);
+                } else {
+                    f = (sign << 31) | ((uint32_t)(exp + 127 - 15) << 23) | (mant << 13);
+                }
+                float d;
+                memcpy(&d, &f, 4);
+
+                int base = b * 32;
+                for (int j = 0; j < 32; j++) {
+                    out[base + j] = d * block->qs[j];
+                }
+            }
+        }
+        nt_cuda_memcpy_h2d(output, cpu_buf.data(), seq_len * hidden * sizeof(float));
+    } else if (emb_dtype == DType::Q4_0) {
+        // Q4_0 embedding: 32 weights per block, uint16_t(FP16) scale + 16 nibble bytes
+        const uint8_t* raw = static_cast<const uint8_t*>(emb_data);
+        int blocks_per_row = hidden / 32;
+        size_t row_bytes = (size_t)blocks_per_row * sizeof(BlockQ4_0);
+
+        std::vector<float> cpu_buf(seq_len * hidden);
+        for (int t = 0; t < seq_len; t++) {
+            const uint8_t* row_ptr = raw + (size_t)tokens[t] * row_bytes;
+            float* out = cpu_buf.data() + t * hidden;
+
+            for (int b = 0; b < blocks_per_row; b++) {
+                const BlockQ4_0* block = reinterpret_cast<const BlockQ4_0*>(row_ptr + b * sizeof(BlockQ4_0));
+                uint16_t h = block->d;
+                uint32_t sign = (h >> 15) & 1;
+                int32_t  exp  = (h >> 10) & 0x1F;
+                uint32_t mant = h & 0x3FF;
+                uint32_t f;
+                if (exp == 0) {
+                    f = (mant == 0) ? (sign << 31) : 0;
+                } else if (exp == 31) {
+                    f = (sign << 31) | 0x7F800000 | (mant << 13);
+                } else {
+                    f = (sign << 31) | ((uint32_t)(exp + 127 - 15) << 23) | (mant << 13);
+                }
+                float d;
+                memcpy(&d, &f, 4);
+
+                int base = b * 32;
+                for (int j = 0; j < 16; j++) {
+                    uint8_t byte = block->qs[j];
+                    int8_t lo = (byte & 0x0F) - 8;
+                    int8_t hi = (byte >> 4) - 8;
+                    out[base + j]      = d * lo;
+                    out[base + j + 16] = d * hi;
+                }
+            }
+        }
+        nt_cuda_memcpy_h2d(output, cpu_buf.data(), seq_len * hidden * sizeof(float));
+    } else {
+        fprintf(stderr, "Error: Unsupported embedding dtype: %s\n", dtype_name(emb_dtype));
         nt_cuda_memset(output, 0, seq_len * hidden * sizeof(float));
     }
 }
@@ -241,10 +342,8 @@ float* Transformer::forward(const int* tokens, int seq_len, int start_pos) {
         int n = seq_len * hidden;
 
         // === Attention sub-block with residual connection ===
-        // 1. norm_out = RMSNorm(hidden_state) -> residual buffer
         layer.attn_norm.forward(residual, hidden_state, seq_len, stream);
 
-        // 2. attn_out = Attention(norm_out) -> residual buffer (in-place)
         float* k_cache_layer = k_cache_.data_as<float>() + i * kv_layer_stride;
         float* v_cache_layer = v_cache_.data_as<float>() + i * kv_layer_stride;
 
@@ -254,17 +353,13 @@ float* Transformer::forward(const int* tokens, int seq_len, int start_pos) {
             positions_gpu_.data_as<int>(), stream
         );
 
-        // 3. hidden_state += attn_out  (residual connection)
         cuda::launch_add_inplace(hidden_state, residual, n, stream);
 
         // === FFN sub-block with residual connection ===
-        // 4. norm_out = RMSNorm(hidden_state) -> residual buffer
         layer.ffn_norm.forward(residual, hidden_state, seq_len, stream);
 
-        // 5. ffn_out = FFN(norm_out) -> residual buffer (in-place)
         layer.ffn.forward(residual, residual, seq_len, stream);
 
-        // 6. hidden_state += ffn_out  (residual connection)
         cuda::launch_add_inplace(hidden_state, residual, n, stream);
     }
 

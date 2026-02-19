@@ -287,7 +287,7 @@ void Tensor::allocate() {
 
     if (device_ == Device::CPU) {
         // Use aligned allocation for SIMD
-        data_ = aligned_alloc(64, (bytes + 63) & ~63);
+        data_ = nt_aligned_alloc(64, (bytes + 63) & ~63);
         NT_CHECK(data_ != nullptr, "CPU allocation failed");
     } else {
         data_ = nt_cuda_malloc(bytes);
@@ -299,7 +299,7 @@ void Tensor::allocate() {
     Device dev = device_;
     data_owner_ = std::shared_ptr<void>(raw, [dev](void* p) {
         if (dev == Device::CPU) {
-            ::free(p);
+            nt_aligned_free(p);
         } else {
             nt_cuda_free(p);
         }
@@ -310,7 +310,7 @@ void Tensor::allocate() {
 void Tensor::free() {
     if (owns_data_ && data_ && !data_owner_) {
         if (device_ == Device::CPU) {
-            ::free(data_);
+            nt_aligned_free(data_);
         } else {
             nt_cuda_free(data_);
         }
