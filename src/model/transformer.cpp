@@ -496,31 +496,58 @@ float* Transformer::forward_streaming(const int* tokens, int seq_len, int start_
     }
     nt_cuda_memcpy_h2d(positions_gpu_.data(), positions.data(), seq_len * sizeof(int));
 
-    // 3. Double-buffer pipeline through all layers
+    // 3. Pipelined double-buffer through all layers
+    //
+    // Three-stage pipeline overlapping on different hardware:
+    //   Worker thread:  CPU memcpy from mmap to staging[slot]
+    //   DMA engine:     async H2D from staging[slot] to gpu[slot]
+    //   GPU SMs:        compute layer using gpu[slot]
+    //
+    // Schedule:
+    //   Worker:  [memcpy L0→stg0][memcpy L1→stg1][memcpy L2→stg0]...
+    //   H2D:    [               ][stg0→gpu0     ][stg1→gpu1     ]...
+    //   Compute:[               ][               ][layer 0       ]...
+
     int n_kv = config_.n_kv_heads;
     int hd = config_.head_dim;
     int max_seq = config_.max_seq_len;
     size_t kv_layer_stride = max_seq * n_kv * hd;
 
-    // Kick off transfer of layer 0 into slot 0
-    streamer_.begin_transfer(0, 0);
+    // Pre-fill: kick worker to fill staging[0] with layer 0
+    streamer_.prefetch_staging(0, 0);
+
+    // Wait for staging ready, then queue H2D for layer 0
+    streamer_.begin_h2d(0, 0);
+
+    // Start worker on layer 1 immediately (overlaps with H2D of layer 0)
+    if (n_layers > 1) {
+        streamer_.prefetch_staging(1, 1);
+    }
 
     for (int i = 0; i < n_layers; i++) {
         int slot = i % 2;
         int next_slot = 1 - slot;
 
-        // Start prefetching next layer while we wait + compute current layer
-        if (i + 1 < n_layers) {
-            streamer_.begin_transfer(i + 1, next_slot);
-        }
-
-        // Wait for current layer's transfer to complete
+        // Wait for current layer's H2D to complete
         streamer_.wait_transfer(slot);
 
-        // Get weight pointers from GPU buffer
+        // Issue H2D for layer i+1 (staging should be ready or nearly ready)
+        if (i + 1 < n_layers) {
+            streamer_.begin_h2d(i + 1, next_slot);
+        }
+
+        // Kick worker to prefetch layer i+2 into staging[slot]
+        // (staging[slot] is now free — its H2D read from staging is done
+        //  because we waited on wait_transfer(slot) above, which means
+        //  the DMA engine has finished reading from staging[slot])
+        if (i + 2 < n_layers) {
+            streamer_.prefetch_staging(i + 2, slot);
+        }
+
+        // === Compute layer i (overlaps with H2D for i+1 and memcpy for i+2) ===
+
         LayerWeightPtrs wp = streamer_.get_weights(slot);
 
-        // Set weights on attention and FFN (non-owning views into GPU buffer)
         TransformerLayer& layer = layers_[i];
         layer.attention.set_weights(
             wp.attn_q, wp.attn_k, wp.attn_v, wp.attn_output,
@@ -528,8 +555,6 @@ float* Transformer::forward_streaming(const int* tokens, int seq_len, int start_
         layer.ffn.set_weights(
             wp.ffn_gate, wp.ffn_up, wp.ffn_down,
             wp.ffn_gate_dtype, wp.ffn_up_dtype, wp.ffn_down_dtype);
-
-        // Norm weights are already preloaded in GPU norm buffer (set during load_streaming)
 
         int n = seq_len * hidden;
 
@@ -552,7 +577,7 @@ float* Transformer::forward_streaming(const int* tokens, int seq_len, int start_
         layer.ffn.forward(residual, residual, seq_len, stream);
         cuda::launch_add_inplace(hidden_state, residual, n, stream);
 
-        // Signal that compute on this slot is done (safe to overwrite buffer)
+        // Signal that compute on this slot is done (safe to overwrite GPU buffer)
         streamer_.signal_compute_done(slot);
     }
 

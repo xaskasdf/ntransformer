@@ -103,15 +103,25 @@ void LayerStreamer::init(const GGUFLoader& loader, const ModelConfig& config) {
             data_size / (1024.0 * 1024.0 * 1024.0));
     } else {
         mmap_pinned_ = false;
-        fprintf(stderr, "LayerStreamer: cudaHostRegister failed (%s), using pinned staging buffer\n",
+        fprintf(stderr, "LayerStreamer: cudaHostRegister failed (%s), using double pinned staging buffers\n",
             cudaGetErrorString(pin_err));
 
-        // Allocate a pinned staging buffer for the largest layer
-        pinned_size_ = buf_size_;
-        cudaError_t err = cudaMallocHost(&pinned_staging_, pinned_size_);
-        NT_CHECK(err == cudaSuccess, "Failed to allocate pinned staging buffer");
-        fprintf(stderr, "LayerStreamer: pinned staging buffer: %.1f MB\n",
-            pinned_size_ / (1024.0 * 1024.0));
+        // Allocate TWO pinned staging buffers for pipelined overlap
+        staging_size_ = buf_size_;
+        for (int s = 0; s < 2; s++) {
+            cudaError_t err = cudaMallocHost(&staging_buf_[s], staging_size_);
+            NT_CHECK(err == cudaSuccess, "Failed to allocate pinned staging buffer");
+        }
+        fprintf(stderr, "LayerStreamer: double pinned staging: %.1f MB x 2 = %.1f MB\n",
+            staging_size_ / (1024.0 * 1024.0), 2.0 * staging_size_ / (1024.0 * 1024.0));
+
+        // Start worker thread for background CPU memcpy
+        worker_shutdown_ = false;
+        worker_has_work_ = false;
+        staging_ready_[0] = false;
+        staging_ready_[1] = false;
+        worker_thread_ = std::thread(&LayerStreamer::worker_loop, this);
+        fprintf(stderr, "LayerStreamer: worker thread started\n");
     }
 
     // Record initial compute_done events so the first begin_transfer doesn't deadlock
@@ -127,6 +137,16 @@ void LayerStreamer::init(const GGUFLoader& loader, const ModelConfig& config) {
 // Shutdown: free everything
 // ============================================================
 void LayerStreamer::shutdown() {
+    // Shut down worker thread first
+    if (worker_thread_.joinable()) {
+        {
+            std::lock_guard<std::mutex> lock(worker_mutex_);
+            worker_shutdown_ = true;
+        }
+        worker_cv_.notify_one();
+        worker_thread_.join();
+    }
+
     for (int s = 0; s < 2; s++) {
         if (gpu_buf_[s]) { cudaFree(gpu_buf_[s]); gpu_buf_[s] = nullptr; }
         if (transfer_done_[s]) {
@@ -139,14 +159,15 @@ void LayerStreamer::shutdown() {
         }
     }
 
-    if (mmap_pinned_) {
-        mmap_pinned_ = false;
-    }
+    mmap_pinned_ = false;
 
-    if (pinned_staging_) {
-        cudaFreeHost(pinned_staging_);
-        pinned_staging_ = nullptr;
+    for (int s = 0; s < 2; s++) {
+        if (staging_buf_[s]) {
+            cudaFreeHost(staging_buf_[s]);
+            staging_buf_[s] = nullptr;
+        }
     }
+    staging_size_ = 0;
 
     layers_.clear();
     buf_size_ = 0;
@@ -156,57 +177,10 @@ void LayerStreamer::shutdown() {
 // Begin async transfer of layer_idx into GPU buffer slot
 // ============================================================
 void LayerStreamer::begin_transfer(int layer_idx, int slot) {
-    NT_CHECK(layer_idx >= 0 && layer_idx < (int)layers_.size(), "Layer index out of range");
-    NT_CHECK(slot == 0 || slot == 1, "Slot must be 0 or 1");
-
-    current_layer_[slot] = layer_idx;
-
-    auto& dev = CUDADevice::instance();
-    StreamType xfer_stream = (slot == 0) ? STREAM_TRANSFER0 : STREAM_TRANSFER1;
-
-    // Wait until compute on this slot is done (safe to overwrite)
-    dev.wait_event(xfer_stream, compute_done_[slot]);
-
-    const LayerLayout& lay = layers_[layer_idx];
-    uint8_t* gpu_base = static_cast<uint8_t*>(gpu_buf_[slot]);
-
-    const TensorSlot* slots[] = {
-        &lay.attn_q, &lay.attn_k, &lay.attn_v, &lay.attn_output,
-        &lay.ffn_gate, &lay.ffn_up, &lay.ffn_down
-    };
-
-    if (mmap_pinned_) {
-        // Direct async copy from pinned mmap to GPU
-        for (int t = 0; t < 7; t++) {
-            dev.memcpy_h2d_async(
-                gpu_base + slots[t]->gpu_offset,
-                slots[t]->cpu_ptr,
-                slots[t]->nbytes,
-                xfer_stream
-            );
-        }
-    } else {
-        // CPU memcpy from mmap to pinned staging, then async to GPU
-        uint8_t* staging = static_cast<uint8_t*>(pinned_staging_);
-
-        for (int t = 0; t < 7; t++) {
-            memcpy(staging + slots[t]->gpu_offset,
-                   slots[t]->cpu_ptr,
-                   slots[t]->nbytes);
-        }
-
-        // Single large async transfer from pinned staging to GPU
-        size_t total = 0;
-        for (int t = 0; t < 7; t++) {
-            size_t end = slots[t]->gpu_offset + slots[t]->nbytes;
-            if (end > total) total = end;
-        }
-
-        dev.memcpy_h2d_async(gpu_base, staging, total, xfer_stream);
-    }
-
-    // Record that transfer is done
-    dev.record_event(transfer_done_[slot], xfer_stream);
+    // Legacy API: synchronous staging + H2D. Use prefetch_staging + begin_h2d
+    // for the pipelined path.
+    prefetch_staging(layer_idx, slot);
+    begin_h2d(layer_idx, slot);
 }
 
 // ============================================================
@@ -253,6 +227,129 @@ LayerWeightPtrs LayerStreamer::get_weights(int slot) const {
     wp.ffn_down_dtype = lay.ffn_down.dtype;
 
     return wp;
+}
+
+// ============================================================
+// Helper: compute total contiguous transfer size for a layer
+// ============================================================
+size_t LayerStreamer::layer_transfer_size(int layer_idx) const {
+    const LayerLayout& lay = layers_[layer_idx];
+    const TensorSlot* slots[] = {
+        &lay.attn_q, &lay.attn_k, &lay.attn_v, &lay.attn_output,
+        &lay.ffn_gate, &lay.ffn_up, &lay.ffn_down
+    };
+    size_t total = 0;
+    for (int t = 0; t < 7; t++) {
+        size_t end = slots[t]->gpu_offset + slots[t]->nbytes;
+        if (end > total) total = end;
+    }
+    return total;
+}
+
+// ============================================================
+// Worker thread: background CPU memcpy from mmap to staging
+// ============================================================
+void LayerStreamer::worker_loop() {
+    while (true) {
+        int layer_idx, slot;
+        {
+            std::unique_lock<std::mutex> lock(worker_mutex_);
+            worker_cv_.wait(lock, [&] { return worker_has_work_ || worker_shutdown_; });
+            if (worker_shutdown_) return;
+            layer_idx = worker_request_.layer_idx;
+            slot = worker_request_.slot;
+            worker_has_work_ = false;
+        }
+
+        memcpy_layer_to_staging(layer_idx, slot);
+
+        {
+            std::lock_guard<std::mutex> lock(worker_mutex_);
+            staging_ready_[slot] = true;
+        }
+        staging_ready_cv_.notify_all();
+    }
+}
+
+// ============================================================
+// Copy all 7 tensors from mmap to staging buffer[slot]
+// ============================================================
+void LayerStreamer::memcpy_layer_to_staging(int layer_idx, int slot) {
+    const LayerLayout& lay = layers_[layer_idx];
+    uint8_t* staging = static_cast<uint8_t*>(staging_buf_[slot]);
+
+    const TensorSlot* slots[] = {
+        &lay.attn_q, &lay.attn_k, &lay.attn_v, &lay.attn_output,
+        &lay.ffn_gate, &lay.ffn_up, &lay.ffn_down
+    };
+
+    for (int t = 0; t < 7; t++) {
+        memcpy(staging + slots[t]->gpu_offset,
+               slots[t]->cpu_ptr,
+               slots[t]->nbytes);
+    }
+}
+
+// ============================================================
+// Queue background CPU memcpy (non-blocking)
+// ============================================================
+void LayerStreamer::prefetch_staging(int layer_idx, int slot) {
+    if (mmap_pinned_) return;  // No staging needed — direct DMA path
+
+    {
+        std::lock_guard<std::mutex> lock(worker_mutex_);
+        staging_ready_[slot] = false;
+        worker_request_ = {layer_idx, slot};
+        worker_has_work_ = true;
+    }
+    worker_cv_.notify_one();
+}
+
+// ============================================================
+// Wait for staging[slot] ready, then issue async H2D
+// ============================================================
+void LayerStreamer::begin_h2d(int layer_idx, int slot) {
+    NT_CHECK(layer_idx >= 0 && layer_idx < (int)layers_.size(), "Layer index out of range");
+    NT_CHECK(slot == 0 || slot == 1, "Slot must be 0 or 1");
+
+    current_layer_[slot] = layer_idx;
+
+    auto& dev = CUDADevice::instance();
+    StreamType xfer = (slot == 0) ? STREAM_TRANSFER0 : STREAM_TRANSFER1;
+
+    // Wait until compute on this slot is done (safe to overwrite GPU buffer)
+    dev.wait_event(xfer, compute_done_[slot]);
+
+    uint8_t* gpu_base = static_cast<uint8_t*>(gpu_buf_[slot]);
+
+    if (mmap_pinned_) {
+        // Direct async copy from pinned mmap to GPU
+        const LayerLayout& lay = layers_[layer_idx];
+        const TensorSlot* slots[] = {
+            &lay.attn_q, &lay.attn_k, &lay.attn_v, &lay.attn_output,
+            &lay.ffn_gate, &lay.ffn_up, &lay.ffn_down
+        };
+        for (int t = 0; t < 7; t++) {
+            dev.memcpy_h2d_async(
+                gpu_base + slots[t]->gpu_offset,
+                slots[t]->cpu_ptr,
+                slots[t]->nbytes,
+                xfer
+            );
+        }
+    } else {
+        // Wait for worker thread to finish filling staging[slot]
+        {
+            std::unique_lock<std::mutex> lock(worker_mutex_);
+            staging_ready_cv_.wait(lock, [&] { return staging_ready_[slot]; });
+        }
+
+        // Single large async H2D from pinned staging to GPU
+        size_t total = layer_transfer_size(layer_idx);
+        dev.memcpy_h2d_async(gpu_base, staging_buf_[slot], total, xfer);
+    }
+
+    dev.record_event(transfer_done_[slot], xfer);
 }
 
 } // namespace nt

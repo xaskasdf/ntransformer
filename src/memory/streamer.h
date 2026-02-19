@@ -5,6 +5,10 @@
 #include "../model/loader.h"
 #include <vector>
 #include <string>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+#include <atomic>
 
 namespace nt {
 
@@ -48,6 +52,13 @@ public:
     // Uses STREAM_TRANSFER0 for slot 0, STREAM_TRANSFER1 for slot 1
     void begin_transfer(int layer_idx, int slot);
 
+    // Queue a background CPU memcpy from mmap to staging[slot] (non-blocking)
+    // No-op if mmap is pinned (direct DMA path).
+    void prefetch_staging(int layer_idx, int slot);
+
+    // Wait for staging[slot] to be filled, then issue async H2D to gpu[slot]
+    void begin_h2d(int layer_idx, int slot);
+
     // Make compute stream wait until transfer into slot is done
     void wait_transfer(int slot);
 
@@ -86,8 +97,28 @@ private:
 
     // Pinned memory strategy
     bool mmap_pinned_ = false;       // true if cudaHostRegister succeeded
-    void* pinned_staging_ = nullptr; // fallback pinned buffer if register fails
-    size_t pinned_size_ = 0;
+
+    // Double staging buffers (used when mmap is NOT pinned)
+    void* staging_buf_[2] = {};      // two pinned staging buffers
+    size_t staging_size_ = 0;
+
+    // Worker thread for background CPU memcpy (mmap → staging)
+    std::thread worker_thread_;
+    std::mutex  worker_mutex_;
+    std::condition_variable worker_cv_;
+    std::condition_variable staging_ready_cv_;
+    bool staging_ready_[2] = {};     // staging[slot] has been filled
+    bool worker_shutdown_ = false;
+
+    struct WorkerRequest { int layer_idx; int slot; };
+    WorkerRequest worker_request_ = {};
+    bool worker_has_work_ = false;
+
+    void worker_loop();              // worker thread entry point
+    void memcpy_layer_to_staging(int layer_idx, int slot);
+
+    // Helper: compute total transfer size for a layer
+    size_t layer_transfer_size(int layer_idx) const;
 
     // Helper to compute byte size of a weight tensor
     static size_t tensor_bytes(const GGUFTensorInfo& info);
