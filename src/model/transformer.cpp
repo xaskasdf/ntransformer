@@ -254,6 +254,32 @@ void Transformer::allocate_buffers() {
         CUDADevice::instance().free_vram() / (1024.0 * 1024 * 1024));
 }
 
+// Convert FP16 (stored as uint16_t) to float, handling subnormals correctly
+static float fp16_to_fp32(uint16_t h) {
+    uint32_t sign = (h >> 15) & 1;
+    int32_t  exp  = (h >> 10) & 0x1F;
+    uint32_t mant = h & 0x3FF;
+    uint32_t f;
+    if (exp == 0) {
+        if (mant == 0) {
+            f = sign << 31;  // ±zero
+        } else {
+            // Subnormal FP16 → normalize for FP32
+            exp = 1;
+            while (!(mant & 0x400)) { mant <<= 1; exp--; }
+            mant &= 0x3FF;
+            f = (sign << 31) | ((uint32_t)(exp + 127 - 15) << 23) | (mant << 13);
+        }
+    } else if (exp == 31) {
+        f = (sign << 31) | 0x7F800000 | (mant << 13);  // inf/nan
+    } else {
+        f = (sign << 31) | ((uint32_t)(exp + 127 - 15) << 23) | (mant << 13);
+    }
+    float result;
+    memcpy(&result, &f, 4);
+    return result;
+}
+
 void Transformer::embed_tokens(const int* tokens, int seq_len, float* output, void* stream) {
     // Simple embedding lookup
     // For quantized embeddings we'd need a dequant kernel; for F16 a conversion kernel
@@ -280,28 +306,7 @@ void Transformer::embed_tokens(const int* tokens, int seq_len, float* output, vo
             const uint16_t* row = emb + tokens[t] * hidden;
             float* out = cpu_buf.data() + t * hidden;
             for (int d = 0; d < hidden; d++) {
-                // FP16 to FP32 conversion (handles subnormals correctly)
-                uint16_t h = row[d];
-                uint32_t sign = (h >> 15) & 1;
-                int32_t  exp  = (h >> 10) & 0x1F;
-                uint32_t mant = h & 0x3FF;
-                uint32_t f;
-                if (exp == 0) {
-                    if (mant == 0) {
-                        f = sign << 31;  // +/- zero
-                    } else {
-                        // Subnormal FP16 -> normalize for FP32
-                        exp = 1;
-                        while (!(mant & 0x400)) { mant <<= 1; exp--; }
-                        mant &= 0x3FF;
-                        f = (sign << 31) | ((uint32_t)(exp + 127 - 15) << 23) | (mant << 13);
-                    }
-                } else if (exp == 31) {
-                    f = (sign << 31) | 0x7F800000 | (mant << 13);  // inf/nan
-                } else {
-                    f = (sign << 31) | ((uint32_t)(exp + 127 - 15) << 23) | (mant << 13);
-                }
-                memcpy(&out[d], &f, 4);
+                out[d] = fp16_to_fp32(row[d]);
             }
         }
         nt_cuda_memcpy_h2d(output, cpu_buf.data(), seq_len * hidden * sizeof(float));
@@ -318,21 +323,7 @@ void Transformer::embed_tokens(const int* tokens, int seq_len, float* output, vo
 
             for (int b = 0; b < blocks_per_row; b++) {
                 const BlockQ8_0* block = reinterpret_cast<const BlockQ8_0*>(row_ptr + b * sizeof(BlockQ8_0));
-                // Decode FP16 scale on CPU
-                uint16_t h = block->d;
-                uint32_t sign = (h >> 15) & 1;
-                int32_t  exp  = (h >> 10) & 0x1F;
-                uint32_t mant = h & 0x3FF;
-                uint32_t f;
-                if (exp == 0) {
-                    f = (mant == 0) ? (sign << 31) : 0;  // zero or subnormal (rare for scales)
-                } else if (exp == 31) {
-                    f = (sign << 31) | 0x7F800000 | (mant << 13);
-                } else {
-                    f = (sign << 31) | ((uint32_t)(exp + 127 - 15) << 23) | (mant << 13);
-                }
-                float d;
-                memcpy(&d, &f, 4);
+                float d = fp16_to_fp32(block->d);
 
                 int base = b * 32;
                 for (int j = 0; j < 32; j++) {
@@ -354,20 +345,7 @@ void Transformer::embed_tokens(const int* tokens, int seq_len, float* output, vo
 
             for (int b = 0; b < blocks_per_row; b++) {
                 const BlockQ4_0* block = reinterpret_cast<const BlockQ4_0*>(row_ptr + b * sizeof(BlockQ4_0));
-                uint16_t h = block->d;
-                uint32_t sign = (h >> 15) & 1;
-                int32_t  exp  = (h >> 10) & 0x1F;
-                uint32_t mant = h & 0x3FF;
-                uint32_t f;
-                if (exp == 0) {
-                    f = (mant == 0) ? (sign << 31) : 0;
-                } else if (exp == 31) {
-                    f = (sign << 31) | 0x7F800000 | (mant << 13);
-                } else {
-                    f = (sign << 31) | ((uint32_t)(exp + 127 - 15) << 23) | (mant << 13);
-                }
-                float d;
-                memcpy(&d, &f, 4);
+                float d = fp16_to_fp32(block->d);
 
                 int base = b * 32;
                 for (int j = 0; j < 16; j++) {
@@ -376,6 +354,47 @@ void Transformer::embed_tokens(const int* tokens, int seq_len, float* output, vo
                     int8_t hi = (byte >> 4) - 8;
                     out[base + j]      = d * lo;
                     out[base + j + 16] = d * hi;
+                }
+            }
+        }
+        nt_cuda_memcpy_h2d(output, cpu_buf.data(), seq_len * hidden * sizeof(float));
+    } else if (emb_dtype == DType::Q6_K) {
+        // Q6_K embedding: 256 weights per block (GGML interleaved layout)
+        // ql[128] (lower 4 bits), qh[64] (upper 2 bits), scales[16] (int8), d (FP16)
+        // Processed in two 128-weight halves with pointer advancement
+        const uint8_t* raw = static_cast<const uint8_t*>(emb_data);
+        int blocks_per_row = hidden / 256;
+        size_t row_bytes = (size_t)blocks_per_row * sizeof(BlockQ6_K);
+
+        std::vector<float> cpu_buf(seq_len * hidden);
+        for (int t = 0; t < seq_len; t++) {
+            const uint8_t* row_ptr = raw + (size_t)tokens[t] * row_bytes;
+            float* out = cpu_buf.data() + t * hidden;
+
+            for (int b = 0; b < blocks_per_row; b++) {
+                const BlockQ6_K* block = reinterpret_cast<const BlockQ6_K*>(row_ptr + b * sizeof(BlockQ6_K));
+
+                float d = fp16_to_fp32(block->d);
+
+                float* y = out + b * 256;
+                const uint8_t* ql = block->ql;
+                const uint8_t* qh = block->qh;
+                const int8_t*  sc = block->scales;
+
+                // Process two 128-weight halves (GGML interleaved layout)
+                for (int half = 0; half < 2; half++) {
+                    for (int l = 0; l < 32; l++) {
+                        int is = l / 16;
+                        int q1 = (int)((ql[l]      & 0xF) | (((qh[l] >> 0) & 3) << 4)) - 32;
+                        int q2 = (int)((ql[l + 32]  & 0xF) | (((qh[l] >> 2) & 3) << 4)) - 32;
+                        int q3 = (int)((ql[l]       >> 4)  | (((qh[l] >> 4) & 3) << 4)) - 32;
+                        int q4 = (int)((ql[l + 32]  >> 4)  | (((qh[l] >> 6) & 3) << 4)) - 32;
+                        y[l]      = d * (float)sc[is + 0] * q1;
+                        y[l + 32] = d * (float)sc[is + 2] * q2;
+                        y[l + 64] = d * (float)sc[is + 4] * q3;
+                        y[l + 96] = d * (float)sc[is + 6] * q4;
+                    }
+                    y += 128; ql += 64; qh += 32; sc += 8;
                 }
             }
         }
