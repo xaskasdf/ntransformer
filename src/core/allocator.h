@@ -3,6 +3,7 @@
 #include "types.h"
 #include <vector>
 #include <unordered_map>
+#include <memory>
 #include <mutex>
 
 namespace nt {

@@ -245,3 +245,31 @@ Remaining gap is from non-GEMV overhead (attention, norms, kernel launches) and 
 | Prefill tok/s | 500+ | 20-40 | 25-50 | 40-80 |
 | Quality (PPL) | Baseline | Baseline | +0.05-0.1 | +0.1-0.2 |
 | Max Context | 4K | 4K | 16K+ | 16K+ |
+
+---
+
+## Port: Windows/CUDA 12.4 → Linux/CUDA 13.1 (2026-02-19)
+
+Ported the entire codebase from Windows (MSVC 2022 / CUDA 12.4) to Linux (gcc-14 / CUDA 13.1).
+This is a prerequisite for gpu-nvme-direct integration, which requires Linux (VFIO, /proc/self/pagemap).
+
+### Changes Made
+
+| File | Change |
+|------|--------|
+| `CMakeLists.txt` | Removed MSVC branch, CUDA C++17→C++20, auto-detect gcc-14 as CUDA host compiler, `-Xcompiler=-march=native` |
+| `src/core/types.h` | Removed `_MSC_VER` ifdefs, `_aligned_malloc`/`_aligned_free` branches |
+| `src/core/allocator.h` | Added `#include <memory>` (MSVC included it transitively, gcc does not) |
+| `src/model/loader.h` | Removed Windows HANDLE members, added `tensor_file_offset()` and `file_data_offset()` for NVMe integration |
+| `src/model/loader.cpp` | Removed ~65 lines of Windows API code (CreateFile, MapViewOfFile, etc.), kept only POSIX mmap path |
+
+### Build Verified
+- **Toolchain:** nvcc 13.1.115 + g++-14.3.0 + C++20 + SM 86
+- **Tests:** 7/7 tensor, 6/6 kernel — all passing
+- **Binary:** ntransformer runs, help output verified
+
+### Notes
+- gcc-15 is incompatible with CUDA 13.1; CMake auto-detects gcc-14
+- CUDA 13.1 supports C++20 for device code (was C++17 with nvcc 12.4)
+- `#include <memory>` is not transitive via MSVC headers but required explicitly by gcc
+- `tensor_file_offset()` / `file_data_offset()` added to GGUFLoader for NVMe LBA calculation (Phase 2.5 prep)

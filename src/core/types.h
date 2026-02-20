@@ -7,9 +7,6 @@
 #include <cstdio>
 #include <cstdlib>
 
-#ifdef _MSC_VER
-#include <malloc.h>
-#endif
 
 // FP16 type alias - use CUDA's half when compiling with nvcc
 #ifdef __CUDACC__
@@ -218,19 +215,11 @@ inline DType ggml_to_dtype(GGMLType t) {
 // Cross-platform aligned memory allocation
 // ============================================================
 inline void* nt_aligned_alloc(size_t alignment, size_t size) {
-#ifdef _MSC_VER
-    return _aligned_malloc(size, alignment);
-#else
     return aligned_alloc(alignment, size);
-#endif
 }
 
 inline void nt_aligned_free(void* ptr) {
-#ifdef _MSC_VER
-    _aligned_free(ptr);
-#else
     ::free(ptr);
-#endif
 }
 
 } // namespace nt

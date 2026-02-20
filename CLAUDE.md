@@ -4,29 +4,34 @@
 High-efficiency C++/CUDA LLM inference engine. Goal: run Llama 70B at Q8-equivalent quality on a single RTX 3090 (24GB VRAM) by combining 6 memory-optimization techniques.
 
 ## Current State
-**Phase 2 (SLEP) - COMPLETE. Ready for Phase 3.**
+**Phase 2 (SLEP) - COMPLETE. Ported to Linux/CUDA 13.1. Ready for gpu-nvme-direct integration.**
 - Phase 1 fully working: Llama 3.1 8B Q8_0 at 38.8 tok/s decode (resident), 0.9 tok/s (streaming)
 - Phase 2 SLEP streaming: pipelined layer streaming via PCIe with worker thread
 - Q6_K quantization support: 70B Llama running on single RTX 3090 (4.2 GB VRAM)
 - `--streaming` CLI flag enables SLEP mode
-- All unit tests passing (7/7 tensor, 4/4 kernel)
+- All unit tests passing (7/7 tensor, 6/6 kernel)
 - 8B streaming verified: bit-identical output vs resident mode
 - 70B Q6_K streaming: working, ~0.02 tok/s (pre-optimization, staging fallback)
 - Worker thread pipeline implemented: overlaps CPU memcpy, H2D DMA, and GPU compute
+- **Ported from Windows/MSVC/CUDA 12.4 to Linux/gcc-14/CUDA 13.1 (C++20 unified)**
+- gpu-nvme-direct integration spec complete (`GPU_NVME_DIRECT_INTEGRATION.md`)
 
 ## Development Setup
-- **Platform:** Windows (MSYS2/MINGW64), MSVC 2022 (14.42), CUDA 12.4
+- **Platform:** Linux (Ubuntu, kernel 6.17+)
+- **Compiler:** gcc-14 / g++-14 (gcc-15 is incompatible with CUDA 13.1)
+- **CUDA:** Toolkit 13.1, C++20 for both host and device code
 - **GPU:** RTX 3090 24GB, Compute 8.6
-- **Build requirements:** CMake 3.24+, CUDA Toolkit 12.x, C++17 (CUDA) / C++20 (host)
+- **Build requirements:** CMake 3.24+, CUDA Toolkit 13.1, C++20, gcc-14
 - **No external dependencies** beyond CUDA Toolkit (no PyTorch, no cuBLAS)
-- **Test models:**
-  - 8B: `D:/AI/models/xasko/llama-3/llama-3.1-8b-instruct-q8_0.gguf`
-  - 70B: `D:/AI/models/xasko/llama-3/llama-3.1-70b-instruct-q6_k.gguf`
+- **Test models:** Configure paths via `-m` flag
 
 ### Build Commands
 ```bash
 mkdir build && cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release
+cmake .. -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_C_COMPILER=gcc-14 \
+  -DCMAKE_CXX_COMPILER=g++-14 \
+  -DCMAKE_CUDA_COMPILER=/usr/local/cuda-13.1/bin/nvcc
 cmake --build . --config Release -j
 # Tests
 ./Release/test_tensor
@@ -201,7 +206,7 @@ CUDA target SMs  = 80, 86, 89, 90
 - **output_weight_ on CPU** — was passing mmap'd CPU pointer to CUDA kernel; now copied to GPU
 - **Windows mmap** — ported POSIX mmap to `CreateFileMapping`/`MapViewOfFile`
 - **aligned_alloc** — MSVC uses `_aligned_malloc`/`_aligned_free`
-- **CUDA C++20** — nvcc 12.4 + MSVC 14.42 crashes with C++20; using C++17 for CUDA
+- **CUDA C++20** — nvcc 12.4 + MSVC 14.42 crashed with C++20; resolved with CUDA 13.1 + gcc-14
 - **Context size OOM** — Llama 3.1 has 131K context; cap with `--ctx-size`
 - **Tokenizer encoding** — Llama 3 uses GPT-2 byte BPE (Ġ), not SentencePiece (▁)
 

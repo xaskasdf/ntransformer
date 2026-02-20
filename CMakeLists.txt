@@ -7,25 +7,17 @@ project(ntransformer LANGUAGES CXX CUDA)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-# nvcc C++20 support is limited and causes cudafe++ crashes with newer MSVC;
-# use C++17 for device code (kernels don't need C++20 features)
-set(CMAKE_CUDA_STANDARD 17)
+# CUDA 13.1 supports C++20 with gcc-14
+set(CMAKE_CUDA_STANDARD 20)
 set(CMAKE_CUDA_STANDARD_REQUIRED ON)
 
 # CUDA architecture - target SM 86 (RTX 3090) and above
 # Also include SM 80 (A100) for compatibility
 set(CMAKE_CUDA_ARCHITECTURES "80;86;89;90")
 
-# Optimization flags (platform-dependent)
-if(MSVC)
-    set(CMAKE_CXX_FLAGS_RELEASE "/O2 /DNDEBUG /arch:AVX2 /EHsc")
-    set(CMAKE_CUDA_FLAGS_RELEASE "-O3 -DNDEBUG --use_fast_math -Xcompiler=/EHsc")
-    # Suppress some common MSVC warnings in CUDA host code
-    add_compile_options($<$<COMPILE_LANGUAGE:CXX>:/W3>)
-else()
-    set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG -march=native")
-    set(CMAKE_CUDA_FLAGS_RELEASE "-O3 -DNDEBUG --use_fast_math")
-endif()
+# Optimization flags (Linux/gcc-14)
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG -march=native")
+set(CMAKE_CUDA_FLAGS_RELEASE "-O3 -DNDEBUG --use_fast_math -Xcompiler=-march=native")
 
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
@@ -34,6 +26,14 @@ endif()
 # ============================================================
 # CUDA Toolkit
 # ============================================================
+# Force gcc-14 as CUDA host compiler (gcc-15 is incompatible with CUDA 13.1)
+if(NOT CMAKE_CUDA_HOST_COMPILER)
+    find_program(GCC14 gcc-14)
+    if(GCC14)
+        set(CMAKE_CUDA_HOST_COMPILER ${GCC14})
+    endif()
+endif()
+
 find_package(CUDAToolkit REQUIRED)
 
 # ============================================================

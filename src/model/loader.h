@@ -71,16 +71,19 @@ public:
     size_t data_offset() const { return data_offset_; }
     const void* mmap_base_ptr() const { return mmap_ptr_; }
 
+    // NVMe direct support: absolute file offsets for LBA calculation
+    uint64_t tensor_file_offset(const std::string& name) const {
+        auto it = tensor_map_.find(name);
+        if (it == tensor_map_.end()) return 0;
+        return data_offset_ + tensors_[it->second].offset;
+    }
+    uint64_t file_data_offset() const { return data_offset_; }
+
     void print_info() const;
 
 private:
     std::string path_;
-#ifdef _WIN32
-    void* file_handle_ = nullptr;   // HANDLE (INVALID_HANDLE_VALUE)
-    void* mapping_handle_ = nullptr; // HANDLE
-#else
     int fd_ = -1;
-#endif
     void* mmap_ptr_ = nullptr;
     size_t file_size_ = 0;
     size_t data_offset_ = 0;  // byte offset where tensor data begins

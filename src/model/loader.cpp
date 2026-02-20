@@ -4,82 +4,31 @@
 #include <cinttypes>
 #include <algorithm>
 
-#ifdef _WIN32
-#define WIN32_LEAN_AND_MEAN
-#define NOMINMAX
-#include <windows.h>
-#else
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
-#endif
 
 namespace nt {
 
 GGUFLoader::~GGUFLoader() {
-#ifdef _WIN32
-    if (mmap_ptr_) {
-        UnmapViewOfFile(mmap_ptr_);
-    }
-    if (mapping_handle_) {
-        CloseHandle(mapping_handle_);
-    }
-    if (file_handle_ && file_handle_ != INVALID_HANDLE_VALUE) {
-        CloseHandle(file_handle_);
-    }
-#else
     if (mmap_ptr_ && mmap_ptr_ != MAP_FAILED) {
         munmap(mmap_ptr_, file_size_);
     }
     if (fd_ >= 0) {
         close(fd_);
     }
-#endif
 }
 
 bool GGUFLoader::load(const std::string& path) {
     path_ = path;
 
-#ifdef _WIN32
-    // Open file
-    file_handle_ = CreateFileA(path.c_str(), GENERIC_READ, FILE_SHARE_READ,
-                               nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
-    if (file_handle_ == INVALID_HANDLE_VALUE) {
-        fprintf(stderr, "Failed to open %s (error %lu)\n", path.c_str(), GetLastError());
-        return false;
-    }
-
-    // Get file size
-    LARGE_INTEGER li;
-    if (!GetFileSizeEx(file_handle_, &li)) {
-        fprintf(stderr, "Failed to get size of %s\n", path.c_str());
-        return false;
-    }
-    file_size_ = static_cast<size_t>(li.QuadPart);
-
-    // Create file mapping
-    mapping_handle_ = CreateFileMappingA(file_handle_, nullptr, PAGE_READONLY, 0, 0, nullptr);
-    if (!mapping_handle_) {
-        fprintf(stderr, "Failed to create file mapping for %s (error %lu)\n", path.c_str(), GetLastError());
-        return false;
-    }
-
-    // Map view of file
-    mmap_ptr_ = MapViewOfFile(mapping_handle_, FILE_MAP_READ, 0, 0, 0);
-    if (!mmap_ptr_) {
-        fprintf(stderr, "Failed to map view of %s (error %lu)\n", path.c_str(), GetLastError());
-        return false;
-    }
-#else
-    // Open file
     fd_ = open(path.c_str(), O_RDONLY);
     if (fd_ < 0) {
         fprintf(stderr, "Failed to open %s\n", path.c_str());
         return false;
     }
 
-    // Get file size
     struct stat st;
     if (fstat(fd_, &st) != 0) {
         fprintf(stderr, "Failed to stat %s\n", path.c_str());
@@ -87,16 +36,13 @@ bool GGUFLoader::load(const std::string& path) {
     }
     file_size_ = st.st_size;
 
-    // mmap the entire file
     mmap_ptr_ = mmap(nullptr, file_size_, PROT_READ, MAP_PRIVATE, fd_, 0);
     if (mmap_ptr_ == MAP_FAILED) {
         fprintf(stderr, "Failed to mmap %s\n", path.c_str());
         return false;
     }
 
-    // Advise kernel for sequential access
     madvise(mmap_ptr_, file_size_, MADV_SEQUENTIAL);
-#endif
 
     // Parse header
     if (!parse_header()) {
