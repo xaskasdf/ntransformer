@@ -7,7 +7,7 @@ el CPU del data path de streaming de layers.
 
 **Proyecto gpu-nvme-direct**: `../gpu-nvme-direct`
 **Estado**: Layer Loader API lista (`gpunvme_layer_loader_init` / `gpunvme_load_layer` / `gpunvme_layer_loader_destroy`).
-GPU lee 669MB (1 layer Q6_K) @ 2.1 GB/s desde NVMe via MMIO doorbells, sin intervención del CPU.
+GPU lee 8.6GB @ 3.35 GB/s desde SN740 (PCIe 4.0) via MMIO doorbells, sin intervención del CPU.
 
 ### Pipeline actual (CPU bottleneck)
 
@@ -41,7 +41,7 @@ PRP building y kernel launch en 3 llamadas:
 gpunvme_layer_loader_t loader;
 
 // Init: abre BAR0, registra CUDA, init controller, crea I/O queue, pre-alloc PRP pool
-gpunvme_layer_loader_init(&loader, "0000:0b:00.0", max_layer_bytes, /*pipeline_depth=*/32);
+gpunvme_layer_loader_init(&loader, "0000:01:00.0", max_layer_bytes, /*pipeline_depth=*/32);
 
 // Load: rebuild PRPs para dest, lanza GPU kernel, sincroniza
 gpunvme_load_layer(&loader, start_lba, size_bytes, dest_pinned);
@@ -52,7 +52,7 @@ gpunvme_layer_loader_destroy(&loader);
 
 **Helpers**:
 - `gpunvme_layer_loader_block_size(&loader)` — block size del NVMe (512)
-- `gpunvme_layer_loader_max_transfer(&loader)` — MDTS en bytes (512K)
+- `gpunvme_layer_loader_max_transfer(&loader)` — MDTS en bytes (1024K SN740, 512K SN530)
 - `gpunvme_layer_loader_ns_blocks(&loader)` — capacidad total del namespace
 
 **Queue state rueda naturalmente** entre llamadas a `gpunvme_load_layer()` — no hay
@@ -70,7 +70,7 @@ reset, los CIDs, sq_tail, cq_head, phase bit continúan desde donde quedaron.
 | Componente | Requerimiento |
 |---|---|
 | GPU | NVIDIA con soporte cudaHostRegisterIoMemory (RTX 3090 probado) |
-| NVMe | Cualquier NVMe en VFIO (WD SN530 PCIe 3.0 x4 probado) |
+| NVMe | Cualquier NVMe en VFIO (WD SN740 PCIe 4.0 x4 probado, SN530 Gen3 también) |
 | CPU | AMD Zen 3 probado (Intel debería funcionar, P2P reads también) |
 | OS | Linux (kernel 6.12+, necesita patch nvidia DKMS para follow_pfn) |
 | IOMMU | OFF (`amd_iommu=off` en GRUB) |
@@ -253,15 +253,16 @@ Los métodos `tensor_file_offset()` y `file_data_offset()` ya están implementad
 ## Setup NVMe (después de cada reboot)
 
 ```bash
-# 1. Bind NVMe a VFIO
+# Un solo comando — carga VFIO, bind, power D0, Memory+BusMaster:
+sudo ./scripts/setup_nvme.sh 0000:01:00.0
+
+# O manualmente:
 sudo modprobe vfio enable_unsafe_noiommu_mode=1
 sudo modprobe vfio-pci
-sudo bash ../gpu-nvme-direct/scripts/setup_vfio.sh 0000:0b:00.0
-
-# 2. Activar NVMe
-sudo sh -c 'echo on > /sys/bus/pci/devices/0000:0b:00.0/power/control'
-sudo setpci -s 0000:0b:00.0 0x84.W=0x0008
-sudo setpci -s 0000:0b:00.0 COMMAND=0x0006
+sudo bash ../gpu-nvme-direct/scripts/setup_vfio.sh 0000:01:00.0
+sudo sh -c 'echo on > /sys/bus/pci/devices/0000:01:00.0/power/control'
+sudo setpci -s 0000:01:00.0 0x84.W=0x0008
+sudo setpci -s 0000:01:00.0 COMMAND=0x0006
 ```
 
 ### Copiar el GGUF al NVMe (una sola vez)
@@ -302,8 +303,8 @@ montado. Se accede como raw block device via VFIO.
 3. **Layer Loader test** pasando:
    ```bash
    cd ~/gpu-nvme-direct/build-hw
-   sudo ./test_layer_loader 0000:0b:00.0       # 4MB, 3/3 tests
-   sudo ./test_layer_loader 0000:0b:00.0 669   # full layer, 3/3 tests
+   sudo ./test_layer_loader 0000:01:00.0       # 4MB, 3/3 tests
+   sudo ./test_layer_loader 0000:01:00.0 669   # full layer, 3/3 tests
    ```
 
 ### Flujo de desarrollo incremental
@@ -318,11 +319,11 @@ tamaño exacto de las layers del modelo objetivo:
 #   Q6_K: ~669 MB por layer (80 layers)
 #   Q8_0: ~875 MB por layer (80 layers)
 cd ~/gpu-nvme-direct/build-hw
-sudo ./test_layer_loader 0000:0b:00.0 669   # Q6_K layer size
-sudo ./test_layer_loader 0000:0b:00.0 875   # Q8_0 layer size
+sudo ./test_layer_loader 0000:01:00.0 669   # Q6_K layer size
+sudo ./test_layer_loader 0000:01:00.0 875   # Q8_0 layer size
 ```
 
-Esperado: 3/3 tests pass, throughput ~2.1 GB/s para 669MB.
+Esperado: 3/3 tests pass, throughput ~3.3 GB/s (SN740) o ~2.1 GB/s (SN530).
 
 #### Paso 2: Standalone integration test
 
@@ -436,7 +437,7 @@ nvcc -std=c++20 -O2 --compiler-bindir=/usr/bin/gcc-14 -arch=sm_86 \
   -lcudart -lstdc++ -lm -o test_nvme_layer
 
 # Correr:
-sudo ./test_nvme_layer /path/to/model.gguf 0000:0b:00.0
+sudo ./test_nvme_layer /path/to/model.gguf 0000:01:00.0
 ```
 
 #### Paso 3: Integrar en LayerStreamer
@@ -460,7 +461,7 @@ cmake .. -DUSE_GPUNVME=ON \
 cmake --build . -j$(nproc)
 
 # Ejecutar benchmark con NVMe backend
-sudo GPUNVME_PCI_BDF=0000:0b:00.0 GPUNVME_GGUF_LBA=0 \
+sudo GPUNVME_PCI_BDF=0000:01:00.0 GPUNVME_GGUF_LBA=0 \
      ./ntransformer -m /path/to/model.gguf --streaming --benchmark -n 8
 
 # Comparar con mmap backend (sin env vars)
@@ -470,7 +471,7 @@ sudo GPUNVME_PCI_BDF=0000:0b:00.0 GPUNVME_GGUF_LBA=0 \
 Verificar:
 - Mismo output (bit-identical tokens)
 - stderr muestra "LayerStreamer: NVMe backend OK"
-- stderr muestra throughput ~2.1 GB/s por layer read
+- stderr muestra throughput ~3.3 GB/s (SN740) por layer read
 
 ### Troubleshooting
 
@@ -510,7 +511,7 @@ Para medir dónde se gasta el tiempo:
 # "layer_loader: read 669000000 bytes (1306 cmds) in 315.2 ms — 2023.4 MB/s"
 
 # 2. nsight systems profile
-sudo GPUNVME_PCI_BDF=0000:0b:00.0 GPUNVME_GGUF_LBA=0 \
+sudo GPUNVME_PCI_BDF=0000:01:00.0 GPUNVME_GGUF_LBA=0 \
      nsys profile -o nvme_streaming \
      ./ntransformer -m /path/to/model.gguf --streaming --benchmark -n 4
 
@@ -528,20 +529,21 @@ sudo GPUNVME_PCI_BDF=0000:0b:00.0 GPUNVME_GGUF_LBA=0 \
 3. **NVMe dedicado**: el NVMe no puede tener filesystem mientras se usa con VFIO.
 4. **AMD: solo writes**: GPU reads de NVMe BAR0 fallan en AMD (CmpltTO). Tier 1
    solo necesita writes (doorbells), los datos llegan vía NVMe DMA a host memory.
-5. **Throughput**: 2.1-2.7 GB/s en SN530 PCIe 3.0 x4. Un NVMe Gen4 x4 daría ~4-6 GB/s.
+5. **Throughput**: 3.35 GB/s en SN740 (Gen4 via B550, downgraded 8GT/s). 2.1 GB/s en SN530 (Gen3).
 6. **gcc-14 requerido**: gcc-15 es incompatible con CUDA 13.1.
 
 ---
 
-## Números de rendimiento esperados
+## Números de rendimiento medidos
 
-| Métrica | Actual (mmap+memcpy) | gpu-nvme-direct (SN530) | NVMe Gen4 (futuro) |
+| Métrica | Actual (mmap+memcpy) | gpu-nvme-direct (SN740) | gpu-nvme-direct (SN530) |
 |---|---|---|---|
-| I/O throughput | ~1.5-2 GB/s | 2.1-2.7 GB/s | 4-6 GB/s |
-| 1 layer (669MB Q6_K) | ~400ms | ~250-315ms | ~130ms |
-| 80 layers | ~32s | ~20-25s | ~10s |
-| tok/s (70B Q6_K) | 0.03 | 0.04-0.05 | 0.08-0.10 |
+| I/O throughput | ~1.5-2 GB/s | **3.35 GB/s medido** | 2.1 GB/s medido |
+| 1 layer (669MB Q6_K) | ~400ms | **~200ms** | ~315ms |
+| 80 layers | ~32s | **~16s** | ~25s |
+| tok/s (70B Q6_K) | 0.03 | **0.06** | 0.04 |
 | CPU utilization | 100% (1 core memcpy) | ~0% (GPU autónomo) | ~0% |
+| 8.6GB sustained | — | **3350 MB/s** | — |
 
 **La ganancia principal NO es solo throughput** — es eliminar el CPU del data path.
 Esto libera cores del CPU para otros procesos y elimina el cuello de botella
