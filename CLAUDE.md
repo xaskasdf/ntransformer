@@ -14,7 +14,8 @@ High-efficiency C++/CUDA LLM inference engine. Goal: run Llama 70B at Q8-equival
 - 70B Q6_K streaming: working, ~0.02 tok/s (pre-optimization, staging fallback)
 - Worker thread pipeline implemented: overlaps CPU memcpy, H2D DMA, and GPU compute
 - **Ported from Windows/MSVC/CUDA 12.4 to Linux/gcc-14/CUDA 13.1 (C++20 unified)**
-- gpu-nvme-direct integration spec complete (`GPU_NVME_DIRECT_INTEGRATION.md`)
+- gpu-nvme-direct **Layer Loader API ready** — 3-call interface: init → load_layer → destroy
+- Integration spec + dev/test guide: `GPU_NVME_DIRECT_INTEGRATION.md`
 
 ## Development Setup
 - **Platform:** Linux (Ubuntu, kernel 6.17+)
@@ -86,6 +87,15 @@ H2D DMA:        [              ][stg0→gpu0     ][stg1→gpu1     ]...
 GPU Compute:    [              ][              ][layer 0       ]...
 ```
 Three-stage pipeline: worker memcpy (CPU cores), async H2D (PCIe DMA), GPU compute (SMs).
+
+**With gpu-nvme-direct (eliminates CPU from data path):**
+```
+GPU MMIO:       [doorbell L0  ][doorbell L1  ][doorbell L2  ]...
+NVMe DMA:       [DMA L0→stg0  ][DMA L1→stg1  ][DMA L2→stg0 ]...
+H2D:            [              ][stg0→gpu0    ][stg1→gpu1    ]...
+GPU Compute:    [              ][              ][layer 0      ]...
+```
+See `GPU_NVME_DIRECT_INTEGRATION.md` for full integration guide.
 
 ### Key Buffers & Memory Layout
 | Buffer | Shape | Notes |
@@ -210,6 +220,27 @@ CUDA target SMs  = 80, 86, 89, 90
 - **Context size OOM** — Llama 3.1 has 131K context; cap with `--ctx-size`
 - **Tokenizer encoding** — Llama 3 uses GPT-2 byte BPE (Ġ), not SentencePiece (▁)
 
+## gpu-nvme-direct Integration
+
+**Status**: Layer Loader API complete, ready for integration into LayerStreamer.
+
+**Layer Loader API** (`../gpu-nvme-direct/include/gpunvme/layer_loader.h`):
+```c
+gpunvme_layer_loader_init(&loader, "0000:0b:00.0", max_layer_bytes, 32);
+gpunvme_load_layer(&loader, start_lba, size_bytes, dest_pinned);  // repeated
+gpunvme_layer_loader_destroy(&loader);
+```
+
+**Integration point**: `LayerStreamer::prefetch_staging()` — replace worker thread memcpy
+with `gpunvme_load_layer()`. Queue state rolls naturally between calls.
+
+**Build with NVMe**: `cmake .. -DUSE_GPUNVME=ON` (links against pre-built gpu-nvme-direct libs)
+
+**Environment variables**: `GPUNVME_PCI_BDF=0000:0b:00.0 GPUNVME_GGUF_LBA=0`
+
+**Full guide**: `GPU_NVME_DIRECT_INTEGRATION.md`
+
 ## Documentation
+- `GPU_NVME_DIRECT_INTEGRATION.md` — NVMe integration spec, dev/test guide, troubleshooting
 - `DEVELOPMENT.md` — Detailed progress log, per-file status, design decisions
 - This file (`CLAUDE.md`) — Project context for AI-assisted development

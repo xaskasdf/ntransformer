@@ -10,6 +10,10 @@
 #include <condition_variable>
 #include <atomic>
 
+#ifdef USE_GPUNVME
+#include <gpunvme/layer_loader.h>
+#endif
+
 namespace nt {
 
 // ============================================================
@@ -122,6 +126,20 @@ private:
 
     // Helper to compute byte size of a weight tensor
     static size_t tensor_bytes(const GGUFTensorInfo& info);
+
+#ifdef USE_GPUNVME
+    // gpu-nvme-direct Layer Loader
+    gpunvme_layer_loader_t nvme_loader_ = {};
+    bool nvme_initialized_ = false;
+
+    struct NvmeLayerInfo {
+        uint64_t start_lba;     // LBA of first byte of this layer's tensor data
+        size_t   total_bytes;   // total bytes for all 7 tensors
+    };
+    std::vector<NvmeLayerInfo> nvme_layers_;
+    uint64_t gguf_start_lba_ = 0;
+    uint32_t nvme_block_size_ = 512;
+#endif
 };
 
 } // namespace nt

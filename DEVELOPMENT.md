@@ -273,3 +273,33 @@ This is a prerequisite for gpu-nvme-direct integration, which requires Linux (VF
 - CUDA 13.1 supports C++20 for device code (was C++17 with nvcc 12.4)
 - `#include <memory>` is not transitive via MSVC headers but required explicitly by gcc
 - `tensor_file_offset()` / `file_data_offset()` added to GGUFLoader for NVMe LBA calculation (Phase 2.5 prep)
+
+---
+
+## gpu-nvme-direct Integration into LayerStreamer (2026-02-19)
+
+Integrated the gpu-nvme-direct Layer Loader API as an optional I/O backend for SLEP streaming.
+When `USE_GPUNVME=ON` and NVMe env vars are set, layer data is read from NVMe via GPU-initiated
+DMA instead of CPU memcpy from mmap. Graceful fallback to worker thread if NVMe unavailable.
+
+### Changes Made
+
+| File | Change |
+|------|--------|
+| `CMakeLists.txt` | Added `USE_GPUNVME` option, links pre-built gpu-nvme-direct libs, added `test_nvme_layer` target |
+| `src/memory/streamer.h` | Added `#include <gpunvme/layer_loader.h>`, `gpunvme_layer_loader_t`, `NvmeLayerInfo`, NVMe state members |
+| `src/memory/streamer.cu` | NVMe init in `init()` (env vars, layer_loader_init, pre-compute LBAs), NVMe path in `prefetch_staging()` (gpunvme_load_layer), cleanup in `shutdown()` |
+| `tests/test_nvme_layer.cu` | Standalone test: reads layer 0 via NVMe, compares byte-for-byte with mmap'd data |
+| `CLAUDE.md` | Updated with Layer Loader API docs, NVMe pipeline diagram, integration section |
+| `GPU_NVME_DIRECT_INTEGRATION.md` | Updated with Layer Loader API, simplified integration spec, dev/test guide, troubleshooting |
+
+### Build Verified
+- `USE_GPUNVME=OFF`: all targets compile, 13/13 tests pass (no regression)
+- `USE_GPUNVME=ON`: all targets compile including `test_nvme_layer`, 13/13 tests pass
+- Hardware NVMe test requires VFIO setup (`sudo ./test_nvme_layer <model.gguf> <pci_bdf>`)
+
+### Architecture
+- Layer Loader API: `gpunvme_layer_loader_init()` → `gpunvme_load_layer()` (repeated) → `gpunvme_layer_loader_destroy()`
+- Integration point: `LayerStreamer::prefetch_staging()` — replaces CPU worker thread memcpy with NVMe DMA
+- Fallback: if NVMe init fails or read fails, falls back to original worker thread path
+- Env vars: `GPUNVME_PCI_BDF`, `GPUNVME_GGUF_LBA`

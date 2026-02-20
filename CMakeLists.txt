@@ -69,6 +69,11 @@ set(CUDA_SOURCES
 )
 
 # ============================================================
+# gpu-nvme-direct integration (optional)
+# ============================================================
+option(USE_GPUNVME "Enable gpu-nvme-direct backend for NVMe streaming" OFF)
+
+# ============================================================
 # Main library (static)
 # ============================================================
 add_library(ntransformer_lib STATIC ${CORE_SOURCES} ${CUDA_SOURCES})
@@ -89,6 +94,29 @@ set_target_properties(ntransformer_lib PROPERTIES
     CUDA_RESOLVE_DEVICE_SYMBOLS ON
 )
 
+if(USE_GPUNVME)
+    set(GPUNVME_DIR "${CMAKE_SOURCE_DIR}/../gpu-nvme-direct")
+
+    add_library(gpunvme_layer_loader STATIC IMPORTED)
+    set_target_properties(gpunvme_layer_loader PROPERTIES
+        IMPORTED_LOCATION ${GPUNVME_DIR}/build-hw/libgpunvme_layer_loader.a)
+
+    add_library(gpunvme_host STATIC IMPORTED)
+    set_target_properties(gpunvme_host PROPERTIES
+        IMPORTED_LOCATION ${GPUNVME_DIR}/build-hw/libgpunvme_host.a)
+
+    add_library(gpunvme_device STATIC IMPORTED)
+    set_target_properties(gpunvme_device PROPERTIES
+        IMPORTED_LOCATION ${GPUNVME_DIR}/build-hw/libgpunvme_device.a)
+
+    target_include_directories(ntransformer_lib PRIVATE ${GPUNVME_DIR}/include)
+    target_link_libraries(ntransformer_lib PRIVATE
+        gpunvme_layer_loader gpunvme_host gpunvme_device)
+    target_compile_definitions(ntransformer_lib PRIVATE USE_GPUNVME=1)
+
+    message(STATUS "gpu-nvme-direct: ENABLED (${GPUNVME_DIR})")
+endif()
+
 # ============================================================
 # Main executable
 # ============================================================
@@ -108,6 +136,13 @@ add_executable(test_gemm tests/test_gemm.cpp)
 target_link_libraries(test_gemm PRIVATE ntransformer_lib)
 add_test(NAME test_gemm COMMAND test_gemm)
 
+if(USE_GPUNVME)
+    add_executable(test_nvme_layer tests/test_nvme_layer.cu)
+    target_link_libraries(test_nvme_layer PRIVATE ntransformer_lib)
+    target_include_directories(test_nvme_layer PRIVATE
+        ${CMAKE_SOURCE_DIR}/../gpu-nvme-direct/include)
+endif()
+
 # ============================================================
 # Install
 # ============================================================
@@ -123,3 +158,4 @@ message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 message(STATUS "CUDA architectures: ${CMAKE_CUDA_ARCHITECTURES}")
 message(STATUS "CUDA toolkit: ${CUDAToolkit_VERSION}")
 message(STATUS "C++ standard: ${CMAKE_CXX_STANDARD}")
+message(STATUS "gpu-nvme-direct: ${USE_GPUNVME}")

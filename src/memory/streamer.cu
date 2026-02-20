@@ -130,6 +130,40 @@ void LayerStreamer::init(const GGUFLoader& loader, const ModelConfig& config) {
         dev.record_event(compute_done_[s], STREAM_COMPUTE);
     }
 
+#ifdef USE_GPUNVME
+    // Try to initialize gpu-nvme-direct Layer Loader
+    const char* nvme_bdf = getenv("GPUNVME_PCI_BDF");
+    const char* nvme_lba_str = getenv("GPUNVME_GGUF_LBA");
+
+    if (nvme_bdf && nvme_lba_str) {
+        uint64_t gguf_start_lba = strtoull(nvme_lba_str, NULL, 0);
+
+        gpunvme_err_t err = gpunvme_layer_loader_init(
+            &nvme_loader_, nvme_bdf, buf_size_, /*pipeline_depth=*/32);
+
+        if (err == GPUNVME_OK) {
+            nvme_initialized_ = true;
+            gguf_start_lba_ = gguf_start_lba;
+            nvme_block_size_ = gpunvme_layer_loader_block_size(&nvme_loader_);
+
+            // Pre-compute per-layer LBAs
+            nvme_layers_.resize(n_layers);
+            for (int i = 0; i < n_layers; i++) {
+                std::string first = "blk." + std::to_string(i) + ".attn_q.weight";
+                uint64_t byte_offset = loader.tensor_file_offset(first);
+                nvme_layers_[i].start_lba = gguf_start_lba + (byte_offset / nvme_block_size_);
+                nvme_layers_[i].total_bytes = layer_transfer_size(i);
+            }
+
+            fprintf(stderr, "LayerStreamer: NVMe backend OK (MDTS=%uK, block=%u)\n",
+                    gpunvme_layer_loader_max_transfer(&nvme_loader_) / 1024,
+                    nvme_block_size_);
+        } else {
+            fprintf(stderr, "LayerStreamer: NVMe init failed (err=%d), fallback to mmap\n", err);
+        }
+    }
+#endif
+
     fprintf(stderr, "LayerStreamer: initialized\n");
 }
 
@@ -137,6 +171,14 @@ void LayerStreamer::init(const GGUFLoader& loader, const ModelConfig& config) {
 // Shutdown: free everything
 // ============================================================
 void LayerStreamer::shutdown() {
+#ifdef USE_GPUNVME
+    if (nvme_initialized_) {
+        gpunvme_layer_loader_destroy(&nvme_loader_);
+        nvme_initialized_ = false;
+        fprintf(stderr, "LayerStreamer: NVMe backend shut down\n");
+    }
+#endif
+
     // Shut down worker thread first
     if (worker_thread_.joinable()) {
         {
@@ -296,6 +338,24 @@ void LayerStreamer::memcpy_layer_to_staging(int layer_idx, int slot) {
 void LayerStreamer::prefetch_staging(int layer_idx, int slot) {
     if (mmap_pinned_) return;  // No staging needed — direct DMA path
 
+#ifdef USE_GPUNVME
+    if (nvme_initialized_) {
+        const auto& nlay = nvme_layers_[layer_idx];
+        gpunvme_err_t err = gpunvme_load_layer(
+            &nvme_loader_, nlay.start_lba, nlay.total_bytes, staging_buf_[slot]);
+
+        if (err == GPUNVME_OK) {
+            std::lock_guard<std::mutex> lock(worker_mutex_);
+            staging_ready_[slot] = true;
+            staging_ready_cv_.notify_all();
+            return;
+        }
+        fprintf(stderr, "LayerStreamer: NVMe read failed for layer %d, fallback to memcpy\n",
+                layer_idx);
+    }
+#endif
+
+    // Fallback: CPU worker thread memcpy
     {
         std::lock_guard<std::mutex> lock(worker_mutex_);
         staging_ready_[slot] = false;
