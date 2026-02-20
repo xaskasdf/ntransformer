@@ -109,10 +109,10 @@ if(USE_GPUNVME)
     set_target_properties(gpunvme_device PROPERTIES
         IMPORTED_LOCATION ${GPUNVME_DIR}/build-hw/libgpunvme_device.a)
 
-    target_include_directories(ntransformer_lib PRIVATE ${GPUNVME_DIR}/include)
+    target_include_directories(ntransformer_lib PUBLIC ${GPUNVME_DIR}/include)
     target_link_libraries(ntransformer_lib PRIVATE
         gpunvme_layer_loader gpunvme_host gpunvme_device)
-    target_compile_definitions(ntransformer_lib PRIVATE USE_GPUNVME=1)
+    target_compile_definitions(ntransformer_lib PUBLIC USE_GPUNVME=1)
 
     message(STATUS "gpu-nvme-direct: ENABLED (${GPUNVME_DIR})")
 endif()
