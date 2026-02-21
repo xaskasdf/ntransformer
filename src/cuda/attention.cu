@@ -202,53 +202,56 @@ __global__ void attention_decode_generic_kernel(
 }
 
 // ============================================================
-// Prefill attention (batch of queries)
-// Q: [seq_len, n_heads, head_dim]
-// K: [seq_len, n_kv_heads, head_dim]
-// V: [seq_len, n_kv_heads, head_dim]
+// Prefill attention (batch of queries, reads K/V from cache)
+// Q: [seq_len, n_heads, head_dim] (batch buffer)
+// k_cache/v_cache: [max_seq, n_kv_heads, head_dim] (full KV cache)
 // Output: [seq_len, n_heads, head_dim]
-// With causal mask
+// With causal mask based on absolute positions
+//
+// Each block handles one (head, batch_position) pair.
+// For query at batch position q_idx (absolute position start_pos + q_idx),
+// attends to all cache positions 0..start_pos+q_idx with causal mask.
 // ============================================================
 
 __global__ void attention_prefill_kernel(
     float* __restrict__ output,
-    const float* __restrict__ Q,
-    const float* __restrict__ K,
-    const float* __restrict__ V,
+    const float* __restrict__ Q,           // [seq_len, n_heads, head_dim]
+    const float* __restrict__ k_cache,     // [max_seq, n_kv_heads, head_dim]
+    const float* __restrict__ v_cache,     // [max_seq, n_kv_heads, head_dim]
     int seq_len,
+    int start_pos,
     int n_heads,
     int n_kv_heads,
     int head_dim,
     float scale
 ) {
     int head = blockIdx.x;
-    int q_pos = blockIdx.y;
+    int q_idx = blockIdx.y;            // 0..seq_len-1 (batch index)
+    int q_abs = start_pos + q_idx;     // absolute position in sequence
     int tid = threadIdx.x;
     int kv_head = head / (n_heads / n_kv_heads);
 
-    const float* q_vec = Q + q_pos * n_heads * head_dim + head * head_dim;
+    const float* q_vec = Q + q_idx * n_heads * head_dim + head * head_dim;
 
     extern __shared__ float smem[];
-    // smem layout: [seq_len] for scores
+    // smem layout: [q_abs + 1] for scores (all positions 0..q_abs)
 
-    // Compute scores with causal mask
-    for (int k_pos = tid; k_pos <= q_pos && k_pos < seq_len; k_pos += blockDim.x) {
-        const float* k_vec = K + k_pos * n_kv_heads * head_dim + kv_head * head_dim;
+    int n_keys = q_abs + 1;  // attend to absolute positions 0..q_abs
+
+    // Compute scores: Q dot K for all positions 0..q_abs from cache
+    for (int k_pos = tid; k_pos < n_keys; k_pos += blockDim.x) {
+        const float* k_vec = k_cache + k_pos * n_kv_heads * head_dim + kv_head * head_dim;
         float score = 0.0f;
         for (int d = 0; d < head_dim; d++) {
             score += q_vec[d] * k_vec[d];
         }
         smem[k_pos] = score * scale;
     }
-    // Set future positions to -inf
-    for (int k_pos = q_pos + 1 + tid; k_pos < seq_len; k_pos += blockDim.x) {
-        smem[k_pos] = -FLT_MAX;
-    }
     __syncthreads();
 
-    // Softmax
+    // Softmax over [0..q_abs]
     float local_max = -FLT_MAX;
-    for (int pos = tid; pos <= q_pos; pos += blockDim.x) {
+    for (int pos = tid; pos < n_keys; pos += blockDim.x) {
         local_max = fmaxf(local_max, smem[pos]);
     }
     for (int offset = warpSize / 2; offset > 0; offset >>= 1) {
@@ -270,13 +273,10 @@ __global__ void attention_prefill_kernel(
     __syncthreads();
 
     float local_sum = 0.0f;
-    for (int pos = tid; pos <= q_pos; pos += blockDim.x) {
+    for (int pos = tid; pos < n_keys; pos += blockDim.x) {
         float val = expf(smem[pos] - s_max);
         smem[pos] = val;
         local_sum += val;
-    }
-    for (int pos = q_pos + 1 + tid; pos < seq_len; pos += blockDim.x) {
-        smem[pos] = 0.0f;
     }
     for (int offset = warpSize / 2; offset > 0; offset >>= 1) {
         local_sum += __shfl_xor_sync(0xFFFFFFFF, local_sum, offset);
@@ -293,17 +293,17 @@ __global__ void attention_prefill_kernel(
     if (tid == 0) s_sum_inv = (local_sum > 0.0f) ? (1.0f / local_sum) : 0.0f;
     __syncthreads();
 
-    for (int pos = tid; pos <= q_pos; pos += blockDim.x) {
+    for (int pos = tid; pos < n_keys; pos += blockDim.x) {
         smem[pos] *= s_sum_inv;
     }
     __syncthreads();
 
-    // Weighted sum of values
-    float* out_vec = output + q_pos * n_heads * head_dim + head * head_dim;
+    // Weighted sum of values from cache
+    float* out_vec = output + q_idx * n_heads * head_dim + head * head_dim;
     for (int d = tid; d < head_dim; d += blockDim.x) {
         float sum = 0.0f;
-        for (int pos = 0; pos <= q_pos; pos++) {
-            const float* v_vec = V + pos * n_kv_heads * head_dim + kv_head * head_dim;
+        for (int pos = 0; pos < n_keys; pos++) {
+            const float* v_vec = v_cache + pos * n_kv_heads * head_dim + kv_head * head_dim;
             sum += smem[pos] * v_vec[d];
         }
         out_vec[d] = sum;
@@ -374,23 +374,27 @@ void launch_attention_decode(
 void launch_attention_prefill(
     float* output,
     const float* Q,
-    const float* K,
-    const float* V,
+    const float* k_cache,
+    const float* v_cache,
     int seq_len,
+    int start_pos,
     int n_heads,
     int n_kv_heads,
     int head_dim,
+    int max_seq,
     float scale,
     void* stream
 ) {
     cudaStream_t s = static_cast<cudaStream_t>(stream);
 
     int block_size = 256;
-    size_t smem_size = seq_len * sizeof(float);
+    int total_seq = start_pos + seq_len;
+    size_t smem_size = total_seq * sizeof(float);  // worst case: last position needs all scores
     dim3 grid(n_heads, seq_len);
 
     attention_prefill_kernel<<<grid, block_size, smem_size, s>>>(
-        output, Q, K, V, seq_len, n_heads, n_kv_heads, head_dim, scale);
+        output, Q, k_cache, v_cache, seq_len, start_pos,
+        n_heads, n_kv_heads, head_dim, scale);
 }
 
 void launch_copy_to_kv_cache(

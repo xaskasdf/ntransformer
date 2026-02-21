@@ -144,11 +144,11 @@ void Attention::forward(
             scale_, stream
         );
     } else {
-        // Prefill: multiple queries with causal mask
-        // Use the cache which now has all positions
+        // Prefill / multi-token decode: batch of queries with causal mask
+        // Reads K,V from cache (already stored by copy_to_kv_cache above)
         cuda::launch_attention_prefill(
             attn_out, q_buf, k_cache, v_cache,
-            total_seq, n_heads_, n_kv_heads_, head_dim_,
+            seq_len, start_pos, n_heads_, n_kv_heads_, head_dim_, max_seq_,
             scale_, stream
         );
     }

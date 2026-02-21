@@ -31,14 +31,21 @@ using TokenCallback = std::function<bool(const std::string& token, int token_id)
 class Engine {
 public:
     Engine() = default;
-    ~Engine() = default;
+    ~Engine();
 
     // Load model from GGUF file
     bool load(const std::string& model_path, int max_context = 4096, bool streaming = false);
 
+    // Load draft model for speculative decoding
+    bool load_draft(const std::string& draft_path, int max_context = 4096);
+
     // Generate text from a prompt
     std::string generate(const std::string& prompt, const GenerateConfig& config,
                          TokenCallback callback = nullptr);
+
+    // Generate with speculative decoding (draft + target)
+    std::string generate_speculative(const std::string& prompt, const GenerateConfig& config,
+                                     TokenCallback callback = nullptr);
 
     // Interactive chat mode
     void chat(const GenerateConfig& config);
@@ -48,10 +55,16 @@ public:
 
     const ModelConfig& config() const { return model_.config(); }
     Transformer& model() { return model_; }
+    bool has_draft() const { return draft_ != nullptr; }
+    void set_draft_k(int k) { draft_k_ = k; }
 
 private:
     Transformer model_;
     Tokenizer tokenizer_;
+
+    // Speculative decoding
+    Transformer* draft_ = nullptr;  // owned, null if not speculative
+    int draft_k_ = 5;              // number of draft tokens per iteration
 
     // Generation stats
     struct Stats {

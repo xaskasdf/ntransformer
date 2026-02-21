@@ -28,6 +28,10 @@ Transformer::~Transformer() {
         cudaFreeHost(cosine_result_h_);
         cosine_result_h_ = nullptr;
     }
+    if (verify_logits_) {
+        nt_cuda_free(verify_logits_);
+        verify_logits_ = nullptr;
+    }
 }
 
 void Transformer::set_early_exit(float threshold) {
@@ -891,18 +895,58 @@ float* Transformer::forward_tiered(const int* tokens, int seq_len, int start_pos
         }
     }
 
-    // 6. Final norm
+    // 6. Final norm (non-destructive: use residual as scratch to preserve hidden_buf_)
     float* last_hidden = hidden_state + (seq_len - 1) * hidden;
-    output_norm_.forward(last_hidden, last_hidden, 1, stream);
+    output_norm_.forward(residual, last_hidden, 1, stream);
 
     // 7. LM head
     cuda::launch_gemv(
-        logits_, output_weight_.data(), last_hidden,
+        logits_, output_weight_.data(), residual,
         config_.vocab_size, hidden, output_weight_.dtype(), stream
     );
 
     CUDADevice::instance().synchronize_stream(STREAM_COMPUTE);
     return logits_;
+}
+
+// ============================================================
+// Verify forward: logits at all positions (for speculative decoding)
+// ============================================================
+void Transformer::ensure_verify_logits(int seq_len) {
+    if (seq_len <= verify_logits_capacity_) return;
+    if (verify_logits_) nt_cuda_free(verify_logits_);
+    size_t bytes = (size_t)seq_len * config_.vocab_size * sizeof(float);
+    verify_logits_ = static_cast<float*>(nt_cuda_malloc(bytes));
+    verify_logits_capacity_ = seq_len;
+    fprintf(stderr, "Allocated verify logits: %d positions x %d vocab = %.1f MB\n",
+        seq_len, config_.vocab_size, bytes / (1024.0 * 1024.0));
+}
+
+float* Transformer::forward_verify(const int* tokens, int seq_len, int start_pos) {
+    // Run full forward pass (hidden states preserved thanks to non-destructive norm)
+    forward(tokens, seq_len, start_pos);
+
+    ensure_verify_logits(seq_len);
+
+    void* stream = CUDADevice::instance().stream(STREAM_COMPUTE);
+    int hidden = config_.hidden_size;
+    int vocab_size = config_.vocab_size;
+    float* hidden_state = hidden_buf_.data_as<float>();
+    float* residual = residual_buf_.data_as<float>();
+
+    // Compute logits at each position
+    for (int k = 0; k < seq_len; k++) {
+        float* h = hidden_state + k * hidden;
+        output_norm_.forward(residual, h, 1, stream);
+        cuda::launch_gemv(
+            verify_logits_ + k * vocab_size,
+            output_weight_.data(), residual,
+            vocab_size, hidden, output_weight_.dtype(), stream
+        );
+    }
+
+    CUDADevice::instance().synchronize_stream(STREAM_COMPUTE);
+    return verify_logits_;
 }
 
 std::string Transformer::layer_prefix(int i) const {

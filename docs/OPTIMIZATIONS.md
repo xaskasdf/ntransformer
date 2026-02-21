@@ -5,7 +5,7 @@
 ```
 70B Q6_K, RTX 3090 (Gen3 x8), 48 GB DDR4
 Tier split: 29 VRAM + 51 RAM + 0 NVMe
-Decode: 0.2 tok/s (5.5s per token)
+Decode: 0.18 tok/s (5.5s per token)
 Bottleneck: PCIe H2D at Gen3 x8 (~6.5 GB/s), 103ms per tier B layer
 GPU utilization: ~0.7% (0.7ms compute / 103ms H2D per layer)
 ```
@@ -41,31 +41,51 @@ where DMA of the entire buffer would transfer too much unused data.
 ---
 
 ### OPT-2: Speculative Decoding with 8B Draft Model
-**Status**: PLANNED — biggest potential gain, requires dual-model loading
+**Status**: IMPLEMENTED + TESTED — 17% speedup alone, negative when combined with layer skip
 **Expected**: ~3x speedup (0.2 → 0.6 tok/s)
-**Effort**: ~200 lines + model management complexity
+**Measured**: 0.21 tok/s (17% over baseline), 44% acceptance rate
 
-8B Q8_0 fits entirely in VRAM tier A: 48.8 tok/s. Use as draft model:
+8B Q8_0 loaded as VRAM-resident draft, 70B Q6_K as tiered target.
+Draft model takes ~8 GB VRAM → reduces target tier A from 29 to 16 layers,
+adds 10 NVMe-tier layers (tier config: 16 VRAM + 54 RAM + 10 NVMe).
 
 ```
-Draft:    8B generates K=5 draft tokens     → 5/48.8 = 102ms
-Verify:   70B runs one forward (seq_len=K)  → ~5.5s (same as 1 token)
-Accept:   ~60-70% acceptance rate           → ~3.5 tokens
-Effective: 3.5 tokens / 5.6s = 0.63 tok/s
+Draft:    8B generates K=5 tokens           → ~100ms (resident, 48 tok/s)
+Verify:   70B forward_verify (seq_len=6)    → ~5.5s (anchor + 5 draft tokens)
+Accept:   44% acceptance rate               → ~2.2 tokens accepted/iter
+Effective: 2.2 tokens / 5.5s = 0.40 tok/s (theoretical)
+Measured:  0.21 tok/s (overhead from dual KV cache, verify logits, etc.)
 ```
 
-Key insight: 70B forward pass cost is dominated by H2D, which is the same
-whether seq_len=1 or seq_len=5 (weight transfer doesn't depend on seq_len).
-So verifying 5 tokens costs ~1x of verifying 1 token.
+**Why slower than expected**: The original estimate assumed tier A=29 layers
+unchanged. But loading the 8B draft model consumes ~8 GB VRAM, reducing
+tier A to 16 and pushing 10 layers to NVMe (tier C), which adds ~3s/token
+for NVMe reads. The extra H2D and NVMe overhead nearly cancels the
+multi-token acceptance benefit.
 
-**Implementation**:
-1. Load both 8B and 70B models (8B resident, 70B tiered)
-2. Draft loop: 8B generates K tokens autoregressively
-3. Verify: 70B forward with all K tokens at once (prefill mode)
-4. Compare: find first divergence, accept tokens up to that point
-5. Repeat from divergence point
+**Combined with layer skipping (--skip-threshold 0.98)**:
+```
+Spec only:           44% accept, 0.21 tok/s (17% improvement)
+Spec + skip 0.98:    39% accept, 0.18 tok/s (0% improvement)
+```
+Layer skipping degrades model predictions → lower acceptance rate → more
+iterations needed → the skipping speedup is negated by lower acceptance.
 
-**Requires**: Two model instances, modified engine loop, rejection sampling.
+**Implementation** (files changed):
+- `transformer.h/cpp`: Added `forward_verify()` — runs full forward then
+  recomputes logits at ALL seq positions (non-destructive final norm)
+- `engine.h/cpp`: Added `load_draft()`, `generate_speculative()` with
+  anchor token technique (avoids explicit KV cache rollback)
+- `attention.cu`: Fixed prefill kernel to read K,V from cache with
+  absolute position causal masking (was only attending within batch)
+- `main.cpp`: Added `--draft-model`, `--draft-k` CLI flags
+
+**Usage**: `--draft-model <8B.gguf>` (implies `--streaming` for target)
+
+**Conclusion**: Speculative decoding provides modest gains (17%) on this
+hardware configuration. The fundamental bottleneck is VRAM scarcity — the
+draft model competes for VRAM with the target's tier A layers. Would be
+more effective with >32 GB VRAM or a smaller draft model (e.g., 1B).
 
 ---
 
@@ -217,14 +237,18 @@ Only useful when tier C is populated (Q8_0 70B, or >48 GB models).
 ## Combined Projected Performance
 
 ```
-Baseline:                          0.20 tok/s
+Baseline:                          0.18 tok/s
 + Zero-copy: REJECTED (46x slower — GPU PCIe reads at 150 MB/s vs 6.5 GB/s DMA)
 + Early exit: NO EFFECT (Llama 70B uses all 80 layers, max cos=0.991)
-+ Layer skip (skip 20%):           0.24 tok/s  (if quality acceptable)
-+ Speculative (3.5 accepted/5):    0.67 tok/s
-+ F16 KV (2 more VRAM layers):     0.68 tok/s
-+ Compressed transfer:             0.80 tok/s
++ Layer skip (skip 20%):           0.24 tok/s  (measured, 33% improvement)
++ Speculative (44% accept, K=5):   0.21 tok/s  (measured, 17% improvement — VRAM contention)
++ Spec + skip combined:            0.18 tok/s  (measured, no improvement — skip hurts acceptance)
 
-Theoretical ceiling (all optimizations, Gen3 x8): ~0.8 tok/s
-With Gen4 x16 (B550/X570):                       ~2-3 tok/s
+Best single optimization:          Layer skip 0.98 → 0.24 tok/s (33%)
+Best combination found:            Layer skip alone → 0.24 tok/s
+
+Notes:
+- Speculative decoding and layer skipping are anti-synergistic on this hardware
+- The VRAM budget is the fundamental constraint: draft model steals tier A slots
+- With >32 GB VRAM (e.g., 4090 or A6000), speculative would benefit more
 ```

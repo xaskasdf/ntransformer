@@ -48,9 +48,10 @@ void launch_attention_decode(
     int seq_len, int n_heads, int n_kv_heads, int head_dim, int max_seq,
     float scale, void* stream);
 void launch_attention_prefill(
-    float* output, const float* Q, const float* K, const float* V,
-    int seq_len, int n_heads, int n_kv_heads, int head_dim,
-    float scale, void* stream);
+    float* output, const float* Q,
+    const float* k_cache, const float* v_cache,
+    int seq_len, int start_pos, int n_heads, int n_kv_heads,
+    int head_dim, int max_seq, float scale, void* stream);
 void launch_copy_to_kv_cache(
     float* k_cache, float* v_cache, const float* k, const float* v,
     int seq_len, int n_kv_heads, int head_dim, int start_pos, int max_seq,

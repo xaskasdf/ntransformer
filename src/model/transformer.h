@@ -43,6 +43,10 @@ public:
     // Returns logits: [vocab_size] on GPU
     float* forward(const int* tokens, int seq_len, int start_pos);
 
+    // Forward pass returning logits at ALL positions (for speculative verification)
+    // Returns pointer to GPU buffer of [seq_len * vocab_size] floats
+    float* forward_verify(const int* tokens, int seq_len, int start_pos);
+
     const ModelConfig& config() const { return config_; }
     const GGUFVocab& vocab() const { return loader_.vocab(); }
 
@@ -100,6 +104,11 @@ private:
     float skip_threshold_ = 0.0f;        // 0 = disabled; layers with cos > threshold are skipped
     std::vector<bool> skip_layer_;       // [n_layers] true = skip this layer
     bool skip_calibrated_ = false;       // true after first token calibrates skip list
+
+    // === Speculative decoding verification ===
+    float* verify_logits_ = nullptr;     // [verify_capacity_ * vocab_size] on GPU
+    int verify_logits_capacity_ = 0;     // max seq_len slots allocated
+    void ensure_verify_logits(int seq_len);
 
     // Streaming-specific forward pass
     float* forward_streaming(const int* tokens, int seq_len, int start_pos);

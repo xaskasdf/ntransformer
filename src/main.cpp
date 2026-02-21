@@ -17,6 +17,8 @@ void print_usage(const char* prog) {
     fprintf(stderr, "  -c, --ctx-size <int>     Context size (default: 4096)\n");
     fprintf(stderr, "  --seed <int>             Random seed (default: 42)\n");
     fprintf(stderr, "  --streaming              SLEP streaming mode (stream layers from CPU via PCIe)\n");
+    fprintf(stderr, "  --draft-model <path>     Draft model for speculative decoding (e.g. 8B)\n");
+    fprintf(stderr, "  --draft-k <int>          Draft tokens per iteration (default: 5)\n");
     fprintf(stderr, "  --early-exit <float>     Early exit threshold (0=off, 0.9999=aggressive)\n");
     fprintf(stderr, "  --skip-threshold <float> Layer skip threshold (0=off, 0.985=moderate)\n");
     fprintf(stderr, "  --benchmark              Run benchmark mode\n");
@@ -27,8 +29,10 @@ void print_usage(const char* prog) {
 
 int main(int argc, char** argv) {
     std::string model_path;
+    std::string draft_model_path;
     std::string prompt;
     int max_context = 4096;
+    int draft_k = 5;
     float early_exit_threshold = 0.0f;
     float skip_threshold = 0.0f;
     bool benchmark_mode = false;
@@ -65,6 +69,10 @@ int main(int argc, char** argv) {
             if (++i < argc) max_context = std::stoi(argv[i]);
         } else if (arg == "--streaming") {
             streaming_mode = true;
+        } else if (arg == "--draft-model") {
+            if (++i < argc) draft_model_path = argv[i];
+        } else if (arg == "--draft-k") {
+            if (++i < argc) draft_k = std::stoi(argv[i]);
         } else if (arg == "--early-exit") {
             if (++i < argc) early_exit_threshold = std::stof(argv[i]);
         } else if (arg == "--skip-threshold") {
@@ -88,8 +96,26 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    // Load model
+    // Auto-enable streaming when using draft model (speculative decoding
+    // is only useful when target model needs layer streaming)
+    if (!draft_model_path.empty() && !streaming_mode) {
+        fprintf(stderr, "Note: --draft-model implies --streaming for target model\n");
+        streaming_mode = true;
+    }
+
+    // Load draft model first (if specified) so it gets VRAM priority
+    // Then load target model — tiered mode auto-adjusts to remaining VRAM
     nt::Engine engine;
+
+    if (!draft_model_path.empty()) {
+        engine.set_draft_k(draft_k);
+        // Draft model loads first in resident mode (all VRAM)
+        if (!engine.load_draft(draft_model_path, max_context)) {
+            fprintf(stderr, "Failed to load draft model: %s\n", draft_model_path.c_str());
+            return 1;
+        }
+    }
+
     if (!engine.load(model_path, max_context, streaming_mode)) {
         fprintf(stderr, "Failed to load model: %s\n", model_path.c_str());
         return 1;
