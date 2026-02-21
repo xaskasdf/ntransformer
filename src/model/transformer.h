@@ -85,10 +85,14 @@ private:
     // Streaming-specific forward pass
     float* forward_streaming(const int* tokens, int seq_len, int start_pos);
 
+    // Tiered forward pass (hybrid VRAM-resident + streaming)
+    float* forward_tiered(const int* tokens, int seq_len, int start_pos);
+
     // Internal
     void allocate_buffers();
     void load_layer(int layer_idx);
     void load_streaming();
+    void load_tiered();
     void embed_tokens(const int* tokens, int seq_len, float* output, void* stream);
 
     // Tensor name helpers for GGUF

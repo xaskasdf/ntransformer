@@ -9,12 +9,33 @@
 #include <mutex>
 #include <condition_variable>
 #include <atomic>
+#include <sys/sysinfo.h>
 
 #ifdef USE_GPUNVME
 #include <gpunvme/layer_loader.h>
 #endif
 
 namespace nt {
+
+// ============================================================
+// 3-Tier Adaptive Layer Caching
+// ============================================================
+enum class LayerTier { VRAM, RAM, NVME };
+
+struct TierConfig {
+    int n_vram = 0;              // tier A count (GPU resident)
+    int n_ram  = 0;              // tier B count (pinned host RAM)
+    int n_nvme = 0;              // tier C count (NVMe cold storage)
+    size_t vram_used = 0;        // bytes allocated for tier A
+    size_t ram_used  = 0;        // bytes allocated for tier B
+    size_t layer_bytes = 0;      // per-layer buffer size
+
+    // Auto-compute tier sizes from available hardware resources
+    static TierConfig compute(int n_layers, size_t layer_bytes,
+                              size_t vram_reserve = 512ULL << 20,
+                              size_t ram_reserve = 6ULL << 30);
+    void print() const;
+};
 
 // ============================================================
 // Layer weight pointers into the GPU buffer for a given slot
@@ -49,6 +70,9 @@ public:
     // Initialize: parse layer tensor info, allocate GPU buffers
     void init(const GGUFLoader& loader, const ModelConfig& config);
 
+    // Initialize with 3-tier adaptive caching (VRAM + RAM + NVMe)
+    void init_tiered(const GGUFLoader& loader, const ModelConfig& config);
+
     // Free GPU buffers and events
     void shutdown();
 
@@ -71,6 +95,14 @@ public:
 
     // Get weight pointers for the given slot
     LayerWeightPtrs get_weights(int slot) const;
+
+    // Get weight pointers for a VRAM-resident layer (tier A)
+    LayerWeightPtrs get_resident_weights(int layer_idx) const;
+
+    // Tier queries
+    bool is_vram_resident(int layer_idx) const;
+    LayerTier layer_tier(int layer_idx) const;
+    const TierConfig& tier_config() const { return tier_config_; }
 
     // Total size of one GPU layer buffer
     size_t buffer_size() const { return buf_size_; }
@@ -120,6 +152,13 @@ private:
 
     void worker_loop();              // worker thread entry point
     void memcpy_layer_to_staging(int layer_idx, int slot);
+
+    // 3-tier adaptive caching state
+    TierConfig tier_config_;
+    std::vector<LayerTier> layer_tier_;      // per-layer assignment [n_layers]
+    std::vector<void*> vram_resident_;       // VRAM buffers [n_vram]
+    std::vector<void*> ram_cache_;           // pinned RAM buffers [n_ram]
+    bool tiered_mode_ = false;
 
     // Helper: compute total transfer size for a layer
     size_t layer_transfer_size(int layer_idx) const;

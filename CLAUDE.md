@@ -4,18 +4,18 @@
 High-efficiency C++/CUDA LLM inference engine. Goal: run Llama 70B at Q8-equivalent quality on a single RTX 3090 (24GB VRAM) by combining 6 memory-optimization techniques.
 
 ## Current State
-**Phase 2 (SLEP) - COMPLETE. Ported to Linux/CUDA 13.1. Ready for gpu-nvme-direct integration.**
-- Phase 1 fully working: Llama 3.1 8B Q8_0 at 38.8 tok/s decode (resident), 0.9 tok/s (streaming)
+**Phase 2 (SLEP) - COMPLETE. gpu-nvme-direct integration verified — 5x speedup on 70B.**
+- Phase 1 fully working: Llama 3.1 8B Q8_0 at 48.9 tok/s decode (resident), 0.9 tok/s (streaming)
 - Phase 2 SLEP streaming: pipelined layer streaming via PCIe with worker thread
-- Q6_K quantization support: 70B Llama running on single RTX 3090 (4.2 GB VRAM)
+- Q6_K quantization support: 70B Llama running on single RTX 3090 (7.3 GB VRAM)
 - `--streaming` CLI flag enables SLEP mode
 - All unit tests passing (7/7 tensor, 6/6 kernel)
 - 8B streaming verified: bit-identical output vs resident mode
-- 70B Q6_K streaming: working, ~0.02 tok/s (pre-optimization, staging fallback)
-- Worker thread pipeline implemented: overlaps CPU memcpy, H2D DMA, and GPU compute
+- **gpu-nvme-direct integrated and verified** — NVMe reads at 3,315 MB/s sustained (95% PCIe 4.0 x4)
+- 70B Q6_K NVMe streaming: **5x faster** than mmap staging (126s vs 633s for 5 tokens)
+- Worker thread pipeline: fallback path when NVMe unavailable or mmap pinning succeeds
 - **Ported from Windows/MSVC/CUDA 12.4 to Linux/gcc-14/CUDA 13.1 (C++20 unified)**
-- gpu-nvme-direct **Layer Loader API ready** — 3-call interface: init → load_layer → destroy
-- Integration spec + dev/test guide: `GPU_NVME_DIRECT_INTEGRATION.md`
+- Setup/restore scripts: `scripts/setup_nvme.sh`, `scripts/restore_nvme.sh`
 
 ## Development Setup
 - **Platform:** Linux (Ubuntu, kernel 6.17+)
@@ -43,6 +43,30 @@ cmake --build . --config Release -j
 ./Release/ntransformer -m /path/to/model.gguf --benchmark -n 64
 # Phase 2: Streaming mode (streams layers from CPU via PCIe)
 ./Release/ntransformer -m /path/to/model.gguf -p "Hello" -n 128 --streaming
+```
+
+### Build with gpu-nvme-direct (NVMe backend for streaming)
+```bash
+cmake .. -DCMAKE_BUILD_TYPE=Release -DUSE_GPUNVME=ON \
+  -DCMAKE_C_COMPILER=gcc-14 \
+  -DCMAKE_CXX_COMPILER=g++-14 \
+  -DCMAKE_CUDA_COMPILER=/usr/local/cuda-13.1/bin/nvcc
+cmake --build . --config Release -j
+
+# Setup NVMe for VFIO (once after reboot)
+sudo ./scripts/setup_nvme.sh 0000:01:00.0
+
+# Write GGUF to NVMe raw device (once per model)
+sudo ./scripts/restore_nvme.sh 0000:01:00.0   # bind to kernel driver
+sudo dd if=/path/to/model.gguf of=/dev/nvme0n1 bs=1M oflag=direct status=progress
+sudo ./scripts/setup_nvme.sh 0000:01:00.0      # rebind to VFIO
+
+# Run with NVMe backend
+sudo GPUNVME_PCI_BDF=0000:01:00.0 GPUNVME_GGUF_LBA=0 \
+  ./build/ntransformer -m /path/to/model.gguf -p "Hello" -n 128 --streaming
+
+# Restore NVMe to kernel driver when done
+sudo ./scripts/restore_nvme.sh 0000:01:00.0
 ```
 
 ## Architecture Overview
@@ -147,7 +171,8 @@ blk.{i}.ffn_down.weight             # SwiGLU down
 3. **No graceful error recovery** — `NT_CHECK` calls `abort()`. Missing tensor = crash.
 4. **Chat mode is stateless** — each turn is independent, no conversation history management.
 5. **Special token handling** — Chat template tokens (`<|start_header_id|>` etc.) not parsed; use raw text prompts.
-6. **70B streaming throughput** — ~0.02 tok/s with staging fallback; worker thread pipeline targets 0.4-0.5 tok/s (needs 70B re-test).
+6. **NVMe requires root** — `/proc/self/pagemap` needs `CAP_SYS_ADMIN` for physical address translation. Run with `sudo`.
+7. **NVMe setup required after reboot** — Must run `scripts/setup_nvme.sh` to force D0 power state + enable BusMaster before NVMe backend works.
 
 ## Phase Roadmap
 
@@ -155,14 +180,16 @@ blk.{i}.ffn_down.weight             # SwiGLU down
 Run Llama 8B Q8_0. Actual: 38.8 tok/s decode, 10.9 GB VRAM (after kernel optimization).
 
 ### Phase 2: SLEP (Streaming Layer Execution) ✅ (complete)
-Double-buffer layer streaming via PCIe. Llama 70B Q6_K on single RTX 3090 (4.2 GB VRAM).
+Double-buffer layer streaming via PCIe. Llama 70B Q6_K on single RTX 3090 (7.3 GB VRAM).
 - `src/memory/streamer.h/cu` — Pipelined engine with worker thread + double staging
-- Pinned memory: tries `cudaHostRegister` on mmap, falls back to double pinned staging
+- **gpu-nvme-direct backend**: NVMe reads directly to pinned staging at 3,315 MB/s
+- Three data paths (auto-selected): (1) mmap pinned, (2) NVMe direct, (3) CPU worker memcpy
 - Worker thread overlaps CPU memcpy (mmap→staging) with H2D DMA and GPU compute
 - `transformer.cpp` — `forward_streaming()` with 3-stage pipeline
 - Norm weights preloaded to GPU; layer weights streamed per-token
-- CLI: `--streaming` flag
+- CLI: `--streaming` flag + env vars `GPUNVME_PCI_BDF` / `GPUNVME_GGUF_LBA`
 - Q6_K GEMV kernel + embedding dequant for 70B support
+- Setup/restore scripts for NVMe VFIO binding
 
 ### Phase 3: Advanced Quantization
 RotateKV (Walsh-Hadamard + INT2 KV-cache) + adaptive per-layer precision.
@@ -185,14 +212,20 @@ Optimization, benchmarks, public C API, documentation.
 ### 8B Q8_0 (Llama 3.1 8B Instruct)
 | Mode | Decode | Prefill | VRAM |
 |------|--------|---------|------|
-| Resident | 42.2 tok/s | 42.5 tok/s | 10.9 GB |
-| Streaming | 0.9 tok/s | 0.4 tok/s | 4.2 GB |
+| Resident | 48.9 tok/s | 50.9 tok/s | 10.0 GB |
+| Streaming (mmap pinned) | 0.9 tok/s | 1.8 tok/s | 3.4 GB |
 
 ### 70B Q6_K (Llama 3.1 70B Instruct)
-| Mode | Decode | VRAM | Notes |
-|------|--------|------|-------|
-| Streaming (staging fallback) | ~0.02 tok/s | 4.2 GB | Pre-pipeline optimization |
-| Streaming (worker pipeline) | target 0.4-0.5 tok/s | 4.2 GB | Needs re-test |
+| Mode | Decode | Prefill | VRAM | Notes |
+|------|--------|---------|------|-------|
+| Streaming (mmap staging) | 0.006 tok/s | 0.01 tok/s | 7.3 GB | CPU worker memcpy bottleneck |
+| **Streaming (NVMe direct)** | **0.03 tok/s** | **0.06 tok/s** | **7.3 GB** | **3,315 MB/s, 5x faster** |
+
+### NVMe Direct Performance
+- **Sustained throughput**: 3,300–3,330 MB/s (95% of PCIe 4.0 x4 theoretical max)
+- **Per-layer read**: ~202 ms for 670 MB (80 layers, 670 NVMe commands each)
+- **Hardware**: WD SN740 512GB (DRAM-less), MDTS=1024K, pipeline depth=32
+- **Speedup vs mmap staging**: 4.7–5x (126s vs 633s total for 5 tokens)
 
 ### Performance Targets
 | Metric | Ph1 (7B) | Ph2 (70B) | Ph3 (+Quant) | Ph4 (Full) |
@@ -222,23 +255,32 @@ CUDA target SMs  = 80, 86, 89, 90
 
 ## gpu-nvme-direct Integration
 
-**Status**: Layer Loader API complete, ready for integration into LayerStreamer.
+**Status**: Fully integrated and verified. 5x speedup on 70B Q6_K.
 
 **Layer Loader API** (`../gpu-nvme-direct/include/gpunvme/layer_loader.h`):
 ```c
-gpunvme_layer_loader_init(&loader, "0000:0b:00.0", max_layer_bytes, 32);
+gpunvme_layer_loader_init(&loader, "0000:01:00.0", max_layer_bytes, 32);
 gpunvme_load_layer(&loader, start_lba, size_bytes, dest_pinned);  // repeated
 gpunvme_layer_loader_destroy(&loader);
 ```
 
-**Integration point**: `LayerStreamer::prefetch_staging()` — replace worker thread memcpy
-with `gpunvme_load_layer()`. Queue state rolls naturally between calls.
+**Integration point**: `LayerStreamer::prefetch_staging()` — NVMe reads replace worker thread
+memcpy when available. Falls back to mmap if NVMe init fails or env vars not set.
 
 **Build with NVMe**: `cmake .. -DUSE_GPUNVME=ON` (links against pre-built gpu-nvme-direct libs)
 
-**Environment variables**: `GPUNVME_PCI_BDF=0000:0b:00.0 GPUNVME_GGUF_LBA=0`
+**Environment variables**: `GPUNVME_PCI_BDF=0000:01:00.0 GPUNVME_GGUF_LBA=0`
+
+**Setup scripts**:
+- `scripts/setup_nvme.sh` — Loads VFIO, binds device, forces D0, enables BusMaster
+- `scripts/restore_nvme.sh` — Rebinds to kernel nvme driver for dd/mount
 
 **Full guide**: `GPU_NVME_DIRECT_INTEGRATION.md`
+
+## Bugs Fixed During NVMe Integration
+- **Struct layout corruption** — `#ifdef USE_GPUNVME` in `LayerStreamer` caused sizeof mismatch between compilation units, corrupting adjacent `Tokenizer` object. Fixed by ensuring consistent compile definitions across all sources.
+- **NVMe controller fatal state** — After dd + VFIO rebind, controller stuck in D3 power state. Fixed with `setup_nvme.sh` that forces D0 via `setpci` and enables BusMaster.
+- **Pagemap requires root** — `/proc/self/pagemap` physical address translation needs `CAP_SYS_ADMIN`. NVMe backend must run with sudo.
 
 ## Documentation
 - `GPU_NVME_DIRECT_INTEGRATION.md` — NVMe integration spec, dev/test guide, troubleshooting

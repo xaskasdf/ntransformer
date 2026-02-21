@@ -4,8 +4,49 @@
 #include <cstdio>
 #include <cstring>
 #include <algorithm>
+#include <sys/sysinfo.h>
 
 namespace nt {
+
+// ============================================================
+// TierConfig: auto-compute tier sizes from hardware
+// ============================================================
+TierConfig TierConfig::compute(int n_layers, size_t layer_bytes,
+                               size_t vram_reserve, size_t ram_reserve) {
+    TierConfig tc;
+    tc.layer_bytes = layer_bytes;
+
+    // Query available VRAM
+    size_t vram_free = 0, vram_total = 0;
+    cudaMemGetInfo(&vram_free, &vram_total);
+
+    // Query available RAM
+    struct sysinfo si;
+    sysinfo(&si);
+    size_t ram_free = (size_t)si.freeram * si.mem_unit +
+                      (size_t)si.bufferram * si.mem_unit;
+
+    size_t vram_avail = (vram_free > vram_reserve) ? (vram_free - vram_reserve) : 0;
+    size_t ram_avail  = (ram_free > ram_reserve) ? (ram_free - ram_reserve) : 0;
+
+    tc.n_vram = std::min(n_layers, (int)(vram_avail / layer_bytes));
+    int remaining = n_layers - tc.n_vram;
+    tc.n_ram  = std::min(remaining, (int)(ram_avail / layer_bytes));
+    tc.n_nvme = n_layers - tc.n_vram - tc.n_ram;
+
+    tc.vram_used = (size_t)tc.n_vram * layer_bytes;
+    tc.ram_used  = (size_t)tc.n_ram * layer_bytes;
+
+    return tc;
+}
+
+void TierConfig::print() const {
+    fprintf(stderr, "TierConfig: %d VRAM (%.1f GB) + %d RAM (%.1f GB) + %d NVMe\n",
+            n_vram, vram_used / (1024.0 * 1024 * 1024),
+            n_ram,  ram_used / (1024.0 * 1024 * 1024),
+            n_nvme);
+    fprintf(stderr, "  Per-layer: %.1f MB\n", layer_bytes / (1024.0 * 1024));
+}
 
 // ============================================================
 // Helper: compute byte size from GGUF tensor info
@@ -168,9 +209,100 @@ void LayerStreamer::init(const GGUFLoader& loader, const ModelConfig& config) {
 }
 
 // ============================================================
+// Init tiered: allocate VRAM + RAM caches, then init pipeline
+// ============================================================
+void LayerStreamer::init_tiered(const GGUFLoader& loader, const ModelConfig& config) {
+    // Step 1: call init() for layout parsing + double-buffer setup
+    init(loader, config);
+
+    int n_layers = config.n_layers;
+
+    // Step 2: compute tier sizes
+    tier_config_ = TierConfig::compute(n_layers, buf_size_);
+    tier_config_.print();
+
+    // Step 3: assign per-layer tiers
+    layer_tier_.resize(n_layers);
+    for (int i = 0; i < n_layers; i++) {
+        if (i < tier_config_.n_vram)
+            layer_tier_[i] = LayerTier::VRAM;
+        else if (i < tier_config_.n_vram + tier_config_.n_ram)
+            layer_tier_[i] = LayerTier::RAM;
+        else
+            layer_tier_[i] = LayerTier::NVME;
+    }
+
+    // Step 4: Tier A — allocate VRAM buffers and load from mmap
+    vram_resident_.resize(tier_config_.n_vram);
+    for (int i = 0; i < tier_config_.n_vram; i++) {
+        cudaError_t err = cudaMalloc(&vram_resident_[i], buf_size_);
+        NT_CHECK(err == cudaSuccess, "Failed to allocate VRAM resident buffer");
+
+        // Copy all 7 tensors from mmap to VRAM
+        const LayerLayout& lay = layers_[i];
+        const TensorSlot* slots[] = {
+            &lay.attn_q, &lay.attn_k, &lay.attn_v, &lay.attn_output,
+            &lay.ffn_gate, &lay.ffn_up, &lay.ffn_down
+        };
+        uint8_t* gpu_base = static_cast<uint8_t*>(vram_resident_[i]);
+        for (int t = 0; t < 7; t++) {
+            nt_cuda_memcpy_h2d(gpu_base + slots[t]->gpu_offset,
+                               slots[t]->cpu_ptr, slots[t]->nbytes);
+        }
+
+        if ((i + 1) % 10 == 0 || i == tier_config_.n_vram - 1) {
+            fprintf(stderr, "  Loaded tier A layer %d/%d to VRAM\n", i + 1, tier_config_.n_vram);
+        }
+    }
+
+    // Step 5: Tier B — allocate pinned RAM buffers and copy from mmap
+    ram_cache_.resize(tier_config_.n_ram);
+    for (int i = 0; i < tier_config_.n_ram; i++) {
+        int layer_idx = tier_config_.n_vram + i;
+        cudaError_t err = cudaMallocHost(&ram_cache_[i], buf_size_);
+        NT_CHECK(err == cudaSuccess, "Failed to allocate pinned RAM cache buffer");
+
+        // Copy all 7 tensors from mmap to pinned RAM
+        const LayerLayout& lay = layers_[layer_idx];
+        const TensorSlot* slots[] = {
+            &lay.attn_q, &lay.attn_k, &lay.attn_v, &lay.attn_output,
+            &lay.ffn_gate, &lay.ffn_up, &lay.ffn_down
+        };
+        uint8_t* ram_base = static_cast<uint8_t*>(ram_cache_[i]);
+        for (int t = 0; t < 7; t++) {
+            memcpy(ram_base + slots[t]->gpu_offset,
+                   slots[t]->cpu_ptr, slots[t]->nbytes);
+        }
+
+        if ((i + 1) % 10 == 0 || i == tier_config_.n_ram - 1) {
+            fprintf(stderr, "  Loaded tier B layer %d/%d to pinned RAM\n",
+                    i + 1, tier_config_.n_ram);
+        }
+    }
+
+    tiered_mode_ = true;
+
+    fprintf(stderr, "LayerStreamer: tiered init complete\n");
+    fprintf(stderr, "  Free VRAM: %.1f GB\n",
+            CUDADevice::instance().free_vram() / (1024.0 * 1024 * 1024));
+}
+
+// ============================================================
 // Shutdown: free everything
 // ============================================================
 void LayerStreamer::shutdown() {
+    // Free tier caches
+    for (auto* p : vram_resident_) {
+        if (p) cudaFree(p);
+    }
+    vram_resident_.clear();
+    for (auto* p : ram_cache_) {
+        if (p) cudaFreeHost(p);
+    }
+    ram_cache_.clear();
+    layer_tier_.clear();
+    tiered_mode_ = false;
+
 #ifdef USE_GPUNVME
     if (nvme_initialized_) {
         gpunvme_layer_loader_destroy(&nvme_loader_);
@@ -272,6 +404,47 @@ LayerWeightPtrs LayerStreamer::get_weights(int slot) const {
 }
 
 // ============================================================
+// Get weight pointers for a VRAM-resident layer (tier A)
+// ============================================================
+LayerWeightPtrs LayerStreamer::get_resident_weights(int layer_idx) const {
+    NT_CHECK(tiered_mode_ && layer_idx < tier_config_.n_vram,
+             "get_resident_weights: layer not VRAM-resident");
+
+    const LayerLayout& lay = layers_[layer_idx];
+    const uint8_t* gpu_base = static_cast<const uint8_t*>(vram_resident_[layer_idx]);
+
+    LayerWeightPtrs wp;
+    wp.attn_q       = gpu_base + lay.attn_q.gpu_offset;
+    wp.attn_q_dtype = lay.attn_q.dtype;
+    wp.attn_k       = gpu_base + lay.attn_k.gpu_offset;
+    wp.attn_k_dtype = lay.attn_k.dtype;
+    wp.attn_v       = gpu_base + lay.attn_v.gpu_offset;
+    wp.attn_v_dtype = lay.attn_v.dtype;
+    wp.attn_output  = gpu_base + lay.attn_output.gpu_offset;
+    wp.attn_o_dtype = lay.attn_output.dtype;
+    wp.ffn_gate       = gpu_base + lay.ffn_gate.gpu_offset;
+    wp.ffn_gate_dtype = lay.ffn_gate.dtype;
+    wp.ffn_up         = gpu_base + lay.ffn_up.gpu_offset;
+    wp.ffn_up_dtype   = lay.ffn_up.dtype;
+    wp.ffn_down       = gpu_base + lay.ffn_down.gpu_offset;
+    wp.ffn_down_dtype = lay.ffn_down.dtype;
+
+    return wp;
+}
+
+// ============================================================
+// Tier query helpers
+// ============================================================
+bool LayerStreamer::is_vram_resident(int layer_idx) const {
+    return tiered_mode_ && layer_idx < tier_config_.n_vram;
+}
+
+LayerTier LayerStreamer::layer_tier(int layer_idx) const {
+    if (!tiered_mode_) return LayerTier::NVME;
+    return layer_tier_[layer_idx];
+}
+
+// ============================================================
 // Helper: compute total contiguous transfer size for a layer
 // ============================================================
 size_t LayerStreamer::layer_transfer_size(int layer_idx) const {
@@ -336,6 +509,11 @@ void LayerStreamer::memcpy_layer_to_staging(int layer_idx, int slot) {
 // Queue background CPU memcpy (non-blocking)
 // ============================================================
 void LayerStreamer::prefetch_staging(int layer_idx, int slot) {
+    if (tiered_mode_ && layer_tier_[layer_idx] != LayerTier::NVME) {
+        // VRAM and RAM layers don't need staging
+        return;
+    }
+
     if (mmap_pinned_) return;  // No staging needed — direct DMA path
 
 #ifdef USE_GPUNVME
@@ -372,6 +550,15 @@ void LayerStreamer::begin_h2d(int layer_idx, int slot) {
     NT_CHECK(layer_idx >= 0 && layer_idx < (int)layers_.size(), "Layer index out of range");
     NT_CHECK(slot == 0 || slot == 1, "Slot must be 0 or 1");
 
+    // Tier A: VRAM resident — no transfer needed, just record event
+    if (tiered_mode_ && layer_tier_[layer_idx] == LayerTier::VRAM) {
+        current_layer_[slot] = layer_idx;
+        auto& dev = CUDADevice::instance();
+        StreamType xfer = (slot == 0) ? STREAM_TRANSFER0 : STREAM_TRANSFER1;
+        dev.record_event(transfer_done_[slot], xfer);
+        return;
+    }
+
     current_layer_[slot] = layer_idx;
 
     auto& dev = CUDADevice::instance();
@@ -382,6 +569,16 @@ void LayerStreamer::begin_h2d(int layer_idx, int slot) {
 
     uint8_t* gpu_base = static_cast<uint8_t*>(gpu_buf_[slot]);
 
+    // Tier B: async H2D from pinned RAM cache
+    if (tiered_mode_ && layer_tier_[layer_idx] == LayerTier::RAM) {
+        int ram_idx = layer_idx - tier_config_.n_vram;
+        size_t total = layer_transfer_size(layer_idx);
+        dev.memcpy_h2d_async(gpu_base, ram_cache_[ram_idx], total, xfer);
+        dev.record_event(transfer_done_[slot], xfer);
+        return;
+    }
+
+    // Tier C / legacy: from mmap or staging buffer
     if (mmap_pinned_) {
         // Direct async copy from pinned mmap to GPU
         const LayerLayout& lay = layers_[layer_idx];
