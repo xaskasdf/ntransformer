@@ -364,7 +364,8 @@ void launch_attention_decode(
     int block_size = 256;
     if (seq_len > 1024) block_size = 512;
 
-    size_t smem_size = seq_len * sizeof(float);
+    // Use max_seq for smem to keep CUDA graph topology stable across tokens
+    size_t smem_size = max_seq * sizeof(float);
     dim3 grid(n_heads);
 
     attention_decode_generic_kernel<<<grid, block_size, smem_size, s>>>(

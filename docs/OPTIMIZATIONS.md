@@ -190,15 +190,34 @@ May be useful for smaller/distilled models or future MoE architectures.
 ---
 
 ### OPT-7: CUDA Graphs (kernel launch overhead)
-**Status**: To implement
+**Status**: TESTED — NO EFFECT (kernel launch overhead fully hidden by GPU compute)
 **Expected**: ~1% speedup (5ms saved per token)
-**Effort**: ~50 lines
+**Measured**: 0% speedup — 49.0 tok/s with and without graphs (8B resident)
 
-80 layers × ~10 kernels × ~7µs launch overhead = 5.6ms.
-With CUDA Graphs: capture once, replay with near-zero overhead.
+Implemented re-capture approach: capture layer loop as CUDA graph each token,
+`cudaGraphExecUpdate` for fast parameter update, single `cudaGraphLaunch`.
 
-Only useful after H2D bottleneck is resolved (currently 5.6ms / 5500ms = 0.1%).
-Becomes relevant when compute dominates (e.g., after zero-copy + speculative).
+**Measured timing breakdown (8B, 32 layers, 482 kernel nodes):**
+```
+Graph capture:        250µs  (CPU records 482 kernel launches)
+Graph exec update:     25µs  (topology match, update params in-place)
+Graph launch + sync: 19700µs (GPU executes all kernels)
+Total:               19970µs
+```
+
+**Why it doesn't help**: Kernel launch overhead (~5µs × 482 = 2.4ms) is fully
+hidden by GPU computation (19.7ms). The CPU queues kernels 8× faster than the
+GPU executes them — the GPU never stalls waiting for the next kernel. CUDA
+graphs eliminate CPU→GPU submission overhead, but that overhead was already
+overlapped with GPU execution via the asynchronous launch pipeline.
+
+CUDA graphs would only help if:
+- Kernels were very short (sub-100µs, e.g., tiny matmuls or element-wise ops)
+- The CPU were busy with other work and couldn't feed the GPU fast enough
+- Multi-GPU where inter-device synchronization dominates
+
+For this workload, each GEMV takes ~0.5ms (8B) to ~2ms (70B), far exceeding
+the ~5µs launch overhead. The CPU pipeline is never the bottleneck.
 
 ---
 
