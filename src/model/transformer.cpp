@@ -4,7 +4,6 @@
 #include <cuda_runtime.h>
 #include <cstdio>
 #include <cstring>
-#include <cmath>
 
 namespace nt {
 
@@ -313,13 +312,13 @@ void Transformer::allocate_buffers() {
     fprintf(stderr, "Allocating buffers (max_seq=%d, hidden=%d, n_kv=%d, hd=%d)...\n",
         max_seq, hidden, n_kv, hd);
 
-    // KV cache: [n_layers, max_seq, n_kv_heads, head_dim] for both K and V
+    // KV cache: [n_layers, max_seq, n_kv_heads, head_dim] for both K and V (F16)
     size_t kv_layer_size = (size_t)max_seq * n_kv * hd;
-    fprintf(stderr, "  KV cache: %.1f MB total... ",
-        kv_layer_size * sizeof(float) * 2 * n_layers / (1024.0 * 1024));
+    fprintf(stderr, "  KV cache (F16): %.1f MB total... ",
+        kv_layer_size * sizeof(float16_t) * 2 * n_layers / (1024.0 * 1024));
     fflush(stderr);
-    k_cache_ = Tensor::zeros({n_layers, max_seq, n_kv, hd}, DType::F32, Device::CUDA);
-    v_cache_ = Tensor::zeros({n_layers, max_seq, n_kv, hd}, DType::F32, Device::CUDA);
+    k_cache_ = Tensor::zeros({n_layers, max_seq, n_kv, hd}, DType::F16, Device::CUDA);
+    v_cache_ = Tensor::zeros({n_layers, max_seq, n_kv, hd}, DType::F16, Device::CUDA);
     fprintf(stderr, "OK\n");
 
     // Hidden state buffers
@@ -554,8 +553,8 @@ float* Transformer::forward(const int* tokens, int seq_len, int start_pos) {
         // === Attention sub-block with residual connection ===
         layer.attn_norm.forward(residual, hidden_state, seq_len, stream);
 
-        float* k_cache_layer = k_cache_.data_as<float>() + i * kv_layer_stride;
-        float* v_cache_layer = v_cache_.data_as<float>() + i * kv_layer_stride;
+        float16_t* k_cache_layer = k_cache_.data_as<float16_t>() + i * kv_layer_stride;
+        float16_t* v_cache_layer = v_cache_.data_as<float16_t>() + i * kv_layer_stride;
 
         layer.attention.forward(
             residual, residual, seq_len, start_pos,
@@ -623,7 +622,7 @@ float* Transformer::forward_streaming(const int* tokens, int seq_len, int start_
     int n_kv = config_.n_kv_heads;
     int hd = config_.head_dim;
     int max_seq = config_.max_seq_len;
-    size_t kv_layer_stride = max_seq * n_kv * hd;
+    size_t kv_layer_stride = (size_t)max_seq * n_kv * hd;
 
     // Pre-fill: kick worker to fill staging[0] with layer 0
     streamer_.prefetch_staging(0, 0);
@@ -673,8 +672,8 @@ float* Transformer::forward_streaming(const int* tokens, int seq_len, int start_
         // === Attention sub-block ===
         layer.attn_norm.forward(residual, hidden_state, seq_len, stream);
 
-        float* k_cache_layer = k_cache_.data_as<float>() + i * kv_layer_stride;
-        float* v_cache_layer = v_cache_.data_as<float>() + i * kv_layer_stride;
+        float16_t* k_cache_layer = k_cache_.data_as<float16_t>() + i * kv_layer_stride;
+        float16_t* v_cache_layer = v_cache_.data_as<float16_t>() + i * kv_layer_stride;
 
         layer.attention.forward(
             residual, residual, seq_len, start_pos,
@@ -767,8 +766,8 @@ float* Transformer::forward_tiered(const int* tokens, int seq_len, int start_pos
         TransformerLayer& layer = layers_[i];
         int n = seq_len * hidden;
 
-        float* k_cache_layer = k_cache_.data_as<float>() + i * kv_layer_stride;
-        float* v_cache_layer = v_cache_.data_as<float>() + i * kv_layer_stride;
+        float16_t* k_cache_layer = k_cache_.data_as<float16_t>() + i * kv_layer_stride;
+        float16_t* v_cache_layer = v_cache_.data_as<float16_t>() + i * kv_layer_stride;
 
         // Save hidden state for calibration
         bool do_measure_a = calibrating && (i >= n_layers / 4) && seq_len == 1;
@@ -807,8 +806,8 @@ float* Transformer::forward_tiered(const int* tokens, int seq_len, int start_pos
         TransformerLayer& layer = layers_[i];
         int n = seq_len * hidden;
 
-        float* k_cache_layer = k_cache_.data_as<float>() + i * kv_layer_stride;
-        float* v_cache_layer = v_cache_.data_as<float>() + i * kv_layer_stride;
+        float16_t* k_cache_layer = k_cache_.data_as<float16_t>() + i * kv_layer_stride;
+        float16_t* v_cache_layer = v_cache_.data_as<float16_t>() + i * kv_layer_stride;
 
         // Save hidden state for calibration/early exit
         bool do_measure = (calibrating || check_early_exit) &&
@@ -832,6 +831,7 @@ float* Transformer::forward_tiered(const int* tokens, int seq_len, int start_pos
 
         // Set weights from double-buffer slot
         LayerWeightPtrs wp = streamer_.get_weights(slot);
+
         layer.attention.set_weights(
             wp.attn_q, wp.attn_k, wp.attn_v, wp.attn_output,
             wp.attn_q_dtype, wp.attn_k_dtype, wp.attn_v_dtype, wp.attn_o_dtype);

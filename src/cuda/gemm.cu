@@ -153,7 +153,9 @@ __global__ void gemv_q8_0_kernel(
 
 // ----------------------------------------------------------
 // Q4_K_M GEMV: 256 weights per super-block
+// USE_SMEM=false fallback for large in_features (e.g. ffn_down 28672 > 64KB smem)
 // ----------------------------------------------------------
+template<bool USE_SMEM = true>
 __global__ void gemv_q4_k_kernel(
     float* __restrict__ y,
     const void* __restrict__ W,
@@ -168,11 +170,14 @@ __global__ void gemv_q4_k_kernel(
     const int flat_id = warp_id * 32 + tid;
     const int nthreads = blockDim.y * 32;
 
-    // Cooperatively load x into shared memory
-    for (int i = flat_id; i < in_features; i += nthreads) {
-        sx[i] = x[i];
+    if constexpr (USE_SMEM) {
+        for (int i = flat_id; i < in_features; i += nthreads) {
+            sx[i] = x[i];
+        }
+        __syncthreads();
     }
-    __syncthreads();
+
+    const float* xv = USE_SMEM ? sx : x;
 
     const int row = blockIdx.x * blockDim.y + warp_id;
     if (row >= out_features) return;
@@ -212,8 +217,8 @@ __global__ void gemv_q4_k_kernel(
                 uint8_t byte = block.qs[sb * 16 + j];
                 int lo = byte & 0x0F;
                 int hi = byte >> 4;
-                sub_sum += lo * sx[sub_base + j] + hi * sx[sub_base + j + 16];
-                sub_sum_x += sx[sub_base + j] + sx[sub_base + j + 16];
+                sub_sum += lo * xv[sub_base + j] + hi * xv[sub_base + j + 16];
+                sub_sum_x += xv[sub_base + j] + xv[sub_base + j + 16];
             }
 
             block_sum += sub_d * sub_sum - sub_m * sub_sum_x;
@@ -535,7 +540,7 @@ static void ensure_smem_config() {
     if (s_smem_configured) return;
     cudaFuncSetAttribute((const void*)gemv_q4_0_kernel, cudaFuncAttributeMaxDynamicSharedMemorySize, MAX_SMEM);
     cudaFuncSetAttribute((const void*)gemv_q8_0_kernel, cudaFuncAttributeMaxDynamicSharedMemorySize, MAX_SMEM);
-    cudaFuncSetAttribute((const void*)gemv_q4_k_kernel, cudaFuncAttributeMaxDynamicSharedMemorySize, MAX_SMEM);
+    cudaFuncSetAttribute((const void*)gemv_q4_k_kernel<true>, cudaFuncAttributeMaxDynamicSharedMemorySize, MAX_SMEM);
     cudaFuncSetAttribute((const void*)gemv_q6_k_kernel<true>, cudaFuncAttributeMaxDynamicSharedMemorySize, MAX_SMEM);
     cudaFuncSetAttribute((const void*)gemv_f16_kernel,  cudaFuncAttributeMaxDynamicSharedMemorySize, MAX_SMEM);
     cudaFuncSetAttribute((const void*)gemv_f32_kernel,  cudaFuncAttributeMaxDynamicSharedMemorySize, MAX_SMEM);
@@ -566,7 +571,11 @@ void launch_gemv(
             gemv_q8_0_kernel<<<grid, block, smem, s>>>(y, W, x, out_features, in_features);
             break;
         case DType::Q4_K_M:
-            gemv_q4_k_kernel<<<grid, block, smem, s>>>(y, W, x, out_features, in_features);
+            if (smem <= MAX_SMEM) {
+                gemv_q4_k_kernel<true><<<grid, block, smem, s>>>(y, W, x, out_features, in_features);
+            } else {
+                gemv_q4_k_kernel<false><<<grid, block, 0, s>>>(y, W, x, out_features, in_features);
+            }
             break;
         case DType::Q6_K:
             if (smem <= MAX_SMEM) {

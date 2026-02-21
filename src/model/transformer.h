@@ -62,6 +62,9 @@ public:
     // First token calibrates which layers to skip; subsequent tokens skip them
     void set_layer_skip(float threshold);
 
+    // Compressed transfer: requantize Q6_K → Q4_K_M for tier B (call before load)
+    void set_requant_q4k(bool enable) { streamer_.set_requant_q4k(enable); }
+
 private:
     ModelConfig config_;
     GGUFLoader loader_;

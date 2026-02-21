@@ -88,8 +88,8 @@ void Attention::forward(
     const float* input,
     int seq_len,
     int start_pos,
-    float* k_cache,
-    float* v_cache,
+    void* k_cache,
+    void* v_cache,
     const int* positions,
     void* stream
 ) {

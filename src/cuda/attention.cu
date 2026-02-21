@@ -23,8 +23,8 @@ template<int HEAD_DIM, int BLOCK_SIZE>
 __global__ void flash_decode_kernel(
     float* __restrict__ output,          // [n_heads, head_dim]
     const float* __restrict__ q,         // [n_heads, head_dim]
-    const float* __restrict__ k_cache,   // [max_seq, n_kv_heads, head_dim]
-    const float* __restrict__ v_cache,   // [max_seq, n_kv_heads, head_dim]
+    const half* __restrict__ k_cache,    // [max_seq, n_kv_heads, head_dim] F16
+    const half* __restrict__ v_cache,    // [max_seq, n_kv_heads, head_dim] F16
     int seq_len,                          // current sequence length
     int n_heads,
     int n_kv_heads,
@@ -59,14 +59,14 @@ __global__ void flash_decode_kernel(
 
     // Iterate over KV cache positions
     for (int pos = tid; pos < seq_len; pos += BLOCK_SIZE) {
-        const float* k_pos = k_cache + pos * n_kv_heads * HEAD_DIM + kv_head * HEAD_DIM;
-        const float* v_pos = v_cache + pos * n_kv_heads * HEAD_DIM + kv_head * HEAD_DIM;
+        const half* k_pos = k_cache + pos * n_kv_heads * HEAD_DIM + kv_head * HEAD_DIM;
+        const half* v_pos = v_cache + pos * n_kv_heads * HEAD_DIM + kv_head * HEAD_DIM;
 
         // Compute attention score: dot(q, k) * scale
         float score = 0.0f;
         #pragma unroll
         for (int d = 0; d < HEAD_DIM; d++) {
-            score += s_q[d] * k_pos[d];
+            score += s_q[d] * __half2float(k_pos[d]);
         }
         score *= scale;
 
@@ -82,7 +82,7 @@ __global__ void flash_decode_kernel(
             int d = i * BLOCK_SIZE + tid;
             if (d < HEAD_DIM) {
                 local_acc[i] = local_acc[i] * (l_prev * exp_prev / fmaxf(l_new, 1e-10f))
-                             + (exp_curr / fmaxf(l_new, 1e-10f)) * v_pos[d];
+                             + (exp_curr / fmaxf(l_new, 1e-10f)) * __half2float(v_pos[d]);
             }
         }
 
@@ -108,8 +108,8 @@ __global__ void flash_decode_kernel(
 __global__ void attention_decode_generic_kernel(
     float* __restrict__ output,
     const float* __restrict__ q,
-    const float* __restrict__ k_cache,
-    const float* __restrict__ v_cache,
+    const half* __restrict__ k_cache,
+    const half* __restrict__ v_cache,
     int seq_len,
     int n_heads,
     int n_kv_heads,
@@ -128,10 +128,10 @@ __global__ void attention_decode_generic_kernel(
 
     // Phase 1: compute all attention scores
     for (int pos = tid; pos < seq_len; pos += blockDim.x) {
-        const float* k_pos = k_cache + pos * n_kv_heads * head_dim + kv_head * head_dim;
+        const half* k_pos = k_cache + pos * n_kv_heads * head_dim + kv_head * head_dim;
         float score = 0.0f;
         for (int d = 0; d < head_dim; d++) {
-            score += q_head[d] * k_pos[d];
+            score += q_head[d] * __half2float(k_pos[d]);
         }
         smem[pos] = score * scale;
     }
@@ -194,8 +194,8 @@ __global__ void attention_decode_generic_kernel(
     for (int d = tid; d < head_dim; d += blockDim.x) {
         float sum = 0.0f;
         for (int pos = 0; pos < seq_len; pos++) {
-            const float* v_pos = v_cache + pos * n_kv_heads * head_dim + kv_head * head_dim;
-            sum += smem[pos] * v_pos[d];
+            const half* v_pos = v_cache + pos * n_kv_heads * head_dim + kv_head * head_dim;
+            sum += smem[pos] * __half2float(v_pos[d]);
         }
         output[head * head_dim + d] = sum;
     }
@@ -216,8 +216,8 @@ __global__ void attention_decode_generic_kernel(
 __global__ void attention_prefill_kernel(
     float* __restrict__ output,
     const float* __restrict__ Q,           // [seq_len, n_heads, head_dim]
-    const float* __restrict__ k_cache,     // [max_seq, n_kv_heads, head_dim]
-    const float* __restrict__ v_cache,     // [max_seq, n_kv_heads, head_dim]
+    const half* __restrict__ k_cache,      // [max_seq, n_kv_heads, head_dim] F16
+    const half* __restrict__ v_cache,      // [max_seq, n_kv_heads, head_dim] F16
     int seq_len,
     int start_pos,
     int n_heads,
@@ -240,10 +240,10 @@ __global__ void attention_prefill_kernel(
 
     // Compute scores: Q dot K for all positions 0..q_abs from cache
     for (int k_pos = tid; k_pos < n_keys; k_pos += blockDim.x) {
-        const float* k_vec = k_cache + k_pos * n_kv_heads * head_dim + kv_head * head_dim;
+        const half* k_vec = k_cache + k_pos * n_kv_heads * head_dim + kv_head * head_dim;
         float score = 0.0f;
         for (int d = 0; d < head_dim; d++) {
-            score += q_vec[d] * k_vec[d];
+            score += q_vec[d] * __half2float(k_vec[d]);
         }
         smem[k_pos] = score * scale;
     }
@@ -303,8 +303,8 @@ __global__ void attention_prefill_kernel(
     for (int d = tid; d < head_dim; d += blockDim.x) {
         float sum = 0.0f;
         for (int pos = 0; pos < n_keys; pos++) {
-            const float* v_vec = v_cache + pos * n_kv_heads * head_dim + kv_head * head_dim;
-            sum += smem[pos] * v_vec[d];
+            const half* v_vec = v_cache + pos * n_kv_heads * head_dim + kv_head * head_dim;
+            sum += smem[pos] * __half2float(v_vec[d]);
         }
         out_vec[d] = sum;
     }
@@ -314,9 +314,9 @@ __global__ void attention_prefill_kernel(
 // Copy Q/K/V to cache kernel
 // ============================================================
 __global__ void copy_to_kv_cache_kernel(
-    float* __restrict__ k_cache,  // [max_seq, n_kv_heads, head_dim]
-    float* __restrict__ v_cache,
-    const float* __restrict__ k,  // [seq_len, n_kv_heads, head_dim]
+    half* __restrict__ k_cache,   // [max_seq, n_kv_heads, head_dim] F16
+    half* __restrict__ v_cache,
+    const float* __restrict__ k,  // [seq_len, n_kv_heads, head_dim] F32
     const float* __restrict__ v,
     int seq_len,
     int n_kv_heads,
@@ -335,8 +335,8 @@ __global__ void copy_to_kv_cache_kernel(
         int cache_pos = start_pos + seq;
         if (cache_pos < max_seq) {
             int cache_idx = cache_pos * n_kv_heads * head_dim + kv_head * head_dim + d;
-            k_cache[cache_idx] = k[idx];
-            v_cache[cache_idx] = v[idx];
+            k_cache[cache_idx] = __float2half(k[idx]);
+            v_cache[cache_idx] = __float2half(v[idx]);
         }
     }
 }
@@ -348,8 +348,8 @@ __global__ void copy_to_kv_cache_kernel(
 void launch_attention_decode(
     float* output,
     const float* q,
-    const float* k_cache,
-    const float* v_cache,
+    const void* k_cache_v,
+    const void* v_cache_v,
     int seq_len,
     int n_heads,
     int n_kv_heads,
@@ -359,6 +359,8 @@ void launch_attention_decode(
     void* stream
 ) {
     cudaStream_t s = static_cast<cudaStream_t>(stream);
+    const half* k_cache = static_cast<const half*>(k_cache_v);
+    const half* v_cache = static_cast<const half*>(v_cache_v);
 
     // Use generic kernel - works for any head_dim
     int block_size = 256;
@@ -375,8 +377,8 @@ void launch_attention_decode(
 void launch_attention_prefill(
     float* output,
     const float* Q,
-    const float* k_cache,
-    const float* v_cache,
+    const void* k_cache_v,
+    const void* v_cache_v,
     int seq_len,
     int start_pos,
     int n_heads,
@@ -387,6 +389,8 @@ void launch_attention_prefill(
     void* stream
 ) {
     cudaStream_t s = static_cast<cudaStream_t>(stream);
+    const half* k_cache = static_cast<const half*>(k_cache_v);
+    const half* v_cache = static_cast<const half*>(v_cache_v);
 
     int block_size = 256;
     int total_seq = start_pos + seq_len;
@@ -399,8 +403,8 @@ void launch_attention_prefill(
 }
 
 void launch_copy_to_kv_cache(
-    float* k_cache,
-    float* v_cache,
+    void* k_cache_v,
+    void* v_cache_v,
     const float* k,
     const float* v,
     int seq_len,
@@ -411,6 +415,8 @@ void launch_copy_to_kv_cache(
     void* stream
 ) {
     cudaStream_t s = static_cast<cudaStream_t>(stream);
+    half* k_cache = static_cast<half*>(k_cache_v);
+    half* v_cache = static_cast<half*>(v_cache_v);
     int total = seq_len * n_kv_heads * head_dim;
     int block = 256;
     int grid = (total + block - 1) / block;

@@ -3,10 +3,150 @@
 #include <cuda_runtime.h>
 #include <cstdio>
 #include <cstring>
+#include <cmath>
 #include <algorithm>
 #include <sys/sysinfo.h>
 
 namespace nt {
+
+// ============================================================
+// CPU-side FP16 helpers (no CUDA needed)
+// ============================================================
+static float fp16_to_f32(uint16_t h) {
+    uint32_t sign = (h >> 15) & 1;
+    int32_t  exp  = (h >> 10) & 0x1F;
+    uint32_t mant = h & 0x3FF;
+    uint32_t f;
+    if (exp == 0) {
+        if (mant == 0) f = sign << 31;
+        else { exp = 1; while (!(mant & 0x400)) { mant <<= 1; exp--; } mant &= 0x3FF;
+               f = (sign << 31) | ((uint32_t)(exp + 127 - 15) << 23) | (mant << 13); }
+    } else if (exp == 31) f = (sign << 31) | 0x7F800000 | (mant << 13);
+    else f = (sign << 31) | ((uint32_t)(exp + 127 - 15) << 23) | (mant << 13);
+    float r; memcpy(&r, &f, 4); return r;
+}
+static uint16_t f32_to_fp16(float val) {
+    uint32_t f; memcpy(&f, &val, 4);
+    uint32_t sign = (f >> 16) & 0x8000;
+    int32_t  exp  = ((f >> 23) & 0xFF) - 127 + 15;
+    uint32_t mant = f & 0x7FFFFF;
+    if (exp <= 0) return (uint16_t)sign;  // flush to zero
+    if (exp >= 31) return (uint16_t)(sign | 0x7C00);  // infinity
+    return (uint16_t)(sign | (exp << 10) | (mant >> 13));
+}
+
+// ============================================================
+// Q6_K → Q4_K_M in-place requantization
+// ============================================================
+size_t LayerStreamer::requantize_q6k_to_q4km(void* data, size_t nbytes_q6k) {
+    size_t n_blocks = nbytes_q6k / sizeof(BlockQ6_K);
+    if (n_blocks == 0 || nbytes_q6k % sizeof(BlockQ6_K) != 0) return nbytes_q6k;
+
+    const uint8_t* src = static_cast<const uint8_t*>(data);
+    uint8_t* dst = static_cast<uint8_t*>(data);  // in-place safe: Q4_K (144) < Q6_K (210)
+
+    for (size_t b = 0; b < n_blocks; b++) {
+        const BlockQ6_K* q6 = reinterpret_cast<const BlockQ6_K*>(src + b * sizeof(BlockQ6_K));
+        BlockQ4_K* q4 = reinterpret_cast<BlockQ4_K*>(dst + b * sizeof(BlockQ4_K));
+
+        // Step 1: Dequantize Q6_K block → 256 floats
+        float vals[256];
+        float d = fp16_to_f32(q6->d);
+        const uint8_t* ql = q6->ql;
+        const uint8_t* qh = q6->qh;
+        const int8_t*  sc = q6->scales;
+        float* y = vals;
+
+        for (int half = 0; half < 2; half++) {
+            for (int l = 0; l < 32; l++) {
+                int is = l / 16;
+                int q1 = (int)((ql[l]     & 0xF) | (((qh[l] >> 0) & 3) << 4)) - 32;
+                int q2 = (int)((ql[l+32]  & 0xF) | (((qh[l] >> 2) & 3) << 4)) - 32;
+                int q3 = (int)((ql[l]      >> 4) | (((qh[l] >> 4) & 3) << 4)) - 32;
+                int q4i = (int)((ql[l+32]  >> 4) | (((qh[l] >> 6) & 3) << 4)) - 32;
+                y[l]      = d * (float)sc[is + 0] * q1;
+                y[l + 32] = d * (float)sc[is + 2] * q2;
+                y[l + 64] = d * (float)sc[is + 4] * q3;
+                y[l + 96] = d * (float)sc[is + 6] * q4i;
+            }
+            y += 128; ql += 64; qh += 32; sc += 8;
+        }
+
+        // Step 2: Quantize 256 floats → Q4_K_M block
+        // 8 sub-blocks of 32 values each
+        float sub_scales[8], sub_mins[8];
+        for (int sb = 0; sb < 8; sb++) {
+            float mn = vals[sb * 32], mx = vals[sb * 32];
+            for (int j = 1; j < 32; j++) {
+                float v = vals[sb * 32 + j];
+                if (v < mn) mn = v;
+                if (v > mx) mx = v;
+            }
+            sub_scales[sb] = (mx - mn) / 15.0f;
+            sub_mins[sb] = -mn;
+            if (sub_scales[sb] < 1e-10f) sub_scales[sb] = 1e-10f;
+        }
+
+        // Find super-block scales
+        float max_scale = 0.0f, max_min = 0.0f;
+        for (int sb = 0; sb < 8; sb++) {
+            if (sub_scales[sb] > max_scale) max_scale = sub_scales[sb];
+            if (sub_mins[sb] > max_min) max_min = sub_mins[sb];
+        }
+
+        q4->d    = f32_to_fp16(max_scale > 0 ? max_scale / 63.0f : 0.0f);
+        q4->dmin = f32_to_fp16(max_min > 0 ? max_min / 63.0f : 0.0f);
+
+        float inv_d    = max_scale > 0 ? 63.0f / max_scale : 0.0f;
+        float inv_dmin = max_min > 0 ? 63.0f / max_min : 0.0f;
+
+        // Compute and pack 6-bit sub-block scales and mins
+        uint8_t sc6[8], m6[8];
+        for (int sb = 0; sb < 8; sb++) {
+            int s = (int)(sub_scales[sb] * inv_d + 0.5f);
+            int m = (int)(sub_mins[sb] * inv_dmin + 0.5f);
+            sc6[sb] = (uint8_t)(s < 0 ? 0 : s > 63 ? 63 : s);
+            m6[sb]  = (uint8_t)(m < 0 ? 0 : m > 63 ? 63 : m);
+        }
+
+        // Pack scales[12] (Q4_K_M format)
+        for (int sb = 0; sb < 4; sb++) {
+            q4->scales[sb]     = sc6[sb] | ((sc6[sb + 4] & 0x30) << 2);
+            q4->scales[sb + 4] = m6[sb]  | ((m6[sb + 4] & 0x30) << 2);
+        }
+        q4->scales[8]  = (sc6[4] & 0x0F) | ((m6[4] & 0x0F) << 4);
+        q4->scales[9]  = (sc6[5] & 0x0F) | ((m6[5] & 0x0F) << 4);
+        q4->scales[10] = (sc6[6] & 0x0F) | ((m6[6] & 0x0F) << 4);
+        q4->scales[11] = (sc6[7] & 0x0F) | ((m6[7] & 0x0F) << 4);
+
+        // Reconstruct actual scales for quantization
+        float actual_d = fp16_to_f32(q4->d);
+        float actual_dmin = fp16_to_f32(q4->dmin);
+
+        // Quantize each sub-block into 4-bit nibbles
+        memset(q4->qs, 0, 128);
+        for (int sb = 0; sb < 8; sb++) {
+            float sd = actual_d * sc6[sb];
+            float sm = actual_dmin * m6[sb];
+            float inv_sd = sd > 1e-10f ? 1.0f / sd : 0.0f;
+
+            for (int j = 0; j < 16; j++) {
+                // Each byte stores two nibbles: weights j and j+16 of the sub-block
+                float v_lo = vals[sb * 32 + j];
+                float v_hi = vals[sb * 32 + j + 16];
+
+                int q_lo = (int)((v_lo + sm) * inv_sd + 0.5f);
+                int q_hi = (int)((v_hi + sm) * inv_sd + 0.5f);
+                q_lo = q_lo < 0 ? 0 : q_lo > 15 ? 15 : q_lo;
+                q_hi = q_hi < 0 ? 0 : q_hi > 15 ? 15 : q_hi;
+
+                q4->qs[sb * 16 + j] = (uint8_t)(q_lo | (q_hi << 4));
+            }
+        }
+    }
+
+    return n_blocks * sizeof(BlockQ4_K);
+}
 
 // ============================================================
 // TierConfig: auto-compute tier sizes from hardware
@@ -53,6 +193,26 @@ TierConfig TierConfig::compute(int n_layers, size_t layer_bytes,
     tc.n_vram = std::min(n_layers, (int)(vram_avail / layer_bytes));
     int remaining = n_layers - tc.n_vram;
     tc.n_ram  = std::min(remaining, (int)(ram_avail / layer_bytes));
+
+    // Allow env var overrides to cap tier A/B (forces layers to tier C for testing)
+    const char* max_vram_str = getenv("GPUNVME_MAX_VRAM_LAYERS");
+    const char* max_ram_str  = getenv("GPUNVME_MAX_RAM_LAYERS");
+    if (max_vram_str) {
+        int cap = atoi(max_vram_str);
+        if (cap >= 0 && cap < tc.n_vram) {
+            fprintf(stderr, "TierConfig: GPUNVME_MAX_VRAM_LAYERS=%d (was %d)\n", cap, tc.n_vram);
+            tc.n_vram = cap;
+        }
+    }
+    if (max_ram_str) {
+        int cap = atoi(max_ram_str);
+        remaining = n_layers - tc.n_vram;
+        if (cap >= 0 && cap < tc.n_ram) {
+            fprintf(stderr, "TierConfig: GPUNVME_MAX_RAM_LAYERS=%d (was %d)\n", cap, tc.n_ram);
+            tc.n_ram = std::min(remaining, cap);
+        }
+    }
+
     tc.n_nvme = n_layers - tc.n_vram - tc.n_ram;
 
     tc.vram_used = (size_t)tc.n_vram * layer_bytes;
@@ -116,10 +276,11 @@ void LayerStreamer::init(const GGUFLoader& loader, const ModelConfig& config) {
             // Align offset to 256 bytes for efficient GPU access
             offset = (offset + 255) & ~(size_t)255;
 
-            slots[t]->gpu_offset = offset;
-            slots[t]->cpu_ptr    = loader.tensor_data(name);
-            slots[t]->nbytes     = info->nbytes;
-            slots[t]->dtype      = ggml_to_dtype(info->ggml_type);
+            slots[t]->gpu_offset    = offset;
+            slots[t]->cpu_ptr       = loader.tensor_data(name);
+            slots[t]->nbytes        = info->nbytes;
+            slots[t]->xfer_nbytes   = info->nbytes;  // may be reduced by requantization
+            slots[t]->dtype         = ggml_to_dtype(info->ggml_type);
 
             NT_CHECK(slots[t]->cpu_ptr != nullptr, ("Null data for tensor: " + name).c_str());
 
@@ -200,27 +361,83 @@ void LayerStreamer::init(const GGUFLoader& loader, const ModelConfig& config) {
     if (nvme_bdf && nvme_lba_str) {
         uint64_t gguf_start_lba = strtoull(nvme_lba_str, NULL, 0);
 
+        // Find the maximum file span across all layers for buffer sizing
+        size_t max_file_span = 0;
+        for (int i = 0; i < n_layers; i++) {
+            uint64_t min_off = UINT64_MAX, max_end = 0;
+            for (int t = 0; t < 7; t++) {
+                std::string name = "blk." + std::to_string(i) + "." + tensor_suffixes[t];
+                uint64_t off = loader.tensor_file_offset(name);
+                const GGUFTensorInfo* info = loader.tensor_info(name);
+                if (off < min_off) min_off = off;
+                if (off + info->nbytes > max_end) max_end = off + info->nbytes;
+            }
+            size_t span = max_end - (min_off & ~(size_t)511);  // LBA-aligned start
+            if (span > max_file_span) max_file_span = span;
+        }
+        // Round up to block size
+        max_file_span = (max_file_span + 511) & ~(size_t)511;
+
         gpunvme_err_t err = gpunvme_layer_loader_init(
-            &nvme_loader_, nvme_bdf, buf_size_, /*pipeline_depth=*/32);
+            &nvme_loader_, nvme_bdf, max_file_span, /*pipeline_depth=*/32);
 
         if (err == GPUNVME_OK) {
             nvme_initialized_ = true;
             gguf_start_lba_ = gguf_start_lba;
             nvme_block_size_ = gpunvme_layer_loader_block_size(&nvme_loader_);
 
-            // Pre-compute per-layer LBAs
+            // Allocate NVMe read buffer (pinned for potential reuse)
+            nvme_read_buf_size_ = max_file_span;
+            cudaError_t cerr = cudaMallocHost(&nvme_read_buf_, nvme_read_buf_size_);
+            if (cerr != cudaSuccess) {
+                fprintf(stderr, "LayerStreamer: NVMe read buffer alloc failed, disabling NVMe\n");
+                gpunvme_layer_loader_destroy(&nvme_loader_);
+                nvme_initialized_ = false;
+            }
+        }
+
+        if (nvme_initialized_) {
+            // Pre-compute per-layer NVMe read info with scatter-copy mapping
             nvme_layers_.resize(n_layers);
             for (int i = 0; i < n_layers; i++) {
-                std::string first = "blk." + std::to_string(i) + ".attn_q.weight";
-                uint64_t byte_offset = loader.tensor_file_offset(first);
-                nvme_layers_[i].start_lba = gguf_start_lba + (byte_offset / nvme_block_size_);
-                nvme_layers_[i].total_bytes = layer_transfer_size(i);
+                std::string pfx = "blk." + std::to_string(i) + ".";
+                const LayerLayout& lay = layers_[i];
+                const TensorSlot* slots[] = {
+                    &lay.attn_q, &lay.attn_k, &lay.attn_v, &lay.attn_output,
+                    &lay.ffn_gate, &lay.ffn_up, &lay.ffn_down
+                };
+
+                uint64_t min_off = UINT64_MAX, max_end = 0;
+                uint64_t tensor_file_offs[7];
+                for (int t = 0; t < 7; t++) {
+                    std::string name = pfx + tensor_suffixes[t];
+                    tensor_file_offs[t] = loader.tensor_file_offset(name);
+                    size_t sz = slots[t]->nbytes;
+                    if (tensor_file_offs[t] < min_off) min_off = tensor_file_offs[t];
+                    if (tensor_file_offs[t] + sz > max_end) max_end = tensor_file_offs[t] + sz;
+                }
+
+                // LBA-align the span
+                uint64_t span_start = (min_off / nvme_block_size_) * nvme_block_size_;
+                uint64_t span_end = ((max_end + nvme_block_size_ - 1) / nvme_block_size_) * nvme_block_size_;
+
+                nvme_layers_[i].start_lba = gguf_start_lba_ + span_start / nvme_block_size_;
+                nvme_layers_[i].read_bytes = span_end - span_start;
+
+                for (int t = 0; t < 7; t++) {
+                    nvme_layers_[i].tensors[t].read_offset = tensor_file_offs[t] - span_start;
+                    nvme_layers_[i].tensors[t].gpu_offset = slots[t]->gpu_offset;
+                    nvme_layers_[i].tensors[t].nbytes = slots[t]->nbytes;
+                }
             }
 
-            fprintf(stderr, "LayerStreamer: NVMe backend OK (MDTS=%uK, block=%u)\n",
+            fprintf(stderr, "LayerStreamer: NVMe backend OK (MDTS=%uK, block=%u, read_buf=%.1f MB)\n",
                     gpunvme_layer_loader_max_transfer(&nvme_loader_) / 1024,
-                    nvme_block_size_);
-        } else {
+                    nvme_block_size_,
+                    nvme_read_buf_size_ / (1024.0 * 1024));
+        }
+
+        if (!nvme_initialized_ && err != GPUNVME_OK) {
             fprintf(stderr, "LayerStreamer: NVMe init failed (err=%d), fallback to mmap\n", err);
         }
     }
@@ -239,9 +456,9 @@ void LayerStreamer::init_tiered(const GGUFLoader& loader, const ModelConfig& con
     int n_layers = config.n_layers;
 
     // Step 2: compute VRAM reserve for inference buffers that will be allocated later
-    // KV cache: 2 (K+V) × n_layers × max_seq × n_kv_heads × head_dim × sizeof(float)
+    // KV cache: 2 (K+V) × n_layers × max_seq × n_kv_heads × head_dim × sizeof(half)
     size_t kv_bytes = 2ULL * n_layers * config.max_seq_len * config.n_kv_heads
-                      * config.head_dim * sizeof(float);
+                      * config.head_dim * sizeof(float16_t);
     // Workspace: max(attn, ffn) — FFN typically dominates
     size_t attn_ws = (size_t)config.max_seq_len * (config.n_heads + 2 * config.n_kv_heads
                      + config.n_heads) * config.head_dim * sizeof(float);
@@ -300,14 +517,15 @@ void LayerStreamer::init_tiered(const GGUFLoader& loader, const ModelConfig& con
 
     // Step 5: Tier B — allocate pinned RAM buffers and copy from mmap
     ram_cache_.resize(tier_config_.n_ram);
+    size_t requant_saved = 0;
     for (int i = 0; i < tier_config_.n_ram; i++) {
         int layer_idx = tier_config_.n_vram + i;
         cudaError_t err = cudaMallocHost(&ram_cache_[i], buf_size_);
         NT_CHECK(err == cudaSuccess, "Failed to allocate pinned RAM cache buffer");
 
         // Copy all 7 tensors from mmap to pinned RAM
-        const LayerLayout& lay = layers_[layer_idx];
-        const TensorSlot* slots[] = {
+        LayerLayout& lay = layers_[layer_idx];
+        TensorSlot* slots[] = {
             &lay.attn_q, &lay.attn_k, &lay.attn_v, &lay.attn_output,
             &lay.ffn_gate, &lay.ffn_up, &lay.ffn_down
         };
@@ -315,12 +533,27 @@ void LayerStreamer::init_tiered(const GGUFLoader& loader, const ModelConfig& con
         for (int t = 0; t < 7; t++) {
             memcpy(ram_base + slots[t]->gpu_offset,
                    slots[t]->cpu_ptr, slots[t]->nbytes);
+
+            // Requantize Q6_K → Q4_K_M in-place if enabled
+            if (requant_tier_b_ && slots[t]->dtype == DType::Q6_K) {
+                size_t new_bytes = requantize_q6k_to_q4km(
+                    ram_base + slots[t]->gpu_offset, slots[t]->nbytes);
+                requant_saved += slots[t]->nbytes - new_bytes;
+                slots[t]->xfer_nbytes = new_bytes;
+                slots[t]->dtype = DType::Q4_K_M;
+            }
         }
 
         if ((i + 1) % 10 == 0 || i == tier_config_.n_ram - 1) {
-            fprintf(stderr, "  Loaded tier B layer %d/%d to pinned RAM\n",
-                    i + 1, tier_config_.n_ram);
+            fprintf(stderr, "  Loaded tier B layer %d/%d to pinned RAM%s\n",
+                    i + 1, tier_config_.n_ram,
+                    requant_tier_b_ ? " (Q4_K_M)" : "");
         }
+    }
+
+    if (requant_tier_b_ && requant_saved > 0) {
+        fprintf(stderr, "LayerStreamer: requantized Q6_K→Q4_K_M: saved %.1f MB H2D/layer\n",
+                (float)requant_saved / tier_config_.n_ram / (1024.0 * 1024));
     }
 
     tiered_mode_ = true;
@@ -347,6 +580,11 @@ void LayerStreamer::shutdown() {
     tiered_mode_ = false;
 
 #ifdef USE_GPUNVME
+    if (nvme_read_buf_) {
+        cudaFreeHost(nvme_read_buf_);
+        nvme_read_buf_ = nullptr;
+        nvme_read_buf_size_ = 0;
+    }
     if (nvme_initialized_) {
         gpunvme_layer_loader_destroy(&nvme_loader_);
         nvme_initialized_ = false;
@@ -592,10 +830,21 @@ void LayerStreamer::prefetch_staging(int layer_idx, int slot) {
 #ifdef USE_GPUNVME
     if (nvme_initialized_) {
         const auto& nlay = nvme_layers_[layer_idx];
+
+        // Read the full file span into the NVMe read buffer
         gpunvme_err_t err = gpunvme_load_layer(
-            &nvme_loader_, nlay.start_lba, nlay.total_bytes, staging_buf_[slot]);
+            &nvme_loader_, nlay.start_lba, nlay.read_bytes, nvme_read_buf_);
 
         if (err == GPUNVME_OK) {
+            // Scatter-copy each tensor from file layout to GPU layout in staging
+            uint8_t* staging = static_cast<uint8_t*>(staging_buf_[slot]);
+            const uint8_t* src = static_cast<const uint8_t*>(nvme_read_buf_);
+            for (int t = 0; t < 7; t++) {
+                memcpy(staging + nlay.tensors[t].gpu_offset,
+                       src + nlay.tensors[t].read_offset,
+                       nlay.tensors[t].nbytes);
+            }
+
             std::lock_guard<std::mutex> lock(worker_mutex_);
             staging_ready_[slot] = true;
             staging_ready_cv_.notify_all();
@@ -642,11 +891,21 @@ void LayerStreamer::begin_h2d(int layer_idx, int slot) {
 
     uint8_t* gpu_base = static_cast<uint8_t*>(gpu_buf_[slot]);
 
-    // Tier B: async H2D from pinned RAM cache
+    // Tier B: async H2D from pinned RAM cache (per-tensor to handle requant)
     if (tiered_mode_ && layer_tier_[layer_idx] == LayerTier::RAM) {
         int ram_idx = layer_idx - tier_config_.n_vram;
-        size_t total = layer_transfer_size(layer_idx);
-        dev.memcpy_h2d_async(gpu_base, ram_cache_[ram_idx], total, xfer);
+        uint8_t* ram_base = static_cast<uint8_t*>(ram_cache_[ram_idx]);
+        const LayerLayout& lay = layers_[layer_idx];
+        const TensorSlot* slots[] = {
+            &lay.attn_q, &lay.attn_k, &lay.attn_v, &lay.attn_output,
+            &lay.ffn_gate, &lay.ffn_up, &lay.ffn_down
+        };
+        for (int t = 0; t < 7; t++) {
+            dev.memcpy_h2d_async(
+                gpu_base + slots[t]->gpu_offset,
+                ram_base + slots[t]->gpu_offset,
+                slots[t]->xfer_nbytes, xfer);
+        }
         dev.record_event(transfer_done_[slot], xfer);
         return;
     }

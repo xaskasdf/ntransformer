@@ -42,18 +42,18 @@ void launch_silu_mul(
     int size, void* stream);
 void launch_add_bias(float* y, const float* bias, int size, void* stream);
 
-// Attention
+// Attention (KV cache is F16 — void* to avoid half/uint16_t ABI mismatch)
 void launch_attention_decode(
-    float* output, const float* q, const float* k_cache, const float* v_cache,
+    float* output, const float* q, const void* k_cache, const void* v_cache,
     int seq_len, int n_heads, int n_kv_heads, int head_dim, int max_seq,
     float scale, void* stream);
 void launch_attention_prefill(
     float* output, const float* Q,
-    const float* k_cache, const float* v_cache,
+    const void* k_cache, const void* v_cache,
     int seq_len, int start_pos, int n_heads, int n_kv_heads,
     int head_dim, int max_seq, float scale, void* stream);
 void launch_copy_to_kv_cache(
-    float* k_cache, float* v_cache, const float* k, const float* v,
+    void* k_cache, void* v_cache, const float* k, const float* v,
     int seq_len, int n_kv_heads, int head_dim, int start_pos, int max_seq,
     void* stream);
 

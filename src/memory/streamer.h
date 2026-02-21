@@ -108,6 +108,9 @@ public:
     LayerTier layer_tier(int layer_idx) const;
     const TierConfig& tier_config() const { return tier_config_; }
 
+    // Enable Q6_K → Q4_K_M requantization for tier B (call before init_tiered)
+    void set_requant_q4k(bool enable) { requant_tier_b_ = enable; }
+
     // Total size of one GPU layer buffer
     size_t buffer_size() const { return buf_size_; }
 
@@ -116,7 +119,8 @@ private:
     struct TensorSlot {
         size_t gpu_offset;      // offset within GPU buffer
         const void* cpu_ptr;    // mmap'd source (or pinned staging)
-        size_t nbytes;          // transfer size
+        size_t nbytes;          // transfer size (original)
+        size_t xfer_nbytes;     // actual H2D transfer size (may be smaller if requantized)
         DType dtype;
     };
 
@@ -163,6 +167,10 @@ private:
     std::vector<void*> vram_resident_;       // VRAM buffers [n_vram]
     std::vector<void*> ram_cache_;           // pinned RAM buffers [n_ram]
     bool tiered_mode_ = false;
+    bool requant_tier_b_ = false;            // Q6_K → Q4_K_M for tier B
+
+    // Q6_K → Q4_K_M in-place requantization (returns new byte count)
+    static size_t requantize_q6k_to_q4km(void* data, size_t nbytes_q6k);
 
     // Helper: compute total transfer size for a layer
     size_t layer_transfer_size(int layer_idx) const;
@@ -175,13 +183,21 @@ private:
     gpunvme_layer_loader_t nvme_loader_ = {};
     bool nvme_initialized_ = false;
 
+    struct NvmeTensorMap {
+        size_t read_offset;     // offset within NVMe read buffer
+        size_t gpu_offset;      // offset within staging/GPU buffer
+        size_t nbytes;
+    };
     struct NvmeLayerInfo {
-        uint64_t start_lba;     // LBA of first byte of this layer's tensor data
-        size_t   total_bytes;   // total bytes for all 7 tensors
+        uint64_t start_lba;     // first LBA of this layer's file span
+        size_t   read_bytes;    // NVMe read size (LBA-aligned)
+        NvmeTensorMap tensors[7];
     };
     std::vector<NvmeLayerInfo> nvme_layers_;
     uint64_t gguf_start_lba_ = 0;
     uint32_t nvme_block_size_ = 512;
+    void* nvme_read_buf_ = nullptr;
+    size_t nvme_read_buf_size_ = 0;
 #endif
 };
 

@@ -21,6 +21,7 @@ void print_usage(const char* prog) {
     fprintf(stderr, "  --draft-k <int>          Draft tokens per iteration (default: 5)\n");
     fprintf(stderr, "  --early-exit <float>     Early exit threshold (0=off, 0.9999=aggressive)\n");
     fprintf(stderr, "  --skip-threshold <float> Layer skip threshold (0=off, 0.985=moderate)\n");
+    fprintf(stderr, "  --requant-q4k            Requantize Q6_K→Q4_K_M for tier B (31%% less H2D)\n");
     fprintf(stderr, "  --benchmark              Run benchmark mode\n");
     fprintf(stderr, "  --chat                   Interactive chat mode\n");
     fprintf(stderr, "  -v, --verbose            Verbose output\n");
@@ -38,6 +39,7 @@ int main(int argc, char** argv) {
     bool benchmark_mode = false;
     bool chat_mode = false;
     bool streaming_mode = false;
+    bool requant_q4k = false;
 
     nt::GenerateConfig config;
     config.verbose = true;
@@ -77,6 +79,8 @@ int main(int argc, char** argv) {
             if (++i < argc) early_exit_threshold = std::stof(argv[i]);
         } else if (arg == "--skip-threshold") {
             if (++i < argc) skip_threshold = std::stof(argv[i]);
+        } else if (arg == "--requant-q4k") {
+            requant_q4k = true;
         } else if (arg == "--benchmark") {
             benchmark_mode = true;
         } else if (arg == "--chat") {
@@ -114,6 +118,10 @@ int main(int argc, char** argv) {
             fprintf(stderr, "Failed to load draft model: %s\n", draft_model_path.c_str());
             return 1;
         }
+    }
+
+    if (requant_q4k) {
+        engine.model().set_requant_q4k(true);
     }
 
     if (!engine.load(model_path, max_context, streaming_mode)) {

@@ -34,10 +34,10 @@ public:
         float* output,
         const float* input,
         int seq_len,
-        int start_pos,         // position in the KV cache
-        float* k_cache,        // [max_seq, n_kv_heads, head_dim]
-        float* v_cache,        // [max_seq, n_kv_heads, head_dim]
-        const int* positions,  // [seq_len] position IDs
+        int start_pos,             // position in the KV cache
+        void* k_cache,             // [max_seq, n_kv_heads, head_dim] F16
+        void* v_cache,             // [max_seq, n_kv_heads, head_dim] F16
+        const int* positions,      // [seq_len] position IDs
         void* stream
     );
 
