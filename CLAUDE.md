@@ -4,15 +4,16 @@
 High-efficiency C++/CUDA LLM inference engine. Goal: run Llama 70B at Q8-equivalent quality on a single RTX 3090 (24GB VRAM) by combining 6 memory-optimization techniques.
 
 ## Current State
-**Phase 2 (SLEP) - COMPLETE. gpu-nvme-direct integration verified — 5x speedup on 70B.**
+**Phase 2 (SLEP) - COMPLETE. 3-tier adaptive caching — 33x speedup on 70B.**
 - Phase 1 fully working: Llama 3.1 8B Q8_0 at 48.9 tok/s decode (resident), 0.9 tok/s (streaming)
 - Phase 2 SLEP streaming: pipelined layer streaming via PCIe with worker thread
-- Q6_K quantization support: 70B Llama running on single RTX 3090 (7.3 GB VRAM)
-- `--streaming` CLI flag enables SLEP mode
+- **3-tier adaptive caching**: VRAM resident + pinned RAM + NVMe/mmap (auto-sized from hardware)
+- 70B Q6_K: 29 VRAM + 51 RAM → **0.2 tok/s** (33x over mmap baseline), 23 GB VRAM
+- 8B Q8_0: auto-promotes all 32 layers to VRAM → 48.8 tok/s (equivalent to resident)
+- Q6_K quantization support: 70B Llama running on single RTX 3090
+- `--streaming` CLI flag enables tiered mode (auto-selects best tier per layer)
 - All unit tests passing (7/7 tensor, 6/6 kernel)
-- 8B streaming verified: bit-identical output vs resident mode
 - **gpu-nvme-direct integrated and verified** — NVMe reads at 3,315 MB/s sustained (95% PCIe 4.0 x4)
-- 70B Q6_K NVMe streaming: **5x faster** than mmap staging (126s vs 633s for 5 tokens)
 - Worker thread pipeline: fallback path when NVMe unavailable or mmap pinning succeeds
 - **Ported from Windows/MSVC/CUDA 12.4 to Linux/gcc-14/CUDA 13.1 (C++20 unified)**
 - Setup/restore scripts: `scripts/setup_nvme.sh`, `scripts/restore_nvme.sh`
@@ -210,16 +211,25 @@ Optimization, benchmarks, public C API, documentation.
 ## Performance Results
 
 ### 8B Q8_0 (Llama 3.1 8B Instruct)
-| Mode | Decode | Prefill | VRAM |
-|------|--------|---------|------|
-| Resident | 48.9 tok/s | 50.9 tok/s | 10.0 GB |
-| Streaming (mmap pinned) | 0.9 tok/s | 1.8 tok/s | 3.4 GB |
+| Mode | Decode | Prefill | VRAM | Tier Split |
+|------|--------|---------|------|------------|
+| Resident | 48.9 tok/s | 50.9 tok/s | 10.0 GB | N/A |
+| Tiered (auto) | 48.8 tok/s | 50.9 tok/s | 10.3 GB | 32 VRAM + 0 RAM |
+| Streaming (mmap pinned) | 0.9 tok/s | 1.8 tok/s | 3.4 GB | Pure streaming |
 
 ### 70B Q6_K (Llama 3.1 70B Instruct)
-| Mode | Decode | Prefill | VRAM | Notes |
-|------|--------|---------|------|-------|
-| Streaming (mmap staging) | 0.006 tok/s | 0.01 tok/s | 7.3 GB | CPU worker memcpy bottleneck |
-| **Streaming (NVMe direct)** | **0.03 tok/s** | **0.06 tok/s** | **7.3 GB** | **3,315 MB/s, 5x faster** |
+| Mode | Decode | VRAM | Tier Split | Speedup |
+|------|--------|------|------------|---------|
+| Streaming (mmap staging) | 0.006 tok/s | 7.3 GB | Pure streaming | 1x |
+| Streaming (NVMe direct) | 0.03 tok/s | 7.3 GB | Pure streaming | 5x |
+| **Tiered (ctx=4096)** | **0.2 tok/s** | **23.0 GB** | **24 VRAM + 54 RAM + 2 NVMe** | **33x** |
+| **Tiered (ctx=512)** | **0.2 tok/s** | **23.1 GB** | **29 VRAM + 51 RAM + 0 NVMe** | **33x** |
+
+### Tiered Caching Performance
+- **Bottleneck**: PCIe H2D at Gen3 x8 (~6.5 GB/s) — B450 runs GPU at x8 due to M.2 lane sharing
+- **Per tier B layer**: 669 MB / 6.5 GB/s ≈ 103 ms H2D (compute is only ~0.7 ms)
+- **Auto-sizing**: VRAM reserve computed from KV cache + workspace + buffers. RAM from `/proc/meminfo` MemAvailable
+- **With B550/X570 (Gen4 x16)**: expected ~0.5-0.7 tok/s (H2D at 25 GB/s, compute-bound)
 
 ### NVMe Direct Performance
 - **Sustained throughput**: 3,300–3,330 MB/s (95% of PCIe 4.0 x4 theoretical max)

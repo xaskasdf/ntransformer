@@ -4,22 +4,25 @@ High-efficiency C++/CUDA LLM inference engine. Runs Llama 70B on a single RTX 30
 
 ## Key Results
 
-| Model | Mode | Decode | VRAM | NVMe Throughput |
-|-------|------|--------|------|-----------------|
-| Llama 3.1 8B Q8_0 | Resident | 48.9 tok/s | 10.0 GB | N/A |
-| Llama 3.1 8B Q8_0 | Streaming | 0.9 tok/s | 3.4 GB | N/A |
-| Llama 3.1 70B Q6_K | Streaming (mmap) | 0.006 tok/s | 7.3 GB | N/A |
-| Llama 3.1 70B Q6_K | **Streaming (NVMe)** | **0.03 tok/s** | **7.3 GB** | **3,315 MB/s** |
+| Model | Mode | Decode | VRAM | Notes |
+|-------|------|--------|------|-------|
+| Llama 3.1 8B Q8_0 | Resident | 48.9 tok/s | 10.0 GB | All layers in VRAM |
+| Llama 3.1 8B Q8_0 | Tiered (auto) | 48.8 tok/s | 10.3 GB | 32/32 layers auto-promoted to VRAM |
+| Llama 3.1 70B Q6_K | Streaming (mmap) | 0.006 tok/s | 7.3 GB | Page cache thrashing (53 GB > 48 GB RAM) |
+| Llama 3.1 70B Q6_K | **Tiered (auto)** | **0.2 tok/s** | **23.1 GB** | **29 VRAM + 51 RAM + 0 NVMe** |
 
-NVMe direct streaming is **5x faster** than mmap staging for 70B — reads 670 MB per layer in ~202 ms at 95% of PCIe 4.0 x4 theoretical bandwidth.
+**3-tier adaptive caching** auto-sizes from hardware: VRAM-resident layers (zero I/O) + pinned RAM (H2D only) + NVMe/mmap fallback. Achieves **33x speedup** over mmap baseline for 70B on consumer hardware (RTX 3090 + 48 GB RAM).
+
+Bottleneck is PCIe H2D bandwidth at Gen3 x8 (~6.5 GB/s). With Gen4 x16 (B550/X570), tier B layers would be compute-bound, yielding ~0.5 tok/s.
 
 ## Features
 
 - **Zero external dependencies** beyond CUDA Toolkit (no PyTorch, no cuBLAS)
 - **GGUF model format** with Q4_0, Q8_0, Q4_K_M, Q6_K, F16, F32 quantization
+- **3-Tier Adaptive Caching**: auto-sized VRAM resident + pinned RAM + NVMe/mmap tiers
 - **SLEP streaming**: double-buffered layer pipeline overlaps NVMe reads, PCIe DMA, and GPU compute
 - **gpu-nvme-direct backend**: userspace NVMe driver reads model weights directly to pinned GPU-accessible memory
-- **Three data paths** (auto-selected): mmap pinned > NVMe direct > CPU worker memcpy
+- **Four data paths** (auto-selected): VRAM resident > pinned RAM H2D > mmap pinned > CPU worker memcpy
 - Llama architecture: RoPE, GQA, SwiGLU, RMSNorm, KV cache
 
 ## Requirements
@@ -113,19 +116,25 @@ scripts/
 tests/              # Unit tests (tensor, GEMM kernels, NVMe layer loader)
 ```
 
-## Streaming Pipeline
+## 3-Tier Adaptive Caching
 
 ```
-Without NVMe (mmap staging fallback):
-  Worker thread:  [memcpy L0→stg0][memcpy L1→stg1][memcpy L2→stg0]...
-  H2D DMA:        [              ][stg0→gpu0     ][stg1→gpu1     ]...
-  GPU Compute:    [              ][              ][layer 0       ]...
+forward_tiered() — hybrid pipeline:
 
-With NVMe direct (5x faster for 70B):
-  NVMe DMA:       [DMA L0→stg0  ][DMA L1→stg1  ][DMA L2→stg0  ]...
-  H2D DMA:        [              ][stg0→gpu0    ][stg1→gpu1    ]...
-  GPU Compute:    [              ][              ][layer 0      ]...
+Tier A (VRAM resident, layers 0..28):
+  GPU Compute:  [layer 0][layer 1]...[layer 28]     (zero I/O, weights permanent)
+
+Tier B (pinned RAM, layers 29..79, double-buffered):
+  H2D DMA:     [L29→gpu0][L30→gpu1][L31→gpu0]...   (async from pinned RAM)
+  GPU Compute: [         ][layer 29][layer 30]...    (overlapped with H2D)
+
+Tier C (NVMe/mmap fallback, if needed):
+  NVMe/memcpy: [read L→stg0][read L→stg1]...
+  H2D DMA:     [            ][stg0→gpu0  ]...
+  GPU Compute: [            ][            ][layer]...
 ```
+
+Tier sizes auto-computed from `cudaMemGetInfo()` + `/proc/meminfo` MemAvailable.
 
 ## Quantization Formats
 
@@ -141,7 +150,7 @@ With NVMe direct (5x faster for 70B):
 ## Phase Roadmap
 
 - **Phase 1** - Foundation (complete): Llama 8B Q8_0, custom CUDA kernels, 48.9 tok/s
-- **Phase 2** - SLEP Streaming (complete): 70B on single GPU, NVMe direct at 3.3 GB/s
+- **Phase 2** - SLEP Streaming (complete): 70B on single GPU, 3-tier caching, 33x speedup
 - **Phase 3** - Advanced Quantization: RotateKV (INT2 KV-cache), adaptive per-layer precision
 - **Phase 4** - Novel Architectures: MLA, Mamba/SSM, speculative decoding
 - **Phase 5** - Polish: optimization, benchmarks, public C API

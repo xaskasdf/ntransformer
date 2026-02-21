@@ -20,11 +20,32 @@ TierConfig TierConfig::compute(int n_layers, size_t layer_bytes,
     size_t vram_free = 0, vram_total = 0;
     cudaMemGetInfo(&vram_free, &vram_total);
 
-    // Query available RAM
-    struct sysinfo si;
-    sysinfo(&si);
-    size_t ram_free = (size_t)si.freeram * si.mem_unit +
-                      (size_t)si.bufferram * si.mem_unit;
+    // Query available RAM via /proc/meminfo (includes reclaimable page cache)
+    size_t ram_free = 0;
+    FILE* f = fopen("/proc/meminfo", "r");
+    if (f) {
+        char line[256];
+        while (fgets(line, sizeof(line), f)) {
+            size_t val;
+            if (sscanf(line, "MemAvailable: %zu kB", &val) == 1) {
+                ram_free = val * 1024;
+                break;
+            }
+        }
+        fclose(f);
+    }
+    if (ram_free == 0) {
+        // Fallback to sysinfo if /proc/meminfo unavailable
+        struct sysinfo si;
+        sysinfo(&si);
+        ram_free = (size_t)si.freeram * si.mem_unit +
+                   (size_t)si.bufferram * si.mem_unit;
+    }
+
+    fprintf(stderr, "TierConfig: VRAM free=%.1f GB, RAM available=%.1f GB\n",
+            vram_free / (1024.0 * 1024 * 1024), ram_free / (1024.0 * 1024 * 1024));
+    fprintf(stderr, "TierConfig: VRAM reserve=%.1f GB, RAM reserve=%.1f GB\n",
+            vram_reserve / (1024.0 * 1024 * 1024), ram_reserve / (1024.0 * 1024 * 1024));
 
     size_t vram_avail = (vram_free > vram_reserve) ? (vram_free - vram_reserve) : 0;
     size_t ram_avail  = (ram_free > ram_reserve) ? (ram_free - ram_reserve) : 0;
@@ -217,8 +238,30 @@ void LayerStreamer::init_tiered(const GGUFLoader& loader, const ModelConfig& con
 
     int n_layers = config.n_layers;
 
-    // Step 2: compute tier sizes
-    tier_config_ = TierConfig::compute(n_layers, buf_size_);
+    // Step 2: compute VRAM reserve for inference buffers that will be allocated later
+    // KV cache: 2 (K+V) × n_layers × max_seq × n_kv_heads × head_dim × sizeof(float)
+    size_t kv_bytes = 2ULL * n_layers * config.max_seq_len * config.n_kv_heads
+                      * config.head_dim * sizeof(float);
+    // Workspace: max(attn, ffn) — FFN typically dominates
+    size_t attn_ws = (size_t)config.max_seq_len * (config.n_heads + 2 * config.n_kv_heads
+                     + config.n_heads) * config.head_dim * sizeof(float);
+    size_t ffn_ws  = 2ULL * config.max_seq_len * config.intermediate_size * sizeof(float);
+    size_t workspace_bytes = std::max(attn_ws, ffn_ws);
+    // Hidden + residual + logits + positions
+    size_t misc_bytes = 2ULL * config.max_seq_len * config.hidden_size * sizeof(float)
+                        + config.vocab_size * sizeof(float)
+                        + config.max_seq_len * sizeof(int);
+    size_t vram_reserve = kv_bytes + workspace_bytes + misc_bytes + (256ULL << 20);
+
+    fprintf(stderr, "LayerStreamer: VRAM reserve for inference: %.1f GB "
+            "(KV=%.1f, WS=%.1f, misc=%.1f)\n",
+            vram_reserve / (1024.0 * 1024 * 1024),
+            kv_bytes / (1024.0 * 1024 * 1024),
+            workspace_bytes / (1024.0 * 1024 * 1024),
+            misc_bytes / (1024.0 * 1024 * 1024));
+
+    // Step 3: compute tier sizes
+    tier_config_ = TierConfig::compute(n_layers, buf_size_, vram_reserve);
     tier_config_.print();
 
     // Step 3: assign per-layer tiers
