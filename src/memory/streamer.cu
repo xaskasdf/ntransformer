@@ -476,6 +476,36 @@ LayerWeightPtrs LayerStreamer::get_resident_weights(int layer_idx) const {
 }
 
 // ============================================================
+// Get weight pointers for a RAM-cached layer (tier B) — zero-copy
+// ============================================================
+LayerWeightPtrs LayerStreamer::get_ram_weights(int layer_idx) const {
+    int ram_idx = layer_idx - tier_config_.n_vram;
+    NT_CHECK(tiered_mode_ && ram_idx >= 0 && ram_idx < (int)ram_cache_.size(),
+             "get_ram_weights: layer not in RAM tier");
+
+    const LayerLayout& lay = layers_[layer_idx];
+    const uint8_t* ram_base = static_cast<const uint8_t*>(ram_cache_[ram_idx]);
+
+    LayerWeightPtrs wp;
+    wp.attn_q       = ram_base + lay.attn_q.gpu_offset;
+    wp.attn_q_dtype = lay.attn_q.dtype;
+    wp.attn_k       = ram_base + lay.attn_k.gpu_offset;
+    wp.attn_k_dtype = lay.attn_k.dtype;
+    wp.attn_v       = ram_base + lay.attn_v.gpu_offset;
+    wp.attn_v_dtype = lay.attn_v.dtype;
+    wp.attn_output  = ram_base + lay.attn_output.gpu_offset;
+    wp.attn_o_dtype = lay.attn_output.dtype;
+    wp.ffn_gate       = ram_base + lay.ffn_gate.gpu_offset;
+    wp.ffn_gate_dtype = lay.ffn_gate.dtype;
+    wp.ffn_up         = ram_base + lay.ffn_up.gpu_offset;
+    wp.ffn_up_dtype   = lay.ffn_up.dtype;
+    wp.ffn_down       = ram_base + lay.ffn_down.gpu_offset;
+    wp.ffn_down_dtype = lay.ffn_down.dtype;
+
+    return wp;
+}
+
+// ============================================================
 // Tier query helpers
 // ============================================================
 bool LayerStreamer::is_vram_resident(int layer_idx) const {

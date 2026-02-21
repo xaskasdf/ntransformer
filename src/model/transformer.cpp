@@ -1,6 +1,7 @@
 #include "transformer.h"
 #include "../core/device.h"
 #include "../cuda/kernels.h"
+#include <cuda_runtime.h>
 #include <cstdio>
 #include <cstring>
 #include <cmath>
@@ -14,6 +15,36 @@ Transformer::~Transformer() {
     if (norm_weights_gpu_) {
         nt_cuda_free(norm_weights_gpu_);
         norm_weights_gpu_ = nullptr;
+    }
+    if (prev_hidden_gpu_) {
+        nt_cuda_free(prev_hidden_gpu_);
+        prev_hidden_gpu_ = nullptr;
+    }
+    if (cosine_result_d_) {
+        nt_cuda_free(cosine_result_d_);
+        cosine_result_d_ = nullptr;
+    }
+    if (cosine_result_h_) {
+        cudaFreeHost(cosine_result_h_);
+        cosine_result_h_ = nullptr;
+    }
+}
+
+void Transformer::set_early_exit(float threshold) {
+    early_exit_threshold_ = threshold;
+    early_exit_min_layer_ = config_.n_layers / 2;
+    if (threshold > 0.0f) {
+        fprintf(stderr, "Early exit: threshold=%.6f, min_layer=%d/%d\n",
+            threshold, early_exit_min_layer_, config_.n_layers);
+    }
+}
+
+void Transformer::set_layer_skip(float threshold) {
+    skip_threshold_ = threshold;
+    skip_layer_.assign(config_.n_layers, false);
+    skip_calibrated_ = false;
+    if (threshold > 0.0f) {
+        fprintf(stderr, "Layer skip: threshold=%.6f (calibrates on first token)\n", threshold);
     }
 }
 
@@ -321,6 +352,11 @@ void Transformer::allocate_buffers() {
 
     // Positions buffer
     positions_gpu_ = Tensor::empty({max_seq}, DType::I32, Device::CUDA);
+
+    // Early exit buffers (small: hidden_size floats + 1 float)
+    prev_hidden_gpu_ = nt_cuda_malloc(hidden * sizeof(float));
+    cosine_result_d_ = nt_cuda_malloc(sizeof(float));
+    cudaMallocHost(&cosine_result_h_, sizeof(float));
 
     fprintf(stderr, "All buffers allocated. Free VRAM: %.1f GB\n",
         CUDADevice::instance().free_vram() / (1024.0 * 1024 * 1024));
@@ -697,87 +733,161 @@ float* Transformer::forward_tiered(const int* tokens, int seq_len, int start_pos
     const auto& tc = streamer_.tier_config();
     int first_stream = tc.n_vram;  // first non-VRAM layer
 
-    // 4. Kick off pipeline for first streamed layer
-    if (first_stream < n_layers) {
-        streamer_.prefetch_staging(first_stream, 0);
-        streamer_.begin_h2d(first_stream, 0);
-        if (first_stream + 1 < n_layers) {
-            streamer_.prefetch_staging(first_stream + 1, 1);
+    // Early exit / layer skip state
+    bool check_early_exit = (early_exit_threshold_ > 0.0f && seq_len == 1);
+    bool calibrating = (skip_threshold_ > 0.0f && !skip_calibrated_);
+    bool skipping = (skip_threshold_ > 0.0f && skip_calibrated_);
+    float* prev_hidden = static_cast<float*>(prev_hidden_gpu_);
+    float* cos_result_d = static_cast<float*>(cosine_result_d_);
+    std::vector<float> cos_values;  // for calibration
+    if (calibrating) cos_values.resize(n_layers, 0.0f);
+
+    // Build schedule of non-skipped tier B/C layers
+    std::vector<int> stream_schedule;
+    for (int i = first_stream; i < n_layers; i++) {
+        if (skipping && skip_layer_[i]) continue;
+        stream_schedule.push_back(i);
+    }
+
+    // 4. Kick off pipeline for first scheduled streamed layer
+    if (!stream_schedule.empty()) {
+        streamer_.prefetch_staging(stream_schedule[0], 0);
+        streamer_.begin_h2d(stream_schedule[0], 0);
+        if (stream_schedule.size() > 1) {
+            streamer_.prefetch_staging(stream_schedule[1], 1);
         }
     }
 
-    // 5. Process all layers
-    for (int i = 0; i < n_layers; i++) {
+    // 5a. Process tier A layers (VRAM-resident, always run)
+    for (int i = 0; i < first_stream; i++) {
         TransformerLayer& layer = layers_[i];
         int n = seq_len * hidden;
 
-        if (i < first_stream) {
-            // === Tier A: VRAM-resident compute (weights already set in load_tiered) ===
+        float* k_cache_layer = k_cache_.data_as<float>() + i * kv_layer_stride;
+        float* v_cache_layer = v_cache_.data_as<float>() + i * kv_layer_stride;
 
-            layer.attn_norm.forward(residual, hidden_state, seq_len, stream);
+        // Save hidden state for calibration
+        bool do_measure_a = calibrating && (i >= n_layers / 4) && seq_len == 1;
+        if (do_measure_a) {
+            cuda::launch_copy(prev_hidden, hidden_state, hidden, stream);
+        }
 
-            float* k_cache_layer = k_cache_.data_as<float>() + i * kv_layer_stride;
-            float* v_cache_layer = v_cache_.data_as<float>() + i * kv_layer_stride;
+        layer.attn_norm.forward(residual, hidden_state, seq_len, stream);
+        layer.attention.forward(
+            residual, residual, seq_len, start_pos,
+            k_cache_layer, v_cache_layer,
+            positions_gpu_.data_as<int>(), stream
+        );
+        cuda::launch_add_inplace(hidden_state, residual, n, stream);
 
-            layer.attention.forward(
-                residual, residual, seq_len, start_pos,
-                k_cache_layer, v_cache_layer,
-                positions_gpu_.data_as<int>(), stream
-            );
+        layer.ffn_norm.forward(residual, hidden_state, seq_len, stream);
+        layer.ffn.forward(residual, residual, seq_len, stream);
+        cuda::launch_add_inplace(hidden_state, residual, n, stream);
 
-            cuda::launch_add_inplace(hidden_state, residual, n, stream);
+        if (do_measure_a) {
+            cuda::launch_cosine_similarity(cos_result_d, prev_hidden,
+                hidden_state, hidden, stream);
+            cudaMemcpyAsync(cosine_result_h_, cos_result_d, sizeof(float),
+                cudaMemcpyDeviceToHost, static_cast<cudaStream_t>(stream));
+            cudaStreamSynchronize(static_cast<cudaStream_t>(stream));
+            cos_values[i] = *cosine_result_h_;
+        }
+    }
 
-            layer.ffn_norm.forward(residual, hidden_state, seq_len, stream);
-            layer.ffn.forward(residual, residual, seq_len, stream);
-            cuda::launch_add_inplace(hidden_state, residual, n, stream);
+    // 5b. Process tier B/C layers from schedule (double-buffer pipeline)
+    for (size_t si = 0; si < stream_schedule.size(); si++) {
+        int i = stream_schedule[si];
+        int slot = si % 2;
+        int next_slot = 1 - slot;
+
+        TransformerLayer& layer = layers_[i];
+        int n = seq_len * hidden;
+
+        float* k_cache_layer = k_cache_.data_as<float>() + i * kv_layer_stride;
+        float* v_cache_layer = v_cache_.data_as<float>() + i * kv_layer_stride;
+
+        // Save hidden state for calibration/early exit
+        bool do_measure = (calibrating || check_early_exit) &&
+                          (i >= n_layers / 4) && seq_len == 1;
+        if (do_measure) {
+            cuda::launch_copy(prev_hidden, hidden_state, hidden, stream);
+        }
+
+        // Wait for current layer's H2D to complete
+        streamer_.wait_transfer(slot);
+
+        // Issue H2D for next scheduled layer
+        if (si + 1 < stream_schedule.size()) {
+            streamer_.begin_h2d(stream_schedule[si + 1], next_slot);
+        }
+
+        // Prefetch layer si+2 into staging[slot]
+        if (si + 2 < stream_schedule.size()) {
+            streamer_.prefetch_staging(stream_schedule[si + 2], slot);
+        }
+
+        // Set weights from double-buffer slot
+        LayerWeightPtrs wp = streamer_.get_weights(slot);
+        layer.attention.set_weights(
+            wp.attn_q, wp.attn_k, wp.attn_v, wp.attn_output,
+            wp.attn_q_dtype, wp.attn_k_dtype, wp.attn_v_dtype, wp.attn_o_dtype);
+        layer.ffn.set_weights(
+            wp.ffn_gate, wp.ffn_up, wp.ffn_down,
+            wp.ffn_gate_dtype, wp.ffn_up_dtype, wp.ffn_down_dtype);
+
+        // Compute
+        layer.attn_norm.forward(residual, hidden_state, seq_len, stream);
+        layer.attention.forward(
+            residual, residual, seq_len, start_pos,
+            k_cache_layer, v_cache_layer,
+            positions_gpu_.data_as<int>(), stream
+        );
+        cuda::launch_add_inplace(hidden_state, residual, n, stream);
+
+        layer.ffn_norm.forward(residual, hidden_state, seq_len, stream);
+        layer.ffn.forward(residual, residual, seq_len, stream);
+        cuda::launch_add_inplace(hidden_state, residual, n, stream);
+
+        // Signal compute done (safe to overwrite GPU buffer)
+        streamer_.signal_compute_done(slot);
+
+        // Measure cosine similarity for calibration / early exit
+        if (do_measure) {
+            cuda::launch_cosine_similarity(cos_result_d, prev_hidden,
+                hidden_state, hidden, stream);
+            cudaMemcpyAsync(cosine_result_h_, cos_result_d, sizeof(float),
+                cudaMemcpyDeviceToHost, static_cast<cudaStream_t>(stream));
+            cudaStreamSynchronize(static_cast<cudaStream_t>(stream));
+
+            if (calibrating) cos_values[i] = *cosine_result_h_;
+
+            if (check_early_exit && i >= early_exit_min_layer_ &&
+                *cosine_result_h_ > early_exit_threshold_) {
+                fprintf(stderr, "[early exit at layer %d/%d, cos=%.8f]\n",
+                    i + 1, n_layers, *cosine_result_h_);
+                break;
+            }
+        }
+    }
+
+    // Build skip list after calibration (only when we have decode measurements)
+    if (calibrating && seq_len == 1) {
+        int skip_start = n_layers / 4;
+        int skip_end = 3 * n_layers / 4;
+        int skipped = 0;
+        skip_layer_.assign(n_layers, false);
+        for (int i = skip_start; i < skip_end; i++) {
+            if (cos_values[i] > skip_threshold_) {
+                skip_layer_[i] = true;
+                skipped++;
+            }
+        }
+        skip_calibrated_ = true;
+        if (skipped > 0) {
+            fprintf(stderr, "[layer skip calibrated: %d/%d layers skippable (cos>%.4f)]\n",
+                skipped, n_layers, skip_threshold_);
         } else {
-            // === Tier B/C: double-buffer streaming pipeline ===
-            int stream_idx = i - first_stream;
-            int slot = stream_idx % 2;
-            int next_slot = 1 - slot;
-
-            // Wait for current layer's H2D to complete
-            streamer_.wait_transfer(slot);
-
-            // Issue H2D for next streamed layer
-            if (i + 1 < n_layers) {
-                streamer_.begin_h2d(i + 1, next_slot);
-            }
-
-            // Prefetch layer i+2 into staging[slot]
-            if (i + 2 < n_layers) {
-                streamer_.prefetch_staging(i + 2, slot);
-            }
-
-            // Set weights from double-buffer slot
-            LayerWeightPtrs wp = streamer_.get_weights(slot);
-            layer.attention.set_weights(
-                wp.attn_q, wp.attn_k, wp.attn_v, wp.attn_output,
-                wp.attn_q_dtype, wp.attn_k_dtype, wp.attn_v_dtype, wp.attn_o_dtype);
-            layer.ffn.set_weights(
-                wp.ffn_gate, wp.ffn_up, wp.ffn_down,
-                wp.ffn_gate_dtype, wp.ffn_up_dtype, wp.ffn_down_dtype);
-
-            // Compute
-            layer.attn_norm.forward(residual, hidden_state, seq_len, stream);
-
-            float* k_cache_layer = k_cache_.data_as<float>() + i * kv_layer_stride;
-            float* v_cache_layer = v_cache_.data_as<float>() + i * kv_layer_stride;
-
-            layer.attention.forward(
-                residual, residual, seq_len, start_pos,
-                k_cache_layer, v_cache_layer,
-                positions_gpu_.data_as<int>(), stream
-            );
-
-            cuda::launch_add_inplace(hidden_state, residual, n, stream);
-
-            layer.ffn_norm.forward(residual, hidden_state, seq_len, stream);
-            layer.ffn.forward(residual, residual, seq_len, stream);
-            cuda::launch_add_inplace(hidden_state, residual, n, stream);
-
-            // Signal compute done (safe to overwrite GPU buffer)
-            streamer_.signal_compute_done(slot);
+            fprintf(stderr, "[layer skip: no layers above threshold %.4f]\n", skip_threshold_);
         }
     }
 

@@ -17,6 +17,8 @@ void print_usage(const char* prog) {
     fprintf(stderr, "  -c, --ctx-size <int>     Context size (default: 4096)\n");
     fprintf(stderr, "  --seed <int>             Random seed (default: 42)\n");
     fprintf(stderr, "  --streaming              SLEP streaming mode (stream layers from CPU via PCIe)\n");
+    fprintf(stderr, "  --early-exit <float>     Early exit threshold (0=off, 0.9999=aggressive)\n");
+    fprintf(stderr, "  --skip-threshold <float> Layer skip threshold (0=off, 0.985=moderate)\n");
     fprintf(stderr, "  --benchmark              Run benchmark mode\n");
     fprintf(stderr, "  --chat                   Interactive chat mode\n");
     fprintf(stderr, "  -v, --verbose            Verbose output\n");
@@ -27,6 +29,8 @@ int main(int argc, char** argv) {
     std::string model_path;
     std::string prompt;
     int max_context = 4096;
+    float early_exit_threshold = 0.0f;
+    float skip_threshold = 0.0f;
     bool benchmark_mode = false;
     bool chat_mode = false;
     bool streaming_mode = false;
@@ -61,6 +65,10 @@ int main(int argc, char** argv) {
             if (++i < argc) max_context = std::stoi(argv[i]);
         } else if (arg == "--streaming") {
             streaming_mode = true;
+        } else if (arg == "--early-exit") {
+            if (++i < argc) early_exit_threshold = std::stof(argv[i]);
+        } else if (arg == "--skip-threshold") {
+            if (++i < argc) skip_threshold = std::stof(argv[i]);
         } else if (arg == "--benchmark") {
             benchmark_mode = true;
         } else if (arg == "--chat") {
@@ -85,6 +93,13 @@ int main(int argc, char** argv) {
     if (!engine.load(model_path, max_context, streaming_mode)) {
         fprintf(stderr, "Failed to load model: %s\n", model_path.c_str());
         return 1;
+    }
+
+    if (early_exit_threshold > 0.0f) {
+        engine.model().set_early_exit(early_exit_threshold);
+    }
+    if (skip_threshold > 0.0f) {
+        engine.model().set_layer_skip(skip_threshold);
     }
 
     // Run

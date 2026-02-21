@@ -1,0 +1,230 @@
+# Optimization Roadmap for 70B Streaming
+
+## Current Baseline
+
+```
+70B Q6_K, RTX 3090 (Gen3 x8), 48 GB DDR4
+Tier split: 29 VRAM + 51 RAM + 0 NVMe
+Decode: 0.2 tok/s (5.5s per token)
+Bottleneck: PCIe H2D at Gen3 x8 (~6.5 GB/s), 103ms per tier B layer
+GPU utilization: ~0.7% (0.7ms compute / 103ms H2D per layer)
+```
+
+## Optimization Plan
+
+### OPT-1: Zero-Copy GeMV from Pinned RAM
+**Status**: TESTED — 46x SLOWER, REJECTED
+**Expected**: 0-20% speedup (eliminate staging overhead, same PCIe bandwidth)
+**Measured**: 228s/token vs 5s/token = 46x regression
+
+Tier B buffers are `cudaMallocHost` — directly accessible from GPU via PCIe.
+Instead of H2D copy → compute, point GeMV kernels directly at pinned RAM.
+
+```
+H2D DMA path:  669MB / 6.5 GB/s = 103ms/layer  → 5.3s/token (51 layers)
+Zero-copy:     669MB / 0.15 GB/s = 4470ms/layer → 228s/token (51 layers)
+```
+
+**Why it failed**: GPU PCIe reads are **non-posted** (request/response) at 128-byte
+cacheline granularity. Each read requires a round-trip through the PCIe fabric.
+The GPU's outstanding read request queue (~256 entries) is far too small to
+saturate the link. Effective bandwidth: ~150 MB/s (2.3% of link capacity).
+
+DMA (H2D copy) uses **posted writes** at 4KB+ granularity — no round-trip wait,
+just fire-and-forget into the PCIe link. This is fundamentally more efficient
+for bulk data transfer.
+
+**Conclusion**: For streaming workloads, DMA is always better than zero-copy
+on consumer GPUs. Zero-copy only makes sense for sparse/random access patterns
+where DMA of the entire buffer would transfer too much unused data.
+
+---
+
+### OPT-2: Speculative Decoding with 8B Draft Model
+**Status**: PLANNED — biggest potential gain, requires dual-model loading
+**Expected**: ~3x speedup (0.2 → 0.6 tok/s)
+**Effort**: ~200 lines + model management complexity
+
+8B Q8_0 fits entirely in VRAM tier A: 48.8 tok/s. Use as draft model:
+
+```
+Draft:    8B generates K=5 draft tokens     → 5/48.8 = 102ms
+Verify:   70B runs one forward (seq_len=K)  → ~5.5s (same as 1 token)
+Accept:   ~60-70% acceptance rate           → ~3.5 tokens
+Effective: 3.5 tokens / 5.6s = 0.63 tok/s
+```
+
+Key insight: 70B forward pass cost is dominated by H2D, which is the same
+whether seq_len=1 or seq_len=5 (weight transfer doesn't depend on seq_len).
+So verifying 5 tokens costs ~1x of verifying 1 token.
+
+**Implementation**:
+1. Load both 8B and 70B models (8B resident, 70B tiered)
+2. Draft loop: 8B generates K tokens autoregressively
+3. Verify: 70B forward with all K tokens at once (prefill mode)
+4. Compare: find first divergence, accept tokens up to that point
+5. Repeat from divergence point
+
+**Requires**: Two model instances, modified engine loop, rejection sampling.
+
+---
+
+### OPT-3: Layer Skipping / Adaptive Depth
+**Status**: IMPLEMENTED + TESTED — 33% speedup at threshold=0.98 with acceptable quality
+**Expected**: ~30% speedup (skip 20-30% of middle layers)
+**Measured**: Up to 33% speedup (0.18 → 0.27 tok/s)
+
+Calibrates on first decode token: measures cosine similarity between hidden
+state before/after each layer (in [n_layers/4, 3*n_layers/4] range). Layers
+above threshold are permanently skipped in subsequent tokens. Double-buffer
+pipeline is rebuilt to exclude skipped layers.
+
+**Measured results (Llama 3.1 70B Q6_K, RTX 3090):**
+```
+Threshold  Skipped  ms/token  tok/s  Speedup  Quality
+none       0/80     5500      0.18   1.0x     baseline
+0.985      10-13    4475      0.22   1.23x    good (coherent)
+0.98       16-20    3676      0.27   1.50x    good ("Paris" correct)
+```
+
+**Usage**: `--skip-threshold 0.98` (lower = more aggressive skipping).
+Only middle 50% of layers are candidates. First/last quarter always run.
+
+**Quality note**: "What is the capital of France?" → "Paris" correct with
+20 layers skipped. Complex reasoning tasks may degrade. Easy to tune.
+
+---
+
+### OPT-4: F16 KV Cache
+**Status**: DEFERRED — negligible gain at ctx=512 (0.2 layers saved, 25ms/token)
+**Expected**: ctx=512: 0.5% speedup | ctx=4096: ~4% speedup (2 more VRAM layers)
+**Effort**: ~100 lines (attention kernel modifications needed)
+
+KV cache currently F32: 2560 MB for 70B ctx=4096.
+With F16: 1280 MB → saves 1280 MB VRAM → ~2 more layers in tier A.
+
+```
+Before: 24 VRAM + 54 RAM + 2 NVMe (ctx=4096)
+After:  26 VRAM + 52 RAM + 2 NVMe (ctx=4096)
+Savings: 2 fewer H2D transfers × 103ms = 206ms → ~4% faster
+```
+
+Bigger impact with longer context or Q8_0 (where KV cache is a larger
+fraction of VRAM usage).
+
+**Implementation**: Change k_cache_/v_cache_ allocation to F16, add
+F32→F16 conversion in attention write path, F16→F32 in read path (or
+keep everything F16 with __half arithmetic).
+
+---
+
+### OPT-5: Compressed Transfer + GPU Decompression
+**Status**: DEFERRED — complex implementation for moderate gain
+**Expected**: ~30% speedup (less H2D, quality tradeoff)
+**Effort**: ~150 lines
+
+Store weights in more aggressive quantization in RAM, decompress on GPU:
+
+```
+Q6_K in RAM: 669 MB/layer → H2D: 103ms
+Q4_K in RAM: 452 MB/layer → H2D:  70ms + GPU dequant: ~1ms
+Savings: 32% less H2D → 51 × 70ms = 3570ms → 0.26 tok/s
+```
+
+**Approach A** (lossy): Re-quantize Q6_K → Q4_K_M in RAM at init time.
+Transfer Q4_K_M, GeMV uses Q4_K_M directly. ~1-2 perplexity loss.
+
+**Approach B** (lossless-ish): Custom tight bit-packing of Q6_K blocks.
+Q6_K wastes some alignment bits. Tight packing could save 10-15%.
+
+**Approach C** (domain-specific): Delta coding between adjacent layers.
+Store layer 0 full, layers 1-79 as XOR deltas. If layers are similar,
+deltas compress well. LZ4 on GPU decompresses at ~30 GB/s.
+
+---
+
+### OPT-6: Early Exit with Confidence Estimation
+**Status**: IMPLEMENTED + TESTED — no speedup for Llama 70B (layers don't converge)
+**Expected**: Variable (0-50% for simple prompts, 0% for complex)
+**Measured**: Never triggers at threshold=0.9999
+
+Implemented cosine similarity check between hidden states before/after each layer.
+Check starts at layer n_layers/2. Uses single-block GPU reduction kernel (~5µs).
+
+**Measured cosine similarity (Llama 3.1 70B Q6_K, "Hello" prompt):**
+```
+Layers 40-57:  cos ≈ 0.985-0.991  (most stable zone)
+Layers 58-73:  cos ≈ 0.980-0.989  (gradually declining)
+Layers 74-77:  cos ≈ 0.960-0.977  (accelerating change)
+Layer 78:      cos = 0.859         (big jump)
+Layer 79:      cos = 0.622         (massive change — final layer)
+```
+
+**Conclusion**: Llama 70B uses ALL 80 layers meaningfully. The max cosine
+similarity (~0.991 at layer 54) never reaches 0.999, so a safe threshold
+never triggers. The final layers (78-79) make the biggest difference.
+
+Infrastructure preserved: `--early-exit <threshold>` CLI flag works.
+May be useful for smaller/distilled models or future MoE architectures.
+
+---
+
+### OPT-7: CUDA Graphs (kernel launch overhead)
+**Status**: To implement
+**Expected**: ~1% speedup (5ms saved per token)
+**Effort**: ~50 lines
+
+80 layers × ~10 kernels × ~7µs launch overhead = 5.6ms.
+With CUDA Graphs: capture once, replay with near-zero overhead.
+
+Only useful after H2D bottleneck is resolved (currently 5.6ms / 5500ms = 0.1%).
+Becomes relevant when compute dominates (e.g., after zero-copy + speculative).
+
+---
+
+### OPT-8: NVMe Direct-to-VRAM DMA (Tier 2 P2P)
+**Status**: Research / last
+**Expected**: 34% faster tier C reads (NVMe → VRAM, bypass staging)
+**Effort**: ~500 lines + nvidia DKMS patches
+
+GPU posted writes to NVMe BAR0 work (proven). NVMe DMA is also a posted
+write. Theory: NVMe can DMA directly to GPU VRAM via AMD data fabric.
+
+```
+Current tier C: NVMe → staging (200ms) + H2D (103ms) = 303ms
+Tier 2:         NVMe → VRAM directly = 200ms (34% less)
+```
+
+Requires nvidia_p2p_get_pages() to get VRAM physical addresses, then
+program NVMe PRP entries with those addresses.
+
+**Risk**: HIGH. Failed P2P DMA could corrupt VRAM or crash GPU/NVMe link.
+Only useful when tier C is populated (Q8_0 70B, or >48 GB models).
+
+---
+
+## Implementation Order
+
+1. **OPT-1** (Zero-copy) — 5 minutes, validates PCIe read bandwidth
+2. **OPT-6** (Early exit) — 10 minutes, easy win for simple prompts
+3. **OPT-3** (Layer skipping) — 30 minutes, complementary with early exit
+4. **OPT-4** (F16 KV cache) — 1 hour, standard optimization
+5. **OPT-5** (Compressed transfer) — 2 hours, quality tradeoff
+6. **OPT-2** (Speculative decoding) — 4 hours, biggest potential gain
+7. **OPT-7** (CUDA Graphs) — 1 hour, polish
+8. **OPT-8** (NVMe P2P) — research project, save for last
+
+## Combined Projected Performance
+
+```
+Baseline:                          0.20 tok/s
++ Zero-copy: REJECTED (46x slower — GPU PCIe reads at 150 MB/s vs 6.5 GB/s DMA)
++ Early exit: NO EFFECT (Llama 70B uses all 80 layers, max cos=0.991)
++ Layer skip (skip 20%):           0.24 tok/s  (if quality acceptable)
++ Speculative (3.5 accepted/5):    0.67 tok/s
++ F16 KV (2 more VRAM layers):     0.68 tok/s
++ Compressed transfer:             0.80 tok/s
+
+Theoretical ceiling (all optimizations, Gen3 x8): ~0.8 tok/s
+With Gen4 x16 (B550/X570):                       ~2-3 tok/s
+```

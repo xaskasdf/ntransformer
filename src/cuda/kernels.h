@@ -61,5 +61,8 @@ void launch_add(float* out, const float* a, const float* b, int size, void* stre
 void launch_add_inplace(float* a, const float* b, int size, void* stream);
 void launch_copy(float* dst, const float* src, int size, void* stream);
 
+// Cosine similarity (single-block reduction, writes result to device float)
+void launch_cosine_similarity(float* result, const float* a, const float* b, int size, void* stream);
+
 } // namespace cuda
 } // namespace nt

@@ -99,6 +99,10 @@ public:
     // Get weight pointers for a VRAM-resident layer (tier A)
     LayerWeightPtrs get_resident_weights(int layer_idx) const;
 
+    // Get weight pointers for a RAM-cached layer (tier B) — zero-copy path
+    // Returns pointers into pinned host memory (GPU-accessible via PCIe)
+    LayerWeightPtrs get_ram_weights(int layer_idx) const;
+
     // Tier queries
     bool is_vram_resident(int layer_idx) const;
     LayerTier layer_tier(int layer_idx) const;

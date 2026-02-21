@@ -47,6 +47,7 @@ public:
     void benchmark(const std::string& prompt, int n_tokens);
 
     const ModelConfig& config() const { return model_.config(); }
+    Transformer& model() { return model_; }
 
 private:
     Transformer model_;

@@ -51,6 +51,13 @@ public:
 
     bool is_streaming() const { return streaming_mode_; }
 
+    // Early exit: skip remaining layers when hidden state converges
+    void set_early_exit(float threshold);
+
+    // Layer skipping: skip middle layers where hidden state barely changes
+    // First token calibrates which layers to skip; subsequent tokens skip them
+    void set_layer_skip(float threshold);
+
 private:
     ModelConfig config_;
     GGUFLoader loader_;
@@ -81,6 +88,18 @@ private:
     LayerStreamer streamer_;
     void* norm_weights_gpu_ = nullptr;   // preloaded norm weights for all layers
     size_t norm_weights_size_ = 0;
+
+    // === Early exit ===
+    float early_exit_threshold_ = 0.0f;  // 0 = disabled, 0.9999 = aggressive
+    int early_exit_min_layer_ = 0;       // don't check before this layer
+    void* prev_hidden_gpu_ = nullptr;    // [hidden_size] saved state for comparison
+    void* cosine_result_d_ = nullptr;    // device float for kernel output
+    float* cosine_result_h_ = nullptr;   // pinned host float for reading
+
+    // === Layer skipping ===
+    float skip_threshold_ = 0.0f;        // 0 = disabled; layers with cos > threshold are skipped
+    std::vector<bool> skip_layer_;       // [n_layers] true = skip this layer
+    bool skip_calibrated_ = false;       // true after first token calibrates skip list
 
     // Streaming-specific forward pass
     float* forward_streaming(const int* tokens, int seq_len, int start_pos);
