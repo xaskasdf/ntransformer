@@ -222,9 +222,9 @@ the ~5µs launch overhead. The CPU pipeline is never the bottleneck.
 ---
 
 ### OPT-8: NVMe Direct-to-VRAM DMA (Tier 2 P2P)
-**Status**: Research / last
+**Status**: TESTED — NOT VIABLE on GeForce RTX 3090
 **Expected**: 34% faster tier C reads (NVMe → VRAM, bypass staging)
-**Effort**: ~500 lines + nvidia DKMS patches
+**Measured**: nvidia_p2p_get_pages() returns -EINVAL (blocked by RM/GSP firmware)
 
 GPU posted writes to NVMe BAR0 work (proven). NVMe DMA is also a posted
 write. Theory: NVMe can DMA directly to GPU VRAM via AMD data fabric.
@@ -234,11 +234,24 @@ Current tier C: NVMe → staging (200ms) + H2D (103ms) = 303ms
 Tier 2:         NVMe → VRAM directly = 200ms (34% less)
 ```
 
-Requires nvidia_p2p_get_pages() to get VRAM physical addresses, then
-program NVMe PRP entries with those addresses.
+**What was done:**
+1. Built gpunvme.ko kernel module with nvidia P2P support (HAVE_NV_P2P_H)
+2. Patched nvidia DKMS: MODULE_LICENSE("Dual MIT/GPL") + EXPORT_SYMBOL_GPL for P2P
+3. Updated initramfs to load patched nvidia.ko (license taint resolved)
+4. gpunvme.ko loaded, /dev/gpunvme0 created, SN740 BAR0 mapped successfully
+5. nvidia_p2p_get_pages(0, 0, gpu_vaddr, 64K, ...) → **-EINVAL**
 
-**Risk**: HIGH. Failed P2P DMA could corrupt VRAM or crash GPU/NVMe link.
-Only useful when tier C is populated (Q8_0 70B, or >48 GB models).
+**Root cause**: The P2P check is inside rm_p2p_get_pages() in the RM/GSP
+firmware layer (closed-source even in "open" kernel modules). GeForce GPUs
+are blocked at the firmware level — not patchable without GSP reverse engineering.
+
+**What still works (Tier 1)**: GPU doorbell writes + CQ polling via host pinned.
+NVMe DMA to host pinned memory at 3.35 GB/s. No CPU in the data path.
+GPU reads from host pinned at PCIe bandwidth (~6.5 GB/s Gen3 x8).
+
+**Verdict**: Tier 2 requires Tesla/A-series/H-series GPUs. For GeForce RTX 3090,
+Tier 1 is the ceiling. The real ntransformer gain is integrating gpu-nvme-direct
+Tier 1 to eliminate CPU mmap+memcpy, not DMA-to-VRAM.
 
 ---
 
@@ -251,7 +264,7 @@ Only useful when tier C is populated (Q8_0 70B, or >48 GB models).
 5. **OPT-5** (Compressed transfer) — 2 hours, quality tradeoff
 6. **OPT-2** (Speculative decoding) — 4 hours, biggest potential gain
 7. **OPT-7** (CUDA Graphs) — 1 hour, polish
-8. **OPT-8** (NVMe P2P) — research project, save for last
+8. **OPT-8** (NVMe P2P) — TESTED, NOT VIABLE on GeForce (RM/GSP block)
 
 ## Combined Projected Performance
 
@@ -263,6 +276,9 @@ Baseline:                          0.18 tok/s
 + Speculative (44% accept, K=5):   0.21 tok/s  (measured, 17% improvement — VRAM contention)
 + Spec + skip combined:            0.18 tok/s  (measured, no improvement — skip hurts acceptance)
 
++ CUDA Graphs: NO EFFECT (launch overhead hidden by GPU compute)
++ NVMe P2P (DMA-to-VRAM): NOT VIABLE (nvidia_p2p_get_pages blocked on GeForce)
+
 Best single optimization:          Layer skip 0.98 → 0.24 tok/s (33%)
 Best combination found:            Layer skip alone → 0.24 tok/s
 
@@ -270,4 +286,6 @@ Notes:
 - Speculative decoding and layer skipping are anti-synergistic on this hardware
 - The VRAM budget is the fundamental constraint: draft model steals tier A slots
 - With >32 GB VRAM (e.g., 4090 or A6000), speculative would benefit more
+- NVMe P2P requires Tesla/A-series/H-series GPUs (RM firmware blocks GeForce)
+- CUDA Graphs don't help because CPU queues kernels 8x faster than GPU executes
 ```
