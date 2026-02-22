@@ -38,6 +38,26 @@ Bottleneck is PCIe H2D bandwidth at Gen3 x8 (~6.5 GB/s). Q4_K_M fits 10 more lay
 - CMake 3.24+
 - (Optional) NVMe SSD on separate PCIe slot + [gpu-nvme-direct](https://github.com/xaskasdf/gpu-nvme-direct) library
 
+## Hardware Compatibility
+
+### Blackwell (sm_120) Support
+
+RTX 5060 Ti, 5080, and 5090 are supported with native sm_120 codegen. CMake will compile dedicated kernels for Blackwell rather than relying on PTX JIT compilation.
+
+**Without sm_120 in `CMAKE_CUDA_ARCHITECTURES`:** CUDA falls back to PTX JIT at first launch, adding startup latency and losing Blackwell-specific optimizations (e.g., wgmma, cp.async.bulk improvements).
+
+**Compiler requirement:** gcc-14 is required. gcc-15 is incompatible with CUDA 13.1.
+
+**Build command for Blackwell:**
+```bash
+cmake .. -DCMAKE_C_COMPILER=gcc-14 \
+         -DCMAKE_CXX_COMPILER=g++-14 \
+         -DCMAKE_CUDA_COMPILER=/opt/cuda/bin/nvcc \
+         -DCMAKE_CUDA_HOST_COMPILER=g++-14
+```
+
+**PCIe note:** Detection uses `max_link_speed` (stable, boot-time negotiated value) rather than `current_link_speed`, which ASPM can throttle to 5 GT/s at idle. This ensures accurate bandwidth estimation for tier sizing even when the link is in a low-power state.
+
 ## Quick Start
 
 ```bash

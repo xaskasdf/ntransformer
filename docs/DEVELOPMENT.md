@@ -248,6 +248,43 @@ Remaining gap is from non-GEMV overhead (attention, norms, kernel launches) and 
 
 ---
 
+## Blackwell Build Notes
+
+### Overview
+
+sm_120 (Blackwell) is now included in `CMAKE_CUDA_ARCHITECTURES`. This enables native codegen for RTX 5060 Ti, 5080, and 5090 without PTX JIT fallback at runtime.
+
+### Why it matters
+
+Without sm_120, CUDA compiles PTX (portable assembly) and the driver JIT-compiles it on first launch. This adds startup latency (~1–3 seconds for large binaries) and prevents Blackwell-specific instruction selection (wgmma, cp.async.bulk improvements in sm_120 vs sm_90a).
+
+### Compiler constraint
+
+gcc-14 is required. gcc-15 is incompatible with CUDA 13.1 due to C++ standard library ABI changes that break device code compilation.
+
+### Build command
+
+```bash
+cmake .. -DCMAKE_C_COMPILER=gcc-14 \
+         -DCMAKE_CXX_COMPILER=g++-14 \
+         -DCMAKE_CUDA_COMPILER=/opt/cuda/bin/nvcc \
+         -DCMAKE_CUDA_HOST_COMPILER=g++-14
+```
+
+The `-DCMAKE_CUDA_HOST_COMPILER=g++-14` flag is needed if your system default (`/usr/bin/c++`) resolves to gcc-15.
+
+### Architecture targets
+
+| SM | GPU family | Notes |
+|----|-----------|-------|
+| sm_80 | A100, RTX 30xx | Ampere |
+| sm_86 | RTX 3090 (primary dev target) | Ampere |
+| sm_89 | RTX 40xx | Ada Lovelace |
+| sm_90 | H100 | Hopper |
+| sm_120 | RTX 5060 Ti, 5080, 5090 | Blackwell (new) |
+
+---
+
 ## Port: Windows/CUDA 12.4 → Linux/CUDA 13.1 (2026-02-19)
 
 Ported the entire codebase from Windows (MSVC 2022 / CUDA 12.4) to Linux (gcc-14 / CUDA 13.1).
