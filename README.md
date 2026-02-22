@@ -38,6 +38,19 @@ Bottleneck is PCIe H2D bandwidth at Gen3 x8 (~6.5 GB/s). Q4_K_M fits 10 more lay
 - CMake 3.24+
 - (Optional) NVMe SSD on separate PCIe slot + [gpu-nvme-direct](https://github.com/xaskasdf/gpu-nvme-direct) library
 
+## Hardware Compatibility
+
+### PCIe Bandwidth Detection
+
+PCIe bandwidth detection reads from sysfs to auto-size tier B (pinned RAM) transfers. The implementation prefers `max_link_speed` / `max_link_width` over `current_link_speed` / `current_link_width`.
+
+**Why:** PCIe ASPM (Active State Power Management) downgrades the link to Gen1 or Gen2 speeds at idle (5 GT/s), causing `current_link_speed` to report ~3.9 GB/s when the slot is actually Gen4 x8 (~31 GB/s). `max_link_speed` reflects the speed negotiated at boot time and is stable regardless of power state.
+
+Sysfs paths used:
+- `/sys/bus/pci/devices/<pci_id>/max_link_speed` (preferred)
+- `/sys/bus/pci/devices/<pci_id>/max_link_width` (preferred)
+- Falls back to `current_link_speed` / `current_link_width` on older kernels
+
 ## Quick Start
 
 ```bash

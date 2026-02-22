@@ -153,6 +153,72 @@ size_t LayerStreamer::requantize_q6k_to_q4km(void* data, size_t nbytes_q6k) {
 }
 
 // ============================================================
+// PCIe bandwidth detection via sysfs
+//
+// Prefers max_link_speed / max_link_width over current_link_* because
+// PCIe power management (ASPM) downgrades the link to Gen1/2 at idle,
+// causing wildly incorrect bandwidth estimates. The max values reflect
+// what the slot actually negotiated at boot time and stays stable.
+//
+// Falls back to current_link_* if max_* is unavailable (older kernels).
+//
+// Returns effective one-directional bandwidth in GB/s,
+// or 0.0 if detection fails (caller will use safe default).
+// ============================================================
+static float detect_pcie_bandwidth_gbps() {
+    // Retrieve CUDA device PCI bus ID (e.g. "0000:05:00.0")
+    char pci_id[32] = {};
+    if (cudaDeviceGetPCIBusId(pci_id, sizeof(pci_id), 0) != cudaSuccess)
+        return 0.0f;
+
+    // sysfs paths use lowercase hex
+    for (int i = 0; pci_id[i]; i++)
+        pci_id[i] = (char)tolower((unsigned char)pci_id[i]);
+
+    char path[256];
+    float speed_gts = 0.0f;
+    int width = 0;
+
+    // Helper: try max_link_* first (immune to ASPM idle downclocking),
+    // fall back to current_link_* for older kernels that lack max_*.
+    auto read_speed = [&](const char* attr_max, const char* attr_cur) -> float {
+        float val = 0.0f;
+        snprintf(path, sizeof(path), "/sys/bus/pci/devices/%s/%s", pci_id, attr_max);
+        FILE* f = fopen(path, "r");
+        if (f) { fscanf(f, "%f", &val); fclose(f); }
+        if (val > 0.0f) return val;
+        // fallback
+        snprintf(path, sizeof(path), "/sys/bus/pci/devices/%s/%s", pci_id, attr_cur);
+        f = fopen(path, "r");
+        if (f) { fscanf(f, "%f", &val); fclose(f); }
+        return val;
+    };
+    auto read_width = [&](const char* attr_max, const char* attr_cur) -> int {
+        int val = 0;
+        snprintf(path, sizeof(path), "/sys/bus/pci/devices/%s/%s", pci_id, attr_max);
+        FILE* f = fopen(path, "r");
+        if (f) { fscanf(f, "%d", &val); fclose(f); }
+        if (val > 0) return val;
+        snprintf(path, sizeof(path), "/sys/bus/pci/devices/%s/%s", pci_id, attr_cur);
+        f = fopen(path, "r");
+        if (f) { fscanf(f, "%d", &val); fclose(f); }
+        return val;
+    };
+
+    speed_gts = read_speed("max_link_speed", "current_link_speed");
+    width     = read_width("max_link_width", "current_link_width");
+
+    if (speed_gts <= 0.0f || width <= 0) return 0.0f;
+
+    // Convert GT/s × width to effective GB/s:
+    //   Gen1/2: 8b/10b encoding → 80% efficiency
+    //   Gen3+:  128b/130b encoding → ~98.5% efficiency
+    //   Additional 0.985 factor for protocol overhead.
+    float enc = (speed_gts <= 5.0f) ? 0.8f : 0.985f;
+    return speed_gts / 8.0f * enc * (float)width * 0.985f;
+}
+
+// ============================================================
 // TierConfig: auto-compute tier sizes from hardware
 // ============================================================
 TierConfig TierConfig::compute(int n_layers, size_t layer_bytes,
@@ -185,6 +251,13 @@ TierConfig TierConfig::compute(int n_layers, size_t layer_bytes,
         ram_free = (size_t)si.freeram * si.mem_unit +
                    (size_t)si.bufferram * si.mem_unit;
     }
+
+    // Detect PCIe bandwidth (uses max_link_speed to avoid ASPM idle downclocking)
+    float pcie_bw = detect_pcie_bandwidth_gbps();
+    if (pcie_bw > 0.0f)
+        fprintf(stderr, "TierConfig: PCIe bandwidth detected: %.1f GB/s (max_link_speed)\n", pcie_bw);
+    else
+        fprintf(stderr, "TierConfig: PCIe bandwidth detection failed, using defaults\n");
 
     fprintf(stderr, "TierConfig: VRAM free=%.1f GB, RAM available=%.1f GB\n",
             vram_free / (1024.0 * 1024 * 1024), ram_free / (1024.0 * 1024 * 1024));
