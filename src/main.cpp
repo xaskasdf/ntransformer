@@ -23,6 +23,7 @@ void print_usage(const char* prog) {
     fprintf(stderr, "  --early-exit <float>     Early exit threshold (0=off, 0.9999=aggressive)\n");
     fprintf(stderr, "  --skip-threshold <float> Layer skip threshold (0=off, 0.985=moderate)\n");
     fprintf(stderr, "  --requant-q4k            Requantize Q6_K→Q4_K_M for tier B (31%% less H2D)\n");
+    fprintf(stderr, "  --delta-model <path>     Delta-encoded .ntd file (33x less H2D bandwidth)\n");
     fprintf(stderr, "  --benchmark              Run benchmark mode\n");
     fprintf(stderr, "  --chat                   Interactive chat mode\n");
     fprintf(stderr, "  -v, --verbose            Verbose output\n");
@@ -32,6 +33,7 @@ void print_usage(const char* prog) {
 int main(int argc, char** argv) {
     std::string model_path;
     std::string draft_model_path;
+    std::string delta_model_path;
     std::string prompt;
     int max_context = 4096;
     int draft_k = 5;
@@ -81,6 +83,8 @@ int main(int argc, char** argv) {
             if (++i < argc) early_exit_threshold = std::stof(argv[i]);
         } else if (arg == "--skip-threshold") {
             if (++i < argc) skip_threshold = std::stof(argv[i]);
+        } else if (arg == "--delta-model") {
+            if (++i < argc) delta_model_path = argv[i];
         } else if (arg == "--requant-q4k") {
             requant_q4k = true;
         } else if (arg == "--self-spec") {
@@ -129,6 +133,14 @@ int main(int argc, char** argv) {
 
     if (requant_q4k) {
         engine.model().set_requant_q4k(true);
+    }
+
+    if (!delta_model_path.empty()) {
+        if (!streaming_mode) {
+            fprintf(stderr, "Note: --delta-model implies --streaming\n");
+            streaming_mode = true;
+        }
+        engine.model().set_delta_model(delta_model_path);
     }
 
     if (!engine.load(model_path, max_context, streaming_mode)) {

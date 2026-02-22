@@ -6,6 +6,10 @@
 #include <cmath>
 #include <algorithm>
 #include <sys/sysinfo.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 namespace nt {
 
@@ -588,9 +592,248 @@ void LayerStreamer::init_tiered(const GGUFLoader& loader, const ModelConfig& con
 }
 
 // ============================================================
+// Delta encoding: init from .ntd file
+// ============================================================
+bool LayerStreamer::init_delta(const std::string& ntd_path, const ModelConfig& config) {
+    // Open and mmap the .ntd file
+    delta_mmap_fd_ = open(ntd_path.c_str(), O_RDONLY);
+    if (delta_mmap_fd_ < 0) {
+        fprintf(stderr, "init_delta: cannot open %s\n", ntd_path.c_str());
+        return false;
+    }
+
+    struct stat st;
+    fstat(delta_mmap_fd_, &st);
+    delta_mmap_size_ = st.st_size;
+
+    delta_mmap_ = mmap(nullptr, delta_mmap_size_, PROT_READ, MAP_PRIVATE, delta_mmap_fd_, 0);
+    if (delta_mmap_ == MAP_FAILED) {
+        fprintf(stderr, "init_delta: mmap failed\n");
+        close(delta_mmap_fd_);
+        delta_mmap_fd_ = -1;
+        return false;
+    }
+
+    // Parse header (64 bytes)
+    const uint8_t* hdr = static_cast<const uint8_t*>(delta_mmap_);
+    if (memcmp(hdr, "NTD1", 4) != 0) {
+        fprintf(stderr, "init_delta: bad magic\n");
+        munmap(delta_mmap_, delta_mmap_size_);
+        close(delta_mmap_fd_);
+        return false;
+    }
+
+    uint32_t rank, n_layers, hidden_size, intermediate_size, n_heads, n_kv_heads, head_dim;
+    uint32_t base_dtype_id, delta_dtype_id;
+    uint64_t base_offset, delta_offset;
+
+    memcpy(&rank, hdr + 4, 4);
+    memcpy(&n_layers, hdr + 8, 4);
+    memcpy(&hidden_size, hdr + 12, 4);
+    memcpy(&intermediate_size, hdr + 16, 4);
+    memcpy(&n_heads, hdr + 20, 4);
+    memcpy(&n_kv_heads, hdr + 24, 4);
+    memcpy(&head_dim, hdr + 28, 4);
+    memcpy(&base_dtype_id, hdr + 32, 4);
+    memcpy(&delta_dtype_id, hdr + 36, 4);
+    memcpy(&base_offset, hdr + 40, 8);
+    memcpy(&delta_offset, hdr + 48, 8);
+
+    delta_rank_ = rank;
+
+    // Verify config matches
+    if ((int)n_layers != config.n_layers || (int)hidden_size != config.hidden_size) {
+        fprintf(stderr, "init_delta: config mismatch (layers %u vs %d, hidden %u vs %d)\n",
+                n_layers, config.n_layers, hidden_size, config.hidden_size);
+        munmap(delta_mmap_, delta_mmap_size_);
+        close(delta_mmap_fd_);
+        return false;
+    }
+
+    fprintf(stderr, "init_delta: rank=%d, n_layers=%d, hidden=%d, intermediate=%d\n",
+            rank, n_layers, hidden_size, intermediate_size);
+
+    // Compute base weight sizes (7 Q6_K matrices)
+    // Weight shapes: [out, in] — same as compute_weight_shapes in decompose tool
+    int h = hidden_size;
+    int inter = intermediate_size;
+    int nh = n_heads;
+    int nkv = n_kv_heads;
+    int hd_val = head_dim;
+
+    struct { int out, in; } base_shapes[7] = {
+        {(int)(nh * hd_val), h},     // attn_q
+        {(int)(nkv * hd_val), h},    // attn_k
+        {(int)(nkv * hd_val), h},    // attn_v
+        {h, (int)(nh * hd_val)},     // attn_o
+        {inter, h},                  // ffn_gate
+        {inter, h},                  // ffn_up
+        {h, inter},                  // ffn_down
+    };
+
+    // Compute base section layout
+    size_t base_cursor = 0;
+    for (int w = 0; w < 7; w++) {
+        delta_base_offsets_[w] = base_cursor;
+        delta_base_dtypes_[w] = DType::Q6_K;  // base is always Q6_K
+        size_t n_elements = (size_t)base_shapes[w].out * base_shapes[w].in;
+        size_t bytes = (n_elements / 256) * 210;  // Q6_K: 256 weights per 210-byte block
+        base_cursor += bytes;
+        // Align to 256 bytes
+        base_cursor = (base_cursor + 255) & ~(size_t)255;
+    }
+    delta_base_size_ = base_cursor;
+
+    fprintf(stderr, "init_delta: base size = %.1f MB\n",
+            delta_base_size_ / (1024.0 * 1024.0));
+
+    // Allocate VRAM for base weights and copy from mmap
+    cudaError_t err = cudaMalloc(&delta_base_buf_, delta_base_size_);
+    if (err != cudaSuccess) {
+        fprintf(stderr, "init_delta: failed to allocate base VRAM (%.1f MB)\n",
+                delta_base_size_ / (1024.0 * 1024.0));
+        munmap(delta_mmap_, delta_mmap_size_);
+        close(delta_mmap_fd_);
+        return false;
+    }
+
+    // Copy base weights: file offset = base_offset, sequential Q6_K data
+    {
+        const uint8_t* base_src = static_cast<const uint8_t*>(delta_mmap_) + base_offset;
+        size_t file_cursor = 0;
+        for (int w = 0; w < 7; w++) {
+            size_t n_elements = (size_t)base_shapes[w].out * base_shapes[w].in;
+            size_t bytes = (n_elements / 256) * 210;
+            uint8_t* dst = static_cast<uint8_t*>(delta_base_buf_) + delta_base_offsets_[w];
+            nt_cuda_memcpy_h2d(dst, base_src + file_cursor, bytes);
+            file_cursor += bytes;
+        }
+        fprintf(stderr, "init_delta: base weights loaded to VRAM\n");
+    }
+
+    // Compute per-layer delta layout in the .ntd file
+    delta_layers_.resize(n_layers);
+    size_t file_cursor = delta_offset;
+    for (int layer = 0; layer < (int)n_layers; layer++) {
+        for (int w = 0; w < 7; w++) {
+            // U: [out_features, rank] F16
+            size_t u_bytes = (size_t)base_shapes[w].out * rank * 2;
+            delta_layers_[layer].U[w] = {file_cursor, u_bytes};
+            file_cursor += u_bytes;
+
+            // V: [rank, in_features] F16
+            size_t v_bytes = (size_t)rank * base_shapes[w].in * 2;
+            delta_layers_[layer].V[w] = {file_cursor, v_bytes};
+            file_cursor += v_bytes;
+        }
+    }
+
+    // Compute per-slot GPU buffer layout for delta tensors
+    // All 14 tensors (7 U + 7 V) packed sequentially with 256-byte alignment
+    size_t slot_cursor = 0;
+    for (int w = 0; w < 7; w++) {
+        delta_slot_layout_.U_offset[w] = slot_cursor;
+        size_t u_bytes = (size_t)base_shapes[w].out * rank * 2;
+        slot_cursor += u_bytes;
+        slot_cursor = (slot_cursor + 255) & ~(size_t)255;
+
+        delta_slot_layout_.V_offset[w] = slot_cursor;
+        size_t v_bytes = (size_t)rank * base_shapes[w].in * 2;
+        slot_cursor += v_bytes;
+        slot_cursor = (slot_cursor + 255) & ~(size_t)255;
+    }
+    delta_buf_size_ = slot_cursor;
+
+    fprintf(stderr, "init_delta: delta per-layer = %.1f MB (vs %.1f MB full layer)\n",
+            delta_buf_size_ / (1024.0 * 1024.0), buf_size_ / (1024.0 * 1024.0));
+
+    // Reallocate GPU double-buffers to delta size (much smaller)
+    for (int s = 0; s < 2; s++) {
+        if (gpu_buf_[s]) cudaFree(gpu_buf_[s]);
+        err = cudaMalloc(&gpu_buf_[s], delta_buf_size_);
+        NT_CHECK(err == cudaSuccess, "Failed to allocate delta GPU buffer");
+    }
+
+    // Reallocate staging buffers if needed
+    if (!mmap_pinned_ && staging_buf_[0]) {
+        for (int s = 0; s < 2; s++) {
+            cudaFreeHost(staging_buf_[s]);
+            err = cudaMallocHost(&staging_buf_[s], delta_buf_size_);
+            NT_CHECK(err == cudaSuccess, "Failed to allocate delta staging buffer");
+        }
+        staging_size_ = delta_buf_size_;
+    }
+
+    // Allocate temp buffer for rank-sized intermediate (rank floats)
+    err = cudaMalloc(reinterpret_cast<void**>(&delta_temp_), rank * sizeof(float));
+    NT_CHECK(err == cudaSuccess, "Failed to allocate delta temp buffer");
+
+    // Pin the mmap region for direct DMA
+    cudaError_t pin_err = cudaHostRegister(
+        delta_mmap_, delta_mmap_size_, cudaHostRegisterReadOnly);
+    if (pin_err == cudaSuccess) {
+        mmap_pinned_ = true;
+        fprintf(stderr, "init_delta: .ntd mmap pinned (%.1f MB)\n",
+                delta_mmap_size_ / (1024.0 * 1024.0));
+    }
+
+    delta_mode_ = true;
+    buf_size_ = delta_buf_size_;  // update for buffer_size() queries
+
+    fprintf(stderr, "init_delta: ready (rank=%d, %.1f MB base + %.1f MB/layer deltas)\n",
+            rank, delta_base_size_ / (1024.0 * 1024.0), delta_buf_size_ / (1024.0 * 1024.0));
+    return true;
+}
+
+// ============================================================
+// Delta: get base weight pointer by index
+// ============================================================
+const void* LayerStreamer::base_weight_ptr(int weight_idx) const {
+    NT_CHECK(delta_mode_ && weight_idx >= 0 && weight_idx < 7,
+             "base_weight_ptr: invalid state or index");
+    return static_cast<const uint8_t*>(delta_base_buf_) + delta_base_offsets_[weight_idx];
+}
+
+// ============================================================
+// Delta: get U/V pointers from GPU buffer slot
+// ============================================================
+DeltaWeightPtrs LayerStreamer::get_delta_weights(int slot) const {
+    NT_CHECK(delta_mode_ && (slot == 0 || slot == 1), "get_delta_weights: bad state/slot");
+    const uint8_t* base = static_cast<const uint8_t*>(gpu_buf_[slot]);
+
+    DeltaWeightPtrs dp;
+    dp.attn_q_U   = base + delta_slot_layout_.U_offset[0];
+    dp.attn_q_V   = base + delta_slot_layout_.V_offset[0];
+    dp.attn_k_U   = base + delta_slot_layout_.U_offset[1];
+    dp.attn_k_V   = base + delta_slot_layout_.V_offset[1];
+    dp.attn_v_U   = base + delta_slot_layout_.U_offset[2];
+    dp.attn_v_V   = base + delta_slot_layout_.V_offset[2];
+    dp.attn_o_U   = base + delta_slot_layout_.U_offset[3];
+    dp.attn_o_V   = base + delta_slot_layout_.V_offset[3];
+    dp.ffn_gate_U = base + delta_slot_layout_.U_offset[4];
+    dp.ffn_gate_V = base + delta_slot_layout_.V_offset[4];
+    dp.ffn_up_U   = base + delta_slot_layout_.U_offset[5];
+    dp.ffn_up_V   = base + delta_slot_layout_.V_offset[5];
+    dp.ffn_down_U = base + delta_slot_layout_.U_offset[6];
+    dp.ffn_down_V = base + delta_slot_layout_.V_offset[6];
+    return dp;
+}
+
+// ============================================================
 // Shutdown: free everything
 // ============================================================
 void LayerStreamer::shutdown() {
+    // Free delta resources
+    if (delta_base_buf_) { cudaFree(delta_base_buf_); delta_base_buf_ = nullptr; }
+    if (delta_temp_) { cudaFree(delta_temp_); delta_temp_ = nullptr; }
+    if (delta_mmap_) {
+        munmap(delta_mmap_, delta_mmap_size_);
+        delta_mmap_ = nullptr;
+    }
+    if (delta_mmap_fd_ >= 0) { close(delta_mmap_fd_); delta_mmap_fd_ = -1; }
+    delta_layers_.clear();
+    delta_mode_ = false;
+
     // Free tier caches
     for (auto* p : vram_resident_) {
         if (p) cudaFree(p);
@@ -844,12 +1087,35 @@ void LayerStreamer::memcpy_layer_to_staging(int layer_idx, int slot) {
 // Queue background CPU memcpy (non-blocking)
 // ============================================================
 void LayerStreamer::prefetch_staging(int layer_idx, int slot) {
-    if (tiered_mode_ && layer_tier_[layer_idx] != LayerTier::NVME) {
-        // VRAM and RAM layers don't need staging
+    if (tiered_mode_ && layer_tier_[layer_idx] == LayerTier::VRAM) {
+        // VRAM layers don't need staging
+        return;
+    }
+    if (tiered_mode_ && layer_tier_[layer_idx] == LayerTier::RAM && !delta_mode_) {
+        // RAM layers don't need staging (unless delta mode — then they use delta path)
         return;
     }
 
     if (mmap_pinned_) return;  // No staging needed — direct DMA path
+
+    // Delta mode: copy U/V tensors from mmap'd .ntd to staging
+    if (delta_mode_) {
+        uint8_t* staging = static_cast<uint8_t*>(staging_buf_[slot]);
+        const uint8_t* src = static_cast<const uint8_t*>(delta_mmap_);
+        const auto& dlay = delta_layers_[layer_idx];
+        for (int w = 0; w < 7; w++) {
+            memcpy(staging + delta_slot_layout_.U_offset[w],
+                   src + dlay.U[w].file_offset, dlay.U[w].nbytes);
+            memcpy(staging + delta_slot_layout_.V_offset[w],
+                   src + dlay.V[w].file_offset, dlay.V[w].nbytes);
+        }
+        {
+            std::lock_guard<std::mutex> lock(worker_mutex_);
+            staging_ready_[slot] = true;
+        }
+        staging_ready_cv_.notify_all();
+        return;
+    }
 
 #ifdef USE_GPUNVME
     if (nvme_initialized_) {
@@ -916,7 +1182,8 @@ void LayerStreamer::begin_h2d(int layer_idx, int slot) {
     uint8_t* gpu_base = static_cast<uint8_t*>(gpu_buf_[slot]);
 
     // Tier B: async H2D from pinned RAM cache (per-tensor to handle requant)
-    if (tiered_mode_ && layer_tier_[layer_idx] == LayerTier::RAM) {
+    // In delta mode, tier B also uses the delta path (gpu_buf_ was resized to delta_buf_size_)
+    if (tiered_mode_ && layer_tier_[layer_idx] == LayerTier::RAM && !delta_mode_) {
         int ram_idx = layer_idx - tier_config_.n_vram;
         uint8_t* ram_base = static_cast<uint8_t*>(ram_cache_[ram_idx]);
         const LayerLayout& lay = layers_[layer_idx];
@@ -935,7 +1202,19 @@ void LayerStreamer::begin_h2d(int layer_idx, int slot) {
     }
 
     // Tier C / legacy: from mmap or staging buffer
-    if (mmap_pinned_) {
+    if (delta_mode_ && mmap_pinned_) {
+        // Delta mode: direct async copy of U/V tensors from pinned .ntd mmap
+        const auto& dlay = delta_layers_[layer_idx];
+        const uint8_t* src = static_cast<const uint8_t*>(delta_mmap_);
+        for (int w = 0; w < 7; w++) {
+            dev.memcpy_h2d_async(
+                gpu_base + delta_slot_layout_.U_offset[w],
+                src + dlay.U[w].file_offset, dlay.U[w].nbytes, xfer);
+            dev.memcpy_h2d_async(
+                gpu_base + delta_slot_layout_.V_offset[w],
+                src + dlay.V[w].file_offset, dlay.V[w].nbytes, xfer);
+        }
+    } else if (mmap_pinned_) {
         // Direct async copy from pinned mmap to GPU
         const LayerLayout& lay = layers_[layer_idx];
         const TensorSlot* slots[] = {
@@ -958,7 +1237,7 @@ void LayerStreamer::begin_h2d(int layer_idx, int slot) {
         }
 
         // Single large async H2D from pinned staging to GPU
-        size_t total = layer_transfer_size(layer_idx);
+        size_t total = delta_mode_ ? delta_buf_size_ : layer_transfer_size(layer_idx);
         dev.memcpy_h2d_async(gpu_base, staging_buf_[slot], total, xfer);
     }
 

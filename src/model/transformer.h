@@ -70,6 +70,9 @@ public:
     // Compressed transfer: requantize Q6_K → Q4_K_M for tier B (call before load)
     void set_requant_q4k(bool enable) { streamer_.set_requant_q4k(enable); }
 
+    // Delta encoding: set .ntd file path (call before load)
+    void set_delta_model(const std::string& path) { delta_model_path_ = path; }
+
 private:
     ModelConfig config_;
     GGUFLoader loader_;
@@ -112,6 +115,9 @@ private:
     float skip_threshold_ = 0.0f;        // 0 = disabled; layers with cos > threshold are skipped
     std::vector<bool> skip_layer_;       // [n_layers] true = skip this layer
     bool skip_calibrated_ = false;       // true after first token calibrates skip list
+
+    // === Delta encoding ===
+    std::string delta_model_path_;       // path to .ntd file (empty = disabled)
 
     // === Speculative decoding verification ===
     float* verify_logits_ = nullptr;     // [verify_capacity_ * vocab_size] on GPU

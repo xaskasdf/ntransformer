@@ -470,6 +470,76 @@ __global__ void gemv_q6_k_kernel(
 }
 
 // ----------------------------------------------------------
+// F16 GEMV with accumulate: y += W * x (for delta encoding)
+// Same structure as gemv_f16_kernel but adds to existing y
+// ----------------------------------------------------------
+__global__ void gemv_f16_add_kernel(
+    float* __restrict__ y,
+    const half* __restrict__ W,
+    const float* __restrict__ x,
+    int out_features,
+    int in_features
+) {
+    extern __shared__ float sx[];
+
+    const int tid = threadIdx.x;
+    const int warp_id = threadIdx.y;
+    const int flat_id = warp_id * 32 + tid;
+    const int nthreads = blockDim.y * 32;
+
+    // Cooperatively load x into shared memory (vectorized float4)
+    {
+        const int n_float4 = in_features / 4;
+        const float4* x4 = reinterpret_cast<const float4*>(x);
+        float4* sx4 = reinterpret_cast<float4*>(sx);
+        for (int i = flat_id; i < n_float4; i += nthreads) {
+            sx4[i] = x4[i];
+        }
+        for (int i = n_float4 * 4 + flat_id; i < in_features; i += nthreads) {
+            sx[i] = x[i];
+        }
+    }
+    __syncthreads();
+
+    const int row = blockIdx.x * blockDim.y + warp_id;
+    if (row >= out_features) return;
+
+    const half* row_w = W + (long long)row * in_features;
+
+    float sum = 0.0f;
+
+    const int in_features_8 = (in_features / 8) * 8;
+    for (int i = tid * 8; i < in_features_8; i += 32 * 8) {
+        const half2* w2 = reinterpret_cast<const half2*>(row_w + i);
+        half2 h0 = w2[0];
+        half2 h1 = w2[1];
+        half2 h2 = w2[2];
+        half2 h3 = w2[3];
+        float2 f0 = __half22float2(h0);
+        float2 f1 = __half22float2(h1);
+        float2 f2 = __half22float2(h2);
+        float2 f3 = __half22float2(h3);
+        sum += f0.x * sx[i]   + f0.y * sx[i+1] +
+               f1.x * sx[i+2] + f1.y * sx[i+3] +
+               f2.x * sx[i+4] + f2.y * sx[i+5] +
+               f3.x * sx[i+6] + f3.y * sx[i+7];
+    }
+    for (int i = in_features_8 + tid; i < in_features; i += 32) {
+        sum += __half2float(row_w[i]) * sx[i];
+    }
+
+    // Warp reduction
+    #pragma unroll
+    for (int offset = 16; offset > 0; offset >>= 1) {
+        sum += __shfl_xor_sync(0xFFFFFFFF, sum, offset);
+    }
+
+    if (tid == 0) {
+        y[row] += sum;  // accumulate instead of overwrite
+    }
+}
+
+// ----------------------------------------------------------
 // F16 GEMV: vectorized half2 weight loads
 // Used for LM head (output.weight in F16)
 // ----------------------------------------------------------
@@ -670,6 +740,7 @@ static void ensure_smem_config() {
     cudaFuncSetAttribute((const void*)gemv_q5_k_kernel<true>, cudaFuncAttributeMaxDynamicSharedMemorySize, MAX_SMEM);
     cudaFuncSetAttribute((const void*)gemv_q6_k_kernel<true>, cudaFuncAttributeMaxDynamicSharedMemorySize, MAX_SMEM);
     cudaFuncSetAttribute((const void*)gemv_f16_kernel,  cudaFuncAttributeMaxDynamicSharedMemorySize, MAX_SMEM);
+    cudaFuncSetAttribute((const void*)gemv_f16_add_kernel, cudaFuncAttributeMaxDynamicSharedMemorySize, MAX_SMEM);
     cudaFuncSetAttribute((const void*)gemv_f32_kernel,  cudaFuncAttributeMaxDynamicSharedMemorySize, MAX_SMEM);
     s_smem_configured = true;
 }
@@ -770,6 +841,33 @@ void launch_add_bias(
     int block = 256;
     int grid = (size + block - 1) / block;
     add_bias_kernel<<<grid, block, 0, s>>>(y, bias, size);
+}
+
+void launch_gemv_add(
+    float* y,
+    const void* W,
+    const float* x,
+    int out_features,
+    int in_features,
+    DType weight_dtype,
+    void* stream
+) {
+    cudaStream_t s = static_cast<cudaStream_t>(stream);
+    ensure_smem_config();
+
+    dim3 block(32, GEMV_WARPS);
+    dim3 grid((out_features + GEMV_WARPS - 1) / GEMV_WARPS);
+    size_t smem = (size_t)in_features * sizeof(float);
+
+    switch (weight_dtype) {
+        case DType::F16:
+            gemv_f16_add_kernel<<<grid, block, smem, s>>>(
+                y, static_cast<const half*>(W), x, out_features, in_features);
+            break;
+        default:
+            fprintf(stderr, "launch_gemv_add: only F16 supported (got %s)\n", dtype_name(weight_dtype));
+            break;
+    }
 }
 
 } // namespace cuda

@@ -34,6 +34,11 @@ void launch_masked_softmax(
 void launch_gemv(
     float* y, const void* W, const float* x,
     int out_features, int in_features, DType weight_dtype, void* stream);
+
+// Accumulate GEMV: y += W * x (F16 weights only, for delta encoding)
+void launch_gemv_add(
+    float* y, const void* W, const float* x,
+    int out_features, int in_features, DType weight_dtype, void* stream);
 void launch_gemm_f32(
     float* C, const float* A, const float* B,
     int M, int N, int K, void* stream);

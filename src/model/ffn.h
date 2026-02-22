@@ -39,6 +39,18 @@ public:
     size_t workspace_size(int seq_len) const;
     void set_workspace(float* ptr) { workspace_ = ptr; }
 
+    // Delta encoding: set permanent base weights (VRAM, called once at init)
+    void set_base_weights(const void* base_gate, const void* base_up,
+                          const void* base_down, DType base_dtype);
+
+    // Delta encoding: set per-layer delta (called per streaming iteration)
+    void set_delta(const void* u_gate, const void* v_gate,
+                   const void* u_up, const void* v_up,
+                   const void* u_down, const void* v_down,
+                   int rank, float* temp_buf);
+
+    bool is_delta_mode() const { return delta_mode_; }
+
 private:
     Tensor w_gate_, w_up_, w_down_;
     DType gate_dtype_, up_dtype_, down_dtype_;
@@ -48,6 +60,18 @@ private:
     int layer_idx_ = 0;
 
     float* workspace_ = nullptr;
+
+    // Delta encoding state
+    bool delta_mode_ = false;
+    int delta_rank_ = 0;
+    const void* base_gate_ = nullptr;
+    const void* base_up_ = nullptr;
+    const void* base_down_ = nullptr;
+    DType base_dtype_ = DType::Q6_K;
+    const void* delta_u_gate_ = nullptr; const void* delta_v_gate_ = nullptr;
+    const void* delta_u_up_ = nullptr;   const void* delta_v_up_ = nullptr;
+    const void* delta_u_down_ = nullptr; const void* delta_v_down_ = nullptr;
+    float* delta_temp_ = nullptr;
 };
 
 } // namespace nt

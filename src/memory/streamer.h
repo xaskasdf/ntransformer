@@ -18,6 +18,19 @@
 namespace nt {
 
 // ============================================================
+// Delta weight pointers: 7 U/V pairs for delta-encoded streaming
+// ============================================================
+struct DeltaWeightPtrs {
+    const void* attn_q_U;  const void* attn_q_V;
+    const void* attn_k_U;  const void* attn_k_V;
+    const void* attn_v_U;  const void* attn_v_V;
+    const void* attn_o_U;  const void* attn_o_V;
+    const void* ffn_gate_U; const void* ffn_gate_V;
+    const void* ffn_up_U;   const void* ffn_up_V;
+    const void* ffn_down_U; const void* ffn_down_V;
+};
+
+// ============================================================
 // 3-Tier Adaptive Layer Caching
 // ============================================================
 enum class LayerTier { VRAM, RAM, NVME };
@@ -114,6 +127,20 @@ public:
     // Total size of one GPU layer buffer
     size_t buffer_size() const { return buf_size_; }
 
+    // Delta encoding support
+    bool init_delta(const std::string& ntd_path, const ModelConfig& config);
+    bool is_delta_mode() const { return delta_mode_; }
+    int delta_rank() const { return delta_rank_; }
+
+    // Get base weight pointer for weight index (0-6: q,k,v,o,gate,up,down)
+    const void* base_weight_ptr(int weight_idx) const;
+
+    // Get delta U/V pointers from the current GPU buffer slot
+    DeltaWeightPtrs get_delta_weights(int slot) const;
+
+    // VRAM buffer for temporary rank-sized vector (rank floats)
+    float* delta_temp_buf() const { return delta_temp_; }
+
 private:
     // Per-tensor info within a layer buffer
     struct TensorSlot {
@@ -177,6 +204,39 @@ private:
 
     // Helper to compute byte size of a weight tensor
     static size_t tensor_bytes(const GGUFTensorInfo& info);
+
+    // Delta encoding state
+    bool delta_mode_ = false;
+    int delta_rank_ = 0;
+    void* delta_base_buf_ = nullptr;        // VRAM: 7 Q6_K base matrices (~669 MB)
+    size_t delta_base_size_ = 0;
+    float* delta_temp_ = nullptr;           // VRAM: rank floats scratch
+    void* delta_mmap_ = nullptr;            // mmap'd .ntd file
+    size_t delta_mmap_size_ = 0;
+    int delta_mmap_fd_ = -1;
+
+    // Per-weight-type base offsets within delta_base_buf_ (7 entries)
+    size_t delta_base_offsets_[7] = {};
+    DType delta_base_dtypes_[7] = {};
+
+    // Per-layer delta layout: offset within .ntd file for each U/V pair
+    struct DeltaTensorInfo {
+        size_t file_offset;     // offset from .ntd start
+        size_t nbytes;          // F16 tensor bytes
+    };
+    struct DeltaLayerLayout {
+        DeltaTensorInfo U[7];   // U matrices for 7 weight types
+        DeltaTensorInfo V[7];   // V matrices
+    };
+    std::vector<DeltaLayerLayout> delta_layers_;
+
+    // Per-layer delta buffer layout: offset within gpu_buf_ slot
+    struct DeltaSlotLayout {
+        size_t U_offset[7];
+        size_t V_offset[7];
+    };
+    DeltaSlotLayout delta_slot_layout_ = {};
+    size_t delta_buf_size_ = 0;             // per-slot delta buffer size
 
 #ifdef USE_GPUNVME
     // gpu-nvme-direct Layer Loader
