@@ -1112,7 +1112,21 @@ void LayerStreamer::worker_loop() {
             worker_has_work_ = false;
         }
 
-        memcpy_layer_to_staging(layer_idx, slot);
+#ifdef USE_GPUNVME
+        // NVMe BAR1 bulk read path (async — overlaps with GPU compute)
+        if (bar1_enabled_ && nvme_vram_temp_) {
+            const auto& nlay = nvme_layers_[layer_idx];
+            gpunvme_err_t e = gpunvme_load_layer_vram(
+                &nvme_loader_, nlay.start_lba, nlay.read_bytes,
+                nvme_vram_temp_bar1_phys_);
+            if (e == GPUNVME_OK) {
+                current_layer_[slot] = layer_idx;
+            }
+        } else
+#endif
+        {
+            memcpy_layer_to_staging(layer_idx, slot);
+        }
 
         {
             std::lock_guard<std::mutex> lock(worker_mutex_);
@@ -1179,23 +1193,16 @@ void LayerStreamer::prefetch_staging(int layer_idx, int slot) {
     if (nvme_initialized_) {
         const auto& nlay = nvme_layers_[layer_idx];
 
-        // Tier 2 (BAR1): ONE bulk NVMe read of entire LBA-aligned layer span to VRAM temp
+        // Tier 2 (BAR1): dispatch bulk NVMe read to worker thread (async)
         if (bar1_enabled_ && nvme_vram_temp_) {
-            gpunvme_err_t e = gpunvme_load_layer_vram(
-                &nvme_loader_, nlay.start_lba, nlay.read_bytes,
-                nvme_vram_temp_bar1_phys_);
-
-            if (e == GPUNVME_OK) {
-                current_layer_[slot] = layer_idx;
-                {
-                    std::lock_guard<std::mutex> lock(worker_mutex_);
-                    staging_ready_[slot] = true;
-                }
-                staging_ready_cv_.notify_all();
-                return;
+            {
+                std::lock_guard<std::mutex> lock(worker_mutex_);
+                staging_ready_[slot] = false;
+                worker_request_ = {layer_idx, slot};
+                worker_has_work_ = true;
             }
-            fprintf(stderr, "LayerStreamer: BAR1 bulk read failed for layer %d, fallback to Tier 1\n",
-                    layer_idx);
+            worker_cv_.notify_one();
+            return;  // Non-blocking — worker thread does the NVMe read
         }
 
         // Tier 1: Read the full file span into host pinned, then scatter-copy
@@ -1249,8 +1256,20 @@ void LayerStreamer::begin_h2d(int layer_idx, int slot) {
     }
 
 #ifdef USE_GPUNVME
-    // BAR1 Tier 2: bulk data in nvme_vram_temp_ — scatter 7 tensors to gpu_buf_[slot]
-    if (bar1_enabled_ && nvme_vram_temp_ && current_layer_[slot] == layer_idx) {
+    // BAR1 Tier 2: wait for async NVMe read, then scatter 7 tensors to gpu_buf_[slot]
+    if (bar1_enabled_ && nvme_vram_temp_ &&
+        tiered_mode_ && layer_tier_[layer_idx] == LayerTier::NVME) {
+        // Wait for worker thread to finish NVMe BAR1 read
+        {
+            std::unique_lock<std::mutex> lock(worker_mutex_);
+            staging_ready_cv_.wait(lock, [&] { return staging_ready_[slot]; });
+        }
+
+        if (current_layer_[slot] != layer_idx) {
+            // NVMe read failed or wrong layer — fall through to other paths
+            goto bar1_fallthrough;
+        }
+
         const auto& nlay = nvme_layers_[layer_idx];
         uint8_t* dst = static_cast<uint8_t*>(gpu_buf_[slot]);
         const uint8_t* src = static_cast<const uint8_t*>(nvme_vram_temp_);
@@ -1274,6 +1293,7 @@ void LayerStreamer::begin_h2d(int layer_idx, int slot) {
         dev.record_event(transfer_done_[slot], xfer);
         return;
     }
+bar1_fallthrough:
 #endif
 
     current_layer_[slot] = layer_idx;
