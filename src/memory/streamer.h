@@ -265,6 +265,11 @@ private:
     // BAR1 direct VRAM mode (Tier 2)
     bool bar1_enabled_ = false;
     uint64_t bar1_phys_[2] = {};     // BAR1 physical addr of gpu_buf_[0], gpu_buf_[1]
+
+    // BAR1 bulk read: single VRAM temp buffer for entire layer span
+    void* nvme_vram_temp_ = nullptr;         // VRAM temp for BAR1 bulk reads
+    uint64_t nvme_vram_temp_bar1_phys_ = 0;  // BAR1 physical address of temp
+    size_t nvme_vram_temp_size_ = 0;
 #endif
 };
 

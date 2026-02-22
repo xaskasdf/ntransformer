@@ -502,10 +502,24 @@ void LayerStreamer::init(const GGUFLoader& loader, const ModelConfig& config) {
             }
         }
         if (both_ok) {
-            bar1_enabled_ = true;
-            fprintf(stderr, "LayerStreamer: BAR1 Tier 2 enabled — slot0=0x%llx slot1=0x%llx\n",
-                    (unsigned long long)bar1_phys_[0],
-                    (unsigned long long)bar1_phys_[1]);
+            // Allocate VRAM temp buffer for BAR1 bulk reads
+            nvme_vram_temp_size_ = nvme_read_buf_size_;  // = max_file_span
+            cudaError_t terr = cudaMalloc(&nvme_vram_temp_, nvme_vram_temp_size_);
+            if (terr == cudaSuccess) {
+                gpunvme_err_t r = gpunvme_bar1_resolve(
+                    &nvme_loader_, nvme_vram_temp_, nvme_vram_temp_size_,
+                    &nvme_vram_temp_bar1_phys_);
+                if (r == GPUNVME_OK) {
+                    bar1_enabled_ = true;
+                    fprintf(stderr, "LayerStreamer: BAR1 Tier 2 + bulk temp (%.1f MB VRAM)\n",
+                            nvme_vram_temp_size_ / (1024.0 * 1024));
+                } else {
+                    cudaFree(nvme_vram_temp_);
+                    nvme_vram_temp_ = nullptr;
+                }
+            }
+            // If temp alloc/resolve failed, BAR1 stays disabled
+            if (!nvme_vram_temp_) bar1_enabled_ = false;
         }
     }
 #endif
@@ -886,6 +900,11 @@ void LayerStreamer::shutdown() {
     tiered_mode_ = false;
 
 #ifdef USE_GPUNVME
+    if (nvme_vram_temp_) {
+        cudaFree(nvme_vram_temp_);
+        nvme_vram_temp_ = nullptr;
+        nvme_vram_temp_size_ = 0;
+    }
     if (nvme_read_buf_) {
         cudaFreeHost(nvme_read_buf_);
         nvme_read_buf_ = nullptr;
@@ -1160,41 +1179,13 @@ void LayerStreamer::prefetch_staging(int layer_idx, int slot) {
     if (nvme_initialized_) {
         const auto& nlay = nvme_layers_[layer_idx];
 
-        // Tier 2 (BAR1): NVMe DMA directly to VRAM — 7 scatter reads, no staging
-        if (bar1_enabled_) {
-            uint64_t buf_bar1 = bar1_phys_[slot];
-            bool all_ok = true;
+        // Tier 2 (BAR1): ONE bulk NVMe read of entire LBA-aligned layer span to VRAM temp
+        if (bar1_enabled_ && nvme_vram_temp_) {
+            gpunvme_err_t e = gpunvme_load_layer_vram(
+                &nvme_loader_, nlay.start_lba, nlay.read_bytes,
+                nvme_vram_temp_bar1_phys_);
 
-            for (int t = 0; t < 7; t++) {
-                const auto& tm = nlay.tensors[t];
-                if (tm.lba_sub_offset != 0) {
-                    // Tensor not LBA-aligned: read to temp host buf, then copy
-                    // (rare case — most GGUF tensors are well-aligned)
-                    gpunvme_err_t e = gpunvme_load_layer(
-                        &nvme_loader_, tm.start_lba, tm.lba_aligned_bytes, nvme_read_buf_);
-                    if (e == GPUNVME_OK) {
-                        cudaMemcpy(
-                            static_cast<uint8_t*>(gpu_buf_[slot]) + tm.gpu_offset,
-                            static_cast<uint8_t*>(nvme_read_buf_) + tm.lba_sub_offset,
-                            tm.nbytes, cudaMemcpyHostToDevice);
-                    } else {
-                        all_ok = false;
-                        break;
-                    }
-                } else {
-                    // Tensor is LBA-aligned: DMA directly to VRAM via BAR1
-                    uint64_t dest_phys = buf_bar1 + tm.gpu_offset;
-                    gpunvme_err_t e = gpunvme_load_layer_vram(
-                        &nvme_loader_, tm.start_lba, tm.nbytes, dest_phys);
-                    if (e != GPUNVME_OK) {
-                        all_ok = false;
-                        break;
-                    }
-                }
-            }
-
-            if (all_ok) {
-                // Data is already in VRAM — mark staging as ready (begin_h2d will skip H2D)
+            if (e == GPUNVME_OK) {
                 current_layer_[slot] = layer_idx;
                 {
                     std::lock_guard<std::mutex> lock(worker_mutex_);
@@ -1203,7 +1194,7 @@ void LayerStreamer::prefetch_staging(int layer_idx, int slot) {
                 staging_ready_cv_.notify_all();
                 return;
             }
-            fprintf(stderr, "LayerStreamer: BAR1 read failed for layer %d, fallback to Tier 1\n",
+            fprintf(stderr, "LayerStreamer: BAR1 bulk read failed for layer %d, fallback to Tier 1\n",
                     layer_idx);
         }
 
@@ -1258,10 +1249,28 @@ void LayerStreamer::begin_h2d(int layer_idx, int slot) {
     }
 
 #ifdef USE_GPUNVME
-    // BAR1 Tier 2: data already in VRAM from prefetch_staging — skip H2D
-    if (bar1_enabled_ && current_layer_[slot] == layer_idx) {
+    // BAR1 Tier 2: bulk data in nvme_vram_temp_ — scatter 7 tensors to gpu_buf_[slot]
+    if (bar1_enabled_ && nvme_vram_temp_ && current_layer_[slot] == layer_idx) {
+        const auto& nlay = nvme_layers_[layer_idx];
+        uint8_t* dst = static_cast<uint8_t*>(gpu_buf_[slot]);
+        const uint8_t* src = static_cast<const uint8_t*>(nvme_vram_temp_);
+
         auto& dev = CUDADevice::instance();
         StreamType xfer = (slot == 0) ? STREAM_TRANSFER0 : STREAM_TRANSFER1;
+        cudaStream_t cs = static_cast<cudaStream_t>(dev.stream(xfer));
+
+        dev.wait_event(xfer, compute_done_[slot]);
+
+        for (int t = 0; t < 7; t++) {
+            cudaMemcpyAsync(
+                dst + nlay.tensors[t].gpu_offset,
+                src + nlay.tensors[t].read_offset,
+                nlay.tensors[t].nbytes,
+                cudaMemcpyDeviceToDevice, cs);
+        }
+
+        // Sync: must complete before next prefetch_staging overwrites temp
+        cudaStreamSynchronize(cs);
         dev.record_event(transfer_done_[slot], xfer);
         return;
     }
