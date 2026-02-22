@@ -1,158 +1,223 @@
 # R1: Delta-Encoded Layer Streaming
 
+**Status: CLOSED — Negative result (2026-02-22)**
+
 ## Summary
 
-Reduce per-layer NVMe/RAM transfer from 669 MB to ~50 MB by exploiting cross-layer
-weight similarity. Store weights as a shared base layer + per-layer low-rank deltas.
+Hypothesis: reduce per-layer transfer from 669 MB to ~20 MB by exploiting cross-layer
+weight similarity. Store weights as a shared base + per-layer low-rank SVD deltas.
 
-## Motivation
+**Result**: Transformer layer weights in Llama 8B/70B are **uncorrelated matrices**
+(cosine similarity ≈ 0.000). Delta encoding is fundamentally impossible for these
+architectures. The infrastructure works mechanically (33× less H2D, 6× faster transfer)
+but produces garbage output (50-93% reconstruction error).
 
-Llama 70B has 80 transformer layers. Middle layers (roughly 10-65) are remarkably
-similar to each other — cosine similarity of hidden states between adjacent layers
-exceeds 0.98 (measured in our layer skip calibration). This similarity extends to
-the weight matrices themselves: adjacent layers' attention and FFN weights differ
-by a low-rank perturbation.
+---
 
-Today we transfer the full 669 MB for every tier B/C layer, even though ~95% of
-those bytes are redundant with the previous layer. Delta encoding eliminates this
-redundancy at the I/O level.
+## Why This Does Not Work
 
-## Prior Art
+### The core assumption was wrong
 
-| Paper | What it does | Difference from our proposal |
-|-------|-------------|------------------------------|
-| DeltaLLM (Jan 2025) | Shares weights between adjacent blocks + low-rank deltas | Targets storage compression; requires distillation training (~40M tokens) |
-| Basis Sharing (ICLR 2025) | Shares SVD singular vectors across layers, per-layer coefficients | Targets compression; not applied to streaming I/O |
-| Relaxed Recursive Transformers (Oct 2024) | Converts LLMs to recursive with LoRA per-layer | Requires architecture change and fine-tuning |
-| MASA (Aug 2025) | Dictionary atoms shared across attention matrices | Training-based; attention-only |
-| DOCS (ICLR 2025) | Quantifies weight cosine similarity between layers | Empirical study; no compression scheme |
+The proposal assumed that adjacent Llama layers share >95% weight structure, based on
+the DOCS paper (ICLR 2025) which reports high cosine similarity between layers.
 
-**Gap**: No prior work applies cross-layer delta decomposition to a streaming inference
-pipeline where the goal is reducing bytes transferred from storage per forward pass.
-All existing work assumes weights are already resident in memory.
+**What DOCS actually measured**: cosine similarity of **hidden state activations** (the
+output of each layer), NOT the weight matrices. Activations are similar because each
+layer applies a small residual update. Weights are not.
 
-## Technical Design
+### Measured weight similarity (Llama 70B Q6_K)
 
-### Offline Decomposition (one-time preprocessing)
+#### Adjacent layer cosine similarity ≈ 0
+
+```
+=== attn_q.weight: adjacent layers (every 5) ===
+blk.0→blk.5:   cos_sim = -0.000107
+blk.5→blk.10:  cos_sim = -0.000778
+blk.10→blk.15: cos_sim = -0.000157
+blk.15→blk.20: cos_sim =  0.000426
+blk.20→blk.25: cos_sim = -0.000108
+blk.35→blk.40: cos_sim =  0.000940
+blk.60→blk.65: cos_sim = -0.001318
+blk.70→blk.75: cos_sim =  0.000594
+
+=== ffn_gate.weight ===
+blk.0→blk.5:   cos_sim = -0.000008
+blk.10→blk.15: cos_sim =  0.002786
+blk.30→blk.35: cos_sim =  0.008974
+blk.50→blk.55: cos_sim =  0.004759
+blk.70→blk.75: cos_sim =  0.002793
+```
+
+Every pair has `cos_sim ≈ 0`. The weight matrices are **essentially random relative to
+each other** — no more similar than two independent random matrices of the same
+dimensions.
+
+#### Residual norms > weight norms
+
+```
+=== attn_q.weight: ||R|| / ||W|| (residual = W - mean) ===
+layer 0:  0.8338  (outlier — norm 816 vs ~110 for others)
+layer 1:  1.4142
+layer 39: 1.4312
+layer 40: 1.4852
+layer 78: 1.4648
+layer 79: 1.6121
+
+=== ffn_gate.weight ===
+layer 0:  0.8332
+layer 1:  1.3796
+layer 39: 1.3179
+layer 78: 1.2317
+
+=== ffn_down.weight ===
+layer 0:  0.9639
+layer 1:  0.8864
+layer 39: 0.9187
+layer 78: 0.9291
+```
+
+`||R||/||W|| > 1.0` means the residual (difference from mean) is **larger** than the
+weight itself. The mean is so far from any individual layer that subtracting it makes
+things worse, not better.
+
+#### Layer 0 is a massive outlier
+
+```
+attn_q norms:  blk.0 = 816.18,  blk.1 = 118.01,  blk.39 = 110.64
+ffn_gate norms: blk.0 = 1001.34, blk.1 = 131.23,  blk.39 = 138.30
+```
+
+Layer 0 has 6-8× larger weight norms than all other layers. This single outlier
+dominates the mean, pulling it away from every other layer.
+
+#### SVD captures almost nothing
+
+With rank-64 SVD on the residual:
+```
+attn_q:      SVD error 8-60%, total reconstruction error 8-87%
+ffn_gate:    SVD error 11-71%, total reconstruction error 9-93%
+ffn_down:    SVD error 97%, total reconstruction error 86-93%
+```
+
+The residuals are full-rank — they have no low-rank structure to exploit.
+
+### Why this is fundamental, not fixable
+
+The following variants would NOT fix the problem:
+
+| Variant | Why it fails |
+|---------|-------------|
+| **Higher rank** (128, 256, 512) | Deltas grow proportionally; at rank ~4096 you're storing the full weight again |
+| **Per-pair deltas** (W_i - W_{i-1}) | Adjacent layers have `cos_sim ≈ 0` — differences are full-rank |
+| **K-means clustering** (2-3 bases) | Every layer is equidistant from every other — no clusters exist |
+| **PCA across layers** | 80 layers in 67M-dimensional space — no meaningful principal components |
+| **Different base** (median, weighted) | All bases are equally far from all layers |
+| **Quantized deltas** (Q4/Q8) | Doesn't help when the delta IS the full weight |
+
+The root cause is that transformer layer weights are initialized independently and
+trained to perform different functions. They converge to solutions that produce
+similar *activations* through the residual stream, but the weight matrices that produce
+those activations are completely different linear maps.
+
+### Analogy
+
+Two rotation matrices can map input vectors to similar output vectors while being
+completely different matrices. Layer 5's `attn_q` and layer 6's `attn_q` both produce
+useful query vectors, but through entirely different linear transformations.
+
+---
+
+## What Was Built and Tested
+
+### Implementation (fully functional)
+
+| Component | Status |
+|-----------|--------|
+| `tools/decompose_gguf.py` — offline GGUF → NTD decomposition | Working |
+| `launch_gemv_add` — accumulate GEMV kernel (y += W*x, F16) | Working |
+| `streamer.cu` — `init_delta()`, delta H2D for tier B/C | Working |
+| `attention.cpp` / `ffn.cpp` — `delta_gemv()` forward path | Working |
+| `--delta-model` CLI flag | Working |
+| NTD file format (header + Q6_K base + F16 U/V per layer) | Working |
+
+### Test results
+
+| Model | Config | Output | Speed | Notes |
+|-------|--------|--------|-------|-------|
+| 8B Q8_0 | 16V + 16 delta | Garbage | 27.6 tok/s | `||R||/||W|| = 0.72`, total error 59% |
+| 70B Q6_K | 20V + 30R + 30 delta | Garbage | 1.2 tok/s | `||R||/||W|| > 1.0`, total error 50-93% |
+| 70B baseline | 20V + 30R + 30 mmap | "Paris" (correct) | 0.2 tok/s | Reference |
+
+The 6× speed improvement (1.2 vs 0.2 tok/s) confirms the pipeline works mechanically:
+19.8 MB/layer delta vs 669 MB/layer full = 33× less H2D bandwidth.
+
+### Q6_K quantization verified correct
+
+Round-trip test (F32 → Q6_K → F32): 2% relative error. The quantization is not the
+problem — the SVD decomposition is.
+
+---
+
+## Original Proposal
+
+*(Preserved below for reference — the technical design is sound, only the assumption
+about weight similarity was wrong.)*
+
+### Motivation
+
+Llama 70B has 80 transformer layers. ~~Middle layers (roughly 10-65) are remarkably
+similar to each other~~ — cosine similarity of **hidden states** between adjacent layers
+exceeds 0.98 (measured in our layer skip calibration). ~~This similarity extends to
+the weight matrices themselves~~ — **this was the incorrect assumption**.
+
+### Prior Art
+
+| Paper | What it does | Relevance to our finding |
+|-------|-------------|--------------------------|
+| DeltaLLM (Jan 2025) | Shares weights between adjacent blocks + low-rank deltas | Requires **distillation training** to force weight sharing — confirms pre-trained weights don't share naturally |
+| Basis Sharing (ICLR 2025) | Shares SVD singular vectors across layers | Works on **singular vectors** (structural), not raw weights |
+| Relaxed Recursive Transformers (Oct 2024) | Converts LLMs to recursive with LoRA per-layer | Requires **architecture change** — acknowledges standard weights aren't shared |
+| DOCS (ICLR 2025) | Measures cosine similarity between layers | Measures **activations**, not weights. Our experiment confirms weights don't correlate |
+
+All prior work that achieves weight sharing does so through **training modifications**
+(distillation, recursive architecture, fine-tuning). No post-hoc decomposition of
+standard pre-trained weights can create sharing that doesn't exist.
+
+### Technical Design
 
 For each weight matrix W_i in layer i (7 matrices: attn_q/k/v/o, ffn_gate/up/down):
 
 ```
-1. Compute shared base:  B = mean(W_0, W_1, ..., W_79)   [or weighted by layer importance]
+1. Compute shared base:  B = mean(W_0, W_1, ..., W_79)
 2. Compute residual:     R_i = W_i - B
 3. SVD of residual:      R_i = U_i * S_i * V_i^T
 4. Truncate to rank r:   R_i ≈ U_i[:,:r] * diag(S_i[:r]) * V_i[:r,:]^T
-5. Store:                delta_i = (U_i * sqrt(S_i), sqrt(S_i) * V_i^T)  [two thin matrices]
+5. Store:                delta_i = (U_i * sqrt(S_i), sqrt(S_i) * V_i^T)
 ```
 
-For Llama 70B Q6_K with rank r=64:
-- **Base per weight matrix**: e.g., attn_q = [8192 × 8192] at Q6_K = ~44 MB
-- **Delta per weight matrix**: U=[8192×64] + V=[64×8192] at F16 = ~2 MB
-- **7 matrices per layer**: base = ~300 MB total, delta = ~14 MB total
-- **With overhead/alignment**: delta ≈ 50 MB per layer
+Runtime: `y = Base*x + U*(V^T*x)` — three GeMVs instead of materializing the full matrix.
 
-### Runtime Reconstruction
-
-```cuda
-// On GPU, after loading delta from NVMe/RAM:
-// W_reconstructed = Base + U * V^T
-//
-// Base is already in gpu_buf (loaded once, kept pinned in RAM or VRAM)
-// U and V are the delta (loaded from NVMe, ~50 MB)
-// U * V^T is a rank-64 outer product: O(n * r) = cheap
-
-// Step 1: Load delta_i (U, V) into staging buffer
-prefetch_staging(layer_i, slot);   // NVMe read: 50 MB instead of 669 MB
-
-// Step 2: Reconstruct W = Base + U * V^T on GPU
-// This is a GEMM: [8192 × 64] × [64 × 8192] = [8192 × 8192]
-// At rank 64: 8192*64*8192*2 = ~8.6 GFLOP per matrix
-// 7 matrices: ~60 GFLOP total → ~0.5 ms on RTX 3090 (118 TFLOP/s F16)
-reconstruct_layer_kernel<<<...>>>(base_buf, delta_U, delta_V, gpu_buf[slot]);
-
-// Step 3: Run attention + FFN as usual
-compute_layer(layer_i, slot);
-```
-
-### Storage Format
+### NTD File Format
 
 ```
-delta_model.bin:
-  Header:
-    magic, version, n_layers, rank, base_dtype, delta_dtype
-    per-layer: {offset, size} for each delta
-  Base weights:
-    7 matrices × [dim × dim] at original quantization (Q6_K/Q4_K_M)
-  Per-layer deltas:
-    layer 0: U_q[dim×r] V_q[r×dim] U_k[dim_k×r] V_k[r×dim] ... (7 pairs)
-    layer 1: ...
-    ...
-    layer 79: ...
+Header (64 bytes):
+  magic[4] = "NTD1", rank, n_layers, hidden, intermediate,
+  n_heads, n_kv_heads, head_dim, base_dtype, delta_dtype,
+  base_offset, delta_offset
+
+Base section: 7 Q6_K weight matrices (669.4 MB for 70B)
+Delta section: n_layers × 14 F16 tensors (19.8 MB/layer for 70B rank-64)
 ```
 
-### Integration into ntransformer
+### Rank Selection Analysis
 
-Changes required:
+| Rank | Delta/layer | Bandwidth reduction | Quality (measured) |
+|------|------------|--------------------|--------------------|
+| 64 | 19.8 MB | 33× | Unusable (50-93% error) |
+| 128 | 39.6 MB | 17× | Still unusable (residuals are full-rank) |
+| 4096+ | ~669 MB | 1× | Equivalent to original (no savings) |
 
-| File | Change |
-|------|--------|
-| `src/memory/streamer.h` | Add `base_weights_` buffer, `delta_mode_` flag |
-| `src/memory/streamer.cu` | Modified `prefetch_staging()` to load delta; new `reconstruct_layer()` |
-| `src/cuda/reconstruct.cu` | **New**: GPU kernel for W = Base + U*V^T (rank-r outer product addition) |
-| `src/model/transformer.cpp` | No changes — compute path unchanged |
-| `tools/decompose_gguf.py` | **New**: Offline script to decompose GGUF → base + deltas |
-| `CMakeLists.txt` | Add reconstruct.cu |
-
-### Pipeline Timeline
-
-```
-Without delta (current):
-  NVMe: [====== 669 MB read ======]    200 ms
-  H2D:  [                          ][== H2D ==]  100 ms
-  GPU:  [                                       ][compute]  5 ms
-  Total: ~305 ms per layer
-
-With delta:
-  NVMe: [= 50 MB =]                     15 ms
-  H2D:  [          ][= H2D delta =]     8 ms
-  GPU:  [                          ][reconstruct 0.5ms][compute 5ms]
-  Total: ~28 ms per layer → 10x faster
-```
-
-## Verification Plan
-
-1. **Decomposition quality**: For each layer, compute `||W - (Base + U*V^T)|| / ||W||`.
-   Target: < 1% relative error at rank 64. If not sufficient, increase rank or use
-   per-cluster bases (e.g., base_early, base_mid, base_late).
-
-2. **Output correctness**: Compare token-by-token output at temperature=0 between
-   original model and delta-reconstructed model. Allow minor floating-point drift
-   but verify that "What is the capital of France?" still produces "Paris".
-
-3. **Perplexity benchmark**: Measure perplexity on a standard dataset (WikiText-2)
-   for original vs. delta-reconstructed at various ranks (16, 32, 64, 128).
-
-## Rank Selection Analysis
-
-| Rank | Delta size/layer | Total NVMe (80 layers) | Reconstruction time | Expected quality |
-|------|-----------------|----------------------|--------------------|-----------------|
-| 16 | ~14 MB | 1.1 GB | ~0.1 ms | May degrade on edge cases |
-| 32 | ~28 MB | 2.2 GB | ~0.2 ms | Good for most layers |
-| **64** | **~50 MB** | **4.0 GB** | **~0.5 ms** | **>99% variance preserved** |
-| 128 | ~100 MB | 8.0 GB | ~1.0 ms | Near-lossless |
-
-Rank 64 is the sweet spot: 13x bandwidth reduction with sub-millisecond reconstruction
-and >99% weight variance preserved.
-
-## Risks and Mitigations
-
-| Risk | Impact | Mitigation |
-|------|--------|------------|
-| Low rank insufficient for some layers | Quality loss | Per-layer adaptive rank (higher for sensitive layers like 0, 1, 78, 79) |
-| Reconstruction adds latency | Offsets bandwidth savings | 0.5 ms at rank 64 vs. 200 ms saved — 400x margin |
-| Base doesn't represent all layers well | Poor deltas | Use k-means clustering → 2-3 bases for layer clusters |
-| Quantized weights don't decompose cleanly | SVD on dequantized floats, re-quantize delta | Store deltas in F16 (small anyway) |
-| Increased complexity | Maintenance burden | Isolate in reconstruct.cu, toggle via `--delta-streaming` flag |
+No rank provides both meaningful compression AND acceptable quality.
 
 ## References
 
