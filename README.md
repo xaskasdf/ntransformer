@@ -51,6 +51,27 @@ Sysfs paths used:
 - `/sys/bus/pci/devices/<pci_id>/max_link_width` (preferred)
 - Falls back to `current_link_speed` / `current_link_width` on older kernels
 
+### Adaptive Tier Configuration
+
+RAM reserve and pipeline depth are computed automatically from hardware at startup. No manual tuning required for common configurations:
+
+| Hardware | Total RAM | RAM reserve | Example: 70B Q4_K_M tier split |
+|----------|-----------|-------------|--------------------------------|
+| RTX 3090, 48 GB RAM | 48 GB | 7.2 GB | 36 VRAM + 44 RAM |
+| RTX 5060 Ti, 32 GB RAM | 32 GB | 4.8 GB | 18 VRAM + 46 RAM |
+| A100, 512 GB RAM | 512 GB | 19.2 GB | 80 VRAM + 0 RAM (fully resident) |
+
+The previously hardcoded 6 GB RAM reserve is replaced by `max(4 GB, total_ram × 15%)`.
+
+Detected PCIe bandwidth is stored in `TierConfig.pcie_bandwidth_gbps` and logged at startup:
+```
+TierConfig: PCIe Gen4 x8 = 31.0 GB/s (detected)
+TierConfig: VRAM free=14.2 GB, RAM available=26.1 GB
+TierConfig: 18 VRAM layers, 46 RAM layers, 0 NVMe layers
+```
+
+See [docs/TIERED_CACHING.md](docs/TIERED_CACHING.md) for the full tier sizing algorithm.
+
 ## Quick Start
 
 ```bash
