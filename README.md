@@ -275,6 +275,16 @@ When in doubt, let the auto-detection handle it (default `--n-buffers 0`).
 | F16 | 16 | 1 | Yes |
 | F32 | 32 | 1 | Yes |
 
+## Planned Optimizations (Blackwell / Hopper)
+
+See [docs/BLACKWELL_OPTIMIZATIONS.md](docs/BLACKWELL_OPTIMIZATIONS.md) for details.
+
+| Optimization | Status | Expected benefit |
+|---|---|---|
+| Native sm_120 codegen | ✅ implemented | No JIT startup, Blackwell-specific scheduling |
+| TMA async bulk copy | 🔧 stub | 15-25% H2D throughput on sm_90+ |
+| Warp specialization (GEMV) | 💡 concept | Eliminates transfer/compute pipeline bubble |
+
 ## Phase Roadmap
 
 - **Phase 1** - Foundation (complete): Llama 8B Q8_0, custom CUDA kernels, 48.9 tok/s

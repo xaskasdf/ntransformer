@@ -1,5 +1,6 @@
 #include "streamer.h"
 #include "../core/device.h"
+#include "../cuda/tma_copy.cuh"  // TMA async bulk copy (Hopper/Blackwell stub)
 #include <cuda_runtime.h>
 #include <cstdio>
 #include <cstring>
@@ -1532,7 +1533,13 @@ bar1_fallthrough:
             staging_ready_cv_.wait(lock, [&] { return staging_ready_[slot]; });
         }
 
-        // Single large async H2D from pinned staging to GPU
+        // Single large async H2D from pinned staging to GPU.
+        // TODO(tma): on Hopper/Blackwell (sm_90+), replace with:
+        //   nt::tma::tma_h2d_async(gpu_base, staging_buf_[slot], total, stream)
+        //   nt::tma::tma_sync_wait(stream)
+        // This uses the hardware TMA DMA engine instead of warp-based copies,
+        // reducing warp occupancy pressure during the transfer window.
+        // See src/cuda/tma_copy.cuh for the stub implementation.
         size_t total = delta_mode_ ? delta_buf_size_ : layer_transfer_size(layer_idx);
         dev.memcpy_h2d_async(gpu_base, staging_buf_[slot], total, xfer);
     }
