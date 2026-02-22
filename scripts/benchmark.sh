@@ -102,23 +102,31 @@ run_benchmark() {
     local output
     output=$(eval "$cmd" 2>&1) || true
 
-    # Parse timing lines
+    # Parse timing lines — ntransformer format:
+    #   Prompt: N tokens, X.X ms (X.X tok/s)
+    #   Decode: N tokens, X.X ms (X.X tok/s)
     local prefill_tps=""
     local decode_tps=""
+    local prefill_ms=""
+    local decode_ms=""
+    local decode_tokens=""
 
     while IFS= read -r line; do
-        if [[ "$line" =~ "prompt eval:".*"("([0-9.]+)" tokens/s)" ]]; then
-            prefill_tps="${BASH_REMATCH[1]}"
-        elif [[ "$line" =~ "decode:".*"("([0-9.]+)" tokens/s)" ]]; then
-            decode_tps="${BASH_REMATCH[1]}"
+        if [[ "$line" =~ ^Prompt:\ ([0-9]+)\ tokens,\ ([0-9.]+)\ ms\ \(([0-9.]+)\ tok/s\) ]]; then
+            prefill_ms="${BASH_REMATCH[2]}"
+            prefill_tps="${BASH_REMATCH[3]}"
+        elif [[ "$line" =~ ^Decode:\ ([0-9]+)\ tokens,\ ([0-9.]+)\ ms\ \(([0-9.]+)\ tok/s\) ]]; then
+            decode_tokens="${BASH_REMATCH[1]}"
+            decode_ms="${BASH_REMATCH[2]}"
+            decode_tps="${BASH_REMATCH[3]}"
         fi
     done <<< "$output"
 
-    echo "  Prefill: ${prefill_tps:-N/A} tok/s"
-    echo "  Decode:  ${decode_tps:-N/A} tok/s"
+    echo "  Prefill: ${prefill_ms:-N/A} ms  (${prefill_tps:-N/A} tok/s)"
+    echo "  Decode:  ${decode_ms:-N/A} ms / ${decode_tokens:-N/A} tokens  (${decode_tps:-N/A} tok/s)"
     echo ""
 
-    RESULTS+=("{\"label\":\"$label\",\"prefill_tps\":\"${prefill_tps:-null}\",\"decode_tps\":\"${decode_tps:-null}\"}")
+    RESULTS+=("{\"label\":\"$label\",\"prefill_ms\":\"${prefill_ms:-null}\",\"prefill_tps\":\"${prefill_tps:-null}\",\"decode_ms\":\"${decode_ms:-null}\",\"decode_tokens\":\"${decode_tokens:-null}\",\"decode_tps\":\"${decode_tps:-null}\"}")
 }
 
 # Default: run at least one test
@@ -144,13 +152,14 @@ fi
 
 # Print summary table
 echo "=== Results Summary ==="
-printf "%-35s %15s %15s\n" "Config" "Prefill (tok/s)" "Decode (tok/s)"
-printf "%-35s %15s %15s\n" "------" "---------------" "--------------"
+printf "%-28s %13s %13s %13s\n" "Config" "Prompt (ms)" "Decode (ms)" "Tok/s"
+printf "%-28s %13s %13s %13s\n" "------" "-----------" "-----------" "-----"
 for r in "${RESULTS[@]}"; do
     label=$(echo "$r" | grep -o '"label":"[^"]*"' | cut -d'"' -f4)
-    prefill=$(echo "$r" | grep -o '"prefill_tps":"[^"]*"' | cut -d'"' -f4)
+    p_ms=$(echo "$r" | grep -o '"prefill_ms":"[^"]*"' | cut -d'"' -f4)
+    d_ms=$(echo "$r" | grep -o '"decode_ms":"[^"]*"' | cut -d'"' -f4)
     decode=$(echo "$r" | grep -o '"decode_tps":"[^"]*"' | cut -d'"' -f4)
-    printf "%-35s %15s %15s\n" "$label" "${prefill:-N/A}" "${decode:-N/A}"
+    printf "%-28s %13s %13s %13s\n" "$label" "${p_ms:-N/A}" "${d_ms:-N/A}" "${decode:-N/A}"
 done
 
 # Write JSON output
