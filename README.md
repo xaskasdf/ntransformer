@@ -68,6 +68,61 @@ cmake --build . -j
 ./ntransformer -m /path/to/model.gguf --benchmark -n 64
 ```
 
+## System Setup
+
+Running ntransformer with NVMe direct I/O requires system-level modifications. An automated setup script handles all of them:
+
+```bash
+# Full first-time setup (interactive, creates backups)
+sudo ./scripts/setup_system.sh
+
+# Check current system state (no changes)
+sudo ./scripts/setup_system.sh --check
+
+# NVMe-only (run after every reboot)
+sudo ./scripts/setup_system.sh --nvme-only
+```
+
+### What the script modifies and why
+
+| Phase | What | Why | Risk | Rollback |
+|-------|------|-----|------|----------|
+| 1 | Installs gcc-14, cmake, kernel headers | CUDA 13.1 is incompatible with gcc-15 (Ubuntu 25.10 default) | Low — standard packages | `apt remove` |
+| 2 | Adds `amd_iommu=off` to GRUB | AMD root complex drops GPU→NVMe P2P reads if IOMMU is on. Disabling IOMMU lets posted PCIe writes (doorbells) through | **Medium** — removes hardware DMA isolation between all PCIe devices. Don't run on multi-tenant/server systems | Remove `amd_iommu=off` from `/etc/default/grub`, run `update-grub`, reboot |
+| 3 | Patches NVIDIA DKMS (`os-mlock.c`) | `follow_pfn()` was removed in kernel 6.12+. Without the patch, `cudaHostRegisterIoMemory` fails and the GPU can't map NVMe BAR0 for MMIO writes | **High** — bad patch prevents GPU driver from loading (black screen on reboot). Backup `.orig` created automatically | `cp os-mlock.c.orig os-mlock.c` in DKMS source dir, `dkms remove/install nvidia/VERSION` |
+| 3b | Patches CUDA header (`math_functions.h`) | glibc 2.42+ (Ubuntu 25.10) declares `rsqrt()`/`rsqrtf()` with `noexcept`. CUDA 13.1 declares without, causing build failure | Low — only affects one header, backup created | `cp math_functions.h.orig math_functions.h` |
+| 4 | Loads VFIO modules (`vfio`, `vfio-pci`) | NVMe must be bound to VFIO for userspace access. Consumer GPUs (GeForce) require `enable_unsafe_noiommu_mode=1` | Low — modules unload on reboot. "Unsafe noiommu" means no IOMMU DMA protection for VFIO devices | Reboot (or `modprobe -r vfio-pci vfio`) |
+| 5 | Unbinds NVMe from kernel, binds to VFIO | gpu-nvme-direct needs raw PCIe access. The NVMe disappears from `/dev/` while bound to VFIO | **High if wrong device** — never run on your boot drive. Script auto-detects and refuses boot devices | `sudo ./scripts/restore_nvme.sh` |
+
+### BIOS settings (manual, before running the script)
+
+- **Above 4G Decoding**: ON (required for 64-bit BAR mapping)
+- **IOMMU**: OFF (or leave on — the script adds the kernel parameter)
+- **Secure Boot**: OFF (required for unsigned/patched kernel module loading)
+
+### Hardware disclaimer
+
+> **WARNING**: This project performs low-level PCIe operations (GPU MMIO writes to NVMe controller
+> registers, userspace NVMe command submission, VFIO device passthrough). While tested extensively on
+> RTX 3090 + WD SN740, incorrect configuration or hardware incompatibilities could theoretically cause:
+>
+> - **NVMe link failure** requiring power cycle (observed during development with GPU reads)
+> - **Data loss** on the NVMe device used for raw block storage
+> - **System instability** from disabled IOMMU or patched kernel modules
+>
+> **Never use your boot drive for NVMe direct I/O.** Always use a dedicated secondary NVMe.
+> The authors are not responsible for hardware damage or data loss. Use at your own risk.
+
+### Scripts reference
+
+| Script | Purpose | When to run |
+|--------|---------|-------------|
+| `scripts/setup_system.sh` | Full system configuration (7 phases) | First-time setup |
+| `scripts/setup_system.sh --nvme-only` | VFIO + NVMe bind only | After every reboot |
+| `scripts/setup_system.sh --check` | Verify system state | Debugging |
+| `scripts/setup_nvme.sh [BDF]` | Bind single NVMe to VFIO | After reboot (standalone) |
+| `scripts/restore_nvme.sh [BDF]` | Restore NVMe to kernel driver | When done with NVMe direct |
+
 ## NVMe Direct Streaming
 
 For models that don't fit in VRAM, the NVMe backend eliminates the CPU from the data path:
@@ -121,6 +176,7 @@ src/
 ├── utils/          # Timer, logger
 ├── main.cpp        # CLI entry point
 scripts/
+├── setup_system.sh # Full system setup (GRUB, NVIDIA patch, CUDA patch, VFIO, NVMe)
 ├── setup_nvme.sh   # Bind NVMe to VFIO, configure for gpu-nvme-direct
 ├── restore_nvme.sh # Restore NVMe to kernel driver
 tests/              # Unit tests (tensor, GEMM kernels, NVMe layer loader)
