@@ -18,11 +18,39 @@ High-efficiency C++/CUDA LLM inference engine. Goal: run Llama 70B at Q8-equival
 - **Ported from Windows/MSVC/CUDA 12.4 to Linux/gcc-14/CUDA 13.1 (C++20 unified)**
 - Setup/restore scripts: `scripts/setup_nvme.sh`, `scripts/restore_nvme.sh`
 
+## Hardware Compatibility Notes
+
+### Blackwell (sm_120, RTX 5060 Ti / 5080 / 5090)
+The upstream CMakeLists.txt targets `sm_80;86;89;90`. Blackwell (sm_120) works via PTX JIT
+but adds startup latency and misses architecture-specific optimizations. Add `120` to the
+CUDA architectures list:
+```cmake
+set(CMAKE_CUDA_ARCHITECTURES "80;86;89;90;120")
+```
+
+### PCIe Gen 5 — bandwidth vs pipeline depth
+PCIe Gen 5 x8 = ~31 GB/s H2D bandwidth (same as Gen4 x16). At this bandwidth level, the
+3-tier streaming pipeline with **2 buffers** (the default) is already optimal for 70B-class
+models where transfer time ≈ compute time. 3+ buffers only help at ≥63 GB/s (Gen5 x16).
+
+⚠️ **ASPM idle downclocking:** PCIe power management may negotiate the link at Gen1/2 speed
+at idle, causing `current_link_speed` sysfs reads to return 5 GT/s instead of 32 GT/s.
+The TierConfig detection now prefers `max_link_speed` + `max_link_width` for stable results.
+
+### gcc-15 is incompatible with CUDA 13.1
+Use gcc-14 as both the host and CUDA host compiler:
+```bash
+cmake .. -DCMAKE_C_COMPILER=gcc-14 \
+         -DCMAKE_CXX_COMPILER=g++-14 \
+         -DCMAKE_CUDA_HOST_COMPILER=g++-14 \
+         -DCMAKE_CUDA_COMPILER=/opt/cuda/bin/nvcc  # CachyOS/Arch: /opt/cuda not /usr/local/cuda
+```
+
 ## Development Setup
-- **Platform:** Linux (Ubuntu, kernel 6.17+)
+- **Platform:** Linux (Ubuntu, kernel 6.17+; CachyOS/Arch also tested)
 - **Compiler:** gcc-14 / g++-14 (gcc-15 is incompatible with CUDA 13.1)
 - **CUDA:** Toolkit 13.1, C++20 for both host and device code
-- **GPU:** RTX 3090 24GB, Compute 8.6
+- **GPU:** RTX 3090 24GB Compute 8.6 (reference); RTX 5060 Ti 16GB sm_120 also tested
 - **Build requirements:** CMake 3.24+, CUDA Toolkit 13.1, C++20, gcc-14
 - **No external dependencies** beyond CUDA Toolkit (no PyTorch, no cuBLAS)
 - **Test models:** Configure paths via `-m` flag
@@ -44,6 +72,11 @@ cmake --build . --config Release -j
 ./Release/ntransformer -m /path/to/model.gguf --benchmark -n 64
 # Phase 2: Streaming mode (streams layers from CPU via PCIe)
 ./Release/ntransformer -m /path/to/model.gguf -p "Hello" -n 128 --streaming
+
+# Pipeline depth (default 0=auto-detect from PCIe bandwidth)
+# Auto: ≥63 GB/s (Gen5 x16) → 3 buffers; otherwise → 2 buffers
+# Override: --n-buffers N  or  env NT_PIPELINE_DEPTH=N
+./Release/ntransformer -m /path/to/model.gguf --streaming --n-buffers 3
 ```
 
 ### Build with gpu-nvme-direct (NVMe backend for streaming)
@@ -224,6 +257,18 @@ Optimization, benchmarks, public C API, documentation.
 | Streaming (NVMe direct) | 0.03 tok/s | 7.3 GB | Pure streaming | 5x |
 | **Tiered (ctx=4096)** | **0.2 tok/s** | **23.0 GB** | **24 VRAM + 54 RAM + 2 NVMe** | **33x** |
 | **Tiered (ctx=512)** | **0.2 tok/s** | **23.1 GB** | **29 VRAM + 51 RAM + 0 NVMe** | **33x** |
+
+### RTX 5060 Ti 16GB (Blackwell sm_120, PCIe Gen5 x8 = 31 GB/s)
+| Model | Mode | Decode | VRAM | Tier Split |
+|---|---|---|---|---|
+| 8B Llama Q8_0 | Resident | **31.0 tok/s** | 15.0 GB | 32 VRAM + 0 RAM |
+| 8B Llama Q8_0 | Tiered (auto) | **31.0 tok/s** | 15.2 GB | 32 VRAM (auto-promoted) |
+| 32B Qwen2.5 Q4_K_M | Tiered (auto, 2 buf) | **1.7 tok/s** | 14.6 GB | 19 VRAM + 45 RAM |
+| 32B Qwen2.5 Q4_K_M | Tiered (3 buf) | 1.6 tok/s | 14.3 GB | 18 VRAM + 46 RAM |
+
+Note: 8B decode (31 tok/s) is slower than RTX 3090 (48.9 tok/s) — the 5060 Ti has lower
+memory bandwidth (128-bit GDDR7 ~450 GB/s vs 384-bit GDDR6X ~936 GB/s). At batch=1 GEMV
+is purely bandwidth-bound. For streaming, PCIe Gen5 x8 = 31 GB/s H2D matches Gen4 x16.
 
 ### Tiered Caching Performance
 - **Bottleneck**: PCIe H2D at Gen3 x8 (~6.5 GB/s) — B450 runs GPU at x8 due to M.2 lane sharing
