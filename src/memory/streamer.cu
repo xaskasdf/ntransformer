@@ -5,6 +5,7 @@
 #include <cstring>
 #include <cmath>
 #include <algorithm>
+#include <cctype>
 #include <sys/sysinfo.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
@@ -153,6 +154,56 @@ size_t LayerStreamer::requantize_q6k_to_q4km(void* data, size_t nbytes_q6k) {
 }
 
 // ============================================================
+// PCIe bandwidth detection via sysfs
+//
+// Reads the GPU's current PCIe link speed and width from:
+//   /sys/bus/pci/devices/<pci_id>/current_link_speed  (e.g. "32.0 GT/s PCIe")
+//   /sys/bus/pci/devices/<pci_id>/current_link_width  (e.g. "16")
+//
+// Returns effective one-directional bandwidth in GB/s,
+// or 0.0 if detection fails (safe fallback to Gen3 default).
+// ============================================================
+static float detect_pcie_bandwidth_gbps() {
+    // Retrieve CUDA device PCI bus ID (e.g. "0000:05:00.0")
+    char pci_id[32] = {};
+    if (cudaDeviceGetPCIBusId(pci_id, sizeof(pci_id), 0) != cudaSuccess)
+        return 0.0f;
+
+    // sysfs paths use lowercase hex
+    for (int i = 0; pci_id[i]; i++)
+        pci_id[i] = (char)tolower((unsigned char)pci_id[i]);
+
+    char path[256];
+
+    // Read transfer rate in GT/s
+    snprintf(path, sizeof(path),
+             "/sys/bus/pci/devices/%s/current_link_speed", pci_id);
+    FILE* f = fopen(path, "r");
+    if (!f) return 0.0f;
+    float speed_gts = 0.0f;
+    fscanf(f, "%f", &speed_gts);
+    fclose(f);
+
+    // Read lane count
+    snprintf(path, sizeof(path),
+             "/sys/bus/pci/devices/%s/current_link_width", pci_id);
+    f = fopen(path, "r");
+    if (!f) return 0.0f;
+    int width = 0;
+    fscanf(f, "%d", &width);
+    fclose(f);
+
+    if (speed_gts <= 0.0f || width <= 0) return 0.0f;
+
+    // Convert GT/s to GB/s:
+    //   Gen1/2 use 8b/10b (80% efficiency), Gen3+ use 128b/130b (~98.5%)
+    //   bandwidth = speed_gts / 8  *  encoding_efficiency  *  width  *  0.985
+    //   The final 0.985 accounts for protocol overhead on the PCIe link.
+    float enc = (speed_gts <= 5.0f) ? 0.8f : 0.985f;
+    return speed_gts / 8.0f * enc * (float)width * 0.985f;
+}
+
+// ============================================================
 // TierConfig: auto-compute tier sizes from hardware
 // ============================================================
 TierConfig TierConfig::compute(int n_layers, size_t layer_bytes,
@@ -164,17 +215,18 @@ TierConfig TierConfig::compute(int n_layers, size_t layer_bytes,
     size_t vram_free = 0, vram_total = 0;
     cudaMemGetInfo(&vram_free, &vram_total);
 
-    // Query available RAM via /proc/meminfo (includes reclaimable page cache)
-    size_t ram_free = 0;
+    // Query RAM: both total (for adaptive reserve) and available
+    size_t ram_total = 0;
+    size_t ram_free  = 0;
     FILE* f = fopen("/proc/meminfo", "r");
     if (f) {
         char line[256];
         while (fgets(line, sizeof(line), f)) {
             size_t val;
-            if (sscanf(line, "MemAvailable: %zu kB", &val) == 1) {
+            if (sscanf(line, "MemTotal: %zu kB", &val) == 1)
+                ram_total = val * 1024;
+            else if (sscanf(line, "MemAvailable: %zu kB", &val) == 1)
                 ram_free = val * 1024;
-                break;
-            }
         }
         fclose(f);
     }
@@ -182,13 +234,46 @@ TierConfig TierConfig::compute(int n_layers, size_t layer_bytes,
         // Fallback to sysinfo if /proc/meminfo unavailable
         struct sysinfo si;
         sysinfo(&si);
-        ram_free = (size_t)si.freeram * si.mem_unit +
-                   (size_t)si.bufferram * si.mem_unit;
+        ram_free  = (size_t)si.freeram  * si.mem_unit
+                  + (size_t)si.bufferram * si.mem_unit;
+        ram_total = (size_t)si.totalram * si.mem_unit;
     }
+
+    // Adaptive RAM reserve: max(4 GB, 15% of total RAM).
+    // This ensures the OS always retains enough memory on any machine size,
+    // rather than using a fixed 6 GB that wastes memory on small machines
+    // or under-reserves on large ones.
+    if (ram_reserve == 0) {
+        const size_t min_reserve  = 4ULL << 30;            // 4 GB floor
+        const size_t pct_reserve  = ram_total * 15 / 100;  // 15% of total
+        ram_reserve = (pct_reserve > min_reserve) ? pct_reserve : min_reserve;
+    }
+
+    // Detect PCIe bandwidth and log the result
+    float pcie_bw = detect_pcie_bandwidth_gbps();
+    if (pcie_bw > 0.0f) {
+        // Determine generation label for the log message
+        const char* gen_label = "Gen3";
+        if      (pcie_bw >= 120.0f) gen_label = "Gen6";
+        else if (pcie_bw >=  60.0f) gen_label = "Gen5";
+        else if (pcie_bw >=  30.0f) gen_label = "Gen4";
+        else if (pcie_bw >=  15.0f) gen_label = "Gen3";
+        else                         gen_label = "Gen1/2";
+        fprintf(stderr, "TierConfig: PCIe %s x%d = %.1f GB/s (detected)\n",
+                gen_label,
+                (int)roundf(pcie_bw / (pcie_bw >= 60.0f ? 7.876f :
+                             pcie_bw >= 30.0f ? 3.938f :
+                             pcie_bw >= 15.0f ? 1.970f : 0.985f)),
+                pcie_bw);
+    } else {
+        fprintf(stderr, "TierConfig: PCIe detection failed — defaulting to 16.0 GB/s\n");
+        pcie_bw = 16.0f;
+    }
+    tc.pcie_bandwidth_gbps = pcie_bw;
 
     fprintf(stderr, "TierConfig: VRAM free=%.1f GB, RAM available=%.1f GB\n",
             vram_free / (1024.0 * 1024 * 1024), ram_free / (1024.0 * 1024 * 1024));
-    fprintf(stderr, "TierConfig: VRAM reserve=%.1f GB, RAM reserve=%.1f GB\n",
+    fprintf(stderr, "TierConfig: VRAM reserve=%.1f GB, RAM reserve=%.1f GB (adaptive)\n",
             vram_reserve / (1024.0 * 1024 * 1024), ram_reserve / (1024.0 * 1024 * 1024));
 
     size_t vram_avail = (vram_free > vram_reserve) ? (vram_free - vram_reserve) : 0;
@@ -231,6 +316,22 @@ void TierConfig::print() const {
             n_ram,  ram_used / (1024.0 * 1024 * 1024),
             n_nvme);
     fprintf(stderr, "  Per-layer: %.1f MB\n", layer_bytes / (1024.0 * 1024));
+}
+
+// ============================================================
+// TierConfig::optimal_pipeline_depth
+//
+// Returns the recommended number of streaming buffers based on
+// measured PCIe bandwidth:
+//   ≥63 GB/s  (Gen5 x16 or Gen4 x32) → 3 slots: compute can
+//              overlap two full H2D transfers simultaneously
+//   <63 GB/s  (Gen4 x16 and below)   → 2 slots: classic
+//              double-buffer is sufficient
+// ============================================================
+int TierConfig::optimal_pipeline_depth() const {
+    // 63 GB/s threshold cleanly separates Gen5 x16 (≈63.0) from
+    // Gen4 x16 (≈31.5). Gen4 x32 (≈63.0) also benefits from 3 slots.
+    return (pcie_bandwidth_gbps >= 63.0f) ? 3 : 2;
 }
 
 // ============================================================
@@ -297,18 +398,51 @@ void LayerStreamer::init(const GGUFLoader& loader, const ModelConfig& config) {
 
     buf_size_ = max_layer_bytes;
 
-    fprintf(stderr, "LayerStreamer: %d layers, buffer size: %.1f MB each (%.1f MB total for 2 buffers)\n",
-        n_layers, buf_size_ / (1024.0 * 1024.0), 2.0 * buf_size_ / (1024.0 * 1024.0));
+    // --------------------------------------------------------
+    // Auto-select pipeline depth if not manually overridden.
+    // Detect PCIe bandwidth and pick 3 slots for Gen5, 2 for
+    // Gen4 and below. NT_PIPELINE_DEPTH env var overrides both.
+    // --------------------------------------------------------
+    const char* env_depth = getenv("NT_PIPELINE_DEPTH");
+    if (env_depth) {
+        int n = atoi(env_depth);
+        if (n >= 2 && n <= 8 && n != n_slots_) {
+            fprintf(stderr, "LayerStreamer: NT_PIPELINE_DEPTH=%d override\n", n);
+            n_slots_ = n;
+        }
+    }
+    if (n_slots_ == 0) {
+        float pcie_bw = detect_pcie_bandwidth_gbps();
+        if (pcie_bw > 0.0f) {
+            n_slots_ = (pcie_bw >= 63.0f) ? 3 : 2;
+            fprintf(stderr, "Pipeline depth: %d (PCIe %.1f GB/s autodetect)\n",
+                    n_slots_, pcie_bw);
+        } else {
+            n_slots_ = 2;
+            fprintf(stderr, "Pipeline depth: %d (PCIe detection failed, default)\n", n_slots_);
+        }
+    } else {
+        fprintf(stderr, "Pipeline depth: %d (manual)\n", n_slots_);
+    }
 
-    // Allocate two GPU buffers
-    for (int s = 0; s < 2; s++) {
+    fprintf(stderr, "LayerStreamer: %d layers, buffer size: %.1f MB each (%.1f MB total for %d buffers)\n",
+        n_layers, buf_size_ / (1024.0 * 1024.0),
+        n_slots_ * buf_size_ / (1024.0 * 1024.0), n_slots_);
+
+    // Allocate n_slots_ GPU buffers and CUDA events
+    gpu_buf_.resize(n_slots_, nullptr);
+    current_layer_.resize(n_slots_, -1);
+    transfer_done_.resize(n_slots_, nullptr);
+    compute_done_.resize(n_slots_, nullptr);
+
+    for (int s = 0; s < n_slots_; s++) {
         cudaError_t err = cudaMalloc(&gpu_buf_[s], buf_size_);
         NT_CHECK(err == cudaSuccess, "Failed to allocate GPU layer buffer");
         current_layer_[s] = -1;
     }
 
     // Create CUDA events (disable timing for lower overhead)
-    for (int s = 0; s < 2; s++) {
+    for (int s = 0; s < n_slots_; s++) {
         cudaEvent_t ev;
         NT_CUDA_CHECK(cudaEventCreateWithFlags(&ev, cudaEventDisableTiming));
         transfer_done_[s] = static_cast<void*>(ev);
@@ -357,27 +491,29 @@ void LayerStreamer::init(const GGUFLoader& loader, const ModelConfig& config) {
         fprintf(stderr, "LayerStreamer: cudaHostRegister failed (%s), using double pinned staging buffers\n",
             cudaGetErrorString(pin_err));
 
-        // Allocate TWO pinned staging buffers for pipelined overlap
+        // Allocate n_slots_ pinned staging buffers for pipelined overlap
         staging_size_ = buf_size_;
-        for (int s = 0; s < 2; s++) {
+        staging_buf_.resize(n_slots_, nullptr);
+        staging_ready_.resize(n_slots_, 0);
+        for (int s = 0; s < n_slots_; s++) {
             cudaError_t err = cudaMallocHost(&staging_buf_[s], staging_size_);
             NT_CHECK(err == cudaSuccess, "Failed to allocate pinned staging buffer");
+            staging_ready_[s] = 0;
         }
-        fprintf(stderr, "LayerStreamer: double pinned staging: %.1f MB x 2 = %.1f MB\n",
-            staging_size_ / (1024.0 * 1024.0), 2.0 * staging_size_ / (1024.0 * 1024.0));
+        fprintf(stderr, "LayerStreamer: pinned staging: %.1f MB x %d = %.1f MB\n",
+            staging_size_ / (1024.0 * 1024.0), n_slots_,
+            n_slots_ * staging_size_ / (1024.0 * 1024.0));
 
         // Start worker thread for background CPU memcpy
         worker_shutdown_ = false;
         worker_has_work_ = false;
-        staging_ready_[0] = false;
-        staging_ready_[1] = false;
         worker_thread_ = std::thread(&LayerStreamer::worker_loop, this);
         fprintf(stderr, "LayerStreamer: worker thread started\n");
     }
 
     // Record initial compute_done events so the first begin_transfer doesn't deadlock
     auto& dev = CUDADevice::instance();
-    for (int s = 0; s < 2; s++) {
+    for (int s = 0; s < n_slots_; s++) {
         dev.record_event(compute_done_[s], STREAM_COMPUTE);
     }
 
@@ -747,16 +883,16 @@ bool LayerStreamer::init_delta(const std::string& ntd_path, const ModelConfig& c
     fprintf(stderr, "init_delta: delta per-layer = %.1f MB (vs %.1f MB full layer)\n",
             delta_buf_size_ / (1024.0 * 1024.0), buf_size_ / (1024.0 * 1024.0));
 
-    // Reallocate GPU double-buffers to delta size (much smaller)
-    for (int s = 0; s < 2; s++) {
+    // Reallocate GPU buffers to delta size (much smaller) for all n_slots_
+    for (int s = 0; s < n_slots_; s++) {
         if (gpu_buf_[s]) cudaFree(gpu_buf_[s]);
         err = cudaMalloc(&gpu_buf_[s], delta_buf_size_);
         NT_CHECK(err == cudaSuccess, "Failed to allocate delta GPU buffer");
     }
 
     // Reallocate staging buffers if needed
-    if (!mmap_pinned_ && staging_buf_[0]) {
-        for (int s = 0; s < 2; s++) {
+    if (!mmap_pinned_ && !staging_buf_.empty() && staging_buf_[0]) {
+        for (int s = 0; s < n_slots_; s++) {
             cudaFreeHost(staging_buf_[s]);
             err = cudaMallocHost(&staging_buf_[s], delta_buf_size_);
             NT_CHECK(err == cudaSuccess, "Failed to allocate delta staging buffer");
@@ -798,7 +934,7 @@ const void* LayerStreamer::base_weight_ptr(int weight_idx) const {
 // Delta: get U/V pointers from GPU buffer slot
 // ============================================================
 DeltaWeightPtrs LayerStreamer::get_delta_weights(int slot) const {
-    NT_CHECK(delta_mode_ && (slot == 0 || slot == 1), "get_delta_weights: bad state/slot");
+    NT_CHECK(delta_mode_ && slot >= 0 && slot < n_slots_, "get_delta_weights: bad state/slot");
     const uint8_t* base = static_cast<const uint8_t*>(gpu_buf_[slot]);
 
     DeltaWeightPtrs dp;
@@ -869,26 +1005,32 @@ void LayerStreamer::shutdown() {
         worker_thread_.join();
     }
 
-    for (int s = 0; s < 2; s++) {
+    for (int s = 0; s < (int)gpu_buf_.size(); s++) {
         if (gpu_buf_[s]) { cudaFree(gpu_buf_[s]); gpu_buf_[s] = nullptr; }
-        if (transfer_done_[s]) {
+        if (s < (int)transfer_done_.size() && transfer_done_[s]) {
             cudaEventDestroy(static_cast<cudaEvent_t>(transfer_done_[s]));
             transfer_done_[s] = nullptr;
         }
-        if (compute_done_[s]) {
+        if (s < (int)compute_done_.size() && compute_done_[s]) {
             cudaEventDestroy(static_cast<cudaEvent_t>(compute_done_[s]));
             compute_done_[s] = nullptr;
         }
     }
+    gpu_buf_.clear();
+    transfer_done_.clear();
+    compute_done_.clear();
+    current_layer_.clear();
 
     mmap_pinned_ = false;
 
-    for (int s = 0; s < 2; s++) {
+    for (int s = 0; s < (int)staging_buf_.size(); s++) {
         if (staging_buf_[s]) {
             cudaFreeHost(staging_buf_[s]);
             staging_buf_[s] = nullptr;
         }
     }
+    staging_buf_.clear();
+    staging_ready_.clear();
     staging_size_ = 0;
 
     layers_.clear();
@@ -926,7 +1068,7 @@ void LayerStreamer::signal_compute_done(int slot) {
 // Uses the layer that was most recently transferred to this slot.
 // ============================================================
 LayerWeightPtrs LayerStreamer::get_weights(int slot) const {
-    NT_CHECK(slot == 0 || slot == 1, "Slot must be 0 or 1");
+    NT_CHECK(slot >= 0 && slot < n_slots_, "Slot index out of range");
     NT_CHECK(current_layer_[slot] >= 0, "No layer transferred to this slot yet");
 
     const LayerLayout& lay = layers_[current_layer_[slot]];
@@ -1160,21 +1302,27 @@ void LayerStreamer::prefetch_staging(int layer_idx, int slot) {
 // ============================================================
 void LayerStreamer::begin_h2d(int layer_idx, int slot) {
     NT_CHECK(layer_idx >= 0 && layer_idx < (int)layers_.size(), "Layer index out of range");
-    NT_CHECK(slot == 0 || slot == 1, "Slot must be 0 or 1");
+    NT_CHECK(slot >= 0 && slot < n_slots_, "Slot index out of range");
+
+    // Map slot → transfer stream: alternate between the two DMA streams.
+    // With 3 slots, slots 0 and 2 share STREAM_TRANSFER0; they are serialised
+    // by their respective compute_done events so there is no ordering hazard.
+    auto slot_xfer = [](int s) -> StreamType {
+        return (s % 2 == 0) ? STREAM_TRANSFER0 : STREAM_TRANSFER1;
+    };
 
     // Tier A: VRAM resident — no transfer needed, just record event
     if (tiered_mode_ && layer_tier_[layer_idx] == LayerTier::VRAM) {
         current_layer_[slot] = layer_idx;
         auto& dev = CUDADevice::instance();
-        StreamType xfer = (slot == 0) ? STREAM_TRANSFER0 : STREAM_TRANSFER1;
-        dev.record_event(transfer_done_[slot], xfer);
+        dev.record_event(transfer_done_[slot], slot_xfer(slot));
         return;
     }
 
     current_layer_[slot] = layer_idx;
 
     auto& dev = CUDADevice::instance();
-    StreamType xfer = (slot == 0) ? STREAM_TRANSFER0 : STREAM_TRANSFER1;
+    StreamType xfer = slot_xfer(slot);
 
     // Wait until compute on this slot is done (safe to overwrite GPU buffer)
     dev.wait_event(xfer, compute_done_[slot]);

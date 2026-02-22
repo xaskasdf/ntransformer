@@ -43,10 +43,21 @@ struct TierConfig {
     size_t ram_used  = 0;        // bytes allocated for tier B
     size_t layer_bytes = 0;      // per-layer buffer size
 
-    // Auto-compute tier sizes from available hardware resources
+    // Detected PCIe bandwidth in GB/s (populated by compute(), 0 if unknown).
+    // Used by optimal_pipeline_depth() to auto-select N-buffer depth.
+    float pcie_bandwidth_gbps = 0.0f;
+
+    // Auto-compute tier sizes from available hardware resources.
+    // ram_reserve = 0 triggers adaptive sizing: max(4 GB, total_ram * 15%).
     static TierConfig compute(int n_layers, size_t layer_bytes,
                               size_t vram_reserve = 512ULL << 20,
-                              size_t ram_reserve = 6ULL << 30);
+                              size_t ram_reserve = 0);
+
+    // Returns optimal pipeline buffer count based on detected PCIe bandwidth:
+    //   Gen5 x16 (≥63 GB/s) → 3 buffers (compute can hide two H2D transfers)
+    //   Gen4 x16 and below  → 2 buffers (classic double-buffer)
+    int optimal_pipeline_depth() const;
+
     void print() const;
 };
 
@@ -64,11 +75,20 @@ struct LayerWeightPtrs {
 };
 
 // ============================================================
-// LayerStreamer: Double-buffer layer streaming via PCIe
+// LayerStreamer: N-buffer layer streaming via PCIe
 //
-// Two GPU buffers (slots 0 and 1). While layer N computes on
-// slot A, layer N+1 transfers into slot B via async H2D copy.
-// Uses CUDA events for synchronization.
+// n_slots_ GPU buffer slots (default 2, configurable).
+// While layer N computes on slot A, layer N+1 transfers into
+// slot B via async H2D, and (with 3+ slots) layer N+2 is being
+// prefetched into slot C concurrently.
+//
+// On PCIe Gen5 x16, a 3-slot pipeline can hide two full H2D
+// transfers behind a single GPU compute step. On Gen4 and
+// below, the classic 2-slot scheme is sufficient.
+//
+// Call set_pipeline_depth(n) before init() to override.
+// If unset (0), auto-detects from PCIe link speed/width.
+// Uses CUDA events for slot synchronization.
 // ============================================================
 
 class LayerStreamer {
@@ -79,6 +99,12 @@ public:
     // Non-copyable
     LayerStreamer(const LayerStreamer&) = delete;
     LayerStreamer& operator=(const LayerStreamer&) = delete;
+
+    // Set pipeline buffer count before init().
+    // n=0 triggers auto-detection from PCIe bandwidth (default).
+    // n>=2 overrides auto-selection.
+    void set_pipeline_depth(int n) { n_slots_ = n; }
+    int  pipeline_depth() const    { return n_slots_; }
 
     // Initialize: parse layer tensor info, allocate GPU buffers
     void init(const GGUFLoader& loader, const ModelConfig& config);
@@ -157,20 +183,23 @@ private:
         TensorSlot ffn_gate, ffn_up, ffn_down;
     };
 
-    void* gpu_buf_[2] = {};          // two GPU buffer slots
+    // Pipeline slot count — set by set_pipeline_depth() or auto-detected in init().
+    int n_slots_ = 0;                // 0 = auto, ≥2 = manual
+
+    std::vector<void*> gpu_buf_;     // n_slots_ GPU buffer slots
     size_t buf_size_ = 0;            // size of each buffer
-    int current_layer_[2] = {-1, -1}; // which layer is in each slot
+    std::vector<int> current_layer_; // which layer is in each slot
 
     std::vector<LayerLayout> layers_; // per-layer CPU→GPU mapping
 
-    void* transfer_done_[2] = {};    // CUDA events: transfer finished
-    void* compute_done_[2] = {};     // CUDA events: compute finished
+    std::vector<void*> transfer_done_; // CUDA events: transfer finished (one per slot)
+    std::vector<void*> compute_done_;  // CUDA events: compute finished (one per slot)
 
     // Pinned memory strategy
     bool mmap_pinned_ = false;       // true if cudaHostRegister succeeded
 
-    // Double staging buffers (used when mmap is NOT pinned)
-    void* staging_buf_[2] = {};      // two pinned staging buffers
+    // N staging buffers (used when mmap is NOT pinned)
+    std::vector<void*> staging_buf_; // n_slots_ pinned staging buffers
     size_t staging_size_ = 0;
 
     // Worker thread for background CPU memcpy (mmap → staging)
@@ -178,7 +207,7 @@ private:
     std::mutex  worker_mutex_;
     std::condition_variable worker_cv_;
     std::condition_variable staging_ready_cv_;
-    bool staging_ready_[2] = {};     // staging[slot] has been filled
+    std::vector<int> staging_ready_; // staging[slot] filled flag (int avoids vector<bool>)
     bool worker_shutdown_ = false;
 
     struct WorkerRequest { int layer_idx; int slot; };
