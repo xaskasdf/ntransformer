@@ -36,7 +36,7 @@ Bottleneck is PCIe H2D bandwidth at Gen3 x8 (~6.5 GB/s). Q4_K_M fits 10 more lay
 - gcc-14 / g++-14
 - NVIDIA GPU with Compute Capability 8.0+ (RTX 3090 tested)
 - CMake 3.24+
-- (Optional) NVMe SSD on separate PCIe slot + [gpu-nvme-direct](../gpu-nvme-direct) library
+- (Optional) NVMe SSD on separate PCIe slot + [gpu-nvme-direct](https://github.com/xaskasdf/gpu-nvme-direct) library
 
 ## Quick Start
 
