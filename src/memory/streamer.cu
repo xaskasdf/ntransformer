@@ -156,12 +156,15 @@ size_t LayerStreamer::requantize_q6k_to_q4km(void* data, size_t nbytes_q6k) {
 // ============================================================
 // PCIe bandwidth detection via sysfs
 //
-// Reads the GPU's current PCIe link speed and width from:
-//   /sys/bus/pci/devices/<pci_id>/current_link_speed  (e.g. "32.0 GT/s PCIe")
-//   /sys/bus/pci/devices/<pci_id>/current_link_width  (e.g. "16")
+// Prefers max_link_speed / max_link_width over current_link_* because
+// PCIe power management (ASPM) downgrades the link to Gen1/2 at idle,
+// causing wildly incorrect bandwidth estimates. The max values reflect
+// what the slot actually negotiated at boot time and stays stable.
+//
+// Falls back to current_link_* if max_* is unavailable (older kernels).
 //
 // Returns effective one-directional bandwidth in GB/s,
-// or 0.0 if detection fails (safe fallback to Gen3 default).
+// or 0.0 if detection fails (caller will use safe default).
 // ============================================================
 static float detect_pcie_bandwidth_gbps() {
     // Retrieve CUDA device PCI bus ID (e.g. "0000:05:00.0")
@@ -174,31 +177,44 @@ static float detect_pcie_bandwidth_gbps() {
         pci_id[i] = (char)tolower((unsigned char)pci_id[i]);
 
     char path[256];
-
-    // Read transfer rate in GT/s
-    snprintf(path, sizeof(path),
-             "/sys/bus/pci/devices/%s/current_link_speed", pci_id);
-    FILE* f = fopen(path, "r");
-    if (!f) return 0.0f;
     float speed_gts = 0.0f;
-    fscanf(f, "%f", &speed_gts);
-    fclose(f);
-
-    // Read lane count
-    snprintf(path, sizeof(path),
-             "/sys/bus/pci/devices/%s/current_link_width", pci_id);
-    f = fopen(path, "r");
-    if (!f) return 0.0f;
     int width = 0;
-    fscanf(f, "%d", &width);
-    fclose(f);
+
+    // Helper: try max_link_* first (immune to ASPM idle downclocking),
+    // fall back to current_link_* for older kernels that lack max_*.
+    auto read_speed = [&](const char* attr_max, const char* attr_cur) -> float {
+        float val = 0.0f;
+        snprintf(path, sizeof(path), "/sys/bus/pci/devices/%s/%s", pci_id, attr_max);
+        FILE* f = fopen(path, "r");
+        if (f) { fscanf(f, "%f", &val); fclose(f); }
+        if (val > 0.0f) return val;
+        // fallback
+        snprintf(path, sizeof(path), "/sys/bus/pci/devices/%s/%s", pci_id, attr_cur);
+        f = fopen(path, "r");
+        if (f) { fscanf(f, "%f", &val); fclose(f); }
+        return val;
+    };
+    auto read_width = [&](const char* attr_max, const char* attr_cur) -> int {
+        int val = 0;
+        snprintf(path, sizeof(path), "/sys/bus/pci/devices/%s/%s", pci_id, attr_max);
+        FILE* f = fopen(path, "r");
+        if (f) { fscanf(f, "%d", &val); fclose(f); }
+        if (val > 0) return val;
+        snprintf(path, sizeof(path), "/sys/bus/pci/devices/%s/%s", pci_id, attr_cur);
+        f = fopen(path, "r");
+        if (f) { fscanf(f, "%d", &val); fclose(f); }
+        return val;
+    };
+
+    speed_gts = read_speed("max_link_speed", "current_link_speed");
+    width     = read_width("max_link_width", "current_link_width");
 
     if (speed_gts <= 0.0f || width <= 0) return 0.0f;
 
-    // Convert GT/s to GB/s:
-    //   Gen1/2 use 8b/10b (80% efficiency), Gen3+ use 128b/130b (~98.5%)
-    //   bandwidth = speed_gts / 8  *  encoding_efficiency  *  width  *  0.985
-    //   The final 0.985 accounts for protocol overhead on the PCIe link.
+    // Convert GT/s × width to effective GB/s:
+    //   Gen1/2: 8b/10b encoding → 80% efficiency
+    //   Gen3+:  128b/130b encoding → ~98.5% efficiency
+    //   Additional 0.985 factor for protocol overhead.
     float enc = (speed_gts <= 5.0f) ? 0.8f : 0.985f;
     return speed_gts / 8.0f * enc * (float)width * 0.985f;
 }
