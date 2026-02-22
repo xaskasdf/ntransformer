@@ -47,6 +47,10 @@ public:
     std::string generate_speculative(const std::string& prompt, const GenerateConfig& config,
                                      TokenCallback callback = nullptr);
 
+    // Generate with self-speculative decoding (VRAM layers as draft, no extra model)
+    std::string generate_self_speculative(const std::string& prompt, const GenerateConfig& config,
+                                          TokenCallback callback = nullptr);
+
     // Interactive chat mode
     void chat(const GenerateConfig& config);
 
@@ -57,6 +61,7 @@ public:
     Transformer& model() { return model_; }
     bool has_draft() const { return draft_ != nullptr; }
     void set_draft_k(int k) { draft_k_ = k; }
+    void set_self_speculative(bool enable) { self_speculative_ = enable; }
 
 private:
     Transformer model_;
@@ -65,6 +70,7 @@ private:
     // Speculative decoding
     Transformer* draft_ = nullptr;  // owned, null if not speculative
     int draft_k_ = 5;              // number of draft tokens per iteration
+    bool self_speculative_ = false; // use VRAM layers as draft (no extra model)
 
     // Generation stats
     struct Stats {

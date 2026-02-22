@@ -43,6 +43,9 @@ std::string Engine::generate(const std::string& prompt, const GenerateConfig& co
     if (draft_) {
         return generate_speculative(prompt, config, callback);
     }
+    if (self_speculative_) {
+        return generate_self_speculative(prompt, config, callback);
+    }
 
     Stats stats;
     Sampler sampler;
@@ -339,6 +342,200 @@ std::string Engine::generate_speculative(const std::string& prompt, const Genera
     }
 
 spec_done:
+    if (config.verbose) {
+        fprintf(stdout, "\n");
+        print_stats(stats);
+    }
+
+    return output;
+}
+
+// ============================================================
+// Self-speculative decoding: VRAM-resident layers as draft
+// No extra model needed — uses partial forward through tier A
+// ============================================================
+std::string Engine::generate_self_speculative(const std::string& prompt, const GenerateConfig& config,
+                                               TokenCallback callback) {
+    Stats stats;
+    int K = draft_k_;
+    int vocab_size = model_.config().vocab_size;
+    int eos_id = tokenizer_.eos_id();
+
+    // Tokenize prompt
+    std::vector<int> tokens = tokenizer_.encode(prompt, true);
+    stats.prompt_tokens = (int)tokens.size();
+    int P = stats.prompt_tokens;
+
+    if (config.verbose) {
+        fprintf(stderr, "Self-speculative decoding: K=%d, prompt=%d tokens\n", K, P);
+        fprintf(stderr, "Draft: %d VRAM-resident layers (no streaming)\n",
+            model_.tier_config().n_vram);
+        fprintf(stderr, "Target: %d total layers (tiered)\n", model_.config().n_layers);
+    }
+
+    // Prefill with full model (all layers)
+    auto t0 = Clock::now();
+    float* logits = model_.forward(tokens.data(), P, 0);
+    auto t1 = Clock::now();
+    stats.prefill_ms = std::chrono::duration<float, std::milli>(t1 - t0).count();
+
+    if (config.verbose) {
+        fprintf(stderr, "Prefill: %.1f ms (%d tokens)\n", stats.prefill_ms, P);
+    }
+
+    // Sample first token from target
+    std::vector<float> logits_cpu(vocab_size);
+    nt_cuda_memcpy_d2h(logits_cpu.data(), logits, vocab_size * sizeof(float));
+    int first_token = Sampler::argmax(logits_cpu.data(), vocab_size);
+
+    std::string output;
+    std::string token_text = tokenizer_.decode_token(first_token);
+    output += token_text;
+    tokens.push_back(first_token);
+    stats.gen_tokens = 1;
+
+    if (callback) {
+        if (!callback(token_text, first_token)) goto self_spec_done;
+    } else if (config.verbose) {
+        fprintf(stdout, "%s", token_text.c_str());
+        fflush(stdout);
+    }
+
+    if (first_token == eos_id) goto self_spec_done;
+
+    // Self-speculative decode loop
+    {
+        auto decode_start = Clock::now();
+        int pos = P;  // anchor goes at pos
+        int last_accepted = first_token;
+        bool stop = false;
+
+        int total_draft = 0;
+        int total_accepted = 0;
+        int spec_iterations = 0;
+
+        std::vector<int> draft_input(K + 1);
+        std::vector<float> pos_logits(vocab_size);
+
+        while (stats.gen_tokens < config.max_tokens && !stop) {
+            spec_iterations++;
+
+            // === Draft phase: forward_draft (VRAM layers only) ===
+            draft_input[0] = last_accepted;
+
+            float* dl = model_.forward_draft(&last_accepted, 1, pos);
+            nt_cuda_memcpy_d2h(logits_cpu.data(), dl, vocab_size * sizeof(float));
+            draft_input[1] = Sampler::argmax(logits_cpu.data(), vocab_size);
+
+            for (int k = 1; k < K; k++) {
+                dl = model_.forward_draft(&draft_input[k], 1, pos + k);
+                nt_cuda_memcpy_d2h(logits_cpu.data(), dl, vocab_size * sizeof(float));
+                draft_input[k + 1] = Sampler::argmax(logits_cpu.data(), vocab_size);
+            }
+
+            // === Verify phase: full model forward ===
+            float* vl = model_.forward_verify(draft_input.data(), K + 1, pos);
+
+            // === Accept / Reject ===
+            int n_accepted = 0;
+            int correction = -1;
+
+            for (int k = 0; k < K; k++) {
+                nt_cuda_memcpy_d2h(pos_logits.data(),
+                    vl + k * vocab_size, vocab_size * sizeof(float));
+                int target_pred = Sampler::argmax(pos_logits.data(), vocab_size);
+
+                if (target_pred != draft_input[k + 1]) {
+                    correction = target_pred;
+                    n_accepted = k;
+                    break;
+                }
+                n_accepted = k + 1;
+            }
+
+            bool all_accepted = (correction == -1);
+            total_draft += K;
+
+            // Output accepted draft tokens
+            for (int k = 0; k < n_accepted; k++) {
+                int tok = draft_input[k + 1];
+                token_text = tokenizer_.decode_token(tok);
+                output += token_text;
+                tokens.push_back(tok);
+                stats.gen_tokens++;
+
+                if (callback) {
+                    if (!callback(token_text, tok)) { stop = true; break; }
+                } else if (config.verbose) {
+                    fprintf(stdout, "%s", token_text.c_str());
+                    fflush(stdout);
+                }
+
+                if (tok == eos_id) { stop = true; break; }
+            }
+
+            if (stop) break;
+
+            if (all_accepted) {
+                // Bonus token from last verify position
+                nt_cuda_memcpy_d2h(pos_logits.data(),
+                    vl + K * vocab_size, vocab_size * sizeof(float));
+                int bonus = Sampler::argmax(pos_logits.data(), vocab_size);
+
+                token_text = tokenizer_.decode_token(bonus);
+                output += token_text;
+                tokens.push_back(bonus);
+                stats.gen_tokens++;
+
+                if (callback) {
+                    if (!callback(token_text, bonus)) { stop = true; }
+                } else if (config.verbose) {
+                    fprintf(stdout, "%s", token_text.c_str());
+                    fflush(stdout);
+                }
+
+                if (bonus == eos_id) stop = true;
+
+                last_accepted = bonus;
+                total_accepted += K + 1;
+                pos += K + 1;
+            } else {
+                // Output correction token
+                token_text = tokenizer_.decode_token(correction);
+                output += token_text;
+                tokens.push_back(correction);
+                stats.gen_tokens++;
+
+                if (callback) {
+                    if (!callback(token_text, correction)) { stop = true; }
+                } else if (config.verbose) {
+                    fprintf(stdout, "%s", token_text.c_str());
+                    fflush(stdout);
+                }
+
+                if (correction == eos_id) stop = true;
+
+                last_accepted = correction;
+                total_accepted += n_accepted + 1;
+                pos += n_accepted + 1;
+            }
+        }
+
+        auto decode_end = Clock::now();
+        stats.decode_ms = std::chrono::duration<float, std::milli>(decode_end - decode_start).count();
+
+        if (config.verbose) {
+            float accept_rate = total_draft > 0 ? (float)total_accepted / total_draft : 0;
+            fprintf(stderr, "\n[self-speculative: %d iters, %d/%d accepted (%.0f%%), "
+                "avg %.1f tok/iter, draft=%d VRAM layers]\n",
+                spec_iterations, total_accepted, total_draft,
+                accept_rate * 100.0f,
+                stats.gen_tokens / (float)spec_iterations,
+                model_.tier_config().n_vram);
+        }
+    }
+
+self_spec_done:
     if (config.verbose) {
         fprintf(stdout, "\n");
         print_stats(stats);

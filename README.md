@@ -9,19 +9,23 @@ High-efficiency C++/CUDA LLM inference engine. Runs Llama 70B on a single RTX 30
 | Llama 3.1 8B Q8_0 | Resident | 48.9 tok/s | 10.0 GB | All layers in VRAM |
 | Llama 3.1 8B Q8_0 | Tiered (auto) | 48.8 tok/s | 10.3 GB | 32/32 layers auto-promoted to VRAM |
 | Llama 3.1 70B Q6_K | Streaming (mmap) | 0.006 tok/s | 7.3 GB | Page cache thrashing (53 GB > 48 GB RAM) |
-| Llama 3.1 70B Q6_K | **Tiered (auto)** | **0.2 tok/s** | **23.1 GB** | **29 VRAM + 51 RAM + 0 NVMe** |
+| Llama 3.1 70B Q6_K | Tiered (auto) | 0.2 tok/s | 23.1 GB | 26 VRAM + 54 RAM + 0 NVMe |
+| Llama 3.1 70B Q4_K_M | Tiered (auto) | 0.3 tok/s | 22.9 GB | 36 VRAM + 44 RAM (50% faster) |
+| Llama 3.1 70B Q4_K_M | **Tiered + layer skip** | **0.5 tok/s** | **22.9 GB** | **36 VRAM + 44 RAM, 20 layers skipped** |
 
-**3-tier adaptive caching** auto-sizes from hardware: VRAM-resident layers (zero I/O) + pinned RAM (H2D only) + NVMe/mmap fallback. Achieves **33x speedup** over mmap baseline for 70B on consumer hardware (RTX 3090 + 48 GB RAM).
+**3-tier adaptive caching** auto-sizes from hardware: VRAM-resident layers (zero I/O) + pinned RAM (H2D only) + NVMe/mmap fallback. Achieves **83x speedup** over mmap baseline for 70B on consumer hardware (RTX 3090 + 48 GB RAM).
 
-Bottleneck is PCIe H2D bandwidth at Gen3 x8 (~6.5 GB/s). With Gen4 x16 (B550/X570), tier B layers would be compute-bound, yielding ~0.5 tok/s.
+Bottleneck is PCIe H2D bandwidth at Gen3 x8 (~6.5 GB/s). Q4_K_M fits 10 more layers in VRAM (36 vs 26), reducing tier B transfers. Layer skip (cosine similarity calibration) eliminates 20/80 layers per token with minimal quality loss.
 
 ## Features
 
 - **Zero external dependencies** beyond CUDA Toolkit (no PyTorch, no cuBLAS)
-- **GGUF model format** with Q4_0, Q8_0, Q4_K_M, Q6_K, F16, F32 quantization
+- **GGUF model format** with Q4_0, Q8_0, Q4_K_M, Q5_K, Q6_K, F16, F32 quantization
 - **3-Tier Adaptive Caching**: auto-sized VRAM resident + pinned RAM + NVMe/mmap tiers
 - **SLEP streaming**: double-buffered layer pipeline overlaps NVMe reads, PCIe DMA, and GPU compute
 - **gpu-nvme-direct backend**: userspace NVMe driver reads model weights directly to pinned GPU-accessible memory
+- **Layer skip**: cosine-similarity calibration skips redundant layers (20/80 skipped at threshold 0.98)
+- **Self-speculative decoding**: VRAM-resident layers as draft model (no extra model needed)
 - **Four data paths** (auto-selected): VRAM resident > pinned RAM H2D > mmap pinned > CPU worker memcpy
 - Llama architecture: RoPE, GQA, SwiGLU, RMSNorm, KV cache
 
@@ -50,6 +54,12 @@ cmake --build . -j
 
 # Run (streaming mode — model larger than VRAM)
 ./ntransformer -m /path/to/llama-70b-q6_k.gguf -p "Hello" -n 32 --streaming
+
+# Run with layer skip (fastest for 70B)
+./ntransformer -m /path/to/llama-70b-q4_k_m.gguf -p "Hello" -n 32 --streaming --skip-threshold 0.98
+
+# Self-speculative decoding (VRAM layers as draft, no extra model)
+./ntransformer -m /path/to/llama-70b-q6_k.gguf -p "Hello" -n 32 --self-spec --draft-k 3
 
 # Chat mode
 ./ntransformer -m /path/to/model.gguf --chat
@@ -142,7 +152,8 @@ Tier sizes auto-computed from `cudaMemGetInfo()` + `/proc/meminfo` MemAvailable.
 |--------|------------|-----------|-----------|
 | Q4_0 | 4.5 | 32 | Yes |
 | Q8_0 | 8.5 | 32 | Yes |
-| Q4_K_M | 4.5 | 256 | Yes |
+| Q4_K_M | 4.5 | 256 | Yes (mixed: Q4_K + Q5_K + Q6_K) |
+| Q5_K | 5.5 | 256 | Yes |
 | Q6_K | 6.6 | 256 | Yes |
 | F16 | 16 | 1 | Yes |
 | F32 | 32 | 1 | Yes |
@@ -151,9 +162,9 @@ Tier sizes auto-computed from `cudaMemGetInfo()` + `/proc/meminfo` MemAvailable.
 
 - **Phase 1** - Foundation (complete): Llama 8B Q8_0, custom CUDA kernels, 48.9 tok/s
 - **Phase 2** - SLEP Streaming (complete): 70B on single GPU, 3-tier caching, 33x speedup
-- **Phase 3** - Advanced Quantization: RotateKV (INT2 KV-cache), adaptive per-layer precision
-- **Phase 4** - Novel Architectures: MLA, Mamba/SSM, speculative decoding
-- **Phase 5** - Polish: optimization, benchmarks, public C API
+- **Phase 3** - Optimization (complete): Q4_K_M/Q5_K support, layer skip (0.5 tok/s), self-speculative decoding, F16 KV cache
+- **Phase 4** - NVMe Direct: gpu-nvme-direct backend for tier C (GPU-initiated NVMe reads, 3.35 GB/s)
+- **Phase 5** - Polish: speculative decoding with draft model, benchmarks, public C API
 
 ## License
 

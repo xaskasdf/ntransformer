@@ -314,11 +314,35 @@ void LayerStreamer::init(const GGUFLoader& loader, const ModelConfig& config) {
     }
 
     // Try to pin the mmap'd region for true async DMA
+    // Skip pinning for large models (>50% of RAM) — pinning consumes physical RAM
+    // and leaves nothing for tier B layer caches. Staging buffers only use ~1GB.
     const void* data_ptr = loader.mmap_data_ptr();
     size_t data_size = loader.tensor_data_size();
 
-    cudaError_t pin_err = cudaHostRegister(
-        const_cast<void*>(data_ptr), data_size, cudaHostRegisterReadOnly);
+    size_t total_ram = 0;
+    FILE* mi = fopen("/proc/meminfo", "r");
+    if (mi) {
+        char line[256];
+        while (fgets(line, sizeof(line), mi)) {
+            size_t val;
+            if (sscanf(line, "MemTotal: %zu kB", &val) == 1) {
+                total_ram = val * 1024;
+                break;
+            }
+        }
+        fclose(mi);
+    }
+
+    bool skip_pin = (total_ram > 0 && data_size > total_ram / 2);
+    cudaError_t pin_err = cudaErrorMemoryAllocation;  // default to "failed"
+
+    if (!skip_pin) {
+        pin_err = cudaHostRegister(
+            const_cast<void*>(data_ptr), data_size, cudaHostRegisterReadOnly);
+    } else {
+        fprintf(stderr, "LayerStreamer: skipping mmap pin (%.1f GB > 50%% of %.1f GB RAM) — preserving RAM for tier B\n",
+            data_size / (1024.0 * 1024.0 * 1024.0), total_ram / (1024.0 * 1024.0 * 1024.0));
+    }
 
     if (pin_err == cudaSuccess) {
         mmap_pinned_ = true;

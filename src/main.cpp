@@ -19,6 +19,7 @@ void print_usage(const char* prog) {
     fprintf(stderr, "  --streaming              SLEP streaming mode (stream layers from CPU via PCIe)\n");
     fprintf(stderr, "  --draft-model <path>     Draft model for speculative decoding (e.g. 8B)\n");
     fprintf(stderr, "  --draft-k <int>          Draft tokens per iteration (default: 5)\n");
+    fprintf(stderr, "  --self-spec              Self-speculative: use VRAM layers as draft (no extra model)\n");
     fprintf(stderr, "  --early-exit <float>     Early exit threshold (0=off, 0.9999=aggressive)\n");
     fprintf(stderr, "  --skip-threshold <float> Layer skip threshold (0=off, 0.985=moderate)\n");
     fprintf(stderr, "  --requant-q4k            Requantize Q6_K→Q4_K_M for tier B (31%% less H2D)\n");
@@ -40,6 +41,7 @@ int main(int argc, char** argv) {
     bool chat_mode = false;
     bool streaming_mode = false;
     bool requant_q4k = false;
+    bool self_speculative = false;
 
     nt::GenerateConfig config;
     config.verbose = true;
@@ -81,6 +83,8 @@ int main(int argc, char** argv) {
             if (++i < argc) skip_threshold = std::stof(argv[i]);
         } else if (arg == "--requant-q4k") {
             requant_q4k = true;
+        } else if (arg == "--self-spec") {
+            self_speculative = true;
         } else if (arg == "--benchmark") {
             benchmark_mode = true;
         } else if (arg == "--chat") {
@@ -100,10 +104,13 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    // Auto-enable streaming when using draft model (speculative decoding
-    // is only useful when target model needs layer streaming)
+    // Auto-enable streaming when using speculative modes
     if (!draft_model_path.empty() && !streaming_mode) {
         fprintf(stderr, "Note: --draft-model implies --streaming for target model\n");
+        streaming_mode = true;
+    }
+    if (self_speculative && !streaming_mode) {
+        fprintf(stderr, "Note: --self-spec implies --streaming\n");
         streaming_mode = true;
     }
 
@@ -127,6 +134,11 @@ int main(int argc, char** argv) {
     if (!engine.load(model_path, max_context, streaming_mode)) {
         fprintf(stderr, "Failed to load model: %s\n", model_path.c_str());
         return 1;
+    }
+
+    if (self_speculative) {
+        engine.set_self_speculative(true);
+        engine.set_draft_k(draft_k);
     }
 
     if (early_exit_threshold > 0.0f) {

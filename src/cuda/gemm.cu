@@ -197,31 +197,157 @@ __global__ void gemv_q4_k_kernel(
 
         float block_sum = 0.0f;
 
-        for (int sb = 0; sb < 8; sb++) {
-            uint8_t sc, m;
-            if (sb < 4) {
-                sc = block.scales[sb] & 0x3F;
-                m  = block.scales[sb + 4] & 0x3F;
+        // GGML Q4_K layout: 4 chunks of 32 qs bytes → 64 weights each
+        // Low nibbles → first 32 weights (even scale), high nibbles → next 32 (odd scale)
+        for (int chunk = 0; chunk < 4; chunk++) {
+            int is_lo = chunk * 2;
+            int is_hi = chunk * 2 + 1;
+
+            uint8_t sc_lo, m_lo;
+            if (is_lo < 4) {
+                sc_lo = block.scales[is_lo] & 0x3F;
+                m_lo  = block.scales[is_lo + 4] & 0x3F;
             } else {
-                sc = (block.scales[sb + 4] & 0x0F) | ((block.scales[sb - 4] >> 6) << 4);
-                m  = (block.scales[sb + 4] >> 4)    | ((block.scales[sb]     >> 6) << 4);
+                sc_lo = (block.scales[is_lo + 4] & 0x0F) | ((block.scales[is_lo - 4] >> 6) << 4);
+                m_lo  = (block.scales[is_lo + 4] >> 4)    | ((block.scales[is_lo]     >> 6) << 4);
             }
 
-            float sub_d = d * sc;
-            float sub_m = dmin * m;
-            int sub_base = base + sb * 32;
-
-            float sub_sum = 0.0f;
-            float sub_sum_x = 0.0f;
-            for (int j = 0; j < 16; j++) {
-                uint8_t byte = block.qs[sb * 16 + j];
-                int lo = byte & 0x0F;
-                int hi = byte >> 4;
-                sub_sum += lo * xv[sub_base + j] + hi * xv[sub_base + j + 16];
-                sub_sum_x += xv[sub_base + j] + xv[sub_base + j + 16];
+            uint8_t sc_hi, m_hi;
+            if (is_hi < 4) {
+                sc_hi = block.scales[is_hi] & 0x3F;
+                m_hi  = block.scales[is_hi + 4] & 0x3F;
+            } else {
+                sc_hi = (block.scales[is_hi + 4] & 0x0F) | ((block.scales[is_hi - 4] >> 6) << 4);
+                m_hi  = (block.scales[is_hi + 4] >> 4)    | ((block.scales[is_hi]     >> 6) << 4);
             }
 
-            block_sum += sub_d * sub_sum - sub_m * sub_sum_x;
+            float d1 = d * sc_lo, m1 = dmin * m_lo;
+            float d2 = d * sc_hi, m2 = dmin * m_hi;
+            int chunk_base = base + chunk * 64;
+            const uint8_t* q = block.qs + chunk * 32;
+
+            float sum_lo = 0.0f, sum_hi = 0.0f;
+            float sumx_lo = 0.0f, sumx_hi = 0.0f;
+            for (int l = 0; l < 32; l++) {
+                int lo = q[l] & 0x0F;
+                int hi = q[l] >> 4;
+                sum_lo  += lo * xv[chunk_base + l];
+                sum_hi  += hi * xv[chunk_base + l + 32];
+                sumx_lo += xv[chunk_base + l];
+                sumx_hi += xv[chunk_base + l + 32];
+            }
+
+            block_sum += d1 * sum_lo - m1 * sumx_lo + d2 * sum_hi - m2 * sumx_hi;
+        }
+
+        sum += block_sum;
+    }
+
+    // Warp reduction
+    #pragma unroll
+    for (int offset = 16; offset > 0; offset >>= 1) {
+        sum += __shfl_xor_sync(0xFFFFFFFF, sum, offset);
+    }
+
+    if (tid == 0) {
+        y[row] = sum;
+    }
+}
+
+// ----------------------------------------------------------
+// Q5_K GEMV: 256 weights per super-block, 5 bits per weight
+// Like Q4_K but with 5th bit stored in qh[32] (256 bits = 1 per weight)
+// GGML layout: d(FP16), dmin(FP16), scales[12], qh[32], ql[128]
+// 4 chunks of 64 weights each (32 ql bytes per chunk)
+// Low nibbles + qh bit → first 32 weights (even scale)
+// High nibbles + qh bit → next 32 weights (odd scale)
+// ----------------------------------------------------------
+template<bool USE_SMEM>
+__global__ void gemv_q5_k_kernel(
+    float* __restrict__ y,
+    const void* __restrict__ W,
+    const float* __restrict__ x,
+    int out_features,
+    int in_features
+) {
+    extern __shared__ float sx[];
+
+    const int tid = threadIdx.x;
+    const int warp_id = threadIdx.y;
+    const int flat_id = warp_id * 32 + tid;
+    const int nthreads = blockDim.y * 32;
+
+    if constexpr (USE_SMEM) {
+        for (int i = flat_id; i < in_features; i += nthreads) {
+            sx[i] = x[i];
+        }
+        __syncthreads();
+    }
+
+    const float* xv = USE_SMEM ? sx : x;
+
+    const int row = blockIdx.x * blockDim.y + warp_id;
+    if (row >= out_features) return;
+
+    const int num_blocks = in_features / 256;
+    const nt::BlockQ5_K* row_blocks = reinterpret_cast<const nt::BlockQ5_K*>(W) + row * num_blocks;
+
+    float sum = 0.0f;
+
+    for (int b = tid; b < num_blocks; b += 32) {
+        const nt::BlockQ5_K& block = row_blocks[b];
+
+        float d = __half2float(*reinterpret_cast<const half*>(&block.d));
+        float dmin = __half2float(*reinterpret_cast<const half*>(&block.dmin));
+
+        const int base = b * 256;
+
+        float block_sum = 0.0f;
+
+        // Process 4 chunks of 64 weights (32 ql bytes + qh bits per chunk)
+        uint8_t u1 = 1, u2 = 2;
+        for (int chunk = 0; chunk < 4; chunk++) {
+            int is_lo = chunk * 2;
+            int is_hi = chunk * 2 + 1;
+
+            uint8_t sc_lo, m_lo;
+            if (is_lo < 4) {
+                sc_lo = block.scales[is_lo] & 0x3F;
+                m_lo  = block.scales[is_lo + 4] & 0x3F;
+            } else {
+                sc_lo = (block.scales[is_lo + 4] & 0x0F) | ((block.scales[is_lo - 4] >> 6) << 4);
+                m_lo  = (block.scales[is_lo + 4] >> 4)    | ((block.scales[is_lo]     >> 6) << 4);
+            }
+
+            uint8_t sc_hi, m_hi;
+            if (is_hi < 4) {
+                sc_hi = block.scales[is_hi] & 0x3F;
+                m_hi  = block.scales[is_hi + 4] & 0x3F;
+            } else {
+                sc_hi = (block.scales[is_hi + 4] & 0x0F) | ((block.scales[is_hi - 4] >> 6) << 4);
+                m_hi  = (block.scales[is_hi + 4] >> 4)    | ((block.scales[is_hi]     >> 6) << 4);
+            }
+
+            float d1 = d * sc_lo, m1 = dmin * m_lo;
+            float d2 = d * sc_hi, m2 = dmin * m_hi;
+            int chunk_base = base + chunk * 64;
+            const uint8_t* ql = block.ql + chunk * 32;
+            const uint8_t* qh = block.qh;
+
+            float sum_lo = 0.0f, sum_hi = 0.0f;
+            float sumx_lo = 0.0f, sumx_hi = 0.0f;
+            for (int l = 0; l < 32; l++) {
+                int lo = (ql[l] & 0x0F) + ((qh[l] & u1) ? 16 : 0);
+                int hi = (ql[l] >> 4)    + ((qh[l] & u2) ? 16 : 0);
+                sum_lo  += lo * xv[chunk_base + l];
+                sum_hi  += hi * xv[chunk_base + l + 32];
+                sumx_lo += xv[chunk_base + l];
+                sumx_hi += xv[chunk_base + l + 32];
+            }
+
+            block_sum += d1 * sum_lo - m1 * sumx_lo + d2 * sum_hi - m2 * sumx_hi;
+            u1 <<= 2;
+            u2 <<= 2;
         }
 
         sum += block_sum;
@@ -541,6 +667,7 @@ static void ensure_smem_config() {
     cudaFuncSetAttribute((const void*)gemv_q4_0_kernel, cudaFuncAttributeMaxDynamicSharedMemorySize, MAX_SMEM);
     cudaFuncSetAttribute((const void*)gemv_q8_0_kernel, cudaFuncAttributeMaxDynamicSharedMemorySize, MAX_SMEM);
     cudaFuncSetAttribute((const void*)gemv_q4_k_kernel<true>, cudaFuncAttributeMaxDynamicSharedMemorySize, MAX_SMEM);
+    cudaFuncSetAttribute((const void*)gemv_q5_k_kernel<true>, cudaFuncAttributeMaxDynamicSharedMemorySize, MAX_SMEM);
     cudaFuncSetAttribute((const void*)gemv_q6_k_kernel<true>, cudaFuncAttributeMaxDynamicSharedMemorySize, MAX_SMEM);
     cudaFuncSetAttribute((const void*)gemv_f16_kernel,  cudaFuncAttributeMaxDynamicSharedMemorySize, MAX_SMEM);
     cudaFuncSetAttribute((const void*)gemv_f32_kernel,  cudaFuncAttributeMaxDynamicSharedMemorySize, MAX_SMEM);
@@ -575,6 +702,13 @@ void launch_gemv(
                 gemv_q4_k_kernel<true><<<grid, block, smem, s>>>(y, W, x, out_features, in_features);
             } else {
                 gemv_q4_k_kernel<false><<<grid, block, 0, s>>>(y, W, x, out_features, in_features);
+            }
+            break;
+        case DType::Q5_K:
+            if (smem <= MAX_SMEM) {
+                gemv_q5_k_kernel<true><<<grid, block, smem, s>>>(y, W, x, out_features, in_features);
+            } else {
+                gemv_q5_k_kernel<false><<<grid, block, 0, s>>>(y, W, x, out_features, in_features);
             }
             break;
         case DType::Q6_K:

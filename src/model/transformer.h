@@ -47,6 +47,10 @@ public:
     // Returns pointer to GPU buffer of [seq_len * vocab_size] floats
     float* forward_verify(const int* tokens, int seq_len, int start_pos);
 
+    // Draft forward: only VRAM-resident layers + LM head (for self-speculative)
+    // Produces approximate logits using only tier A layers (no streaming)
+    float* forward_draft(const int* tokens, int seq_len, int start_pos);
+
     const ModelConfig& config() const { return config_; }
     const GGUFVocab& vocab() const { return loader_.vocab(); }
 
@@ -54,6 +58,7 @@ public:
     float* logits_ptr() { return logits_; }
 
     bool is_streaming() const { return streaming_mode_; }
+    const TierConfig& tier_config() const { return streamer_.tier_config(); }
 
     // Early exit: skip remaining layers when hidden state converges
     void set_early_exit(float threshold);
@@ -118,6 +123,9 @@ private:
 
     // Tiered forward pass (hybrid VRAM-resident + streaming)
     float* forward_tiered(const int* tokens, int seq_len, int start_pos);
+
+    // Draft-only forward (VRAM layers only, for self-speculative)
+    float* forward_draft_tiered(const int* tokens, int seq_len, int start_pos);
 
     // Internal
     void allocate_buffers();
