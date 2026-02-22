@@ -68,6 +68,46 @@ cmake --build . -j
 ./ntransformer -m /path/to/model.gguf --benchmark -n 64
 ```
 
+## Benchmarking
+
+The `scripts/benchmark.sh` script automates multi-config comparison:
+
+```bash
+# Basic: test resident and streaming modes
+./scripts/benchmark.sh /path/to/model.gguf
+
+# Specify token count and configs
+./scripts/benchmark.sh /path/to/model.gguf -n 64 --resident --streaming
+
+# Test specific pipeline buffer counts (useful for Gen5 systems)
+./scripts/benchmark.sh /path/to/model.gguf --streaming --n-buffers "2 3"
+
+# Evict Ollama before each run (important on shared GPU systems)
+./scripts/benchmark.sh /path/to/model.gguf --evict-ollama
+
+# Save results to JSON
+./scripts/benchmark.sh /path/to/model.gguf --output results.json
+
+# Full example
+./scripts/benchmark.sh /path/to/70b.Q6_K.gguf \
+    -n 32 --streaming --n-buffers "2 3" \
+    --evict-ollama --output bench_70b.json
+```
+
+### Flags
+| Flag | Default | Description |
+|------|---------|-------------|
+| `-n N` | 32 | Number of tokens to generate |
+| `--resident` | off | Test without streaming (all layers in VRAM) |
+| `--streaming` | off | Test with streaming (tiered caching) |
+| `--n-buffers NUMS` | — | Test specific pipeline depths (quoted, e.g. `"2 3"`) |
+| `--evict-ollama` | off | Evict Ollama models before each run (frees GPU memory) |
+| `--output FILE` | — | Write JSON results to FILE |
+| `--prompt TEXT` | see default | Prompt to use for benchmarking |
+
+> **Note:** `--evict-ollama` is important on systems where Ollama shares the GPU. Without
+> it, Ollama's cached models may inflate VRAM usage and reduce available VRAM for tiers.
+
 ## System Setup
 
 Running ntransformer with NVMe direct I/O requires system-level modifications. An automated setup script handles all of them:
