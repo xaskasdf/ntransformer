@@ -1,116 +1,116 @@
 # gpu-nvme-direct Integration for ntransformer
 
-## Resumen
+## Summary
 
-Integrar **gpu-nvme-direct** como backend de I/O en ntransformer, eliminando
-el CPU del data path de streaming de layers.
+Integrate **gpu-nvme-direct** as an I/O backend in ntransformer, removing
+the CPU from the layer streaming data path.
 
-**Proyecto gpu-nvme-direct**: `../gpu-nvme-direct`
-**Estado**: Layer Loader API lista (`gpunvme_layer_loader_init` / `gpunvme_load_layer` / `gpunvme_layer_loader_destroy`).
-GPU lee 8.6GB @ 3.35 GB/s desde SN740 (PCIe 4.0) via MMIO doorbells, sin intervención del CPU.
+**gpu-nvme-direct project**: `../gpu-nvme-direct`
+**Status**: Layer Loader API ready (`gpunvme_layer_loader_init` / `gpunvme_load_layer` / `gpunvme_layer_loader_destroy`).
+GPU reads 8.6GB @ 3.35 GB/s from SN740 (PCIe 4.0) via MMIO doorbells, without CPU intervention.
 
-### Pipeline actual (CPU bottleneck)
+### Current pipeline (CPU bottleneck)
 
 ```
 NVMe → page cache → mmap → CPU memcpy → staging → H2D DMA → GPU compute
                             (worker thread)   (pinned)    (PCIe)
 ```
 
-Resultado: ~0.02 tok/s en 70B Q6_K. El memcpy del worker thread es el cuello de botella.
+Result: ~0.02 tok/s on 70B Q6_K. The worker thread memcpy is the bottleneck.
 
-### Pipeline objetivo (GPU-autónomo)
+### Target pipeline (GPU-autonomous)
 
 ```
 GPU doorbell write → NVMe DMA → host pinned buffer → GPU compute
-  (MMIO a BAR0)      (autónomo)   (sin CPU memcpy)    (lee directo)
+  (MMIO to BAR0)     (autonomous)  (no CPU memcpy)    (reads directly)
 ```
 
-**Nota**: En Tier 1, los datos llegan a host pinned memory (no directamente a VRAM).
-El GPU lee desde pinned memory, lo cual es eficiente vía PCIe UVA.
+**Note**: In Tier 1, data arrives in host pinned memory (not directly to VRAM).
+The GPU reads from pinned memory, which is efficient via PCIe UVA.
 
 ---
 
-## Layer Loader API (nuevo)
+## Layer Loader API (new)
 
-El Layer Loader API encapsula todo el boilerplate de BAR0 mapping, controller init,
-PRP building y kernel launch en 3 llamadas:
+The Layer Loader API encapsulates all the BAR0 mapping, controller init,
+PRP building, and kernel launch boilerplate in 3 calls:
 
 ```c
 #include <gpunvme/layer_loader.h>
 
 gpunvme_layer_loader_t loader;
 
-// Init: abre BAR0, registra CUDA, init controller, crea I/O queue, pre-alloc PRP pool
+// Init: opens BAR0, registers CUDA, inits controller, creates I/O queue, pre-allocs PRP pool
 gpunvme_layer_loader_init(&loader, "0000:01:00.0", max_layer_bytes, /*pipeline_depth=*/32);
 
-// Load: rebuild PRPs para dest, lanza GPU kernel, sincroniza
+// Load: rebuilds PRPs for dest, launches GPU kernel, synchronizes
 gpunvme_load_layer(&loader, start_lba, size_bytes, dest_pinned);
 
-// Destroy: cleanup completo
+// Destroy: full cleanup
 gpunvme_layer_loader_destroy(&loader);
 ```
 
 **Helpers**:
-- `gpunvme_layer_loader_block_size(&loader)` — block size del NVMe (512)
-- `gpunvme_layer_loader_max_transfer(&loader)` — MDTS en bytes (1024K SN740, 512K SN530)
-- `gpunvme_layer_loader_ns_blocks(&loader)` — capacidad total del namespace
+- `gpunvme_layer_loader_block_size(&loader)` — NVMe block size (512)
+- `gpunvme_layer_loader_max_transfer(&loader)` — MDTS in bytes (1024K SN740, 512K SN530)
+- `gpunvme_layer_loader_ns_blocks(&loader)` — total namespace capacity
 
-**Queue state rueda naturalmente** entre llamadas a `gpunvme_load_layer()` — no hay
-reset, los CIDs, sq_tail, cq_head, phase bit continúan desde donde quedaron.
+**Queue state rolls naturally** between calls to `gpunvme_load_layer()` — there is
+no reset; CIDs, sq_tail, cq_head, and phase bit continue from where they left off.
 
-**Código fuente**:
+**Source code**:
 - Header: `gpu-nvme-direct/include/gpunvme/layer_loader.h`
 - Impl: `gpu-nvme-direct/src/host/layer_loader.cu`
 - Test: `gpu-nvme-direct/tests/test_layer_loader.cu`
 
 ---
 
-## Hardware requerido
+## Hardware requirements
 
-| Componente | Requerimiento |
+| Component | Requirement |
 |---|---|
-| GPU | NVIDIA con soporte cudaHostRegisterIoMemory (RTX 3090 probado) |
-| NVMe | Cualquier NVMe en VFIO (WD SN740 PCIe 4.0 x4 probado, SN530 Gen3 también) |
-| CPU | AMD Zen 3 probado (Intel debería funcionar, P2P reads también) |
-| OS | Linux (kernel 6.12+, necesita patch nvidia DKMS para follow_pfn) |
-| IOMMU | OFF (`amd_iommu=off` en GRUB) |
+| GPU | NVIDIA with cudaHostRegisterIoMemory support (RTX 3090 tested) |
+| NVMe | Any NVMe on VFIO (WD SN740 PCIe 4.0 x4 tested, SN530 Gen3 also) |
+| CPU | AMD Zen 3 tested (Intel should work, P2P reads too) |
+| OS | Linux (kernel 6.12+, needs nvidia DKMS patch for follow_pfn) |
+| IOMMU | OFF (`amd_iommu=off` in GRUB) |
 
 ---
 
-## Arquitectura de la integración
+## Integration architecture
 
-### Lo que NO cambia
+### What does NOT change
 
-- `forward_streaming()` en `transformer.cpp` — el pipeline loop se mantiene idéntico
-- `LayerWeightPtrs`, `get_weights()` — la GPU sigue leyendo pesos desde `gpu_buf_[slot]`
-- CUDA events, streams, double-buffering — toda la sincronización se mantiene
-- `GGUFLoader` — parsing de GGUF, metadata, vocab
+- `forward_streaming()` in `transformer.cpp` — the pipeline loop remains identical
+- `LayerWeightPtrs`, `get_weights()` — the GPU still reads weights from `gpu_buf_[slot]`
+- CUDA events, streams, double-buffering — all synchronization is preserved
+- `GGUFLoader` — GGUF parsing, metadata, vocab
 
-### Lo que cambia
+### What changes
 
-| Componente | Antes | Después |
+| Component | Before | After |
 |---|---|---|
-| **Datos source** | mmap del GGUF file | NVMe DMA directo via Layer Loader |
-| **CPU worker thread** | memcpy mmap→staging | **Eliminado** (GPU inicia reads) |
-| **staging_buf_[]** | 2 pinned buffers para memcpy | **Reutilizados** como destino DMA del NVMe |
-| **prefetch_staging()** | Queue work al worker thread | `gpunvme_load_layer()` directamente a staging |
-| **Dependencia nueva** | Solo CUDA | CUDA + libgpunvme_layer_loader + VFIO setup |
+| **Data source** | mmap of GGUF file | Direct NVMe DMA via Layer Loader |
+| **CPU worker thread** | memcpy mmap→staging | **Eliminated** (GPU initiates reads) |
+| **staging_buf_[]** | 2 pinned buffers for memcpy | **Reused** as NVMe DMA destination |
+| **prefetch_staging()** | Queue work to worker thread | `gpunvme_load_layer()` directly to staging |
+| **New dependency** | CUDA only | CUDA + libgpunvme_layer_loader + VFIO setup |
 
 ---
 
-## Cambios detallados por archivo
+## Detailed changes by file
 
 ### 1. `CMakeLists.txt` — Build system
 
 ```cmake
-# Agregar al inicio:
+# Add at the top:
 option(USE_GPUNVME "Enable gpu-nvme-direct backend for NVMe streaming" OFF)
 
 if(USE_GPUNVME)
     set(GPUNVME_DIR "${CMAKE_SOURCE_DIR}/../gpu-nvme-direct")
 
-    # Incluir la librería pre-compilada (build-hw debe existir)
-    # Opción A: Link contra las librerías estáticas pre-built
+    # Include the pre-compiled library (build-hw must exist)
+    # Option A: Link against pre-built static libraries
     add_library(gpunvme_layer_loader STATIC IMPORTED)
     set_target_properties(gpunvme_layer_loader PROPERTIES
         IMPORTED_LOCATION ${GPUNVME_DIR}/build-hw/libgpunvme_layer_loader.a)
@@ -130,15 +130,15 @@ if(USE_GPUNVME)
 endif()
 ```
 
-### 2. `src/memory/streamer.h` — Nuevos miembros
+### 2. `src/memory/streamer.h` — New members
 
 ```cpp
-// Agregar al inicio del archivo:
+// Add at the top of the file:
 #ifdef USE_GPUNVME
 #include <gpunvme/layer_loader.h>
 #endif
 
-// Agregar a la clase LayerStreamer (sección private):
+// Add to the LayerStreamer class (private section):
 #ifdef USE_GPUNVME
     gpunvme_layer_loader_t nvme_loader_ = {};
     bool nvme_initialized_ = false;
@@ -156,11 +156,11 @@ endif()
 
 ### 3. `src/memory/streamer.cu` — init / prefetch / shutdown
 
-#### 3a. `init()` — después de construir `layers_[]`
+#### 3a. `init()` — after building `layers_[]`
 
 ```cpp
 #ifdef USE_GPUNVME
-    // Leer parámetros NVMe de environment variables
+    // Read NVMe parameters from environment variables
     const char* nvme_bdf = getenv("GPUNVME_PCI_BDF");
     const char* nvme_lba_str = getenv("GPUNVME_GGUF_LBA");
 
@@ -196,7 +196,7 @@ endif()
 #endif
 ```
 
-#### 3b. `prefetch_staging()` — reemplazar body
+#### 3b. `prefetch_staging()` — replace body
 
 ```cpp
 void LayerStreamer::prefetch_staging(int layer_idx, int slot) {
@@ -229,7 +229,7 @@ void LayerStreamer::prefetch_staging(int layer_idx, int slot) {
 }
 ```
 
-#### 3c. `shutdown()` — agregar cleanup
+#### 3c. `shutdown()` — add cleanup
 
 ```cpp
 void LayerStreamer::shutdown() {
@@ -239,24 +239,24 @@ void LayerStreamer::shutdown() {
         nvme_initialized_ = false;
     }
 #endif
-    // ... resto del shutdown existente ...
+    // ... rest of existing shutdown ...
 }
 ```
 
-### 4. `src/model/loader.h` — Ya tiene los métodos necesarios
+### 4. `src/model/loader.h` — Already has the necessary methods
 
-Los métodos `tensor_file_offset()` y `file_data_offset()` ya están implementados
-(líneas 75-80). No se necesitan cambios adicionales.
+The methods `tensor_file_offset()` and `file_data_offset()` are already implemented
+(lines 75-80). No additional changes are needed.
 
 ---
 
-## Setup NVMe (después de cada reboot)
+## NVMe setup (after each reboot)
 
 ```bash
-# Un solo comando — carga VFIO, bind, power D0, Memory+BusMaster:
+# Single command — loads VFIO, binds, sets power D0, enables Memory+BusMaster:
 sudo ./scripts/setup_nvme.sh 0000:01:00.0
 
-# O manualmente:
+# Or manually:
 sudo modprobe vfio enable_unsafe_noiommu_mode=1
 sudo modprobe vfio-pci
 sudo bash ../gpu-nvme-direct/scripts/setup_vfio.sh 0000:01:00.0
@@ -265,30 +265,30 @@ sudo setpci -s 0000:01:00.0 0x84.W=0x0008
 sudo setpci -s 0000:01:00.0 COMMAND=0x0006
 ```
 
-### Copiar el GGUF al NVMe (una sola vez)
+### Copy the GGUF to the NVMe (one time only)
 
-El archivo GGUF debe estar en el NVMe crudo (sin filesystem), empezando en LBA 0:
+The GGUF file must be on the raw NVMe (no filesystem), starting at LBA 0:
 
 ```bash
-# ANTES de bind a VFIO (necesita driver NVMe nativo)
-# CUIDADO: esto destruye cualquier dato en el NVMe
+# BEFORE binding to VFIO (needs native NVMe driver)
+# WARNING: this destroys any data on the NVMe
 sudo dd if=/path/to/model.gguf of=/dev/nvme0n1 bs=1M oflag=direct status=progress
 
-# Verificar:
+# Verify:
 ls -la /path/to/model.gguf
-# 57,398,476,800 bytes → empieza en LBA 0
+# 57,398,476,800 bytes → starts at LBA 0
 ```
 
-**NOTA**: El NVMe usado para gpu-nvme-direct NO debe tener filesystem ni estar
-montado. Se accede como raw block device via VFIO.
+**NOTE**: The NVMe used for gpu-nvme-direct must NOT have a filesystem or be
+mounted. It is accessed as a raw block device via VFIO.
 
 ---
 
-## Guía de desarrollo y testing
+## Development and testing guide
 
-### Prerequisitos
+### Prerequisites
 
-1. **gpu-nvme-direct compilado** con hardware build:
+1. **gpu-nvme-direct compiled** with hardware build:
    ```bash
    cd ~/gpu-nvme-direct/build-hw
    cmake .. -DCMAKE_BUILD_TYPE=Release -DGPUNVME_USE_SIM=OFF \
@@ -298,37 +298,37 @@ montado. Se accede como raw block device via VFIO.
    cmake --build . -j$(nproc)
    ```
 
-2. **NVMe setup** (ver sección anterior)
+2. **NVMe setup** (see previous section)
 
-3. **Layer Loader test** pasando:
+3. **Layer Loader test** passing:
    ```bash
    cd ~/gpu-nvme-direct/build-hw
    sudo ./test_layer_loader 0000:01:00.0       # 4MB, 3/3 tests
    sudo ./test_layer_loader 0000:01:00.0 669   # full layer, 3/3 tests
    ```
 
-### Flujo de desarrollo incremental
+### Incremental development flow
 
-#### Paso 1: Verificar Layer Loader aislado
+#### Step 1: Verify Layer Loader in isolation
 
-Antes de tocar ntransformer, verificar que el Layer Loader funciona con el
-tamaño exacto de las layers del modelo objetivo:
+Before touching ntransformer, verify that the Layer Loader works with the
+exact layer sizes of the target model:
 
 ```bash
-# Tamaños típicos de layer (70B Llama):
-#   Q6_K: ~669 MB por layer (80 layers)
-#   Q8_0: ~875 MB por layer (80 layers)
+# Typical layer sizes (70B Llama):
+#   Q6_K: ~669 MB per layer (80 layers)
+#   Q8_0: ~875 MB per layer (80 layers)
 cd ~/gpu-nvme-direct/build-hw
 sudo ./test_layer_loader 0000:01:00.0 669   # Q6_K layer size
 sudo ./test_layer_loader 0000:01:00.0 875   # Q8_0 layer size
 ```
 
-Esperado: 3/3 tests pass, throughput ~3.3 GB/s (SN740) o ~2.1 GB/s (SN530).
+Expected: 3/3 tests pass, throughput ~3.3 GB/s (SN740) or ~2.1 GB/s (SN530).
 
-#### Paso 2: Standalone integration test
+#### Step 2: Standalone integration test
 
-Crear un test mínimo en ntransformer que usa el Layer Loader para leer una
-layer real del GGUF en el NVMe:
+Create a minimal test in ntransformer that uses the Layer Loader to read a
+real layer from the GGUF on the NVMe:
 
 ```cpp
 // tests/test_nvme_layer.cu
@@ -395,8 +395,8 @@ int main(int argc, char** argv) {
     const uint8_t* mmap_data = (const uint8_t*)loader.tensor_data("blk.0.attn_q.weight");
     const uint8_t* nvme_data = (const uint8_t*)buf;
 
-    // El offset dentro del bloque NVMe puede diferir del offset dentro del GGUF
-    // si layer0_offset no es múltiplo de block_size. Ajustar:
+    // The offset within the NVMe block may differ from the offset within the GGUF
+    // if layer0_offset is not a multiple of block_size. Adjust:
     size_t block_offset = layer0_offset % block_size;
 
     int mismatch = 0;
@@ -418,7 +418,7 @@ int main(int argc, char** argv) {
 }
 ```
 
-Compilar:
+Compile:
 ```bash
 cd ~/ntransformer/build
 cmake .. -DCMAKE_BUILD_TYPE=Release \
@@ -426,7 +426,7 @@ cmake .. -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_CUDA_COMPILER=/usr/local/cuda/bin/nvcc \
   -DCMAKE_CUDA_ARCHITECTURES=86
 
-# Compilar el test manualmente (antes de integrar al CMake):
+# Compile the test manually (before integrating into CMake):
 nvcc -std=c++20 -O2 --compiler-bindir=/usr/bin/gcc-14 -arch=sm_86 \
   -I ~/gpu-nvme-direct/include -I ~/ntransformer/src \
   tests/test_nvme_layer.cu ~/ntransformer/src/model/loader.cpp \
@@ -436,23 +436,23 @@ nvcc -std=c++20 -O2 --compiler-bindir=/usr/bin/gcc-14 -arch=sm_86 \
   -lgpunvme_layer_loader -lgpunvme_host -lgpunvme_device \
   -lcudart -lstdc++ -lm -o test_nvme_layer
 
-# Correr:
+# Run:
 sudo ./test_nvme_layer /path/to/model.gguf 0000:01:00.0
 ```
 
-#### Paso 3: Integrar en LayerStreamer
+#### Step 3: Integrate into LayerStreamer
 
-Una vez que el standalone test pasa:
-1. Agregar `USE_GPUNVME` al CMakeLists.txt (ver sección anterior)
-2. Agregar miembros NVMe a `streamer.h`
-3. Modificar `init()`, `prefetch_staging()`, `shutdown()`
-4. Compilar con `-DUSE_GPUNVME=ON`
+Once the standalone test passes:
+1. Add `USE_GPUNVME` to CMakeLists.txt (see previous section)
+2. Add NVMe members to `streamer.h`
+3. Modify `init()`, `prefetch_staging()`, `shutdown()`
+4. Compile with `-DUSE_GPUNVME=ON`
 
-#### Paso 4: Test end-to-end con ntransformer
+#### Step 4: End-to-end test with ntransformer
 
 ```bash
-# Asegurar GGUF está en el NVMe (ver sección de setup)
-# Build ntransformer con NVMe backend
+# Ensure GGUF is on the NVMe (see setup section)
+# Build ntransformer with NVMe backend
 cd ~/ntransformer/build
 cmake .. -DUSE_GPUNVME=ON \
   -DCMAKE_C_COMPILER=gcc-14 -DCMAKE_CXX_COMPILER=g++-14 \
@@ -460,54 +460,54 @@ cmake .. -DUSE_GPUNVME=ON \
   -DCMAKE_CUDA_ARCHITECTURES=86
 cmake --build . -j$(nproc)
 
-# Ejecutar benchmark con NVMe backend
+# Run benchmark with NVMe backend
 sudo GPUNVME_PCI_BDF=0000:01:00.0 GPUNVME_GGUF_LBA=0 \
      ./ntransformer -m /path/to/model.gguf --streaming --benchmark -n 8
 
-# Comparar con mmap backend (sin env vars)
+# Compare with mmap backend (without env vars)
 ./ntransformer -m /path/to/model.gguf --streaming --benchmark -n 8
 ```
 
-Verificar:
-- Mismo output (bit-identical tokens)
-- stderr muestra "LayerStreamer: NVMe backend OK"
-- stderr muestra throughput ~3.3 GB/s (SN740) por layer read
+Verify:
+- Same output (bit-identical tokens)
+- stderr shows "LayerStreamer: NVMe backend OK"
+- stderr shows throughput ~3.3 GB/s (SN740) per layer read
 
 ### Troubleshooting
 
-| Síntoma | Causa probable | Fix |
+| Symptom | Probable cause | Fix |
 |---------|---------------|-----|
-| `layer_loader: failed to open resource0` | VFIO no configurado | Correr setup NVMe |
-| `cudaHostRegisterIoMemory failed` | Driver nvidia no parcheado | Parchear os-mlock.c (ver gpu-nvme-direct docs) |
-| `controller init failed: timeout` | NVMe en D3 / link down | `setpci` commands + power/control |
-| `read failed: timeout` at cmd N | PRP list no page-aligned | Verificar que `dest_pinned` está page-aligned |
-| `NVMe init failed, fallback to mmap` | Cualquier error de init | Revisar stderr, correr test_layer_loader primero |
-| Data mismatch vs mmap | LBA offset mal calculado | Verificar `tensor_file_offset()` y block alignment |
-| `CSTS.CFS=1` | NVMe fatal error | Power cycle del NVMe (unplug/replug o reboot) |
+| `layer_loader: failed to open resource0` | VFIO not configured | Run NVMe setup |
+| `cudaHostRegisterIoMemory failed` | nvidia driver not patched | Patch os-mlock.c (see gpu-nvme-direct docs) |
+| `controller init failed: timeout` | NVMe in D3 / link down | `setpci` commands + power/control |
+| `read failed: timeout` at cmd N | PRP list not page-aligned | Verify that `dest_pinned` is page-aligned |
+| `NVMe init failed, fallback to mmap` | Any init error | Check stderr, run test_layer_loader first |
+| Data mismatch vs mmap | LBA offset miscalculated | Verify `tensor_file_offset()` and block alignment |
+| `CSTS.CFS=1` | NVMe fatal error | Power cycle the NVMe (unplug/replug or reboot) |
 
-### Consideraciones de alignment
+### Alignment considerations
 
-**GGUF tensor alignment**: Los tensors en GGUF están alineados a 32 bytes por
-defecto (GGUF v3). Esto NO coincide con el block size del NVMe (512B).
+**GGUF tensor alignment**: Tensors in GGUF are aligned to 32 bytes by
+default (GGUF v3). This does NOT match the NVMe block size (512B).
 
-Opciones:
-1. **Leer bloques completos**: start_lba = floor(byte_offset / 512), leer bytes
-   extra al inicio. El offset dentro del bloque se aplica al parsear los tensors.
-   Los staging_buf_[] ya son suficientemente grandes.
+Options:
+1. **Read full blocks**: start_lba = floor(byte_offset / 512), read extra
+   bytes at the beginning. The offset within the block is applied when parsing the tensors.
+   The staging_buf_[] are already large enough.
 
-2. **Alinear el GGUF a 512B**: Usar `gguf-split` o similar para forzar alignment
-   de tensors a 512 bytes. Esto simplifica el cálculo de LBAs.
+2. **Align the GGUF to 512B**: Use `gguf-split` or similar to force tensor
+   alignment to 512 bytes. This simplifies LBA calculation.
 
-La opción 1 es más simple y no requiere modificar el GGUF. El overhead de leer
-bytes extra es despreciable (<512B por layer).
+Option 1 is simpler and does not require modifying the GGUF. The overhead of reading
+extra bytes is negligible (<512B per layer).
 
 ### Performance profiling
 
-Para medir dónde se gasta el tiempo:
+To measure where time is spent:
 
 ```bash
-# 1. Solo NVMe read (sin compute)
-# El layer_loader imprime throughput en stderr:
+# 1. NVMe read only (no compute)
+# The layer_loader prints throughput to stderr:
 # "layer_loader: read 669000000 bytes (1306 cmds) in 315.2 ms — 2023.4 MB/s"
 
 # 2. nsight systems profile
@@ -515,67 +515,67 @@ sudo GPUNVME_PCI_BDF=0000:01:00.0 GPUNVME_GGUF_LBA=0 \
      nsys profile -o nvme_streaming \
      ./ntransformer -m /path/to/model.gguf --streaming --benchmark -n 4
 
-# 3. Verificar que compute overlap funciona
-# En nsys, los GEMV kernels deben solaparse con NVMe reads.
-# Si hay gaps entre layers → el NVMe read es el bottleneck puro.
+# 3. Verify that compute overlap works
+# In nsys, the GEMV kernels should overlap with NVMe reads.
+# If there are gaps between layers → NVMe read is the pure bottleneck.
 ```
 
 ---
 
-## Limitaciones conocidas
+## Known limitations
 
-1. **Linux only**: gpu-nvme-direct requiere VFIO, /proc/self/pagemap, etc.
-2. **Root requerido**: para VFIO bind y pagemap reads.
-3. **NVMe dedicado**: el NVMe no puede tener filesystem mientras se usa con VFIO.
-4. **AMD: solo writes**: GPU reads de NVMe BAR0 fallan en AMD (CmpltTO). Tier 1
-   solo necesita writes (doorbells), los datos llegan vía NVMe DMA a host memory.
-5. **Throughput**: 3.35 GB/s en SN740 (Gen4 via B550, downgraded 8GT/s). 2.1 GB/s en SN530 (Gen3).
-6. **gcc-14 requerido**: gcc-15 es incompatible con CUDA 13.1.
+1. **Linux only**: gpu-nvme-direct requires VFIO, /proc/self/pagemap, etc.
+2. **Root required**: for VFIO bind and pagemap reads.
+3. **Dedicated NVMe**: the NVMe cannot have a filesystem while used with VFIO.
+4. **AMD: writes only**: GPU reads from NVMe BAR0 fail on AMD (CmpltTO). Tier 1
+   only needs writes (doorbells); data arrives via NVMe DMA to host memory.
+5. **Throughput**: 3.35 GB/s on SN740 (Gen4 via B550, downgraded 8GT/s). 2.1 GB/s on SN530 (Gen3).
+6. **gcc-14 required**: gcc-15 is incompatible with CUDA 13.1.
 
 ---
 
-## Números de rendimiento medidos
+## Measured performance numbers
 
-| Métrica | Actual (mmap+memcpy) | gpu-nvme-direct (SN740) | gpu-nvme-direct (SN530) |
+| Metric | Current (mmap+memcpy) | gpu-nvme-direct (SN740) | gpu-nvme-direct (SN530) |
 |---|---|---|---|
-| I/O throughput | ~1.5-2 GB/s | **3.35 GB/s medido** | 2.1 GB/s medido |
+| I/O throughput | ~1.5-2 GB/s | **3.35 GB/s measured** | 2.1 GB/s measured |
 | 1 layer (669MB Q6_K) | ~400ms | **~200ms** | ~315ms |
 | 80 layers | ~32s | **~16s** | ~25s |
 | tok/s (70B Q6_K) | 0.03 | **0.06** | 0.04 |
-| CPU utilization | 100% (1 core memcpy) | ~0% (GPU autónomo) | ~0% |
+| CPU utilization | 100% (1 core memcpy) | ~0% (GPU autonomous) | ~0% |
 | 8.6GB sustained | — | **3350 MB/s** | — |
 
-**La ganancia principal NO es solo throughput** — es eliminar el CPU del data path.
-Esto libera cores del CPU para otros procesos y elimina el cuello de botella
-del worker thread sincrónico.
+**The main gain is NOT just throughput** — it is removing the CPU from the data path.
+This frees CPU cores for other processes and eliminates the synchronous
+worker thread bottleneck.
 
 ---
 
-## TODO (orden de implementación)
+## TODO (implementation order)
 
-### Fase 1: Integración básica (usa Layer Loader API)
-- [ ] Agregar `USE_GPUNVME` option a CMakeLists.txt
-- [ ] Agregar `gpunvme_layer_loader_t` a `LayerStreamer`
-- [ ] En `init()`: llamar `gpunvme_layer_loader_init()`, pre-compute per-layer LBAs
-- [ ] En `prefetch_staging()`: llamar `gpunvme_load_layer()` cuando NVMe disponible
-- [ ] En `shutdown()`: llamar `gpunvme_layer_loader_destroy()`
-- [ ] Standalone test: leer layer 0 del NVMe, comparar con mmap
-- [ ] End-to-end: `--streaming` con NVMe, verificar output idéntico
+### Phase 1: Basic integration (uses Layer Loader API)
+- [ ] Add `USE_GPUNVME` option to CMakeLists.txt
+- [ ] Add `gpunvme_layer_loader_t` to `LayerStreamer`
+- [ ] In `init()`: call `gpunvme_layer_loader_init()`, pre-compute per-layer LBAs
+- [ ] In `prefetch_staging()`: call `gpunvme_load_layer()` when NVMe is available
+- [ ] In `shutdown()`: call `gpunvme_layer_loader_destroy()`
+- [ ] Standalone test: read layer 0 from NVMe, compare with mmap
+- [ ] End-to-end: `--streaming` with NVMe, verify identical output
 
-### Fase 2: Optimización
-- [ ] Eliminar staging buffer: NVMe DMA → gpu_buf_[] directamente (los staging
-      buffers son host pinned, que es exactamente lo que necesita NVMe DMA)
-- [ ] Pre-compute PRP lists en init (evitar rebuild por layer)
-- [ ] Lanzar GPU kernel en transfer stream (no default stream) para overlap
+### Phase 2: Optimization
+- [ ] Eliminate staging buffer: NVMe DMA → gpu_buf_[] directly (the staging
+      buffers are host pinned, which is exactly what NVMe DMA needs)
+- [ ] Pre-compute PRP lists in init (avoid rebuilding per layer)
+- [ ] Launch GPU kernel in transfer stream (not default stream) for overlap
 
-### Fase 3: Eliminar dependencia de mmap
-- [ ] Modo NVMe puro: no necesitar abrir el GGUF file con mmap
-- [ ] Parsear GGUF header leyendo primeros bloques del NVMe
-- [ ] Solo necesitar BDF + start_lba + model config
+### Phase 3: Eliminate mmap dependency
+- [ ] Pure NVMe mode: no need to open the GGUF file with mmap
+- [ ] Parse GGUF header by reading first blocks from NVMe
+- [ ] Only need BDF + start_lba + model config
 
 ---
 
-## Diagrama de flujo: Layer streaming con gpu-nvme-direct
+## Flow diagram: Layer streaming with gpu-nvme-direct
 
 ```
 Token N forward pass:
@@ -587,6 +587,6 @@ NVMe DMA: [      DMA L1→staging1    ][DMA L2→staging0   ]...
 PCIe H2D: [stg0→gpu0  ][stg1→gpu1  ][stg0→gpu0  ]...
            └──prefill──┘
 
-Nota: En Fase 2, staging se elimina — NVMe DMA va directo a gpu_buf_[slot]
-      (que ya está en host pinned memory en Tier 1).
+Note: In Phase 2, staging is eliminated — NVMe DMA goes directly to gpu_buf_[slot]
+      (which is already in host pinned memory in Tier 1).
 ```
