@@ -183,8 +183,8 @@ void Transformer::load_streaming() {
     // Initialize the layer streamer (allocates double buffers)
     streamer_.init(loader_, config_);
 
-    fprintf(stderr, "Streaming setup complete. Buffer size: %.1f MB x 2\n",
-        streamer_.buffer_size() / (1024.0 * 1024.0));
+    fprintf(stderr, "Streaming setup complete. Buffer size: %.1f MB x %d\n",
+        streamer_.buffer_size() / (1024.0 * 1024.0), streamer_.pipeline_depth());
 }
 
 // ============================================================
@@ -279,8 +279,8 @@ void Transformer::load_tiered() {
         }
     }
 
-    fprintf(stderr, "Tiered setup complete. Buffer size: %.1f MB x 2\n",
-        streamer_.buffer_size() / (1024.0 * 1024.0));
+    fprintf(stderr, "Tiered setup complete. Buffer size: %.1f MB x %d\n",
+        streamer_.buffer_size() / (1024.0 * 1024.0), streamer_.pipeline_depth());
 }
 
 void Transformer::load_layer(int i) {
@@ -706,35 +706,33 @@ float* Transformer::forward_streaming(const int* tokens, int seq_len, int start_
     int max_seq = config_.max_seq_len;
     size_t kv_layer_stride = (size_t)max_seq * n_kv * hd;
 
-    // Pre-fill: kick worker to fill staging[0] with layer 0
+    // N-buffer pipeline priming: start H2D for slot 0, then pre-fill
+    // staging for slots 1 .. n_slots-1 so they are ready by the time
+    // the main loop needs to begin_h2d() them.
+    const int n_slots = streamer_.pipeline_depth();
     streamer_.prefetch_staging(0, 0);
-
-    // Wait for staging ready, then queue H2D for layer 0
     streamer_.begin_h2d(0, 0);
-
-    // Start worker on layer 1 immediately (overlaps with H2D of layer 0)
-    if (n_layers > 1) {
-        streamer_.prefetch_staging(1, 1);
+    for (int s = 1; s < std::min(n_slots, n_layers); s++) {
+        streamer_.prefetch_staging(s, s);
     }
 
     for (int i = 0; i < n_layers; i++) {
-        int slot = i % 2;
-        int next_slot = 1 - slot;
+        int slot      = i % n_slots;
+        int next_slot = (i + 1) % n_slots;
 
         // Wait for current layer's H2D to complete
         streamer_.wait_transfer(slot);
 
-        // Issue H2D for layer i+1 (staging should be ready or nearly ready)
+        // Issue H2D for layer i+1 into next_slot
         if (i + 1 < n_layers) {
             streamer_.begin_h2d(i + 1, next_slot);
         }
 
-        // Kick worker to prefetch layer i+2 into staging[slot]
-        // (staging[slot] is now free — its H2D read from staging is done
-        //  because we waited on wait_transfer(slot) above, which means
-        //  the DMA engine has finished reading from staging[slot])
-        if (i + 2 < n_layers) {
-            streamer_.prefetch_staging(i + 2, slot);
+        // Pre-fill staging for layer i+n_slots into this slot (now freed):
+        // The DMA engine finished reading staging[slot] when wait_transfer
+        // returned, so it is safe to overwrite with a future layer's data.
+        if (i + n_slots < n_layers) {
+            streamer_.prefetch_staging(i + n_slots, slot);
         }
 
         // === Compute layer i (overlaps with H2D for i+1 and memcpy for i+2) ===
@@ -834,12 +832,15 @@ float* Transformer::forward_tiered(const int* tokens, int seq_len, int start_pos
         stream_schedule.push_back(i);
     }
 
-    // 4. Kick off pipeline for first scheduled streamed layer
+    // 4. Prime N-slot pipeline for first batch of scheduled streamed layers.
+    //    Slot 0 gets H2D started immediately; slots 1..n_slots-1 get their
+    //    staging pre-filled so begin_h2d() can start without waiting.
+    const int n_slots = streamer_.pipeline_depth();
     if (!stream_schedule.empty()) {
         streamer_.prefetch_staging(stream_schedule[0], 0);
         streamer_.begin_h2d(stream_schedule[0], 0);
-        if (stream_schedule.size() > 1) {
-            streamer_.prefetch_staging(stream_schedule[1], 1);
+        for (int s = 1; s < std::min(n_slots, (int)stream_schedule.size()); s++) {
+            streamer_.prefetch_staging(stream_schedule[s], s);
         }
     }
 
@@ -883,11 +884,14 @@ float* Transformer::forward_tiered(const int* tokens, int seq_len, int start_pos
         }
     }
 
-    // 5b. Process tier B/C layers from schedule (double-buffer pipeline)
+    // 5b. Process tier B/C layers from schedule (N-buffer pipeline).
+    //     slot      = si % n_slots  — GPU buffer for this layer
+    //     next_slot = (si+1) % n_slots — buffer for the next H2D transfer
+    //     prefetch look-ahead = n_slots layers ahead (fills the just-freed slot)
     for (size_t si = 0; si < stream_schedule.size(); si++) {
         int i = stream_schedule[si];
-        int slot = si % 2;
-        int next_slot = 1 - slot;
+        int slot      = (int)(si % (size_t)n_slots);
+        int next_slot = (int)((si + 1) % (size_t)n_slots);
 
         TransformerLayer& layer = layers_[i];
         int n = seq_len * hidden;
@@ -905,14 +909,16 @@ float* Transformer::forward_tiered(const int* tokens, int seq_len, int start_pos
         // Wait for current layer's H2D to complete
         streamer_.wait_transfer(slot);
 
-        // Issue H2D for next scheduled layer
+        // Issue H2D for next scheduled layer into next_slot
         if (si + 1 < stream_schedule.size()) {
             streamer_.begin_h2d(stream_schedule[si + 1], next_slot);
         }
 
-        // Prefetch layer si+2 into staging[slot]
-        if (si + 2 < stream_schedule.size()) {
-            streamer_.prefetch_staging(stream_schedule[si + 2], slot);
+        // Pre-fill staging for layer si+n_slots into this slot (now freed).
+        // With n_slots=2 this is the classic look-ahead of 2; with n_slots=3
+        // it looks 3 ahead, giving the worker 2 iterations to finish the copy.
+        if (si + (size_t)n_slots < stream_schedule.size()) {
+            streamer_.prefetch_staging(stream_schedule[si + (size_t)n_slots], slot);
         }
 
         // Set weights from double-buffer slot

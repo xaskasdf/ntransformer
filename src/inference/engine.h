@@ -63,6 +63,10 @@ public:
     void set_draft_k(int k) { draft_k_ = k; }
     void set_self_speculative(bool enable) { self_speculative_ = enable; }
 
+    // Set streaming pipeline buffer count (call before load).
+    // n=0 auto-detects from PCIe bandwidth; n>=2 overrides.
+    void set_pipeline_depth(int n) { model_.set_pipeline_depth(n); }
+
 private:
     Transformer model_;
     Tokenizer tokenizer_;

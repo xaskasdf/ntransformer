@@ -73,6 +73,10 @@ public:
     // Delta encoding: set .ntd file path (call before load)
     void set_delta_model(const std::string& path) { delta_model_path_ = path; }
 
+    // Set streaming pipeline buffer count (call before load).
+    // n=0 auto-detects from PCIe bandwidth; n>=2 overrides.
+    void set_pipeline_depth(int n) { streamer_.set_pipeline_depth(n); }
+
 private:
     ModelConfig config_;
     GGUFLoader loader_;
