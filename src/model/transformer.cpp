@@ -592,6 +592,37 @@ void Transformer::embed_tokens(const int* tokens, int seq_len, float* output, vo
             }
         }
         nt_cuda_memcpy_h2d(output, cpu_buf.data(), seq_len * hidden * sizeof(float));
+    } else if (emb_dtype == DType::Q2_K) {
+        // Q2_K embedding: 256 weights per super-block (84 bytes)
+        // scales[16]: lower nibble = scale, upper nibble = min (per 16-weight sub-block)
+        // qs[64]: packed 2-bit values, 4 per byte (256 weights total)
+        // Dequant: w = d * (scales[sb] & 0xF) * q - dmin * (scales[sb] >> 4)
+        const uint8_t* raw = static_cast<const uint8_t*>(emb_data);
+        int blocks_per_row = hidden / 256;
+        size_t row_bytes = (size_t)blocks_per_row * sizeof(BlockQ2_K);
+
+        std::vector<float> cpu_buf(seq_len * hidden);
+        for (int t = 0; t < seq_len; t++) {
+            const uint8_t* row_ptr = raw + (size_t)tokens[t] * row_bytes;
+            float* out = cpu_buf.data() + t * hidden;
+
+            for (int b = 0; b < blocks_per_row; b++) {
+                const BlockQ2_K* block = reinterpret_cast<const BlockQ2_K*>(row_ptr + b * sizeof(BlockQ2_K));
+
+                float d    = fp16_to_fp32(block->d);
+                float dmin = fp16_to_fp32(block->dmin);
+                float* y   = out + b * 256;
+
+                for (int i = 0; i < 256; i++) {
+                    int sb   = i / 16;                               // sub-block index (0–15)
+                    int q    = (block->qs[i / 4] >> ((i % 4) * 2)) & 0x3;
+                    float sc = (float)(block->scales[sb] & 0x0F);   // scale nibble
+                    float m  = (float)(block->scales[sb] >> 4);     // min nibble
+                    y[i] = d * sc * (float)q - dmin * m;
+                }
+            }
+        }
+        nt_cuda_memcpy_h2d(output, cpu_buf.data(), seq_len * hidden * sizeof(float));
     } else {
         fprintf(stderr, "Error: Unsupported embedding dtype: %s\n", dtype_name(emb_dtype));
         nt_cuda_memset(output, 0, seq_len * hidden * sizeof(float));
