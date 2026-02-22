@@ -47,6 +47,20 @@ public:
     // Set workspace pointer
     void set_workspace(float* ptr) { workspace_ = ptr; }
 
+    // Delta encoding: set permanent base weights (VRAM, called once at init)
+    void set_base_weights(const void* base_q, const void* base_k,
+                          const void* base_v, const void* base_o,
+                          DType base_dtype);
+
+    // Delta encoding: set per-layer delta (called per streaming iteration)
+    void set_delta(const void* uq, const void* vq,
+                   const void* uk, const void* vk,
+                   const void* uv, const void* vv,
+                   const void* uo, const void* vo,
+                   int rank, float* temp_buf);
+
+    bool is_delta_mode() const { return delta_mode_; }
+
 private:
     // Quantized weight tensors on GPU
     Tensor wq_, wk_, wv_, wo_;
@@ -67,6 +81,20 @@ private:
 
     // Workspace pointer (allocated externally)
     float* workspace_ = nullptr;
+
+    // Delta encoding state
+    bool delta_mode_ = false;
+    int delta_rank_ = 0;
+    const void* base_wq_ = nullptr;
+    const void* base_wk_ = nullptr;
+    const void* base_wv_ = nullptr;
+    const void* base_wo_ = nullptr;
+    DType base_dtype_ = DType::Q6_K;
+    const void* delta_uq_ = nullptr; const void* delta_vq_ = nullptr;
+    const void* delta_uk_ = nullptr; const void* delta_vk_ = nullptr;
+    const void* delta_uv_ = nullptr; const void* delta_vv_ = nullptr;
+    const void* delta_uo_ = nullptr; const void* delta_vo_ = nullptr;
+    float* delta_temp_ = nullptr;
 };
 
 } // namespace nt

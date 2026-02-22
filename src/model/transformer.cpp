@@ -255,6 +255,30 @@ void Transformer::load_tiered() {
             wp.ffn_gate_dtype, wp.ffn_up_dtype, wp.ffn_down_dtype);
     }
 
+    // Delta encoding: init from .ntd file if path was set
+    if (!delta_model_path_.empty()) {
+        if (!streamer_.init_delta(delta_model_path_, config_)) {
+            fprintf(stderr, "WARNING: Delta init failed, falling back to normal streaming\n");
+        } else {
+            // Set base weights on all layers' attention/FFN (permanent VRAM pointers)
+            DType base_dt = DType::Q6_K;
+            for (int i = 0; i < config_.n_layers; i++) {
+                layers_[i].attention.set_base_weights(
+                    streamer_.base_weight_ptr(0),  // attn_q
+                    streamer_.base_weight_ptr(1),  // attn_k
+                    streamer_.base_weight_ptr(2),  // attn_v
+                    streamer_.base_weight_ptr(3),  // attn_o
+                    base_dt);
+                layers_[i].ffn.set_base_weights(
+                    streamer_.base_weight_ptr(4),  // ffn_gate
+                    streamer_.base_weight_ptr(5),  // ffn_up
+                    streamer_.base_weight_ptr(6),  // ffn_down
+                    base_dt);
+            }
+            fprintf(stderr, "Delta mode: base weights set on %d layers\n", config_.n_layers);
+        }
+    }
+
     fprintf(stderr, "Tiered setup complete. Buffer size: %.1f MB x 2\n",
         streamer_.buffer_size() / (1024.0 * 1024.0));
 }
@@ -892,14 +916,31 @@ float* Transformer::forward_tiered(const int* tokens, int seq_len, int start_pos
         }
 
         // Set weights from double-buffer slot
-        LayerWeightPtrs wp = streamer_.get_weights(slot);
+        if (streamer_.is_delta_mode()) {
+            // Delta mode: set U/V delta pointers (base already set during init)
+            DeltaWeightPtrs dp = streamer_.get_delta_weights(slot);
+            float* temp = streamer_.delta_temp_buf();
+            int rank = streamer_.delta_rank();
 
-        layer.attention.set_weights(
-            wp.attn_q, wp.attn_k, wp.attn_v, wp.attn_output,
-            wp.attn_q_dtype, wp.attn_k_dtype, wp.attn_v_dtype, wp.attn_o_dtype);
-        layer.ffn.set_weights(
-            wp.ffn_gate, wp.ffn_up, wp.ffn_down,
-            wp.ffn_gate_dtype, wp.ffn_up_dtype, wp.ffn_down_dtype);
+            layer.attention.set_delta(
+                dp.attn_q_U, dp.attn_q_V, dp.attn_k_U, dp.attn_k_V,
+                dp.attn_v_U, dp.attn_v_V, dp.attn_o_U, dp.attn_o_V,
+                rank, temp);
+            layer.ffn.set_delta(
+                dp.ffn_gate_U, dp.ffn_gate_V,
+                dp.ffn_up_U, dp.ffn_up_V,
+                dp.ffn_down_U, dp.ffn_down_V,
+                rank, temp);
+        } else {
+            LayerWeightPtrs wp = streamer_.get_weights(slot);
+
+            layer.attention.set_weights(
+                wp.attn_q, wp.attn_k, wp.attn_v, wp.attn_output,
+                wp.attn_q_dtype, wp.attn_k_dtype, wp.attn_v_dtype, wp.attn_o_dtype);
+            layer.ffn.set_weights(
+                wp.ffn_gate, wp.ffn_up, wp.ffn_down,
+                wp.ffn_gate_dtype, wp.ffn_up_dtype, wp.ffn_down_dtype);
+        }
 
         // Compute
         layer.attn_norm.forward(residual, hidden_state, seq_len, stream);

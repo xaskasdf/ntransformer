@@ -53,8 +53,33 @@ void Attention::init_streaming(const ModelConfig& config, int layer_idx) {
     layer_idx_        = layer_idx;
 }
 
+void Attention::set_base_weights(const void* base_q, const void* base_k,
+                                 const void* base_v, const void* base_o,
+                                 DType base_dtype) {
+    base_wq_ = base_q;
+    base_wk_ = base_k;
+    base_wv_ = base_v;
+    base_wo_ = base_o;
+    base_dtype_ = base_dtype;
+}
+
+void Attention::set_delta(const void* uq, const void* vq,
+                          const void* uk, const void* vk,
+                          const void* uv, const void* vv,
+                          const void* uo, const void* vo,
+                          int rank, float* temp_buf) {
+    delta_mode_ = true;
+    delta_rank_ = rank;
+    delta_uq_ = uq; delta_vq_ = vq;
+    delta_uk_ = uk; delta_vk_ = vk;
+    delta_uv_ = uv; delta_vv_ = vv;
+    delta_uo_ = uo; delta_vo_ = vo;
+    delta_temp_ = temp_buf;
+}
+
 void Attention::set_weights(const void* wq, const void* wk, const void* wv, const void* wo,
                             DType wq_dt, DType wk_dt, DType wv_dt, DType wo_dt) {
+    delta_mode_ = false;  // Explicit weights disable delta mode
     wq_dtype_ = wq_dt;
     wk_dtype_ = wk_dt;
     wv_dtype_ = wv_dt;
@@ -67,6 +92,15 @@ void Attention::set_weights(const void* wq, const void* wk, const void* wv, cons
     wk_ = Tensor::from_ptr(const_cast<void*>(wk), {kv_dim, hidden_size_}, wk_dt, Device::CUDA);
     wv_ = Tensor::from_ptr(const_cast<void*>(wv), {kv_dim, hidden_size_}, wv_dt, Device::CUDA);
     wo_ = Tensor::from_ptr(const_cast<void*>(wo), {hidden_size_, q_dim}, wo_dt, Device::CUDA);
+}
+
+// Delta GEMV: y = Base*x + U*(V^T*x)
+static void delta_gemv(float* y, const void* base_W, DType base_dt,
+                       const void* U, const void* V, float* temp_r,
+                       const float* x, int out, int in, int rank, void* stream) {
+    cuda::launch_gemv(y, base_W, x, out, in, base_dt, stream);             // y = Base*x
+    cuda::launch_gemv(temp_r, V, x, rank, in, DType::F16, stream);         // temp = V^T*x
+    cuda::launch_gemv_add(y, U, temp_r, out, rank, DType::F16, stream);    // y += U*temp
 }
 
 size_t Attention::workspace_size(int seq_len) const {
@@ -104,18 +138,27 @@ void Attention::forward(
     // Project Q, K, V
     // For single token decode, these are GEMV operations
     // For prefill, they'd be GEMM (we use GEMV per-token for now)
+    int q_dim = n_heads_ * head_dim_;
+    int kv_dim = n_kv_heads_ * head_dim_;
+
     for (int t = 0; t < seq_len; t++) {
         const float* inp = input + t * hidden_size_;
-        float* q_out = q_buf + t * n_heads_ * head_dim_;
-        float* k_out = k_buf + t * n_kv_heads_ * head_dim_;
-        float* v_out = v_buf + t * n_kv_heads_ * head_dim_;
+        float* q_out = q_buf + t * q_dim;
+        float* k_out = k_buf + t * kv_dim;
+        float* v_out = v_buf + t * kv_dim;
 
-        cuda::launch_gemv(q_out, wq_.data(), inp,
-            n_heads_ * head_dim_, hidden_size_, wq_dtype_, stream);
-        cuda::launch_gemv(k_out, wk_.data(), inp,
-            n_kv_heads_ * head_dim_, hidden_size_, wk_dtype_, stream);
-        cuda::launch_gemv(v_out, wv_.data(), inp,
-            n_kv_heads_ * head_dim_, hidden_size_, wv_dtype_, stream);
+        if (delta_mode_) {
+            delta_gemv(q_out, base_wq_, base_dtype_, delta_uq_, delta_vq_,
+                       delta_temp_, inp, q_dim, hidden_size_, delta_rank_, stream);
+            delta_gemv(k_out, base_wk_, base_dtype_, delta_uk_, delta_vk_,
+                       delta_temp_, inp, kv_dim, hidden_size_, delta_rank_, stream);
+            delta_gemv(v_out, base_wv_, base_dtype_, delta_uv_, delta_vv_,
+                       delta_temp_, inp, kv_dim, hidden_size_, delta_rank_, stream);
+        } else {
+            cuda::launch_gemv(q_out, wq_.data(), inp, q_dim, hidden_size_, wq_dtype_, stream);
+            cuda::launch_gemv(k_out, wk_.data(), inp, kv_dim, hidden_size_, wk_dtype_, stream);
+            cuda::launch_gemv(v_out, wv_.data(), inp, kv_dim, hidden_size_, wv_dtype_, stream);
+        }
     }
 
     // Apply RoPE to Q and K
@@ -155,10 +198,15 @@ void Attention::forward(
 
     // Output projection: attn_out -> output via Wo
     for (int t = 0; t < seq_len; t++) {
-        float* a_out = attn_out + t * n_heads_ * head_dim_;
+        float* a_out = attn_out + t * q_dim;
         float* out = output + t * hidden_size_;
-        cuda::launch_gemv(out, wo_.data(), a_out,
-            hidden_size_, n_heads_ * head_dim_, wo_dtype_, stream);
+        if (delta_mode_) {
+            delta_gemv(out, base_wo_, base_dtype_, delta_uo_, delta_vo_,
+                       delta_temp_, a_out, hidden_size_, q_dim, delta_rank_, stream);
+        } else {
+            cuda::launch_gemv(out, wo_.data(), a_out,
+                hidden_size_, q_dim, wo_dtype_, stream);
+        }
     }
 }
 
