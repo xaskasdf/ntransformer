@@ -456,6 +456,14 @@ void LayerStreamer::init(const GGUFLoader& loader, const ModelConfig& config) {
                     nvme_layers_[i].tensors[t].read_offset = tensor_file_offs[t] - span_start;
                     nvme_layers_[i].tensors[t].gpu_offset = slots[t]->gpu_offset;
                     nvme_layers_[i].tensors[t].nbytes = slots[t]->nbytes;
+
+                    // Per-tensor LBA info (for BAR1 scatter reads)
+                    uint64_t t_file_start = (tensor_file_offs[t] / nvme_block_size_) * nvme_block_size_;
+                    uint64_t t_file_end = ((tensor_file_offs[t] + slots[t]->nbytes + nvme_block_size_ - 1)
+                                           / nvme_block_size_) * nvme_block_size_;
+                    nvme_layers_[i].tensors[t].start_lba = gguf_start_lba_ + t_file_start / nvme_block_size_;
+                    nvme_layers_[i].tensors[t].lba_aligned_bytes = t_file_end - t_file_start;
+                    nvme_layers_[i].tensors[t].lba_sub_offset = tensor_file_offs[t] - t_file_start;
                 }
             }
 
@@ -463,10 +471,41 @@ void LayerStreamer::init(const GGUFLoader& loader, const ModelConfig& config) {
                     gpunvme_layer_loader_max_transfer(&nvme_loader_) / 1024,
                     nvme_block_size_,
                     nvme_read_buf_size_ / (1024.0 * 1024));
+
+            // Try BAR1 direct VRAM mode
+            const char* gpu_bdf = getenv("GPUNVME_GPU_BDF");
+            if (!gpu_bdf) gpu_bdf = "0000:0a:00.0";  // default for our RTX 3090
+
+            gpunvme_err_t bar1_err = gpunvme_bar1_init(&nvme_loader_, gpu_bdf, 0x20000000ULL);
+            if (bar1_err == GPUNVME_OK) {
+                fprintf(stderr, "LayerStreamer: BAR1 init OK — Tier 2 NVMe→VRAM available\n");
+            } else {
+                fprintf(stderr, "LayerStreamer: BAR1 init failed (err=%d), using Tier 1 (NVMe→host)\n",
+                        bar1_err);
+            }
         }
 
         if (!nvme_initialized_ && err != GPUNVME_OK) {
             fprintf(stderr, "LayerStreamer: NVMe init failed (err=%d), fallback to mmap\n", err);
+        }
+    }
+
+    // If BAR1 available, resolve GPU buffer physical addresses
+    if (nvme_initialized_ && nvme_loader_.bar1_enabled) {
+        bool both_ok = true;
+        for (int s = 0; s < 2; s++) {
+            gpunvme_err_t r = gpunvme_bar1_resolve(&nvme_loader_, gpu_buf_[s], buf_size_, &bar1_phys_[s]);
+            if (r != GPUNVME_OK) {
+                fprintf(stderr, "LayerStreamer: BAR1 resolve failed for slot %d\n", s);
+                both_ok = false;
+                break;
+            }
+        }
+        if (both_ok) {
+            bar1_enabled_ = true;
+            fprintf(stderr, "LayerStreamer: BAR1 Tier 2 enabled — slot0=0x%llx slot1=0x%llx\n",
+                    (unsigned long long)bar1_phys_[0],
+                    (unsigned long long)bar1_phys_[1]);
         }
     }
 #endif
@@ -1121,7 +1160,54 @@ void LayerStreamer::prefetch_staging(int layer_idx, int slot) {
     if (nvme_initialized_) {
         const auto& nlay = nvme_layers_[layer_idx];
 
-        // Read the full file span into the NVMe read buffer
+        // Tier 2 (BAR1): NVMe DMA directly to VRAM — 7 scatter reads, no staging
+        if (bar1_enabled_) {
+            uint64_t buf_bar1 = bar1_phys_[slot];
+            bool all_ok = true;
+
+            for (int t = 0; t < 7; t++) {
+                const auto& tm = nlay.tensors[t];
+                if (tm.lba_sub_offset != 0) {
+                    // Tensor not LBA-aligned: read to temp host buf, then copy
+                    // (rare case — most GGUF tensors are well-aligned)
+                    gpunvme_err_t e = gpunvme_load_layer(
+                        &nvme_loader_, tm.start_lba, tm.lba_aligned_bytes, nvme_read_buf_);
+                    if (e == GPUNVME_OK) {
+                        cudaMemcpy(
+                            static_cast<uint8_t*>(gpu_buf_[slot]) + tm.gpu_offset,
+                            static_cast<uint8_t*>(nvme_read_buf_) + tm.lba_sub_offset,
+                            tm.nbytes, cudaMemcpyHostToDevice);
+                    } else {
+                        all_ok = false;
+                        break;
+                    }
+                } else {
+                    // Tensor is LBA-aligned: DMA directly to VRAM via BAR1
+                    uint64_t dest_phys = buf_bar1 + tm.gpu_offset;
+                    gpunvme_err_t e = gpunvme_load_layer_vram(
+                        &nvme_loader_, tm.start_lba, tm.nbytes, dest_phys);
+                    if (e != GPUNVME_OK) {
+                        all_ok = false;
+                        break;
+                    }
+                }
+            }
+
+            if (all_ok) {
+                // Data is already in VRAM — mark staging as ready (begin_h2d will skip H2D)
+                current_layer_[slot] = layer_idx;
+                {
+                    std::lock_guard<std::mutex> lock(worker_mutex_);
+                    staging_ready_[slot] = true;
+                }
+                staging_ready_cv_.notify_all();
+                return;
+            }
+            fprintf(stderr, "LayerStreamer: BAR1 read failed for layer %d, fallback to Tier 1\n",
+                    layer_idx);
+        }
+
+        // Tier 1: Read the full file span into host pinned, then scatter-copy
         gpunvme_err_t err = gpunvme_load_layer(
             &nvme_loader_, nlay.start_lba, nlay.read_bytes, nvme_read_buf_);
 
@@ -1170,6 +1256,16 @@ void LayerStreamer::begin_h2d(int layer_idx, int slot) {
         dev.record_event(transfer_done_[slot], xfer);
         return;
     }
+
+#ifdef USE_GPUNVME
+    // BAR1 Tier 2: data already in VRAM from prefetch_staging — skip H2D
+    if (bar1_enabled_ && current_layer_[slot] == layer_idx) {
+        auto& dev = CUDADevice::instance();
+        StreamType xfer = (slot == 0) ? STREAM_TRANSFER0 : STREAM_TRANSFER1;
+        dev.record_event(transfer_done_[slot], xfer);
+        return;
+    }
+#endif
 
     current_layer_[slot] = layer_idx;
 

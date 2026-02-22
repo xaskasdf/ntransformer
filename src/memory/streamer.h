@@ -247,6 +247,9 @@ private:
         size_t read_offset;     // offset within NVMe read buffer
         size_t gpu_offset;      // offset within staging/GPU buffer
         size_t nbytes;
+        uint64_t start_lba;     // per-tensor start LBA (for BAR1 scatter reads)
+        size_t   lba_aligned_bytes; // LBA-aligned read size for this tensor
+        size_t   lba_sub_offset;    // sub-LBA offset within first block
     };
     struct NvmeLayerInfo {
         uint64_t start_lba;     // first LBA of this layer's file span
@@ -258,6 +261,10 @@ private:
     uint32_t nvme_block_size_ = 512;
     void* nvme_read_buf_ = nullptr;
     size_t nvme_read_buf_size_ = 0;
+
+    // BAR1 direct VRAM mode (Tier 2)
+    bool bar1_enabled_ = false;
+    uint64_t bar1_phys_[2] = {};     // BAR1 physical addr of gpu_buf_[0], gpu_buf_[1]
 #endif
 };
 

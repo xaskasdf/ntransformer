@@ -233,36 +233,43 @@ the ~5µs launch overhead. The CPU pipeline is never the bottleneck.
 ---
 
 ### OPT-8: NVMe Direct-to-VRAM DMA (Tier 2 P2P)
-**Status**: TESTED — NOT VIABLE on GeForce RTX 3090
+**Status**: IMPLEMENTED — WORKING via BAR1 bypass
 **Expected**: 34% faster tier C reads (NVMe → VRAM, bypass staging)
-**Measured**: nvidia_p2p_get_pages() returns -EINVAL (blocked by RM/GSP firmware)
+**Measured standalone**: 669 MB at 4.2 GB/s via BAR1 (27% faster than Tier 1's 3.3 GB/s)
+**Measured pipeline**: 0.05 tok/s (comparable to Tier 1's 0.06 tok/s — H2D was already overlapped)
 
-GPU posted writes to NVMe BAR0 work (proven). NVMe DMA is also a posted
-write. Theory: NVMe can DMA directly to GPU VRAM via AMD data fabric.
+NVMe DMA directly to GPU VRAM through BAR1 physical addresses, bypassing
+`nvidia_p2p_get_pages()` entirely via static BAR1 mapping.
 
 ```
-Current tier C: NVMe → staging (200ms) + H2D (103ms) = 303ms
-Tier 2:         NVMe → VRAM directly = 200ms (34% less)
+Tier 1: NVMe → host pinned (200ms) + H2D (100ms, overlapped) = 200ms/layer
+Tier 2: NVMe → BAR1 → VRAM (200ms, skip H2D)               = 200ms/layer
 ```
 
-**What was done:**
-1. Built gpunvme.ko kernel module with nvidia P2P support (HAVE_NV_P2P_H)
-2. Patched nvidia DKMS: MODULE_LICENSE("Dual MIT/GPL") + EXPORT_SYMBOL_GPL for P2P
-3. Updated initramfs to load patched nvidia.ko (license taint resolved)
-4. gpunvme.ko loaded, /dev/gpunvme0 created, SN740 BAR0 mapped successfully
-5. nvidia_p2p_get_pages(0, 0, gpu_vaddr, 64K, ...) → **-EINVAL**
+**How it works:**
+1. Load nvidia open kernel modules with `NVreg_RegistryDwords="RMForceStaticBar1=1"`
+2. Static BAR1 maps entire 24GB VRAM 1:1 at BAR1+0x20000000
+3. `gpunvme_bar1_init()`: read GPU BAR1 physical base from PCI sysfs
+4. `gpunvme_bar1_resolve()`: write CUDA pattern, stride-scan BAR1 to find VRAM offset
+5. `gpunvme_load_layer_vram()`: build PRP entries with BAR1 physical addresses
+6. NVMe controller DMAs data directly into VRAM — no staging, no H2D copy
 
-**Root cause**: The P2P check is inside rm_p2p_get_pages() in the RM/GSP
-firmware layer (closed-source even in "open" kernel modules). GeForce GPUs
-are blocked at the firmware level — not patchable without GSP reverse engineering.
+**Previous attempt (failed):**
+`nvidia_p2p_get_pages()` returns -EINVAL — blocked by RM/GSP firmware on GeForce.
+The BAR1 bypass makes this API unnecessary.
 
-**What still works (Tier 1)**: GPU doorbell writes + CQ polling via host pinned.
-NVMe DMA to host pinned memory at 3.35 GB/s. No CPU in the data path.
-GPU reads from host pinned at PCIe bandwidth (~6.5 GB/s Gen3 x8).
+**Why pipeline performance is comparable:**
+In the double-buffer pipeline, H2D copy (~100ms) was already fully hidden behind
+the NVMe read (~200ms) of the next layer. Eliminating H2D doesn't reduce total
+time because NVMe bandwidth (3.3 GB/s) is the bottleneck, not H2D (6.5 GB/s).
 
-**Verdict**: Tier 2 requires Tesla/A-series/H-series GPUs. For GeForce RTX 3090,
-Tier 1 is the ceiling. The real ntransformer gain is integrating gpu-nvme-direct
-Tier 1 to eliminate CPU mmap+memcpy, not DMA-to-VRAM.
+**When Tier 2 helps:** On B550+ with Gen4 NVMe (~7 GB/s), NVMe would exceed
+H2D bandwidth. Tier 2 bypasses the H2D bottleneck entirely in that scenario.
+
+**Test results:**
+- test_bar1_dma: 4/4 tests pass (init, resolve, DMA-to-VRAM, byte-for-byte verify vs Tier 1)
+- ntransformer 70B Q6_K (20V+30R+30NVMe): output="Paris" (correct), 0.05 tok/s
+- NVMe throughput: 3.3 GB/s sustained (all 7 scatter reads per layer)
 
 ---
 
@@ -275,7 +282,7 @@ Tier 1 to eliminate CPU mmap+memcpy, not DMA-to-VRAM.
 5. **OPT-5** (Compressed transfer) — 2 hours, quality tradeoff
 6. **OPT-2** (Speculative decoding) — 4 hours, biggest potential gain
 7. **OPT-7** (CUDA Graphs) — 1 hour, polish
-8. **OPT-8** (NVMe P2P) — TESTED, NOT VIABLE on GeForce (RM/GSP block)
+8. **OPT-8** (NVMe P2P) — IMPLEMENTED via BAR1 bypass (27% faster standalone, pipeline-comparable)
 
 ## Combined Projected Performance
 
@@ -289,7 +296,8 @@ Baseline:                          0.18 tok/s
 + F16 KV cache:                    0.20 tok/s  (no speed change, saves 1.3 GB VRAM)
 
 + CUDA Graphs: NO EFFECT (launch overhead hidden by GPU compute)
-+ NVMe P2P (DMA-to-VRAM): NOT VIABLE (nvidia_p2p_get_pages blocked on GeForce)
++ NVMe P2P (BAR1 DMA-to-VRAM): WORKING — 4.2 GB/s standalone (27% over Tier 1)
+                                pipeline: 0.05 tok/s (H2D already overlapped)
 
 Best single optimization:          Layer skip 0.98 → 0.24 tok/s (33%)
 Best combination found:            Layer skip alone → 0.24 tok/s
@@ -298,6 +306,7 @@ Notes:
 - Speculative decoding and layer skipping are anti-synergistic on this hardware
 - The VRAM budget is the fundamental constraint: draft model steals tier A slots
 - With >32 GB VRAM (e.g., 4090 or A6000), speculative would benefit more
-- NVMe P2P requires Tesla/A-series/H-series GPUs (RM firmware blocks GeForce)
+- NVMe P2P via BAR1: working on GeForce RTX 3090 (bypasses nvidia_p2p_get_pages)
+- BAR1 Tier 2 benefit requires NVMe BW > H2D BW (Gen4 NVMe on B550+)
 - CUDA Graphs don't help because CPU queues kernels 8x faster than GPU executes
 ```
