@@ -32,7 +32,7 @@ void ModelConfig::from_gguf_metadata(
     intermediate_size = get_val<int>(kv, prefix + "feed_forward_length", intermediate_size);
     n_layers          = get_val<int>(kv, prefix + "block_count", n_layers);
     n_heads           = get_val<int>(kv, prefix + "attention.head_count", n_heads);
-    n_kv_heads        = get_val<int>(kv, prefix + "attention.head_count_kv", n_heads);
+    n_kv_heads        = get_val<int>(kv, prefix + "attention.head_count_kv", n_kv_heads);
     head_dim          = hidden_size / n_heads;
 
     // Context
