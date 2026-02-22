@@ -326,6 +326,76 @@ void test_gemv_q6_k() {
     fprintf(stderr, "  PASS\n");
 }
 
+void test_gemv_q2_k() {
+    fprintf(stderr, "test_gemv_q2_k...\n");
+
+    if (!CUDADevice::instance().init()) {
+        fprintf(stderr, "  SKIP (no GPU)\n");
+        return;
+    }
+
+    // W: [2, 256] Q2_K (1 super-block per row, 2 rows)
+    // BlockQ2_K layout: scales[16] + qs[64] + d(FP16) + dmin(FP16) = 84 bytes
+    int M = 2, K = 256;
+
+    BlockQ2_K blocks[2];
+    memset(blocks, 0, sizeof(blocks));
+
+    // Row 0: all weights = 1.0
+    // d=1.0, dmin=0.0, sc_val=1 (scales[s] low nibble), min_val=0 (high nibble)
+    // q=1 for all weights: qs byte = 0x55 (bit pairs: 01 01 01 01)
+    // w = d * sc_val * q - dmin * min_val = 1.0 * 1 * 1 - 0.0 * 0 = 1.0
+    // x=1.0 → sum = 256 * 1.0 = 256.0
+    {
+        blocks[0].d    = float_to_half(1.0f);
+        blocks[0].dmin = float_to_half(0.0f);
+        for (int s = 0; s < 16; s++) blocks[0].scales[s] = 0x01;  // sc=1, min=0
+        for (int i = 0; i < 64; i++) blocks[0].qs[i] = 0x55;      // q=1 for all 4 weights per byte
+    }
+
+    // Row 1: all weights = -3.0
+    // d=1.0, dmin=1.0, sc_val=2 (scales[s] low nibble), min_val=3 (high nibble)
+    // q=0 for all weights: qs byte = 0x00
+    // w = d * sc_val * q - dmin * min_val = 1.0 * 2 * 0 - 1.0 * 3 = -3.0
+    // x=1.0 → sum = 256 * (-3.0) = -768.0
+    {
+        blocks[1].d    = float_to_half(1.0f);
+        blocks[1].dmin = float_to_half(1.0f);
+        for (int s = 0; s < 16; s++) blocks[1].scales[s] = 0x32;  // sc=2 (low nibble), min=3 (high nibble)
+        for (int i = 0; i < 64; i++) blocks[1].qs[i] = 0x00;      // q=0 for all weights
+    }
+
+    std::vector<float> x_cpu(K, 1.0f);
+    float expected[] = {256.0f, -768.0f};
+
+    void* w_ptr = nt_cuda_malloc(sizeof(blocks));
+    nt_cuda_memcpy_h2d(w_ptr, blocks, sizeof(blocks));
+
+    auto x_gpu = Tensor::empty({K}, DType::F32, Device::CUDA);
+    auto y_gpu = Tensor::zeros({M}, DType::F32, Device::CUDA);
+    nt_cuda_memcpy_h2d(x_gpu.data(), x_cpu.data(), K * sizeof(float));
+
+    void* stream = CUDADevice::instance().stream(STREAM_COMPUTE);
+    cuda::launch_gemv(y_gpu.data_as<float>(), w_ptr, x_gpu.data_as<float>(),
+        M, K, DType::Q2_K, stream);
+    CUDADevice::instance().synchronize_stream(STREAM_COMPUTE);
+
+    float y_result[2];
+    nt_cuda_memcpy_d2h(y_result, y_gpu.data(), sizeof(y_result));
+
+    for (int i = 0; i < M; i++) {
+        fprintf(stderr, "  y[%d] = %f (expected %f)\n", i, y_result[i], expected[i]);
+        if (!approx_eq(y_result[i], expected[i], 0.5f)) {
+            fprintf(stderr, "  FAIL\n");
+            nt_cuda_free(w_ptr);
+            return;
+        }
+    }
+
+    nt_cuda_free(w_ptr);
+    fprintf(stderr, "  PASS\n");
+}
+
 // Test Q6_K GEMV with large in_features (forces USE_SMEM=false path)
 void test_gemv_q6_k_large() {
     fprintf(stderr, "test_gemv_q6_k_large (no-smem path)...\n");
@@ -401,6 +471,7 @@ int main() {
 
     test_gemv_f32();
     test_gemv_q4_0();
+    test_gemv_q2_k();
     test_gemv_q6_k();
     test_gemv_q6_k_large();
     test_silu_mul();

@@ -470,6 +470,108 @@ __global__ void gemv_q6_k_kernel(
 }
 
 // ----------------------------------------------------------
+// Q2_K GEMV: 256 weights per super-block, 2 bits per weight
+// GGML layout (per super-block):
+//   scales[16]: packed 4-bit sub-block scales (low nibble) and mins (high nibble)
+//   qs[64]:     2-bit quantized values, 4 weights per byte (256 weights total)
+//   d:          FP16 super-block scale (applied to scale nibbles)
+//   dmin:       FP16 super-block min delta (applied to min nibbles)
+//
+// 16 sub-blocks of 16 weights each:
+//   scale = (scales[s] & 0xF), min = (scales[s] >> 4)
+//   For weight i in sub-block s:
+//     byte_idx = (s*16 + i) / 4,  bit_pair = (s*16 + i) % 4
+//     q = (qs[byte_idx] >> (2 * bit_pair)) & 0x3   (0..3)
+//     w = d * scale * q  -  dmin * min
+// ----------------------------------------------------------
+template<bool USE_SMEM>
+__global__ void gemv_q2_k_kernel(
+    float* __restrict__ y,
+    const void* __restrict__ W,
+    const float* __restrict__ x,
+    int out_features,
+    int in_features
+) {
+    extern __shared__ float sx[];
+
+    const int tid = threadIdx.x;
+    const int warp_id = threadIdx.y;
+    const int flat_id = warp_id * 32 + tid;
+    const int nthreads = blockDim.y * 32;
+
+    if constexpr (USE_SMEM) {
+        for (int i = flat_id; i < in_features; i += nthreads) {
+            sx[i] = x[i];
+        }
+        __syncthreads();
+    }
+
+    const float* xv = USE_SMEM ? sx : x;
+
+    const int row = blockIdx.x * blockDim.y + warp_id;
+    if (row >= out_features) return;
+
+    const int num_blocks = in_features / 256;
+    const nt::BlockQ2_K* row_blocks = reinterpret_cast<const nt::BlockQ2_K*>(W) + row * num_blocks;
+
+    float sum = 0.0f;
+
+    for (int b = tid; b < num_blocks; b += 32) {
+        const nt::BlockQ2_K& blk = row_blocks[b];
+
+        float d    = __half2float(*reinterpret_cast<const half*>(&blk.d));
+        float dmin = __half2float(*reinterpret_cast<const half*>(&blk.dmin));
+
+        const int base = b * 256;
+
+        float block_sum = 0.0f;
+
+        // 16 sub-blocks, 16 weights each
+        #pragma unroll
+        for (int s = 0; s < 16; s++) {
+            uint8_t scale_byte = blk.scales[s];
+            float sc_val  = (float)(scale_byte & 0x0F);
+            float min_val = (float)((scale_byte >> 4) & 0x0F);
+
+            float d_sc   = d * sc_val;
+            float dmin_m = dmin * min_val;
+
+            // Sub-block s covers weights [s*16 .. s*16+15]
+            // Packed in qs: 4 weights per byte, starting at byte s*4
+            int ql_base = s * 4;
+
+            float sub_sum  = 0.0f;
+            float sumx     = 0.0f;
+
+            #pragma unroll
+            for (int w = 0; w < 16; w++) {
+                int input_idx = base + s * 16 + w;
+                int byte_idx  = ql_base + w / 4;
+                int bit_pair  = w % 4;
+                int q = (blk.qs[byte_idx] >> (2 * bit_pair)) & 0x3;
+
+                sub_sum += (float)q * xv[input_idx];
+                sumx    += xv[input_idx];
+            }
+
+            block_sum += d_sc * sub_sum - dmin_m * sumx;
+        }
+
+        sum += block_sum;
+    }
+
+    // Warp reduction
+    #pragma unroll
+    for (int offset = 16; offset > 0; offset >>= 1) {
+        sum += __shfl_xor_sync(0xFFFFFFFF, sum, offset);
+    }
+
+    if (tid == 0) {
+        y[row] = sum;
+    }
+}
+
+// ----------------------------------------------------------
 // F16 GEMV with accumulate: y += W * x (for delta encoding)
 // Same structure as gemv_f16_kernel but adds to existing y
 // ----------------------------------------------------------
@@ -739,6 +841,7 @@ static void ensure_smem_config() {
     cudaFuncSetAttribute((const void*)gemv_q4_k_kernel<true>, cudaFuncAttributeMaxDynamicSharedMemorySize, MAX_SMEM);
     cudaFuncSetAttribute((const void*)gemv_q5_k_kernel<true>, cudaFuncAttributeMaxDynamicSharedMemorySize, MAX_SMEM);
     cudaFuncSetAttribute((const void*)gemv_q6_k_kernel<true>, cudaFuncAttributeMaxDynamicSharedMemorySize, MAX_SMEM);
+    cudaFuncSetAttribute((const void*)gemv_q2_k_kernel<true>, cudaFuncAttributeMaxDynamicSharedMemorySize, MAX_SMEM);
     cudaFuncSetAttribute((const void*)gemv_f16_kernel,  cudaFuncAttributeMaxDynamicSharedMemorySize, MAX_SMEM);
     cudaFuncSetAttribute((const void*)gemv_f16_add_kernel, cudaFuncAttributeMaxDynamicSharedMemorySize, MAX_SMEM);
     cudaFuncSetAttribute((const void*)gemv_f32_kernel,  cudaFuncAttributeMaxDynamicSharedMemorySize, MAX_SMEM);
@@ -788,6 +891,13 @@ void launch_gemv(
             } else {
                 // FFN down projection on 70B+ models: in_features too large for shared memory
                 gemv_q6_k_kernel<false><<<grid, block, 0, s>>>(y, W, x, out_features, in_features);
+            }
+            break;
+        case DType::Q2_K:
+            if (smem <= MAX_SMEM) {
+                gemv_q2_k_kernel<true><<<grid, block, smem, s>>>(y, W, x, out_features, in_features);
+            } else {
+                gemv_q2_k_kernel<false><<<grid, block, 0, s>>>(y, W, x, out_features, in_features);
             }
             break;
         case DType::F16:

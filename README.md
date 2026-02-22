@@ -15,12 +15,14 @@ High-efficiency C++/CUDA LLM inference engine. Runs Llama 70B on a single RTX 30
 
 **3-tier adaptive caching** auto-sizes from hardware: VRAM-resident layers (zero I/O) + pinned RAM (H2D only) + NVMe/mmap fallback. Achieves **83x speedup** over mmap baseline for 70B on consumer hardware (RTX 3090 + 48 GB RAM).
 
+**Q2_K kernel** enables 70B models at ~2.6 bits/weight (~25 GB VRAM+RAM total), fitting 36+ layers resident in 24 GB VRAM.
+
 Bottleneck is PCIe H2D bandwidth at Gen3 x8 (~6.5 GB/s). Q4_K_M fits 10 more layers in VRAM (36 vs 26), reducing tier B transfers. Layer skip (cosine similarity calibration) eliminates 20/80 layers per token with minimal quality loss.
 
 ## Features
 
 - **Zero external dependencies** beyond CUDA Toolkit (no PyTorch, no cuBLAS)
-- **GGUF model format** with Q4_0, Q8_0, Q4_K_M, Q5_K, Q6_K, F16, F32 quantization
+- **GGUF model format** with Q2_K, Q4_0, Q8_0, Q4_K_M, Q5_K, Q6_K, F16, F32 quantization
 - **3-Tier Adaptive Caching**: auto-sized VRAM resident + pinned RAM + NVMe/mmap tiers
 - **SLEP streaming**: double-buffered layer pipeline overlaps NVMe reads, PCIe DMA, and GPU compute
 - **gpu-nvme-direct backend**: userspace NVMe driver reads model weights directly to pinned GPU-accessible memory
@@ -204,15 +206,16 @@ Tier sizes auto-computed from `cudaMemGetInfo()` + `/proc/meminfo` MemAvailable.
 
 ## Quantization Formats
 
-| Format | Bits/Weight | Block Size | Supported |
-|--------|------------|-----------|-----------|
-| Q4_0 | 4.5 | 32 | Yes |
-| Q8_0 | 8.5 | 32 | Yes |
-| Q4_K_M | 4.5 | 256 | Yes (mixed: Q4_K + Q5_K + Q6_K) |
-| Q5_K | 5.5 | 256 | Yes |
-| Q6_K | 6.6 | 256 | Yes |
-| F16 | 16 | 1 | Yes |
-| F32 | 32 | 1 | Yes |
+| Format | Bits/Weight | Block Size | Supported | Notes |
+|--------|------------|-----------|-----------|-------|
+| Q2_K | ~2.6 | 256 | Yes | Enables 70B at ~25 GB (VRAM+RAM) |
+| Q4_0 | 4.5 | 32 | Yes | |
+| Q8_0 | 8.5 | 32 | Yes | Near-lossless, fastest for small models |
+| Q4_K_M | 4.5 | 256 | Yes (mixed: Q4_K + Q5_K + Q6_K) | |
+| Q5_K | 5.5 | 256 | Yes | |
+| Q6_K | 6.6 | 256 | Yes | Q8-equivalent quality |
+| F16 | 16 | 1 | Yes | |
+| F32 | 32 | 1 | Yes | |
 
 ## Phase Roadmap
 

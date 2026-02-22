@@ -137,6 +137,21 @@ struct BlockQ6_K {
 };
 static_assert(sizeof(BlockQ6_K) == 210, "BlockQ6_K size mismatch");
 
+// Q2_K: 256 weights per super-block (2 bits per weight)
+// Layout: scales[16] + qs[64] + d(FP16) + dmin(FP16)
+// scales[i]: lower nibble = scale for sub-block i, upper nibble = min for sub-block i
+// qs[i]: packed 2-bit values, 4 per byte
+// d: FP16 super-block scale (applied to scale nibbles)
+// dmin: FP16 super-block min scale (applied to min nibbles)
+// Dequant: w = d * (scale_nibble * q) - dmin * min_nibble
+struct BlockQ2_K {
+    uint8_t  scales[16];  // 4-bit scales+mins: lower nibble=scale, upper nibble=min
+    uint8_t  qs[64];      // 2-bit quantized values, 4 per byte (256 weights total)
+    uint16_t d;           // FP16 super-block scale (for scale nibbles)
+    uint16_t dmin;        // FP16 super-block min delta (for min nibbles)
+};
+static_assert(sizeof(BlockQ2_K) == 84, "BlockQ2_K size mismatch");
+
 // ============================================================
 // Device enum
 // ============================================================
