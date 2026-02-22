@@ -40,6 +40,8 @@ while [[ $# -gt 0 ]]; do
             OUTPUT_FILE="$2"; shift 2 ;;
         --prompt)
             PROMPT="$2"; shift 2 ;;
+        --binary)
+            BINARY="$2"; shift 2 ;;
         -*)
             echo "Unknown option: $1" >&2; exit 1 ;;
         *)
