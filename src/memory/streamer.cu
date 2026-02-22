@@ -1533,13 +1533,18 @@ bar1_fallthrough:
             staging_ready_cv_.wait(lock, [&] { return staging_ready_[slot]; });
         }
 
-        // Single large async H2D from pinned staging to GPU.
-        // TODO(tma): on Hopper/Blackwell (sm_90+), replace with:
-        //   nt::tma::tma_h2d_async(gpu_base, staging_buf_[slot], total, stream)
-        //   nt::tma::tma_sync_wait(stream)
-        // This uses the hardware TMA DMA engine instead of warp-based copies,
-        // reducing warp occupancy pressure during the transfer window.
-        // See src/cuda/tma_copy.cuh for the stub implementation.
+        // Single large async H2D from pinned staging to GPU via the Copy Engine.
+        // cudaMemcpyAsync HostToDevice on pinned memory already uses the GPU's
+        // CE (Copy Engine) DMA unit — no SM warps consumed. This is the correct
+        // and optimal primitive for this transfer.
+        //
+        // Blackwell/Hopper opportunity: the D2D scatter in the BAR1 path above
+        // (gpunvme_load_layer_vram + per-tensor cudaMemcpyDeviceToDevice) does
+        // use SM warps and would benefit from in-kernel cp.async.bulk or warp
+        // specialization. See docs/BLACKWELL_OPTIMIZATIONS.md §3.
+        //
+        // The nt::tma::tma_h2d_async wrapper below is a no-op shim (it calls
+        // this same cudaMemcpyAsync). It exists as a call-site marker.
         size_t total = delta_mode_ ? delta_buf_size_ : layer_transfer_size(layer_idx);
         dev.memcpy_h2d_async(gpu_base, staging_buf_[slot], total, xfer);
     }

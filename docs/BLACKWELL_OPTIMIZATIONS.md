@@ -25,88 +25,130 @@ architecture-specific instruction scheduling.
 
 ---
 
-## 2. TMA Async Bulk Copy 🔧 (stub — implementation pending)
+## 2. In-Kernel cp.async.bulk for GEMV Input Vector 💡 (planned)
 
-**Branch:** `feat/tma-async-bulk-copy`
-**Stub:** `src/cuda/tma_copy.cuh`
-**Call site:** `src/memory/streamer.cu:begin_h2d()` (marked with `TODO(tma)`)
+**Branch:** `feat/tma-async-bulk-copy` (stub infrastructure only)
 
-### What is TMA?
+### What TMA (cp.async.bulk) actually is
 
-Blackwell and Hopper expose a **Tensor Memory Accelerator** (TMA), a hardware unit
-that handles bulk data movement between memory tiers independently of warp execution.
+Hopper (sm_90) and Blackwell (sm_120) introduce `cp.async.bulk` PTX instructions.
+These are **in-kernel** operations — a warp issues the instruction and continues
+executing while the hardware DMA unit completes the copy asynchronously:
 
-Standard `cudaMemcpyAsync` uses warp threads to drive the copy. Under the hood this
-means SM resources are occupied by the transfer — warps on the transfer stream are
-spinning or stalling on memory ops. TMA replaces this with:
-
-```
-cp.async.bulk.global.shared::cta.bulk_group [dst], [src], nbytes;
+```ptx
+cp.async.bulk.global.shared::cta.bulk_group [smem_dst], [gmem_src], nbytes;
 cp.async.bulk.commit_group;
-...
-cp.async.bulk.wait_group 0;   // wait for all pending TMA transfers
+// ... warp does other work ...
+cp.async.bulk.wait_group 0;   // wait for all pending bulk copies
+fence.proxy.async;
 ```
 
-These PTX instructions offload the copy to dedicated DMA hardware, freeing the warp
-to issue compute or retire.
+**Important:** `cp.async.bulk` is a kernel-side instruction (global → shared memory
+within a running kernel). It is **not** a replacement for CPU-initiated
+`cudaMemcpyAsync` H2D transfers.
 
-### Why it matters for streaming inference
+### What cudaMemcpyAsync already does
 
-The streaming pipeline spends most of its time (60-70%) on H2D transfers:
+`cudaMemcpyAsync(dev_dst, pinned_src, n, cudaMemcpyHostToDevice, stream)` uses the
+GPU's **Copy Engine (CE)** — a dedicated DMA unit separate from the SM array. No SM
+warps are consumed during pinned H2D transfers. `cudaMemcpyAsync` is already the
+correct and optimal primitive for the staging-buffer → GPU-buffer path in
+`LayerStreamer::begin_h2d()`.
 
+### Where cp.async.bulk can help: GEMV shared-memory prefetch
+
+In the GEMV kernels (`src/cuda/gemm.cu`), the `USE_SMEM=true` path loads the input
+vector `x[]` into shared memory with a scalar for loop:
+
+```cpp
+// Current: scalar loads, one element per thread per iteration
+for (int i = flat_id; i < in_features; i += nthreads) {
+    sx[i] = x[i];   // ld.global.ca + st.shared — warp stalls on each load
+}
+__syncthreads();
 ```
-Per-token timing (32B Q4_K_M, Gen5 x8 PCIe, 18 VRAM + 46 RAM layers):
-  Tier A (18 layers):  ~18 × 0.7ms = 12ms   (pure compute, VRAM resident)
-  Tier B (46 layers):  ~46 × 8.5ms = 391ms  (8ms H2D + 0.5ms compute)
-  Total: ~403ms → 2.5 tok/s theoretical ceiling
+
+On sm_90+, `cp.async.bulk` can submit the entire vector load as a single async
+operation, allowing warps to begin computing the first super-block's partial sum
+while the DMA unit fills the rest of shared memory:
+
+```ptx
+// Planned: bulk async load, warp continues immediately
+cp.async.bulk.global.shared::cta.bulk_group [sx], [x], in_features * 4;
+cp.async.bulk.commit_group;
+// compute partial sum for super-block 0 using warp-local x values
+// ...
+cp.async.bulk.wait_group 0;   // ensure all of sx[] is ready before full use
+fence.proxy.async;
 ```
 
-With TMA:
-- H2D warp stalls reduced → more overlap between transfer and compute
-- Estimated improvement: 15-25% throughput on Gen4/Gen5 x8
+**Estimated benefit:** 10-20% GEMV throughput improvement on sm_90+ for large
+`in_features` (e.g. 8192 for 70B hidden dim, 28672 for FFN projections).
 
-### Implementation plan
-
-1. Write the `cp.async.bulk` PTX wrapper in `src/cuda/tma_copy.cuh`
-   - Requires `__CUDA_ARCH__ >= 900` (Hopper) or `>= 1200` (Blackwell native)
-   - Use `cuda::ptx::cp_async_bulk` from CUDA 12.4+ CCCL if available
-2. Replace `dev.memcpy_h2d_async(...)` in `begin_h2d()` with `nt::tma::tma_h2d_async(...)`
-3. Replace `dev.record_event(transfer_done_[slot], xfer)` with `tma_sync_wait()` + event
-4. Ensure 128-byte alignment of `gpu_buf_[slot]` allocations (cudaMalloc guarantees 256-byte)
-5. Benchmark: compare `--n-buffers 2` and `--n-buffers 3` before and after
-
-### Current status
-
-Infrastructure is in place:
-- `src/cuda/tma_copy.cuh` — stub header with `tma_h2d_async()` and `tma_sync_wait()`
-  that fall back to `cudaMemcpyAsync` / `cudaStreamSynchronize`
-- `src/memory/streamer.cu:begin_h2d()` — marked with `TODO(tma)` at the copy site
-- `NTRANSFORMER_TMA_AVAILABLE` compile-time flag for conditional dispatch
-
-**The stub compiles and runs correctly on all hardware** — it just uses standard
-async copies. No performance change until the PTX wrapper is filled in.
-
-### References
-
-- CUDA PTX ISA: Tensor Memory Accelerator (TMA) instructions
-  https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#data-movement-and-conversion-instructions-cp-async-bulk
-- CUDA 12.4 CCCL `cuda::ptx::cp_async_bulk`:
-  https://nvidia.github.io/cccl/libcudacxx/extended_api/ptx.html
-- Hopper Architecture Whitepaper — TMA section
-  https://resources.nvidia.com/en-us-tensor-core
+**Implementation steps:**
+1. Add `cp.async.bulk` PTX wrapper in `src/cuda/gemm.cu` guarded by
+   `__CUDA_ARCH__ >= 900`
+2. Replace the scalar load loop in `gemv_q2_k_kernel`, `gemv_q4_k_kernel`, and
+   `gemv_q6_k_kernel` with the bulk async path
+3. Ensure alignment: `in_features * sizeof(float)` must be a multiple of 16 bytes
+   (guaranteed when `in_features` is a multiple of 4, which all supported models satisfy)
+4. Benchmark with and without `--streaming` on Llama 3.1 70B Q2_K
 
 ---
 
-## 3. Warp Specialization for GEMV 💡 (concept)
+## 3. D2D Scatter Optimization after BAR1 Bulk Read 💡 (planned)
 
-Blackwell's warp group instructions (`wgmma`) allow dedicated warp groups for
-transfer and compute. In the context of the streaming GEMV:
+**Context:** The BAR1 NVMe path (`gpunvme_load_layer_vram`) reads a full layer span
+into a VRAM temp buffer, then scatters 7 per-tensor chunks to their final GPU
+addresses via `cudaMemcpyAsync DeviceToDevice`:
 
-- **Transfer warps**: issue TMA bulk copies for the next layer's weights
-- **Compute warps**: execute GEMV on the current layer's weights
+```cpp
+// In worker_loop() after gpunvme_load_layer_vram:
+for (int t = 0; t < nlay.n_tensors; t++) {
+    cudaMemcpyAsync(gpu_dst[t], vram_temp + offset[t], nbytes[t],
+                    cudaMemcpyDeviceToDevice, stream);
+}
+```
 
-This eliminates the pipeline bubble between H2D and compute entirely. Currently
-the pipeline uses separate CUDA streams + CUDA events for serialization, which
-incurs ~5-15μs event overhead per layer on the critical path.
+`cudaMemcpyDeviceToDevice` for small tensors (2–256 MB) **does use SM warps** via
+the `__cudaMemcpy` kernel. For 7 tensors per layer × 80 layers = 560 small D2D
+copies per token, this adds measurable SM occupancy pressure.
 
-**Status:** Concept only. Not scheduled for implementation.
+**Planned optimization:** Replace per-tensor D2D copies with a single in-kernel
+gather-scatter using `cp.async.bulk` (global→global on sm_90+) or a custom
+CUDA kernel that writes all tensors in one pass. This frees SM warps during
+the scatter phase and can overlap with the next layer's NVMe read.
+
+**Implementation steps:**
+1. Write a `scatter_kernel<<<n_tensors, 256>>>` that reads from `vram_temp` and
+   writes to each tensor's final GPU address using coalesced 128-byte stores
+2. On sm_90+, investigate `cp.async.bulk` global→global variant (if available)
+3. Benchmark: scatter kernel vs 7× `cudaMemcpyAsync D2D` on 70B Q6_K
+
+---
+
+## 4. Warp Specialization 💡 (concept)
+
+Blackwell's warp group instructions allow dedicated **transfer warps** and
+**compute warps** within a single kernel. In the streaming GEMV context:
+
+- Transfer warps issue `cp.async.bulk` for the next layer's weights to shared mem
+- Compute warps execute GEMV on the current layer's weights in shared mem
+
+This eliminates the pipeline event overhead (~5-15 μs per layer) and achieves
+tighter overlap than the current stream-based double-buffer approach.
+
+**Status:** Concept only. Requires persistent-kernel architecture (fused
+layer-load + GEMV in a single long-running kernel). Not scheduled.
+
+---
+
+## Summary
+
+| Optimization | Status | Benefit | Location |
+|---|---|---|---|
+| Native sm_120 codegen | ✅ Done | -2-5s startup, better scheduling | `CMakeLists.txt` |
+| H2D via CE DMA | ✅ Already correct | `cudaMemcpyAsync` already CE | `streamer.cu` |
+| GEMV cp.async.bulk (global→shared) | 💡 Planned | ~10-20% GEMV throughput | `gemm.cu` |
+| D2D scatter kernel (post-BAR1) | 💡 Planned | Frees SM during scatter | `streamer.cu` |
+| Warp specialization | 💡 Concept | Eliminates event overhead | Requires refactor |
