@@ -362,3 +362,48 @@
   │                                                    │
   └────────────────────────────────────────────────────┘
 ```
+
+## Pipeline Depth Tuning
+
+The streaming pipeline uses N buffer slots to overlap H2D transfers with GPU compute.
+
+### How N-buffer pipelining works
+
+With N=2 (default double-buffer):
+```
+iter i:   [H2D layer i] [compute layer i-1]
+iter i+1: [H2D layer i+1] [compute layer i]
+```
+
+With N=3 (triple-buffer, for Gen5 x16):
+```
+iter i:   [H2D layer i] [H2D layer i+1] [compute layer i-2]
+iter i+1: ...
+```
+
+The third slot only helps if H2D transfer time < compute time, meaning the GPU is
+waiting on the transfer. On Gen5 x16 (~63 GB/s), a 670 MB layer takes ~11ms vs
+~14ms compute — so prefetching one layer ahead improves utilization. On Gen3/Gen4 x8
+(6.5–31 GB/s), H2D time >> compute time and a second buffer is already wasted.
+
+### Setting pipeline depth
+
+```bash
+# Auto (recommended) — reads PCIe bandwidth from sysfs at startup
+./ntransformer --streaming -m model.gguf -p "Hello"
+
+# Force 2 buffers
+./ntransformer --streaming --n-buffers 2 -m model.gguf -p "Hello"
+
+# Force 3 buffers (Gen5 x16 only)
+./ntransformer --streaming --n-buffers 3 -m model.gguf -p "Hello"
+
+# Via environment variable
+NT_PIPELINE_DEPTH=3 ./ntransformer --streaming -m model.gguf -p "Hello"
+```
+
+Auto-detection logs the chosen depth at startup:
+```
+TierConfig: PCIe Gen4 x8 = 31.0 GB/s (detected)
+Pipeline depth: 2 (PCIe 31.0 GB/s autodetect)
+```

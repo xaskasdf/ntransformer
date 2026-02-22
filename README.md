@@ -236,6 +236,33 @@ Tier C (NVMe/mmap fallback, if needed):
 
 Tier sizes auto-computed from `cudaMemGetInfo()` + `/proc/meminfo` MemAvailable.
 
+## CLI Flags
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| `-m <path>` | required | Path to GGUF model file |
+| `-p <text>` | `""` | Prompt text |
+| `-n <int>` | 32 | Tokens to generate |
+| `--streaming` | off | Enable 3-tier streaming mode (for models > VRAM) |
+| `--n-buffers <int>` | 0 (auto) | Pipeline buffer slots for streaming. 0 = auto-select from PCIe bandwidth (2 for most hardware, 3 for Gen5 x16 ≥63 GB/s). Higher values only help when PCIe H2D bandwidth >> GPU compute time. |
+| `--skip-threshold <float>` | disabled | Layer skip cosine similarity threshold (e.g. 0.98) |
+| `--self-spec` | off | Self-speculative decoding using VRAM-resident layers as draft |
+| `--draft-k <int>` | 3 | Draft tokens per step (self-speculative mode) |
+| `--chat` | off | Interactive chat mode |
+| `--benchmark` | off | Benchmark mode |
+
+Environment variables:
+
+| Variable | Description |
+|----------|-------------|
+| `NT_PIPELINE_DEPTH` | Override pipeline buffer count (same as `--n-buffers`). Takes effect if `--n-buffers` is not set. |
+
+### Choosing pipeline depth
+
+For most hardware (PCIe Gen3/Gen4/Gen5 x8), `--n-buffers 2` is optimal — the H2D transfer time for a layer is already longer than GPU compute time, so adding a third buffer provides no benefit. Only PCIe Gen5 x16 (≥63 GB/s) can see improvement from 3 buffers.
+
+When in doubt, let the auto-detection handle it (default `--n-buffers 0`).
+
 ## Quantization Formats
 
 | Format | Bits/Weight | Block Size | Supported |
