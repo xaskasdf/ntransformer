@@ -163,18 +163,49 @@ size_t LayerStreamer::requantize_q6k_to_q4km(void* data, size_t nbytes_q6k) {
 //
 // Falls back to current_link_* if max_* is unavailable (older kernels).
 //
+// The result is cached on first successful call. cudaDeviceGetPCIBusId()
+// can return a garbage PCI ID if called before the CUDA context is fully
+// established (e.g. from a constructor before cudaSetDevice). The sysfs
+// path validation below catches this case: if the path doesn't exist, we
+// return 0.0 rather than silently falling back to current_link_speed
+// (which ASPM would have downclocked to ~5 GT/s at idle).
+//
 // Returns effective one-directional bandwidth in GB/s,
 // or 0.0 if detection fails (caller will use safe default).
 // ============================================================
 static float detect_pcie_bandwidth_gbps() {
+    // Cache the result — detection is idempotent and sysfs is stable.
+    // -1.0 = not yet computed; 0.0 = failed (use fallback); >0 = result.
+    static float cached_bw = -1.0f;
+    if (cached_bw >= 0.0f) return cached_bw;
+
     // Retrieve CUDA device PCI bus ID (e.g. "0000:05:00.0")
     char pci_id[32] = {};
-    if (cudaDeviceGetPCIBusId(pci_id, sizeof(pci_id), 0) != cudaSuccess)
+    if (cudaDeviceGetPCIBusId(pci_id, sizeof(pci_id), 0) != cudaSuccess) {
+        cached_bw = 0.0f;
         return 0.0f;
+    }
 
     // sysfs paths use lowercase hex
     for (int i = 0; pci_id[i]; i++)
         pci_id[i] = (char)tolower((unsigned char)pci_id[i]);
+
+    // Validate that the sysfs path actually exists before attempting reads.
+    // cudaDeviceGetPCIBusId can return a stale/zero PCI ID when called before
+    // the CUDA context is fully initialised (constructor race), which causes
+    // fopen() to silently fail and fscanf to read 0, falling through to
+    // current_link_speed — which ASPM has downclocked to 5 GT/s at idle.
+    char test_path[256];
+    snprintf(test_path, sizeof(test_path),
+             "/sys/bus/pci/devices/%s/max_link_speed", pci_id);
+    if (access(test_path, R_OK) != 0) {
+        fprintf(stderr,
+            "PCIe detection: sysfs path not found for '%s' "
+            "(CUDA init race? Try again after cudaSetDevice). "
+            "Falling back to default bandwidth.\n", pci_id);
+        cached_bw = 0.0f;
+        return 0.0f;
+    }
 
     char path[256];
     float speed_gts = 0.0f;
@@ -209,14 +240,18 @@ static float detect_pcie_bandwidth_gbps() {
     speed_gts = read_speed("max_link_speed", "current_link_speed");
     width     = read_width("max_link_width", "current_link_width");
 
-    if (speed_gts <= 0.0f || width <= 0) return 0.0f;
+    if (speed_gts <= 0.0f || width <= 0) {
+        cached_bw = 0.0f;
+        return 0.0f;
+    }
 
     // Convert GT/s × width to effective GB/s:
     //   Gen1/2: 8b/10b encoding → 80% efficiency
     //   Gen3+:  128b/130b encoding → ~98.5% efficiency
     //   Additional 0.985 factor for protocol overhead.
     float enc = (speed_gts <= 5.0f) ? 0.8f : 0.985f;
-    return speed_gts / 8.0f * enc * (float)width * 0.985f;
+    cached_bw = speed_gts / 8.0f * enc * (float)width * 0.985f;
+    return cached_bw;
 }
 
 // ============================================================

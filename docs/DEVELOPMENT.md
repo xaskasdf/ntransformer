@@ -269,7 +269,21 @@ Using `max_link_speed` avoids this entirely. It reflects the capability negotiat
 
 ### CUDA init race
 
-`cudaDeviceGetPCIBusId()` is called to get the GPU's PCI address. This must be called after the CUDA context is initialized; calling it too early may return a zeroed or garbage ID. Branch 5 (`fix/pcie-detection-consistency`) adds caching and sysfs path validation to guard against this.
+`cudaDeviceGetPCIBusId()` is called to get the GPU's PCI address. This must be called after the CUDA context is initialized; calling it too early may return a zeroed or garbage ID (e.g. `0000:00:00.0`). When the PCI ID is wrong, `fopen()` fails silently and fscanf returns 0, which triggers the `current_link_speed` fallback — returning ~3.9 GB/s on a system with ASPM-idle link.
+
+The fix validates the sysfs path with `access()` before attempting reads:
+
+```cpp
+snprintf(test_path, ..., "/sys/bus/pci/devices/%s/max_link_speed", pci_id);
+if (access(test_path, R_OK) != 0) {
+    // PCI ID is invalid — log and return 0 (caller uses safe default)
+    fprintf(stderr, "PCIe detection: sysfs path not found for '%s' ...\n", pci_id);
+    cached_bw = 0.0f;
+    return 0.0f;
+}
+```
+
+The result is also cached in a `static float cached_bw` so detection only runs once per process. Multiple calls to `TierConfig::compute()` or `LayerStreamer::init()` don't re-read sysfs.
 
 ---
 

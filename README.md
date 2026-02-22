@@ -51,6 +51,15 @@ Sysfs paths used:
 - `/sys/bus/pci/devices/<pci_id>/max_link_width` (preferred)
 - Falls back to `current_link_speed` / `current_link_width` on older kernels
 
+### PCIe Detection Consistency
+
+The bandwidth detection result is cached after the first successful read. If detection fails on startup (e.g. `cudaDeviceGetPCIBusId` returns a stale ID before the CUDA context is fully established), the function returns 0 and the caller falls back to the default 16 GB/s. A restart after the CUDA context is initialised will succeed.
+
+Detection failure is logged explicitly:
+```
+PCIe detection: sysfs path not found for '0000:00:00.0' (CUDA init race? ...). Falling back to default bandwidth.
+```
+
 ### Adaptive Tier Configuration
 
 RAM reserve and pipeline depth are computed automatically from hardware at startup. No manual tuning required for common configurations:
