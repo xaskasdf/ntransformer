@@ -248,6 +248,45 @@ Remaining gap is from non-GEMV overhead (attention, norms, kernel launches) and 
 
 ---
 
+## PCIe Bandwidth Detection
+
+### Sysfs paths
+
+The `detect_pcie_bandwidth_gbps()` function in `src/memory/streamer.cu` reads PCIe link parameters from:
+
+| Attribute | Path | Notes |
+|-----------|------|-------|
+| Max link speed | `/sys/bus/pci/devices/<pci_id>/max_link_speed` | Preferred — boot-time negotiated, ASPM-stable |
+| Max link width | `/sys/bus/pci/devices/<pci_id>/max_link_width` | Preferred — same stability |
+| Current link speed | `/sys/bus/pci/devices/<pci_id>/current_link_speed` | Fallback — ASPM can throttle to 5 GT/s at idle |
+| Current link width | `/sys/bus/pci/devices/<pci_id>/current_link_width` | Fallback |
+
+### ASPM idle downclocking problem
+
+PCIe ASPM (Active State Power Management) saves power by transitioning the link to L1 state at idle. In L1, the link speed drops to Gen1 (2.5 GT/s) or Gen2 (5 GT/s). When `TierConfig::compute()` runs at startup (before any GPU work), the link may be in a low-power state, causing `current_link_speed` to report 5 GT/s even on a Gen4 x8 slot (31 GB/s actual).
+
+Using `max_link_speed` avoids this entirely. It reflects the capability negotiated between the GPU and the PCIe root complex during enumeration (at boot) and does not change at runtime.
+
+### CUDA init race
+
+`cudaDeviceGetPCIBusId()` is called to get the GPU's PCI address. This must be called after the CUDA context is initialized; calling it too early may return a zeroed or garbage ID (e.g. `0000:00:00.0`). When the PCI ID is wrong, `fopen()` fails silently and fscanf returns 0, which triggers the `current_link_speed` fallback — returning ~3.9 GB/s on a system with ASPM-idle link.
+
+The fix validates the sysfs path with `access()` before attempting reads:
+
+```cpp
+snprintf(test_path, ..., "/sys/bus/pci/devices/%s/max_link_speed", pci_id);
+if (access(test_path, R_OK) != 0) {
+    // PCI ID is invalid — log and return 0 (caller uses safe default)
+    fprintf(stderr, "PCIe detection: sysfs path not found for '%s' ...\n", pci_id);
+    cached_bw = 0.0f;
+    return 0.0f;
+}
+```
+
+The result is also cached in a `static float cached_bw` so detection only runs once per process. Multiple calls to `TierConfig::compute()` or `LayerStreamer::init()` don't re-read sysfs.
+
+---
+
 ## Port: Windows/CUDA 12.4 → Linux/CUDA 13.1 (2026-02-19)
 
 Ported the entire codebase from Windows (MSVC 2022 / CUDA 12.4) to Linux (gcc-14 / CUDA 13.1).
