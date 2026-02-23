@@ -24,7 +24,8 @@ Tier sizes are computed automatically at init time:
 VRAM available = cudaMemGetInfo(free) - inference_reserve
   inference_reserve = KV_cache + workspace + hidden_bufs + 256 MB safety
 
-RAM available  = /proc/meminfo MemAvailable - 6 GB reserve
+RAM reserve    = max(4 GB, total_ram × 15%)   ← adaptive, not hardcoded
+RAM available  = /proc/meminfo MemAvailable - ram_reserve
 
 n_vram = min(n_layers, vram_avail / layer_bytes)
 n_ram  = min(remaining, ram_avail / layer_bytes)
@@ -32,6 +33,31 @@ n_nvme = n_layers - n_vram - n_ram
 ```
 
 Key fix: VRAM reserve is computed dynamically from model config (KV cache depends on n_layers, max_seq_len, n_kv_heads). RAM uses `/proc/meminfo` MemAvailable (not `sysinfo(freeram)`) to account for reclaimable page cache.
+
+### Adaptive RAM Reserve
+
+RAM reserve scales with the machine rather than using a hardcoded constant:
+
+| Total RAM | Reserve (15%) | Effective reserve |
+|-----------|---------------|-------------------|
+| 16 GB     | 2.4 GB → floor to **4 GB** | 4 GB |
+| 32 GB     | **4.8 GB**    | 4.8 GB |
+| 48 GB     | **7.2 GB**    | 7.2 GB |
+| 64 GB     | **9.6 GB**    | 9.6 GB |
+| 128 GB    | **19.2 GB**   | 19.2 GB |
+
+The previous hardcoded 6 GB under-reserved on 16 GB machines (OS + apps needed the headroom) and over-reserved on 128 GB servers (wasting RAM that could hold model layers).
+
+### PCIe Bandwidth and Pipeline Depth
+
+`TierConfig` now detects PCIe bandwidth at init time and stores it in `pcie_bandwidth_gbps`. This value drives the automatic pipeline depth selection:
+
+| PCIe bandwidth | Pipeline slots | Rationale |
+|----------------|----------------|-----------|
+| ≥ 63 GB/s (Gen5 x16) | 3 | Two in-flight transfers overlap with compute |
+| < 63 GB/s (most hardware) | 2 | Standard double-buffer sufficient |
+
+`TierConfig::optimal_pipeline_depth()` returns this value. The actual slot count used during streaming is controlled by `--n-buffers` (see below).
 
 ### Measured Results
 
