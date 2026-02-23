@@ -702,6 +702,13 @@ void LayerStreamer::init_tiered(const GGUFLoader& loader, const ModelConfig& con
                         + config.vocab_size * sizeof(float)
                         + config.max_seq_len * sizeof(int);
     size_t vram_reserve = kv_bytes + workspace_bytes + misc_bytes + (256ULL << 20);
+    // TODO(gpunvme-bar1): when USE_GPUNVME is enabled and BAR1 Tier 2 is active,
+    // gpunvme_bar1_init() allocates nvme_vram_temp_ ≈ nvme_read_buf_size_ from VRAM
+    // (one full layer transfer size, e.g. ~1.3 GB for 70B Q6_K). This allocation
+    // happens AFTER init_tiered() computes vram_reserve, so tier A layer count will
+    // be over-estimated by ~1 layer. Fix: detect USE_GPUNVME at configure time and
+    // add buf_size_ to vram_reserve when NVMe layers are expected (n_nvme > 0 estimate).
+    // Tracked issue: feat/smart-tier-config — BAR1 VRAM temp not in reserve.
 
     fprintf(stderr, "LayerStreamer: VRAM reserve for inference: %.1f GB "
             "(KV=%.1f, WS=%.1f, misc=%.1f)\n",
