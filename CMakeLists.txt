@@ -13,7 +13,7 @@ set(CMAKE_CUDA_STANDARD_REQUIRED ON)
 
 # CUDA architecture - target SM 86 (RTX 3090) and above
 # Also include SM 80 (A100) for compatibility
-set(CMAKE_CUDA_ARCHITECTURES "80;86;89;90")
+set(CMAKE_CUDA_ARCHITECTURES "80;86;89;90;120")
 
 # Optimization flags (Linux/gcc-14)
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG -march=native")
@@ -111,7 +111,7 @@ if(USE_GPUNVME)
 
     target_include_directories(ntransformer_lib PUBLIC ${GPUNVME_DIR}/include)
     target_link_libraries(ntransformer_lib PRIVATE
-        gpunvme_layer_loader gpunvme_host gpunvme_device)
+        gpunvme_layer_loader gpunvme_host gpunvme_device CUDA::cuda_driver)
     target_compile_definitions(ntransformer_lib PUBLIC USE_GPUNVME=1)
 
     message(STATUS "gpu-nvme-direct: ENABLED (${GPUNVME_DIR})")

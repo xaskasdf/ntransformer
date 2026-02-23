@@ -10,8 +10,55 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <dirent.h>
 
 namespace nt {
+
+// ============================================================
+// GPU BDF auto-detection (used by BAR1 init)
+// ============================================================
+#ifdef USE_GPUNVME
+// Detect the primary NVIDIA GPU's PCIe BDF.
+// Priority: GPUNVME_GPU_BDF env var > /proc/driver/nvidia/gpus/ > nullptr.
+// Returns a pointer to static storage valid for the process lifetime, or
+// nullptr if no BDF can be determined (BAR1 init will be skipped).
+static const char* detect_nvidia_gpu_bdf() {
+    // 1. Environment variable override
+    const char* env = getenv("GPUNVME_GPU_BDF");
+    if (env && env[0]) {
+        fprintf(stderr, "LayerStreamer: BAR1 GPU BDF from env: %s\n", env);
+        return env;
+    }
+
+    // 2. Auto-detect from /proc/driver/nvidia/gpus/
+    // Subdirectory names are PCIe BDFs, e.g. "0000:01:00.0"
+    static char bdf_buf[32] = {};
+    DIR* d = opendir("/proc/driver/nvidia/gpus");
+    if (d) {
+        struct dirent* ent;
+        while ((ent = readdir(d)) != nullptr) {
+            if (ent->d_name[0] == '.') continue;
+            // BDF is always 12 chars: DDDD:BB:DD.F
+            if (strlen(ent->d_name) == 12) {
+                strncpy(bdf_buf, ent->d_name, sizeof(bdf_buf) - 1);
+                break;
+            }
+        }
+        closedir(d);
+    }
+
+    if (bdf_buf[0]) {
+        fprintf(stderr, "LayerStreamer: BAR1 auto-detected GPU BDF: %s "
+                "(set GPUNVME_GPU_BDF to override)\n", bdf_buf);
+        return bdf_buf;
+    }
+
+    fprintf(stderr, "LayerStreamer: BAR1 GPU BDF not found — "
+            "/proc/driver/nvidia/gpus/ empty or unreadable. "
+            "Set GPUNVME_GPU_BDF=DDDD:BB:DD.F to enable BAR1.\n");
+    return nullptr;
+}
+#endif // USE_GPUNVME
 
 // ============================================================
 // CPU-side FP16 helpers (no CUDA needed)
@@ -277,8 +324,10 @@ void LayerStreamer::init(const GGUFLoader& loader, const ModelConfig& config) {
             const GGUFTensorInfo* info = loader.tensor_info(name);
             NT_CHECK(info != nullptr, ("Missing tensor: " + name).c_str());
 
-            // Align offset to 256 bytes for efficient GPU access
-            offset = (offset + 255) & ~(size_t)255;
+            // Align offset to 4096 bytes.
+            // NVMe PRP requires 4KB-aligned destinations for multi-page transfers;
+            // this also satisfies the 256-byte GPU access alignment requirement.
+            offset = (offset + 4095) & ~(size_t)4095;
 
             slots[t]->gpu_offset    = offset;
             slots[t]->cpu_ptr       = loader.tensor_data(name);
@@ -291,7 +340,7 @@ void LayerStreamer::init(const GGUFLoader& loader, const ModelConfig& config) {
             offset += info->nbytes;
         }
 
-        size_t layer_bytes = (offset + 255) & ~(size_t)255;
+        size_t layer_bytes = (offset + 4095) & ~(size_t)4095;
         max_layer_bytes = std::max(max_layer_bytes, layer_bytes);
     }
 
@@ -472,16 +521,20 @@ void LayerStreamer::init(const GGUFLoader& loader, const ModelConfig& config) {
                     nvme_block_size_,
                     nvme_read_buf_size_ / (1024.0 * 1024));
 
-            // Try BAR1 direct VRAM mode
-            const char* gpu_bdf = getenv("GPUNVME_GPU_BDF");
-            if (!gpu_bdf) gpu_bdf = "0000:0a:00.0";  // default for our RTX 3090
-
-            gpunvme_err_t bar1_err = gpunvme_bar1_init(&nvme_loader_, gpu_bdf, 0x20000000ULL);
-            if (bar1_err == GPUNVME_OK) {
-                fprintf(stderr, "LayerStreamer: BAR1 init OK — Tier 2 NVMe→VRAM available\n");
+            // Try BAR1 direct VRAM mode — auto-detect GPU BDF from
+            // /proc/driver/nvidia/gpus/ or GPUNVME_GPU_BDF env var
+            const char* gpu_bdf = detect_nvidia_gpu_bdf();
+            gpunvme_err_t bar1_err = GPUNVME_ERR_INVALID_PARAM;
+            if (gpu_bdf) {
+                bar1_err = gpunvme_bar1_init(&nvme_loader_, gpu_bdf, 0x20000000ULL);
+                if (bar1_err == GPUNVME_OK) {
+                    fprintf(stderr, "LayerStreamer: BAR1 init OK — Tier 2 NVMe→VRAM available\n");
+                } else {
+                    fprintf(stderr, "LayerStreamer: BAR1 init failed (err=%d), using Tier 1 (NVMe→host)\n",
+                            bar1_err);
+                }
             } else {
-                fprintf(stderr, "LayerStreamer: BAR1 init failed (err=%d), using Tier 1 (NVMe→host)\n",
-                        bar1_err);
+                fprintf(stderr, "LayerStreamer: BAR1 skipped — no GPU BDF available, using Tier 1\n");
             }
         }
 
