@@ -24,6 +24,11 @@ void print_usage(const char* prog) {
     fprintf(stderr, "  --skip-threshold <float> Layer skip threshold (0=off, 0.985=moderate)\n");
     fprintf(stderr, "  --requant-q4k            Requantize Q6_K→Q4_K_M for tier B (31%% less H2D)\n");
     fprintf(stderr, "  --delta-model <path>     Delta-encoded .ntd file (33x less H2D bandwidth)\n");
+    fprintf(stderr, "  --n-buffers <int>        Streaming pipeline depth (default 0=auto)\n");
+    fprintf(stderr, "                           0: auto-detect from PCIe bandwidth\n");
+    fprintf(stderr, "                           2: classic double-buffer (Gen3/Gen4)\n");
+    fprintf(stderr, "                           3: triple-buffer (Gen5 x16, overlaps 2 H2D ops)\n");
+    fprintf(stderr, "                           Env: NT_PIPELINE_DEPTH overrides --n-buffers\n");
     fprintf(stderr, "  --benchmark              Run benchmark mode\n");
     fprintf(stderr, "  --chat                   Interactive chat mode\n");
     fprintf(stderr, "  -v, --verbose            Verbose output\n");
@@ -37,6 +42,7 @@ int main(int argc, char** argv) {
     std::string prompt;
     int max_context = 4096;
     int draft_k = 5;
+    int n_buffers = 0;            // 0 = auto-detect from PCIe bandwidth
     float early_exit_threshold = 0.0f;
     float skip_threshold = 0.0f;
     bool benchmark_mode = false;
@@ -85,6 +91,8 @@ int main(int argc, char** argv) {
             if (++i < argc) skip_threshold = std::stof(argv[i]);
         } else if (arg == "--delta-model") {
             if (++i < argc) delta_model_path = argv[i];
+        } else if (arg == "--n-buffers") {
+            if (++i < argc) n_buffers = std::stoi(argv[i]);
         } else if (arg == "--requant-q4k") {
             requant_q4k = true;
         } else if (arg == "--self-spec") {
@@ -118,9 +126,28 @@ int main(int argc, char** argv) {
         streaming_mode = true;
     }
 
+    // NT_PIPELINE_DEPTH env var acts as a fallback when --n-buffers is not set.
+    // The explicit flag takes precedence over the env var.
+    if (n_buffers == 0) {
+        const char* env_depth = getenv("NT_PIPELINE_DEPTH");
+        if (env_depth) {
+            int n = std::stoi(env_depth);
+            if (n >= 2 && n <= 8) {
+                n_buffers = n;
+            }
+        }
+    }
+
     // Load draft model first (if specified) so it gets VRAM priority
     // Then load target model — tiered mode auto-adjusts to remaining VRAM
     nt::Engine engine;
+
+    // Apply pipeline depth override before any model loading so that
+    // LayerStreamer::init() sees the configured value.
+    // 0 means auto — init() will detect PCIe bandwidth and choose.
+    if (n_buffers > 0) {
+        engine.set_pipeline_depth(n_buffers);
+    }
 
     if (!draft_model_path.empty()) {
         engine.set_draft_k(draft_k);

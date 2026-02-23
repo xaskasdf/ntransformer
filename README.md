@@ -38,6 +38,40 @@ Bottleneck is PCIe H2D bandwidth at Gen3 x8 (~6.5 GB/s). Q4_K_M fits 10 more lay
 - CMake 3.24+
 - (Optional) NVMe SSD on separate PCIe slot + [gpu-nvme-direct](https://github.com/xaskasdf/gpu-nvme-direct) library
 
+## Hardware Compatibility
+
+### PCIe Bandwidth Detection
+
+PCIe bandwidth detection reads from sysfs to auto-size tier B (pinned RAM) transfers. The implementation prefers `max_link_speed` / `max_link_width` over `current_link_speed` / `current_link_width`.
+
+**Why:** PCIe ASPM (Active State Power Management) downgrades the link to Gen1 or Gen2 speeds at idle (5 GT/s), causing `current_link_speed` to report ~3.9 GB/s when the slot is actually Gen4 x8 (~31 GB/s). `max_link_speed` reflects the speed negotiated at boot time and is stable regardless of power state.
+
+Sysfs paths used:
+- `/sys/bus/pci/devices/<pci_id>/max_link_speed` (preferred)
+- `/sys/bus/pci/devices/<pci_id>/max_link_width` (preferred)
+- Falls back to `current_link_speed` / `current_link_width` on older kernels
+
+### Adaptive Tier Configuration
+
+RAM reserve and pipeline depth are computed automatically from hardware at startup. No manual tuning required for common configurations:
+
+| Hardware | Total RAM | RAM reserve | Example: 70B Q4_K_M tier split |
+|----------|-----------|-------------|--------------------------------|
+| RTX 3090, 48 GB RAM | 48 GB | 7.2 GB | 36 VRAM + 44 RAM |
+| RTX 5060 Ti, 32 GB RAM | 32 GB | 4.8 GB | 18 VRAM + 46 RAM |
+| A100, 512 GB RAM | 512 GB | 19.2 GB | 80 VRAM + 0 RAM (fully resident) |
+
+The previously hardcoded 6 GB RAM reserve is replaced by `max(4 GB, total_ram × 15%)`.
+
+Detected PCIe bandwidth is stored in `TierConfig.pcie_bandwidth_gbps` and logged at startup:
+```
+TierConfig: PCIe Gen4 x8 = 31.0 GB/s (detected)
+TierConfig: VRAM free=14.2 GB, RAM available=26.1 GB
+TierConfig: 18 VRAM layers, 46 RAM layers, 0 NVMe layers
+```
+
+See [docs/TIERED_CACHING.md](docs/TIERED_CACHING.md) for the full tier sizing algorithm.
+
 ## Quick Start
 
 ```bash
@@ -201,6 +235,33 @@ Tier C (NVMe/mmap fallback, if needed):
 ```
 
 Tier sizes auto-computed from `cudaMemGetInfo()` + `/proc/meminfo` MemAvailable.
+
+## CLI Flags
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| `-m <path>` | required | Path to GGUF model file |
+| `-p <text>` | `""` | Prompt text |
+| `-n <int>` | 32 | Tokens to generate |
+| `--streaming` | off | Enable 3-tier streaming mode (for models > VRAM) |
+| `--n-buffers <int>` | 0 (auto) | Pipeline buffer slots for streaming. 0 = auto-select from PCIe bandwidth (2 for most hardware, 3 for Gen5 x16 ≥63 GB/s). Higher values only help when PCIe H2D bandwidth >> GPU compute time. |
+| `--skip-threshold <float>` | disabled | Layer skip cosine similarity threshold (e.g. 0.98) |
+| `--self-spec` | off | Self-speculative decoding using VRAM-resident layers as draft |
+| `--draft-k <int>` | 3 | Draft tokens per step (self-speculative mode) |
+| `--chat` | off | Interactive chat mode |
+| `--benchmark` | off | Benchmark mode |
+
+Environment variables:
+
+| Variable | Description |
+|----------|-------------|
+| `NT_PIPELINE_DEPTH` | Override pipeline buffer count (same as `--n-buffers`). Takes effect if `--n-buffers` is not set. |
+
+### Choosing pipeline depth
+
+For most hardware (PCIe Gen3/Gen4/Gen5 x8), `--n-buffers 2` is optimal — the H2D transfer time for a layer is already longer than GPU compute time, so adding a third buffer provides no benefit. Only PCIe Gen5 x16 (≥63 GB/s) can see improvement from 3 buffers.
+
+When in doubt, let the auto-detection handle it (default `--n-buffers 0`).
 
 ## Quantization Formats
 

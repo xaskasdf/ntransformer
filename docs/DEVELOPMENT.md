@@ -248,6 +248,31 @@ Remaining gap is from non-GEMV overhead (attention, norms, kernel launches) and 
 
 ---
 
+## PCIe Bandwidth Detection
+
+### Sysfs paths
+
+The `detect_pcie_bandwidth_gbps()` function in `src/memory/streamer.cu` reads PCIe link parameters from:
+
+| Attribute | Path | Notes |
+|-----------|------|-------|
+| Max link speed | `/sys/bus/pci/devices/<pci_id>/max_link_speed` | Preferred — boot-time negotiated, ASPM-stable |
+| Max link width | `/sys/bus/pci/devices/<pci_id>/max_link_width` | Preferred — same stability |
+| Current link speed | `/sys/bus/pci/devices/<pci_id>/current_link_speed` | Fallback — ASPM can throttle to 5 GT/s at idle |
+| Current link width | `/sys/bus/pci/devices/<pci_id>/current_link_width` | Fallback |
+
+### ASPM idle downclocking problem
+
+PCIe ASPM (Active State Power Management) saves power by transitioning the link to L1 state at idle. In L1, the link speed drops to Gen1 (2.5 GT/s) or Gen2 (5 GT/s). When `TierConfig::compute()` runs at startup (before any GPU work), the link may be in a low-power state, causing `current_link_speed` to report 5 GT/s even on a Gen4 x8 slot (31 GB/s actual).
+
+Using `max_link_speed` avoids this entirely. It reflects the capability negotiated between the GPU and the PCIe root complex during enumeration (at boot) and does not change at runtime.
+
+### CUDA init race
+
+`cudaDeviceGetPCIBusId()` is called to get the GPU's PCI address. This must be called after the CUDA context is initialized; calling it too early may return a zeroed or garbage ID. Branch 5 (`fix/pcie-detection-consistency`) adds caching and sysfs path validation to guard against this.
+
+---
+
 ## Port: Windows/CUDA 12.4 → Linux/CUDA 13.1 (2026-02-19)
 
 Ported the entire codebase from Windows (MSVC 2022 / CUDA 12.4) to Linux (gcc-14 / CUDA 13.1).
