@@ -324,8 +324,10 @@ void LayerStreamer::init(const GGUFLoader& loader, const ModelConfig& config) {
             const GGUFTensorInfo* info = loader.tensor_info(name);
             NT_CHECK(info != nullptr, ("Missing tensor: " + name).c_str());
 
-            // Align offset to 256 bytes for efficient GPU access
-            offset = (offset + 255) & ~(size_t)255;
+            // Align offset to 4096 bytes.
+            // NVMe PRP requires 4KB-aligned destinations for multi-page transfers;
+            // this also satisfies the 256-byte GPU access alignment requirement.
+            offset = (offset + 4095) & ~(size_t)4095;
 
             slots[t]->gpu_offset    = offset;
             slots[t]->cpu_ptr       = loader.tensor_data(name);
@@ -338,7 +340,7 @@ void LayerStreamer::init(const GGUFLoader& loader, const ModelConfig& config) {
             offset += info->nbytes;
         }
 
-        size_t layer_bytes = (offset + 255) & ~(size_t)255;
+        size_t layer_bytes = (offset + 4095) & ~(size_t)4095;
         max_layer_bytes = std::max(max_layer_bytes, layer_bytes);
     }
 
