@@ -1,5 +1,8 @@
 #pragma once
 
+// Platform shim must precede any namespace to avoid pulling C headers into nt::
+#include "platform.h"
+
 #include <cstdint>
 #include <cstddef>
 #include <cassert>
@@ -8,12 +11,27 @@
 #include <cstdlib>
 
 
-// FP16 type alias - use CUDA's half when compiling with nvcc
-#ifdef __CUDACC__
+// FP16 type alias - use the device half type when compiling device code.
+// hipcc defines __HIPCC__ (not __CUDACC__), so guard on both; the half
+// header is routed through the compat shim (cuda_fp16.h -> hip/hip_fp16.h
+// on HIP). Host .cpp translation units take the 2-byte storage branch on
+// either backend, which is all they need (KV-cache element type).
+#if defined(__CUDACC__) || defined(__HIPCC__)
 #include <cuda_fp16.h>
 using float16_t = half;
 #else
 using float16_t = uint16_t;
+#endif
+
+// Full-wavefront mask for __shfl_*_sync. CUDA's mask parameter is a 32-bit
+// unsigned; ROCm's __shfl_*_sync requires a 64-bit mask (it rejects an
+// implicitly promoted 32-bit literal at compile time) so that one all-ones
+// constant covers a full wave64 wavefront. Wave32 lanes ignore the unused
+// high bits, so the same constant is correct on wave32 and wave64.
+#if defined(__HIPCC__)
+#define NT_WARP_MASK 0xFFFFFFFFFFFFFFFFULL
+#else
+#define NT_WARP_MASK 0xFFFFFFFFu
 #endif
 
 namespace nt {
@@ -220,7 +238,7 @@ inline DType ggml_to_dtype(GGMLType t) {
 #define NT_CHECK(cond, msg) \
     do { if (!(cond)) { fprintf(stderr, "NT ERROR: %s at %s:%d\n", msg, __FILE__, __LINE__); abort(); } } while(0)
 
-#ifdef __CUDACC__
+#if defined(__CUDACC__) || defined(__HIPCC__)
 #define NT_CUDA_CHECK(err) \
     do { cudaError_t e = (err); if (e != cudaSuccess) { \
         fprintf(stderr, "CUDA error: %s at %s:%d\n", cudaGetErrorString(e), __FILE__, __LINE__); abort(); \
@@ -230,12 +248,13 @@ inline DType ggml_to_dtype(GGMLType t) {
 // ============================================================
 // Cross-platform aligned memory allocation
 // ============================================================
+
 inline void* nt_aligned_alloc(size_t alignment, size_t size) {
-    return aligned_alloc(alignment, size);
+    return NT_ALIGNED_ALLOC(alignment, size);
 }
 
 inline void nt_aligned_free(void* ptr) {
-    ::free(ptr);
+    NT_ALIGNED_FREE(ptr);
 }
 
 } // namespace nt

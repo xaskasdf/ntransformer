@@ -34,7 +34,7 @@ __global__ void softmax_kernel(
 
     // Warp reduction for max
     for (int offset = warpSize / 2; offset > 0; offset >>= 1) {
-        local_max = fmaxf(local_max, __shfl_xor_sync(0xFFFFFFFF, local_max, offset));
+        local_max = fmaxf(local_max, __shfl_xor_sync(NT_WARP_MASK, local_max, offset));
     }
 
     __shared__ float shared_max[32];
@@ -47,7 +47,7 @@ __global__ void softmax_kernel(
     if (wid == 0) {
         local_max = (tid < (BLOCK_SIZE / warpSize)) ? shared_max[lane] : -FLT_MAX;
         for (int offset = warpSize / 2; offset > 0; offset >>= 1) {
-            local_max = fmaxf(local_max, __shfl_xor_sync(0xFFFFFFFF, local_max, offset));
+            local_max = fmaxf(local_max, __shfl_xor_sync(NT_WARP_MASK, local_max, offset));
         }
     }
 
@@ -66,7 +66,7 @@ __global__ void softmax_kernel(
 
     // Warp reduction for sum
     for (int offset = warpSize / 2; offset > 0; offset >>= 1) {
-        local_sum += __shfl_xor_sync(0xFFFFFFFF, local_sum, offset);
+        local_sum += __shfl_xor_sync(NT_WARP_MASK, local_sum, offset);
     }
 
     __shared__ float shared_sum[32];
@@ -76,7 +76,7 @@ __global__ void softmax_kernel(
     if (wid == 0) {
         local_sum = (tid < (BLOCK_SIZE / warpSize)) ? shared_sum[lane] : 0.0f;
         for (int offset = warpSize / 2; offset > 0; offset >>= 1) {
-            local_sum += __shfl_xor_sync(0xFFFFFFFF, local_sum, offset);
+            local_sum += __shfl_xor_sync(NT_WARP_MASK, local_sum, offset);
         }
     }
 
@@ -113,7 +113,7 @@ __global__ void masked_softmax_kernel(
     }
 
     for (int offset = warpSize / 2; offset > 0; offset >>= 1) {
-        local_max = fmaxf(local_max, __shfl_xor_sync(0xFFFFFFFF, local_max, offset));
+        local_max = fmaxf(local_max, __shfl_xor_sync(NT_WARP_MASK, local_max, offset));
     }
 
     __shared__ float shared_max[32];
@@ -124,7 +124,7 @@ __global__ void masked_softmax_kernel(
     if (wid == 0) {
         local_max = (tid < (BLOCK_SIZE / warpSize)) ? shared_max[lane] : -FLT_MAX;
         for (int offset = warpSize / 2; offset > 0; offset >>= 1) {
-            local_max = fmaxf(local_max, __shfl_xor_sync(0xFFFFFFFF, local_max, offset));
+            local_max = fmaxf(local_max, __shfl_xor_sync(NT_WARP_MASK, local_max, offset));
         }
     }
     __shared__ float row_max;
@@ -140,7 +140,7 @@ __global__ void masked_softmax_kernel(
     }
 
     for (int offset = warpSize / 2; offset > 0; offset >>= 1) {
-        local_sum += __shfl_xor_sync(0xFFFFFFFF, local_sum, offset);
+        local_sum += __shfl_xor_sync(NT_WARP_MASK, local_sum, offset);
     }
     __shared__ float shared_sum[32];
     if (lane == 0) shared_sum[wid] = local_sum;
@@ -148,7 +148,7 @@ __global__ void masked_softmax_kernel(
     if (wid == 0) {
         local_sum = (tid < (BLOCK_SIZE / warpSize)) ? shared_sum[lane] : 0.0f;
         for (int offset = warpSize / 2; offset > 0; offset >>= 1) {
-            local_sum += __shfl_xor_sync(0xFFFFFFFF, local_sum, offset);
+            local_sum += __shfl_xor_sync(NT_WARP_MASK, local_sum, offset);
         }
     }
     __shared__ float row_sum_inv;
