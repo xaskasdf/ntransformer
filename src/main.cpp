@@ -2,6 +2,9 @@
 #include <cstdio>
 #include <cstring>
 #include <string>
+#include <stdexcept>
+#include "model/ds41/ds41_forward.h"
+#include "model/glm5/glm5_forward.h"
 
 void print_usage(const char* prog) {
     fprintf(stderr, "NTransformer - High-Efficiency LLM Inference Engine\n\n");
@@ -17,6 +20,9 @@ void print_usage(const char* prog) {
     fprintf(stderr, "  -c, --ctx-size <int>     Context size (default: 4096)\n");
     fprintf(stderr, "  --seed <int>             Random seed (default: 42)\n");
     fprintf(stderr, "  --streaming              SLEP streaming mode (stream layers from CPU via PCIe)\n");
+    fprintf(stderr, "  --peer-gpu <int>         Cache overflow layers on another visible GPU via CUDA P2P\n");
+    fprintf(stderr, "  --local-layers <int>     Cap resident layers on compute GPU (requires --peer-gpu)\n");
+    fprintf(stderr, "  --peer-layers <int>      Cap layers cached on peer GPU (requires --peer-gpu)\n");
     fprintf(stderr, "  --draft-model <path>     Draft model for speculative decoding (e.g. 8B)\n");
     fprintf(stderr, "  --draft-k <int>          Draft tokens per iteration (default: 5)\n");
     fprintf(stderr, "  --self-spec              Self-speculative: use VRAM layers as draft (no extra model)\n");
@@ -37,6 +43,9 @@ int main(int argc, char** argv) {
     std::string prompt;
     int max_context = 4096;
     int draft_k = 5;
+    int peer_gpu = -1;
+    int max_local_layers = -1;
+    int max_peer_layers = -1;
     float early_exit_threshold = 0.0f;
     float skip_threshold = 0.0f;
     bool benchmark_mode = false;
@@ -44,6 +53,8 @@ int main(int argc, char** argv) {
     bool streaming_mode = false;
     bool requant_q4k = false;
     bool self_speculative = false;
+    std::vector<int> ds41_token_ids;
+    std::string ds41_dump_logits;
 
     nt::GenerateConfig config;
     config.verbose = true;
@@ -75,6 +86,22 @@ int main(int argc, char** argv) {
             if (++i < argc) max_context = std::stoi(argv[i]);
         } else if (arg == "--streaming") {
             streaming_mode = true;
+        } else if (arg == "--peer-gpu" || arg == "--local-layers" || arg == "--peer-layers") {
+            if (++i >= argc) {
+                fprintf(stderr, "Missing value for %s\n", arg.c_str());
+                return 1;
+            }
+            try {
+                size_t consumed = 0;
+                int value = std::stoi(argv[i], &consumed);
+                if (value < 0 || consumed != std::strlen(argv[i])) throw std::invalid_argument("nonnegative integer required");
+                if (arg == "--peer-gpu") peer_gpu = value;
+                else if (arg == "--local-layers") max_local_layers = value;
+                else max_peer_layers = value;
+            } catch (const std::exception&) {
+                fprintf(stderr, "Invalid value for %s (requires a nonnegative integer)\n", arg.c_str());
+                return 1;
+            }
         } else if (arg == "--draft-model") {
             if (++i < argc) draft_model_path = argv[i];
         } else if (arg == "--draft-k") {
@@ -89,6 +116,20 @@ int main(int argc, char** argv) {
             requant_q4k = true;
         } else if (arg == "--self-spec") {
             self_speculative = true;
+        } else if (arg == "--token-ids") {
+            if (++i < argc) {
+                std::string s = argv[i];
+                size_t pos = 0;
+                while (pos < s.size()) {
+                    size_t comma = s.find(',', pos);
+                    std::string part = s.substr(pos, comma == std::string::npos ? std::string::npos : comma - pos);
+                    if (!part.empty()) ds41_token_ids.push_back(std::stoi(part));
+                    if (comma == std::string::npos) break;
+                    pos = comma + 1;
+                }
+            }
+        } else if (arg == "--dump-logits") {
+            if (++i < argc) ds41_dump_logits = argv[i];
         } else if (arg == "--benchmark") {
             benchmark_mode = true;
         } else if (arg == "--chat") {
@@ -108,6 +149,56 @@ int main(int argc, char** argv) {
         return 1;
     }
 
+    // GLM-5.3-Flash ("glm5-next") has its own CPU reference implementation
+    {
+        nt::glm5::GenOptions gopt;
+        gopt.prompt         = prompt;
+        gopt.max_tokens     = config.max_tokens;
+        gopt.temperature    = config.temperature;
+        gopt.top_k          = config.top_k;
+        gopt.top_p          = config.top_p;
+        gopt.repeat_penalty = config.repeat_penalty;
+        gopt.repeat_window  = config.repeat_window;
+        gopt.seed           = config.seed;
+        gopt.ctx            = max_context;
+        gopt.token_ids      = ds41_token_ids;
+        gopt.dump_logits    = ds41_dump_logits;
+        int rc = nt::glm5::run_cli(model_path, gopt);
+        if (rc >= 0) {
+            return rc;
+        }
+    }
+
+    // DeepSeek-V4.1 ("deepseek41") has its own CPU reference implementation
+    {
+        nt::ds41::GenOptions dopt;
+        dopt.prompt         = prompt;
+        dopt.max_tokens     = config.max_tokens;
+        dopt.temperature    = config.temperature;
+        dopt.top_k          = config.top_k;
+        dopt.top_p          = config.top_p;
+        dopt.repeat_penalty = config.repeat_penalty;
+        dopt.repeat_window  = config.repeat_window;
+        dopt.seed           = config.seed;
+        dopt.ctx            = max_context;
+        dopt.token_ids      = ds41_token_ids;
+        dopt.dump_logits    = ds41_dump_logits;
+        int rc = nt::ds41::run_cli(model_path, dopt);
+        if (rc >= 0) {
+            return rc;
+        }
+    }
+
+    if (peer_gpu < 0 && (max_local_layers >= 0 || max_peer_layers >= 0)) {
+        fprintf(stderr, "--local-layers and --peer-layers require --peer-gpu\n");
+        return 1;
+    }
+    if (peer_gpu >= 0 && !delta_model_path.empty()) {
+        fprintf(stderr, "--peer-gpu does not support --delta-model\n");
+        return 1;
+    }
+    if (peer_gpu >= 0) streaming_mode = true;
+
     // Auto-enable streaming when using speculative modes
     if (!draft_model_path.empty() && !streaming_mode) {
         fprintf(stderr, "Note: --draft-model implies --streaming for target model\n");
@@ -121,6 +212,9 @@ int main(int argc, char** argv) {
     // Load draft model first (if specified) so it gets VRAM priority
     // Then load target model — tiered mode auto-adjusts to remaining VRAM
     nt::Engine engine;
+    if (peer_gpu >= 0 && !engine.model().set_peer_cache(peer_gpu, max_local_layers, max_peer_layers)) {
+        return 1;
+    }
 
     if (!draft_model_path.empty()) {
         engine.set_draft_k(draft_k);
@@ -170,5 +264,13 @@ int main(int argc, char** argv) {
         engine.generate(prompt, config);
     }
 
+    const auto& peer_cache = engine.model().peer_cache();
+    if (peer_cache.block_count() > 0) {
+        fprintf(stderr, "Peer cache: GPU %d, %d blocks, %.3f GiB allocated, "
+                "%llu P2P copies, %.3f GiB transferred\n", peer_cache.device_id(),
+                peer_cache.block_count(), peer_cache.allocated_bytes() / (1024.0 * 1024 * 1024),
+                static_cast<unsigned long long>(peer_cache.transfer_count()),
+                peer_cache.transferred_bytes() / (1024.0 * 1024 * 1024));
+    }
     return 0;
 }
