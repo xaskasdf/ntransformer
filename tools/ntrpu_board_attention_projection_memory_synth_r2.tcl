@@ -1,0 +1,50 @@
+# Synthesis-only recovery: explicit input nets; retain the independently reviewed prior XSim trace.
+set kv_script_dir [file dirname [file normalize [info script]]]
+proc attention_projection_memory_synth_recovery {output} {
+    global kv_script_dir
+    set output [file normalize $output]
+    if {[file exists $output]} {error "Output exists"}
+    file mkdir $output
+    set_param general.maxThreads 2
+    create_project attention_projection_memory [file join $output project] -part xcvu5p-flva2104-2-i
+    set rtl [file join $output mac_rtl]
+    file copy [file join $kv_script_dir .. generated mac] $rtl
+    cd $rtl
+    add_files [lsort [glob *.v]]
+    foreach script [lsort [glob *_ip.tcl]] {source $script}
+    foreach name {ntrpu_fp64_to_fp32 ntrpu_axi_read_master ntrpu_weight_tile_buffer ntrpu_q8_unpacker ntrpu_q8_weight_stream ntrpu_q8_gemv_parallel ntrpu_activation_loader ntrpu_q8_gemv_memory ntrpu_result_writer ntrpu_q8_gemv_store ntrpu_matrix_sequencer ntrpu_q8_matrix_memory ntrpu_attention_projection_control_r1} {
+        add_files [file normalize [file join $kv_script_dir .. fpga rtl ${name}.sv]]
+    }
+    add_files [file normalize [file join $kv_script_dir .. fpga rtl vivado_explicit_nets_r2 ntrpu_attention_projection_memory_r1.sv]]
+    set_property top ntrpu_attention_projection_memory_r1 [get_filesets sources_1]
+    set f [open [file join $output clock.xdc] {WRONLY CREAT EXCL}]
+    puts $f {create_clock -name clk -period 5.000 [get_ports clk]};close $f
+    read_xdc [file join $output clock.xdc]
+    synth_design -top ntrpu_attention_projection_memory_r1 -mode out_of_context -part xcvu5p-flva2104-2-i
+    if {[llength [get_cells -quiet -hierarchical -filter {IS_BLACKBOX == 1}]]} {error "Unresolved black boxes"}
+    write_checkpoint [file join $output attention_projection_memory_synth.dcp]
+    report_utilization -file [file join $output utilization.rpt]
+    report_utilization -hierarchical -file [file join $output hierarchy.rpt]
+    report_timing_summary -report_unconstrained -file [file join $output timing.rpt]
+    check_timing -verbose -file [file join $output check_timing.rpt]
+    report_drc -file [file join $output drc.rpt]
+    report_methodology -file [file join $output methodology.rpt]
+    set f [open [file join $output primitive_counts.tsv] {WRONLY CREAT EXCL}]
+    puts $f "top\t[get_property NAME [current_design]]"
+    puts $f "part\t[get_property PART [current_design]]"
+    puts $f "clock_period\t[get_property PERIOD [get_clocks clk]]"
+    puts $f "blackboxes\t[llength [get_cells -quiet -hierarchical -filter {IS_BLACKBOX == 1}]]"
+    foreach ref {LUT1 LUT2 LUT3 LUT4 LUT5 LUT6 FDRE FDSE FDCE FDPE LDCE LDPE CARRY8 RAMB36E2 RAMB18E2 DSP48E2} {
+        puts $f "$ref\t[llength [get_cells -quiet -hierarchical -filter "REF_NAME == $ref"]]"
+    }
+    close $f
+    close_project
+    puts NTRPU_ATTENTION_PROJECTION_MEMORY_SYNTH_R2_EXPORTED
+}
+if {[llength $argv]!=1 || [llength [get_projects -quiet]]} {exit 1}
+if {[catch {attention_projection_memory_synth_recovery [lindex $argv 0]} message options]} {
+    puts stderr $message
+    if {[dict exists $options -errorinfo]} {puts stderr [dict get $options -errorinfo]}
+    exit 1
+}
+exit 0

@@ -1,0 +1,207 @@
+{
+  "rows": 1047,
+  "scenarios": [
+    {
+      "id": 0,
+      "name": "value_retained_terminal_1_pause_1",
+      "first_vector": 0,
+      "fault_expected": false,
+      "last_vector": 12,
+      "reference_fault": false,
+      "peak_tags": 1,
+      "peak_reads": 2,
+      "peak_span_bytes": 68
+    },
+    {
+      "id": 1,
+      "name": "value_retained_terminal_1_pause_257",
+      "first_vector": 13,
+      "fault_expected": false,
+      "last_vector": 281,
+      "reference_fault": false,
+      "peak_tags": 1,
+      "peak_reads": 2,
+      "peak_span_bytes": 68
+    },
+    {
+      "id": 2,
+      "name": "value_retained_terminal_0_pause_1",
+      "first_vector": 282,
+      "fault_expected": false,
+      "last_vector": 294,
+      "reference_fault": false,
+      "peak_tags": 1,
+      "peak_reads": 1,
+      "peak_span_bytes": 80
+    },
+    {
+      "id": 3,
+      "name": "value_retained_terminal_0_pause_257",
+      "first_vector": 295,
+      "fault_expected": false,
+      "last_vector": 563,
+      "reference_fault": false,
+      "peak_tags": 1,
+      "peak_reads": 1,
+      "peak_span_bytes": 80
+    },
+    {
+      "id": 4,
+      "name": "value_late_discontinue_terminal_1",
+      "first_vector": 564,
+      "fault_expected": true,
+      "last_vector": 591,
+      "reference_fault": true,
+      "peak_tags": 1,
+      "peak_reads": 2,
+      "peak_span_bytes": 68
+    },
+    {
+      "id": 5,
+      "name": "value_late_discontinue_terminal_0",
+      "first_vector": 592,
+      "fault_expected": true,
+      "last_vector": 619,
+      "reference_fault": true,
+      "peak_tags": 1,
+      "peak_reads": 1,
+      "peak_span_bytes": 80
+    },
+    {
+      "id": 6,
+      "name": "value_replaced_incomplete_context",
+      "first_vector": 620,
+      "fault_expected": true,
+      "last_vector": 665,
+      "reference_fault": true,
+      "peak_tags": 2,
+      "peak_reads": 2,
+      "peak_span_bytes": 84
+    },
+    {
+      "id": 7,
+      "name": "value_zero_count_chain_offset_0",
+      "first_vector": 666,
+      "fault_expected": true,
+      "last_vector": 739,
+      "reference_fault": true,
+      "peak_tags": 1,
+      "peak_reads": 1,
+      "peak_span_bytes": 32
+    },
+    {
+      "id": 8,
+      "name": "value_zero_count_chain_offset_1",
+      "first_vector": 740,
+      "fault_expected": true,
+      "last_vector": 813,
+      "reference_fault": true,
+      "peak_tags": 1,
+      "peak_reads": 1,
+      "peak_span_bytes": 31
+    },
+    {
+      "id": 9,
+      "name": "value_zero_count_chain_offset_2",
+      "first_vector": 814,
+      "fault_expected": true,
+      "last_vector": 887,
+      "reference_fault": true,
+      "peak_tags": 1,
+      "peak_reads": 1,
+      "peak_span_bytes": 30
+    },
+    {
+      "id": 10,
+      "name": "value_zero_count_chain_offset_3",
+      "first_vector": 888,
+      "fault_expected": true,
+      "last_vector": 961,
+      "reference_fault": true,
+      "peak_tags": 1,
+      "peak_reads": 1,
+      "peak_span_bytes": 29
+    },
+    {
+      "id": 11,
+      "name": "value_unknown_rq_address_x",
+      "first_vector": 962,
+      "fault_expected": true,
+      "last_vector": 973,
+      "reference_fault": true,
+      "peak_tags": 0,
+      "peak_reads": 0,
+      "peak_span_bytes": 0
+    },
+    {
+      "id": 12,
+      "name": "value_unknown_rc_count_x",
+      "first_vector": 974,
+      "fault_expected": true,
+      "last_vector": 986,
+      "reference_fault": true,
+      "peak_tags": 1,
+      "peak_reads": 1,
+      "peak_span_bytes": 32
+    },
+    {
+      "id": 13,
+      "name": "value_unknown_rq_address_z",
+      "first_vector": 987,
+      "fault_expected": true,
+      "last_vector": 998,
+      "reference_fault": true,
+      "peak_tags": 0,
+      "peak_reads": 0,
+      "peak_span_bytes": 0
+    },
+    {
+      "id": 14,
+      "name": "value_unknown_rc_count_z",
+      "first_vector": 999,
+      "fault_expected": true,
+      "last_vector": 1011,
+      "reference_fault": true,
+      "peak_tags": 1,
+      "peak_reads": 1,
+      "peak_span_bytes": 32
+    },
+    {
+      "id": 15,
+      "name": "value_count_sum_saturation_across_beats",
+      "first_vector": 1012,
+      "fault_expected": true,
+      "last_vector": 1026,
+      "reference_fault": true,
+      "peak_tags": 0,
+      "peak_reads": 0,
+      "peak_span_bytes": 0
+    },
+    {
+      "id": 16,
+      "name": "value_cold_reset_during_detached_payload",
+      "first_vector": 1027,
+      "fault_expected": false,
+      "last_vector": 1039,
+      "reference_fault": false,
+      "peak_tags": 1,
+      "peak_reads": 2,
+      "peak_span_bytes": 68
+    },
+    {
+      "id": 17,
+      "name": "value_after_cold_reset_reuses_tag",
+      "first_vector": 1040,
+      "fault_expected": false,
+      "last_vector": 1046,
+      "reference_fault": false,
+      "peak_tags": 1,
+      "peak_reads": 1,
+      "peak_span_bytes": 4
+    }
+  ],
+  "vectors_sha256": "91798bdfe236aba55c72021d5a53daee3a9f4785df2e41c5bfeba2eec50dde22",
+  "generator_sha256": "0663167fbafdc9a459dbd1903e4418c5609c6c132893b7799c9713e3f18ae212",
+  "native_rows": 0,
+  "scope": "Raw symbolic value lifetime supplement; Python before faults and independent R7 for every post-fault row. Explicit x/z and cold cancellation during retained payload."
+}

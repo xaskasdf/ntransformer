@@ -1,0 +1,338 @@
+`timescale 1ns / 1ps
+// Actual AMD AXI-Lite CDC + retained ledgers and management mailboxes.
+// Peer/host behavioral drivers are protocol fixtures; no PCIe/MIG instance.
+module ntrpu_drain_axil_fixture #(parameter integer DEVICE_PERIOD_PS=5000,MODE=0)(
+    input wire mgmt_clk,section_request,release_forward,release_local,host_enable,
+    input wire [63:0] generation,tag,
+    output reg ready_to_close=0,forward_held=0,local_held=0,drained=0,
+    output wire host_clk_o,cold_o,section_ack_o,local_idle_o,request_present_o,reply_pending_o,
+    output wire [1:0] source_faults_o,output wire section_fault_o
+);
+    reg host_clk=0,device_clk=0;wire host_run=host_enable,device_run=1;
+    initial begin #0.7;forever begin #3.5;if(host_run)host_clk=~host_clk;end end
+    initial begin #1.1;forever begin #(DEVICE_PERIOD_PS/2000.0);if(device_run)device_clk=~device_clk;end end
+    reg cold=0,actuator_cold=0,hold_request=0,phase_valid=0;
+    reg [2:0] phase_kind=0;
+    reg [63:0] phase_tag=64'h300000000;
+    wire hn,dn,hdm,ddm,hold_reset,phase_ack,host_up,device_up;
+    wire [2:0] ack_kind,actuator_state;
+    wire [63:0] ack_gen,ack_tag;
+    // The fixture manager/subordinate use the same reset rails. External peer
+    // phase inputs are held true here; independent negative tests cover them.
+    ntrpu_local_reset_actuator actuator(
+        .mgmt_clk(mgmt_clk),.host_clk(host_clk),.device_clk(device_clk),.cold_rst_n(actuator_cold),
+        .req_valid(phase_valid),.hold_request(hold_request),.peers_held(1'b1),.peers_ready(1'b1),
+        .req_kind(phase_kind),.req_generation(64'h100000001),.req_tag(phase_tag),
+        .ack_valid(phase_ack),.ack_kind(ack_kind),.ack_generation(ack_gen),.ack_tag(ack_tag),
+        .host_reset_n(hn),.device_reset_n(dn),.peers_reset_req(hold_reset),
+        .host_held(hdm),.device_held(ddm),.host_up(host_up),.device_up(device_up),.state_debug(actuator_state));
+    integer held_h=0,held_d=0;
+    always @(posedge host_clk)if(!hn)held_h=held_h+1;
+    always @(posedge device_clk)if(!dn)held_d=held_d+1;
+
+    reg [31:0] u_awaddr=0,u_wdata=0,u_araddr=0;
+    reg [3:0] u_wstrb=15;
+    reg u_awvalid=0,u_wvalid=0,u_bready=0,u_arvalid=0,u_rready=0;
+    wire u_awready,u_wready,u_bvalid,u_arready,u_rvalid;
+    wire [1:0] u_bresp,u_rresp;
+    wire [31:0] u_rdata;
+    wire [31:0] d_awaddr,d_wdata,d_araddr;
+    wire [3:0] d_wstrb;
+    wire [2:0] d_awprot,d_arprot;
+    wire d_awvalid,d_wvalid,d_bready,d_arvalid,d_rready;
+    wire d_awready,d_wready,d_arready;
+    reg d_bvalid=0,d_rvalid=0;
+    reg [1:0] d_bresp=0,d_rresp=0,read_code=0;
+    reg [31:0] d_rdata=0;
+    wire [31:0] h_awaddr,h_wdata,h_araddr,h_rdata;
+    wire [2:0] h_awprot,h_arprot;
+    wire [3:0] h_wstrb;
+    wire [1:0] h_bresp,h_rresp;
+    wire h_awvalid,h_wvalid,h_bready,h_arvalid,h_rready;
+    wire h_awready,h_wready,h_bvalid,h_arready,h_rvalid;
+    wire c_bvalid,c_bready,c_rvalid,c_rready;
+    wire [1:0] c_bresp,c_rresp;
+    wire [31:0] c_rdata;
+    wire [2:0] guard_fault_sources;
+    wire [7:0] guard_aw_pending,guard_w_pending,guard_ar_pending;
+    wire shutdown_request;
+    wire shutdown_active,shutdown_requested,wr_shutdown,rd_shutdown,irq,wr_irq,rd_irq,manager_reset_n;
+    ntrpu_reset_release manager_cold_release(.clk(host_clk),.hold_async(!cold),.released(manager_reset_n));
+
+    wire [31:0] g_awaddr,g_wdata,g_araddr,g_rdata;
+    wire [2:0] g_awprot,g_arprot;
+    wire [3:0] g_wstrb;
+    wire [1:0] g_bresp,g_rresp,gate_state;
+    wire g_awvalid,g_wvalid,g_bready,g_arvalid,g_rready;
+    wire g_awready,g_wready,g_bvalid,g_arready,g_rvalid;
+    wire producer_fenced,gate_ack,local_idle,gate_fault,proof_request;
+    wire [63:0] proof_tag,gate_tag;
+    wire [7:0] ga,gw,gq,aw_left,w_left;
+    wire ar_left;
+    wire request=section_request;
+    wire [3:0] fault_mgmt;
+    wire pair_ack,section_pair,upstream_certificate,hcert,dcert,hbusy,dbusy,ubusy,hfault,dfault;
+    wire [3:0] ha=section.certificate.ha,hw=section.certificate.hw,hq=section.certificate.hq;
+    wire [3:0] da=section.certificate.da,dw=section.certificate.dw,dq=section.certificate.dq;
+    wire [7:0] cert_diag;
+    assign hcert=cert_diag[7];assign dcert=cert_diag[6];
+    wire [1:0] gate_fault_sources;
+    ntrpu_axil_fence_section_r3 section(
+        .host_clk(host_clk),
+        .cold_rst_n(cold),
+        .close_host(shutdown_request),
+        .host_proof_request(proof_request),
+        .host_proof_tag(proof_tag),
+        .s_awaddr(u_awaddr),
+        .s_wdata(u_wdata),
+        .s_araddr(u_araddr),
+        .s_awprot(3'b010),
+        .s_arprot(3'b101),
+        .s_wstrb(u_wstrb),
+        .s_awvalid(u_awvalid),
+        .s_wvalid(u_wvalid),
+        .s_bready(u_bready),
+        .s_arvalid(u_arvalid),
+        .s_rready(u_rready),
+        .s_awready(u_awready),
+        .s_wready(u_wready),
+        .s_bvalid(u_bvalid),
+        .s_arready(u_arready),
+        .s_rvalid(u_rvalid),
+        .s_bresp(u_bresp),
+        .s_rresp(u_rresp),
+        .s_rdata(u_rdata),
+        .m_awaddr(g_awaddr),
+        .m_wdata(g_wdata),
+        .m_araddr(g_araddr),
+        .m_awprot(g_awprot),
+        .m_arprot(g_arprot),
+        .m_wstrb(g_wstrb),
+        .m_awvalid(g_awvalid),
+        .m_wvalid(g_wvalid),
+        .m_bready(g_bready),
+        .m_arvalid(g_arvalid),
+        .m_rready(g_rready),
+        .m_awready(g_awready),
+        .m_wready(g_wready),
+        .m_bvalid(g_bvalid),
+        .m_arready(g_arready),
+        .m_rvalid(g_rvalid),
+        .m_bresp(g_bresp),
+        .m_rresp(g_rresp),
+        .m_rdata(g_rdata),
+        .source_fenced(producer_fenced),
+        .drain_ack(gate_ack),
+        .drain_tag(gate_tag),
+        .local_idle(local_idle),
+        .protocol_fault(gate_fault),
+        .aw_pending(ga),
+        .w_pending(gw),
+        .ar_pending(gq),
+        .aw_left(aw_left),
+        .w_left(w_left),
+        .ar_left(ar_left),
+        .state_debug(gate_state),
+        .mgmt_clk(mgmt_clk),
+        .device_clk(device_clk),
+        .req_valid(request),
+        .generation(generation),
+        .tag(tag),
+        .shutdown_active(shutdown_active),
+        .host_requests({h_awvalid,h_awready,h_wvalid,h_wready,h_arvalid,h_arready}),
+        .c_bvalid(c_bvalid),.c_bready(c_bready),.c_bresp(c_bresp),
+        .c_rvalid(c_rvalid),.c_rready(c_rready),.c_rresp(c_rresp),.c_rdata(c_rdata),
+        .h_bvalid(h_bvalid),.h_bready(h_bready),.h_bresp(h_bresp),
+        .h_rvalid(h_rvalid),.h_rready(h_rready),.h_rresp(h_rresp),.h_rdata(h_rdata),
+        .guard_fault_sources(guard_fault_sources),.guard_aw_pending(guard_aw_pending),
+        .guard_w_pending(guard_w_pending),.guard_ar_pending(guard_ar_pending),
+        .device_bus({d_awvalid,d_awready,d_wvalid,d_wready,d_bvalid,d_bready,d_arvalid,d_arready,d_rvalid,d_rready}),
+        .section_ack(pair_ack),
+        .upstream_certificate(upstream_certificate),
+        .pair_certificate(section_pair),
+        .host_fault(hfault),
+        .device_fault(dfault),
+        .fault_mgmt(fault_mgmt),
+        .host_mailbox_busy(ubusy),
+        .pair_host_busy(hbusy),
+        .pair_device_busy(dbusy),
+        .diagnostics(cert_diag),
+        .fault_sources(gate_fault_sources));
+    ntrpu_host_axil_shutdown shutdown_manager(
+        .clk(host_clk),.resetn(manager_reset_n),.request_shutdown(shutdown_request),
+        .shutdown_requested(shutdown_requested),.in_shutdown(shutdown_active),
+        .wr_in_shutdown(wr_shutdown),.rd_in_shutdown(rd_shutdown),.irq(irq),.wr_irq(wr_irq),.rd_irq(rd_irq),
+        .s_axi_awaddr(g_awaddr),.s_axi_awprot(g_awprot),.s_axi_awvalid(g_awvalid),.s_axi_awready(g_awready),
+        .s_axi_wdata(g_wdata),.s_axi_wstrb(g_wstrb),.s_axi_wvalid(g_wvalid),.s_axi_wready(g_wready),
+        .s_axi_bresp(g_bresp),.s_axi_bvalid(g_bvalid),.s_axi_bready(g_bready),
+        .s_axi_araddr(g_araddr),.s_axi_arprot(g_arprot),.s_axi_arvalid(g_arvalid),.s_axi_arready(g_arready),
+        .s_axi_rdata(g_rdata),.s_axi_rresp(g_rresp),.s_axi_rvalid(g_rvalid),.s_axi_rready(g_rready),
+        .m_axi_awaddr(h_awaddr),.m_axi_awprot(h_awprot),.m_axi_awvalid(h_awvalid),.m_axi_awready(h_awready),
+        .m_axi_wdata(h_wdata),.m_axi_wstrb(h_wstrb),.m_axi_wvalid(h_wvalid),.m_axi_wready(h_wready),
+        .m_axi_bresp(h_bresp),.m_axi_bvalid(h_bvalid),.m_axi_bready(h_bready),
+        .m_axi_araddr(h_araddr),.m_axi_arprot(h_arprot),.m_axi_arvalid(h_arvalid),.m_axi_arready(h_arready),
+        .m_axi_rdata(h_rdata),.m_axi_rresp(h_rresp),.m_axi_rvalid(h_rvalid),.m_axi_rready(h_rready));
+    wire ufault,upstream_idle;
+    wire [7:0] ua,uw,uq;
+    ntrpu_axil_drain_monitor #(.COUNT_WIDTH(8)) upstream_ledger(
+        .clk(host_clk),.cold_rst_n(cold),.req_valid(1'b0),.req_tag(64'b0),.source_fenced(1'b0),
+        .awvalid(u_awvalid),.awready(u_awready),.wvalid(u_wvalid),.wready(u_wready),
+        .bvalid(u_bvalid),.bready(u_bready),.arvalid(u_arvalid),.arready(u_arready),
+        .rvalid(u_rvalid),.rready(u_rready),.ack_valid(),.ack_tag(),.protocol_fault(ufault),
+        .aw_pending(ua),.w_pending(uw),.ar_pending(uq));
+    assign upstream_idle=!ufault && {ua,uw,uq}==0 && !(u_awvalid || u_wvalid || u_arvalid || u_bvalid || u_rvalid);
+    ntrpu_axil_cdc_recode cdc(
+        .s_axi_aclk(host_clk),.s_axi_aresetn(hn),.m_axi_aclk(device_clk),.m_axi_aresetn(dn),
+        .s_axi_awaddr(h_awaddr),.s_axi_wdata(h_wdata),.s_axi_araddr(h_araddr),
+        .s_axi_awprot(h_awprot),.s_axi_arprot(h_arprot),.s_axi_wstrb(h_wstrb),
+        .s_axi_awvalid(h_awvalid),.s_axi_wvalid(h_wvalid),.s_axi_bready(c_bready),.s_axi_arvalid(h_arvalid),.s_axi_rready(c_rready),
+        .s_axi_awready(h_awready),.s_axi_wready(h_wready),.s_axi_bvalid(c_bvalid),.s_axi_arready(h_arready),.s_axi_rvalid(c_rvalid),
+        .s_axi_bresp(c_bresp),.s_axi_rresp(c_rresp),.s_axi_rdata(c_rdata),
+        .m_axi_awaddr(d_awaddr),.m_axi_wdata(d_wdata),.m_axi_araddr(d_araddr),
+        .m_axi_awprot(d_awprot),.m_axi_arprot(d_arprot),.m_axi_wstrb(d_wstrb),
+        .m_axi_awvalid(d_awvalid),.m_axi_wvalid(d_wvalid),.m_axi_bready(d_bready),.m_axi_arvalid(d_arvalid),.m_axi_rready(d_rready),
+        .m_axi_awready(d_awready),.m_axi_wready(d_wready),.m_axi_bvalid(d_bvalid),.m_axi_arready(d_arready),.m_axi_rvalid(d_rvalid),
+        .m_axi_bresp(d_bresp),.m_axi_rresp(d_rresp),.m_axi_rdata(d_rdata));
+
+    reg aw_seen=0,w_seen=0,r_pending=0,allow_b=1,allow_r=1,allow_aw=1,allow_w=1;
+    reg [31:0] aw_saved=0,w_saved=0;
+    reg [3:0] strb_saved=0;
+    reg [31:0] mem[0:8191];
+    initial for(integer n=0;n<8192;n=n+1)mem[n]=32'h13579bdf ^ (n*32'h01020408);
+    assign d_awready=dn && allow_aw && !aw_seen && !d_bvalid;
+    assign d_wready=dn && allow_w && !w_seen && !d_bvalid;
+    assign d_arready=dn && !r_pending;
+    always @(posedge device_clk)begin
+        if(!dn)begin aw_seen<=0;w_seen<=0;r_pending<=0;d_bvalid<=0;d_rvalid<=0;end
+        else begin
+            if(d_awvalid && d_awready)begin aw_seen<=1;aw_saved<=d_awaddr;end
+            if(d_wvalid && d_wready)begin w_seen<=1;w_saved<=d_wdata;strb_saved<=d_wstrb;end
+            if(aw_seen && w_seen && !d_bvalid && allow_b)begin
+                for(integer b=0;b<4;b=b+1)if(strb_saved[b])mem[aw_saved[14:2]][b*8+:8]<=w_saved[b*8+:8];
+                d_bvalid<=1;d_bresp<=aw_saved[3:2];
+            end
+            if(d_bvalid && d_bready)begin d_bvalid<=0;aw_seen<=0;w_seen<=0;end
+            if(d_arvalid && d_arready)begin r_pending<=1;d_rdata<=mem[d_araddr[14:2]];d_rresp<=d_araddr[3:2];end
+            if(r_pending && !d_rvalid && allow_r)d_rvalid<=1;
+            if(d_rvalid && d_rready)begin d_rvalid<=0;r_pending<=0;end
+        end
+    end
+
+
+
+    // Read-only diagnostic probes of the installed public AMD RTL. They are
+    // NOT inputs to the hardware certificate/reset controller.
+`define NATIVE cdc.bridge.inst.gen_clock_conv.gen_async_lite_conv
+`define CHANNEL_STATE(n) {`NATIVE.n.src_state,`NATIVE.n.dest_state,`NATIVE.n.src_send,`NATIVE.n.src_rcv,`NATIVE.n.dest_req,`NATIVE.n.dest_ack}
+    wire [39:0] native_state={`CHANNEL_STATE(clock_conv_lite_fwd_aw),`CHANNEL_STATE(clock_conv_lite_fwd_w),`CHANNEL_STATE(clock_conv_lite_resp_b),`CHANNEL_STATE(clock_conv_lite_fwd_ar),`CHANNEL_STATE(clock_conv_lite_resp_r)};
+`undef CHANNEL_STATE
+`undef NATIVE
+    integer scenario=MODE,passes=0;
+    reg fault_test_active=0,record_revocation=0;
+        time first_fault_ps=0,revoked_ps=0;
+    integer uaw=0,uwc=0,ubc=0,uar=0,urc=0,daw=0,dwc=0,dbc=0,dar=0,drc=0;
+    task check(input bit ok,input string name);if(!ok)$fatal(1,"SHUT_ASSERT case=%0d %s",scenario,name);endtask
+    task mtick(input integer n);repeat(n)@(negedge mgmt_clk);endtask
+    task htick(input integer n);repeat(n)@(negedge host_clk);endtask
+    task dtick(input integer n);repeat(n)@(negedge device_clk);endtask
+    task mark(input string name);
+        $display("SHUT_EVENT case=%0d name=%s ps=%0.0f hcert=%b dcert=%b ack=%b ha=%0d hw=%0d hq=%0d da=%0d dw=%0d dq=%0d hn=%b dn=%b hd=%b dd=%b held_h=%0d held_d=%0d native=%h shut=%b ua=%0d uw=%0d uq=%0d up_idle=%b manager_reset_n=%b",scenario,name,$realtime*1000,hcert,dcert,pair_ack,ha,hw,hq,da,dw,dq,hn,dn,hdm,ddm,held_h,held_d,native_state,shutdown_active,ua,uw,uq,upstream_idle,manager_reset_n);
+    endtask
+    task take_aw(input [31:0] address);
+        integer n;begin @(negedge host_clk);u_awaddr=address;u_awvalid=1;n=0;
+        @(posedge host_clk);while(!u_awready)begin @(posedge host_clk);n=n+1;check(n<8000,"AW timeout");end
+        @(negedge host_clk);u_awvalid=0;end
+    endtask
+    task take_w(input [31:0] data,input [3:0] strb);
+        integer n;begin @(negedge host_clk);u_wdata=data;u_wstrb=strb;u_wvalid=1;n=0;
+        @(posedge host_clk);while(!u_wready)begin @(posedge host_clk);n=n+1;check(n<8000,"W timeout");end
+        @(negedge host_clk);u_wvalid=0;end
+    endtask
+    task take_b(input [1:0] expected);
+        integer n;begin @(negedge host_clk);u_bready=1;n=0;
+        @(posedge host_clk);while(!u_bvalid)begin @(posedge host_clk);n=n+1;check(n<8000,"B timeout");end
+        check(u_bresp==expected,"write response preserved");@(negedge host_clk);u_bready=0;end
+    endtask
+    task take_ar(input [31:0] address,input [1:0] response);
+        integer n;begin read_code=response;@(negedge host_clk);u_araddr=address;u_arvalid=1;n=0;
+        @(posedge host_clk);while(!u_arready)begin @(posedge host_clk);n=n+1;check(n<8000,"AR timeout");end
+        @(negedge host_clk);u_arvalid=0;end
+    endtask
+    task take_r(input [31:0] expected,input [1:0] response);
+        integer n;begin @(negedge host_clk);u_rready=1;n=0;
+        @(posedge host_clk);while(!u_rvalid)begin @(posedge host_clk);n=n+1;check(n<8000,"R timeout");end
+        check((response==2 || u_rdata==expected) && u_rresp==response,"read data and response preserved");@(negedge host_clk);u_rready=0;end
+    endtask
+    task start_hold;
+        begin @(negedge mgmt_clk);held_h=0;held_d=0;phase_tag=phase_tag+1;
+        phase_kind=2;phase_valid=1;hold_request=1;mtick(8);
+        check(hold_reset && !hn && !dn,"actuator asserts both rails");
+        $display("AUTO_RESET case=%0d event=START ps=%0.0f tag=%h",MODE,$realtime*1000,phase_tag);end
+    endtask
+    task release_reset;
+        integer n;begin n=0;while(!phase_ack)begin mtick(1);n=n+1;check(n<2000,"held phase ACK");end
+        check(ack_kind==2 && ack_tag==phase_tag && ack_gen==64'h100000001 && held_h>=64 && held_d>=64,"held identity and actual edges");
+        $display("AUTO_RESET case=%0d event=HELD ps=%0.0f tag=%h he=%0d de=%0d",MODE,$realtime*1000,phase_tag,held_h,held_d);
+        @(negedge mgmt_clk);phase_tag=phase_tag+1;phase_kind=5;hold_request=0;#0.001;check(!phase_ack,"no old held response on ready phase");
+        n=0;while(!phase_ack)begin mtick(1);n=n+1;check(n<2000,"ready phase ACK");end
+        check(ack_kind==5 && ack_tag==phase_tag && ack_gen==64'h100000001 && hn && dn && !hold_reset,"ready identity and release");
+        $display("AUTO_RESET case=%0d event=READY ps=%0.0f tag=%h",MODE,$realtime*1000,phase_tag);
+        phase_valid=0;dtick(12);htick(12);end
+    endtask
+    always @(posedge host_clk)if(manager_reset_n)begin
+        if(u_awvalid && u_awready)begin uaw=uaw+1;$display("FENCE_BUS case=%0d close=%b side=U channel=AW ps=%0.0f addr=%h",scenario,shutdown_request,$realtime*1000,u_awaddr);end
+        if(u_wvalid && u_wready)begin uwc=uwc+1;$display("FENCE_BUS case=%0d close=%b side=U channel=W ps=%0.0f data=%h strb=%h",scenario,shutdown_request,$realtime*1000,u_wdata,u_wstrb);end
+        if(u_bvalid && u_bready)begin ubc=ubc+1;$display("FENCE_BUS case=%0d close=%b side=U channel=B ps=%0.0f resp=%h",scenario,shutdown_request,$realtime*1000,u_bresp);end
+        if(u_arvalid && u_arready)begin uar=uar+1;$display("FENCE_BUS case=%0d close=%b side=U channel=AR ps=%0.0f addr=%h",scenario,shutdown_request,$realtime*1000,u_araddr);end
+        if(u_rvalid && u_rready)begin urc=urc+1;$display("FENCE_BUS case=%0d close=%b side=U channel=R ps=%0.0f data=%h resp=%h",scenario,shutdown_request,$realtime*1000,u_rdata,u_rresp);end
+    end
+    integer haw=0,hwc=0,hbc=0,har=0,hrc=0;
+    always @(posedge host_clk)if(hn)begin
+        if(h_awvalid && h_awready)begin haw=haw+1;$display("FENCE_BUS case=%0d close=%b side=H channel=AW ps=%0.0f addr=%h",scenario,shutdown_request,$realtime*1000,h_awaddr);end
+        if(h_wvalid && h_wready)begin hwc=hwc+1;$display("FENCE_BUS case=%0d close=%b side=H channel=W ps=%0.0f data=%h strb=%h",scenario,shutdown_request,$realtime*1000,h_wdata,h_wstrb);end
+        if(h_bvalid && h_bready)begin hbc=hbc+1;$display("FENCE_BUS case=%0d close=%b side=H channel=B ps=%0.0f resp=%h",scenario,shutdown_request,$realtime*1000,h_bresp);end
+        if(h_arvalid && h_arready)begin har=har+1;$display("FENCE_BUS case=%0d close=%b side=H channel=AR ps=%0.0f addr=%h",scenario,shutdown_request,$realtime*1000,h_araddr);end
+        if(h_rvalid && h_rready)begin hrc=hrc+1;$display("FENCE_BUS case=%0d close=%b side=H channel=R ps=%0.0f data=%h resp=%h",scenario,shutdown_request,$realtime*1000,h_rdata,h_rresp);end
+    end
+    always @(posedge device_clk)if(dn)begin
+        if(d_awvalid && d_awready)begin daw=daw+1;$display("FENCE_BUS case=%0d close=%b side=D channel=AW ps=%0.0f addr=%h",scenario,shutdown_request,$realtime*1000,d_awaddr);end
+        if(d_wvalid && d_wready)begin dwc=dwc+1;$display("FENCE_BUS case=%0d close=%b side=D channel=W ps=%0.0f data=%h strb=%h",scenario,shutdown_request,$realtime*1000,d_wdata,d_wstrb);end
+        if(d_bvalid && d_bready)begin dbc=dbc+1;$display("FENCE_BUS case=%0d close=%b side=D channel=B ps=%0.0f resp=%h",scenario,shutdown_request,$realtime*1000,d_bresp);end
+        if(d_arvalid && d_arready)begin dar=dar+1;$display("FENCE_BUS case=%0d close=%b side=D channel=AR ps=%0.0f addr=%h",scenario,shutdown_request,$realtime*1000,d_araddr);end
+        if(d_rvalid && d_rready)begin drc=drc+1;$display("FENCE_BUS case=%0d close=%b side=D channel=R ps=%0.0f data=%h resp=%h",scenario,shutdown_request,$realtime*1000,d_rdata,d_rresp);end
+    end
+
+    assign host_clk_o=host_clk;assign cold_o=cold;
+    assign section_ack_o=pair_ack;assign local_idle_o=local_idle;
+    assign request_present_o=u_awvalid || u_wvalid || u_arvalid;
+    assign reply_pending_o=u_bvalid || u_rvalid;
+    assign source_faults_o=gate_fault_sources;assign section_fault_o=|fault_mgmt;
+    function [31:0] expected_word(input integer n);
+        reg [31:0] data,result;
+        begin data=32'ha1b2c3d4+n;result=32'h13579bdf ^ ((32'h1c00+n*4)*32'h01020408);
+            for(integer b=0;b<4;b=b+1)if(((n+1)>>b)&1)result[b*8+:8]=data[b*8+:8];
+            expected_word=result;
+        end
+    endfunction
+    initial begin
+        #300;actuator_cold=1;mtick(3);start_hold();release_reset();cold=1;htick(64);
+        for(integer n=0;n<4;n=n+1)begin
+            take_aw(32'h7000+n*16);take_w(32'ha1b2c3d4+n,n+1);take_b(0);
+            take_ar(32'h7000+n*16,0);take_r(expected_word(n),0);
+        end
+        take_aw(32'h7400);take_w(32'h89abcdef,10);take_ar(32'h7000,0);
+        ready_to_close=1;wait(section_request);wait(u_bvalid && u_rvalid);#0.001;
+        check(!pair_ack,"held forwarded B/R prevent section certificate");forward_held=1;
+        wait(release_forward);
+        fork take_b(0);take_r(expected_word(0),0);join
+        wait(pair_ack);htick(2);
+        take_aw(32'h9000);take_w(32'haabbccdd,5);take_ar(32'h9000,2);
+        wait(u_bvalid && u_rvalid);#0.001;
+        check(pair_ack && !local_idle,"actual local replies excluded from section certificate");local_held=1;
+        wait(release_local);fork take_b(2);take_r(0,2);join
+        wait(local_idle);htick(4);
+        check(uaw==6 && uwc==6 && ubc==6 && uar==6 && urc==6,"AXIL upstream transfer counts");
+        check(daw==5 && dwc==5 && dbc==5 && dar==5 && drc==5,"AXIL forwarded transfer counts");
+        check(!gate_fault && fault_mgmt==0,"AXIL healthy throughout integration");drained=1;
+    end
+endmodule

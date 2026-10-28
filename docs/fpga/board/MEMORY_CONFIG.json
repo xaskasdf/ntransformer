@@ -1,0 +1,223 @@
+{
+  "schema_version": 1,
+  "review_date": "2026-10-02",
+  "status": "blocked_exact_module_not_in_installed_catalog",
+  "profile": "two_64gib_2rx4_rdimm_per_channel",
+  "manufacturer": "Micron",
+  "module_part": "MTA36ASF8G72PZ-3G2F1",
+  "module_revision_and_process_code": null,
+  "datasheet_path": "artifacts/ntrpu-board-vivado/20261002T100234Z-V2-generic-geometry/20261002T100234Z-V2-generic-geometry/vendor-inputs/micron-rdimm-f1-addendum.pdf",
+  "spd_path": null,
+  "simulation_model_path": null,
+  "documentary_candidate_attributes": {
+    "source": "https://my.micron.com/partners/odm-partners/aic",
+    "type": "RDIMM",
+    "capacity_bytes_per_module": 68719476736,
+    "ranks_per_module": 2,
+    "component_width_bits": 4,
+    "component_density_gibits": 16,
+    "module_speed_label": "DDR4-3200",
+    "qualification": "Micron server AVL and Rev F family addendum; not NTRPU controller qualification",
+    "family_addendum": {
+      "document": "asf36c8gx72pz.pdf Rev. F 08/2021, pages 1-2",
+      "source": "https://www.rxelectronics.si/datasheet/33/mta36asf8g72pz-3g2b2.pdf",
+      "sha256": "e71fd83003c6857b31fed567a663c361113808817702510694f159c99800d8eb",
+      "author": "Micron; retrieved from distributor mirror",
+      "row_bits": 18,
+      "column_bits": 10,
+      "bank_bits": 2,
+      "bank_group_bits": 2,
+      "base_component": "MT40A4G4",
+      "f1_mentioned_as_part_example": true,
+      "exact_spd_and_model_available": false
+    }
+  },
+  "requested_channel": {
+    "slots_populated": 2,
+    "capacity_bytes": 137438953472,
+    "payload_width_bits": 64,
+    "physical_width_bits": 72,
+    "ecc": true,
+    "axi_data_width_bits": 512,
+    "required_axi_byte_address_width_bits": 37,
+    "memory_period_ps_exploratory": 1250,
+    "rejected_memory_period_ps_exploratory": 833,
+    "reference_clock_period_ps_exploratory": 4000,
+    "qualified_data_rate_mtps": null,
+    "geometry": null,
+    "timings": null,
+    "rcd_register_values": null,
+    "reset_sequence_and_board_clock": null
+  },
+  "controller": {
+    "fpga_part_provisional": "xcvu5p-flva2104-2-i",
+    "tool": "Vivado 2026.1 build 6511674",
+    "vlnv": "xilinx.com:ip:ddr4:2.2",
+    "ip_revision": 30,
+    "exact_part_accepted": false,
+    "reproduction": "tools/ntrpu_board_ddr_candidate.tcl",
+    "evidence_run": "20261002T091508Z-V2-exact-dimm-r2",
+    "generated_target_geometry_checked": false
+  },
+  "generic_geometry_exploration": {
+    "qualified_for_target_dimm": false,
+    "profile": "NTRPU_RDIMM64_GEOMETRY_ONLY",
+    "run": "20261002T100600Z-V2-generic-1600",
+    "result": "targets_generated_and_wrapper_geometry_checked",
+    "memory_period_ps": 1250,
+    "data_rate_mtps": 1600,
+    "timing_source": "AMD mem_v1_4 timingparams.csv 16Gb:sg125E:x4",
+    "generated_ranks": 4,
+    "generated_axi_address_bits": 37,
+    "generated_axi_data_bits": 512,
+    "generated_ecc": true,
+    "derived_useful_capacity_bytes": 137438953472,
+    "wrapper_sha256": "e45398c3b374a3722ff80957183110969b51a4ef8d9770aeebb07d8e818b467e",
+    "checker": "tools/check_ntrpu_ddr_geometry.py",
+    "simulation_pass": true,
+    "pinout_accepted": false,
+    "simulation_evidence": {
+      "capacity_run": "20261002T104404Z-V3-generic-capacity",
+      "capacity_archive_sha256": "a3cd65804c78c9093a4a15b1596305d427100cb28f60299466c56bb75f9f722c",
+      "ecc_run": "20261002T110203Z-V3-generic-ecc",
+      "ecc_archive_sha256": "d67c81ef47d811040967e739ea2bab5260af8670c59bf52f6e36b9b4d493afd7",
+      "timing_overrides": {
+        "CL": 12,
+        "CWL": 9,
+        "tRCD_ps": 15000,
+        "tRP_ps": 15000
+      },
+      "sparse_locations": 36,
+      "address_bits_exercised": [
+        6,
+        36
+      ],
+      "calibration_ps": 28051098,
+      "ecc_test_completion_ps": 48408498,
+      "write_beats": 68,
+      "read_beats": 92,
+      "compared_bytes": 5824,
+      "single_bit_correction": true,
+      "double_bit_detection_with_slverr": true,
+      "interrupt_and_w1c_clear": true,
+      "clean_rewrites_after_injection": true,
+      "physical_reset_recovery_tested": false,
+      "exhaustive_capacity_tested": false,
+      "exact_dimm_qualified": false,
+      "checker": "tools/check_ntrpu_ddr_sim.py --ecc",
+      "limitations": "Generic AMD model, sparse coverage; unsupported assertions and model warnings retained. No physical pinout or timing qualification."
+    },
+    "simulation_pass_scope": "capacity_and_ecc_only; warm_reset_failed",
+    "reset_diagnostic": {
+      "status": "FAIL",
+      "runs": [
+        "20261002T112359Z-V3-generic-reset",
+        "20261002T113227Z-V3-generic-reset-r2"
+      ],
+      "vendor_errors_per_run": 558,
+      "external_reset_ps_latest": 1000000,
+      "rcd_output_reset_low_ps_latest": 2597000,
+      "recalibrated_ps_latest": 77663098,
+      "checker": "tools/check_ntrpu_ddr_sim.py --ecc --reset",
+      "physical_reset_recovery_tested": false,
+      "isolated_model_reset": {
+        "run": "20261002T123042Z-V3-model-reset-widths",
+        "status": "reproduced_with_open_row; functional_reset_not_approved",
+        "model_unchanged_hashes_checked": true,
+        "continuous_clock_period_ps": 1250,
+        "reset_low_ps_cases": [2600000, 200000000],
+        "errors_per_open_row_case": 8,
+        "errors_per_no_open_row_case": 0,
+        "cold_initialization_errors": 0,
+        "full_delay_run": "20261002T130332Z-V3-model-reset-full-delays",
+        "full_cold_reset_ps": 200000000,
+        "full_reset_to_cke_ps": 500000000,
+        "full_delay_open_row_errors": 8,
+        "full_delay_no_open_row_errors": 0,
+        "exact_module_or_silicon_failure_proven": false
+      },
+      "public_component_trace": {
+        "run": "20261002T115825Z-V3-reset-component-trace",
+        "component_interfaces": 72,
+        "reset_low_ps": 2597000,
+        "positive_clock_edges_while_reset": 735,
+        "largest_clock_edge_gap_ps": 1678875,
+        "cke_low_ps": 48718186,
+        "cke_high_ps": 52080186,
+        "status": "diagnostic_only; root_cause_unresolved",
+        "checker": "tools/inspect_ntrpu_ddr_reset_trace.py --components"
+      }
+    },
+    "pin_exploration": {
+      "run": "20261002T113237Z-V3-bank64-remap",
+      "banks": [
+        64,
+        65,
+        66,
+        67
+      ],
+      "port_counts": [
+        46,
+        48,
+        48,
+        12
+      ],
+      "AM17_free": true,
+      "AP17_port": "c0_ddr4_dq[25]",
+      "dcirst_warnings_before_sequencer": 48,
+      "dci_integration": {
+        "unit_run": "20261002T121240Z-V4-dci-unit",
+        "unit_pass": true,
+        "synthesis_run": "20261002T121632Z-V3-dci-integrated-synth",
+        "dcirst_warnings_after_sequencer": 0,
+        "synthesis_completed_before_final_query_error": true,
+        "reference_period_ps": 4000,
+        "dci_pulse_ps": 256000
+      },
+      "placement": {
+        "run": "20261002T123715Z-V3-ddr-place-backbone",
+        "completed": true,
+        "clock_dedicated_route": "BACKBONE on ntrpu_ref_raw_BUFGCE",
+        "pre_route_wns_ns": 0.553,
+        "pre_route_whs_ns": -0.277,
+        "hold_failing_endpoints": 499,
+        "constraint_audit_run": "20261002T124830Z-V3-constraint-audit",
+        "riu_hold_exception_endpoints": 550,
+        "riu_hold_exception_coverage_percent": 100,
+        "timing_closed": false,
+        "board_port_constraints_complete": false
+      },
+      "routing": {
+        "run": "20261002T125230Z-V3-ddr-route",
+        "completed": true,
+        "routable_nets": 70578,
+        "fully_routed_nets": 70578,
+        "routing_error_nets": 0,
+        "wns_ns": 0.334,
+        "whs_ns": 0.011,
+        "wpws_ns": 0.123,
+        "current_timing_constraints_met": true,
+        "board_timing_closed": false,
+        "missing_port_delays": ["sys_rst", "c0_data_compare_error", "c0_ddr4_reset_n", "c0_init_calib_complete"],
+        "bitstream_generated": false
+      },
+      "accepted": false
+    }
+  },
+  "separate_alternatives_not_substituted": [
+    {
+      "part": "M393AAK40B41-CTC",
+      "source": "Vivado installed memparts.csv",
+      "capacity_label": "128GB",
+      "stack_height": 4,
+      "ranks": 2,
+      "component_density_label": "8Gb",
+      "status": "catalog_candidate_only"
+    },
+    {
+      "part": "M393AAG40M32-CYFG0",
+      "source": "MEMORY_FEASIBILITY.md",
+      "status": "documentary_3ds_candidate_not_configured"
+    }
+  ]
+}

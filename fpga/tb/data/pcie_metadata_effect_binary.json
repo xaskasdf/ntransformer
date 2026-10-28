@@ -1,0 +1,7 @@
+{
+  "rows": 12805,
+  "source_evidence_sha256": "1b5edb44abbb8d8925d04b84aacf5f3971481e2e67f15556e24aa03be86da8a6",
+  "vector_sha256": "11c811ace25732cca721cb48385c3c0776d00084b942b6a293660a729c344c04",
+  "generator_sha256": "e861e478b530041cdf952e09cd92b3437b0f264caba5ea020a59aeae8423c8a9",
+  "scope": "Binary inputs and original sequential-reference outputs; 12803 retained raw rows plus final reset and bubble. No X/Z gate-level equivalence claim."
+}

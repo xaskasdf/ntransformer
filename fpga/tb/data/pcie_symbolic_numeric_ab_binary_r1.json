@@ -1,0 +1,573 @@
+{
+  "banks": {
+    "raw_main": {
+      "source": "pcie_request_inventory_r7.txt",
+      "source_sha256": "3fe611730d06843028a1dbdd5a548b892b68a5a480b705184c17df5bcdcf9041",
+      "path": "pcie_symbolic_ced_binary_raw_main_r1.txt",
+      "sha256": "d3f5cc8fc562c5417345ce9c0a2afef85c17acd73746669b515c86ee0a5d5b19",
+      "source_rows": 22339,
+      "rows": 18538,
+      "scenarios": 65,
+      "excluded_whole_scenarios": [
+        {
+          "scenario": "10",
+          "first_row": 343,
+          "rows": 3783
+        },
+        {
+          "scenario": "20",
+          "first_row": 4207,
+          "rows": 9
+        },
+        {
+          "scenario": "30",
+          "first_row": 4295,
+          "rows": 9
+        }
+      ],
+      "unchanged": false
+    },
+    "raw_ownership": {
+      "source": "pcie_rc_ownership_integration.txt",
+      "source_sha256": "5ccac5334769e0a8856caba8e33d179bbadd8239eadbe039d79a71aa711609f1",
+      "path": "pcie_rc_ownership_integration.txt",
+      "sha256": "5ccac5334769e0a8856caba8e33d179bbadd8239eadbe039d79a71aa711609f1",
+      "source_rows": 46356,
+      "rows": 46356,
+      "scenarios": 3872,
+      "excluded_whole_scenarios": [],
+      "unchanged": true
+    },
+    "raw_rq": {
+      "source": "pcie_rq_admission_integration.txt",
+      "source_sha256": "9874f830709f5e9eed61a1235ad87b067eb73f2d41ee0504bb105d74203e34c2",
+      "path": "pcie_rq_admission_integration.txt",
+      "sha256": "9874f830709f5e9eed61a1235ad87b067eb73f2d41ee0504bb105d74203e34c2",
+      "source_rows": 8850,
+      "rows": 8850,
+      "scenarios": 240,
+      "excluded_whole_scenarios": [],
+      "unchanged": true
+    },
+    "raw_prefix": {
+      "source": "pcie_rc_prefix_integration.txt",
+      "source_sha256": "d4c5b30344b46ad60c5239d1b5d24707ac1ef8627b7f20869101b7504b24bd29",
+      "path": "pcie_rc_prefix_integration.txt",
+      "sha256": "d4c5b30344b46ad60c5239d1b5d24707ac1ef8627b7f20869101b7504b24bd29",
+      "source_rows": 544,
+      "rows": 544,
+      "scenarios": 60,
+      "excluded_whole_scenarios": [],
+      "unchanged": true
+    },
+    "raw_lanes": {
+      "source": "pcie_rc_lane_integration_rtl.txt",
+      "source_sha256": "0720aae9bdd2a10da99bb729356110d83557426f82577fce31eb6f78eaefe1a7",
+      "path": "pcie_rc_lane_integration_binary.txt",
+      "sha256": "10495dfe26c02880664ec1c64fd51cf5b969d22d4a3f659b58e05f20407c7024",
+      "source_rows": 984,
+      "rows": 632,
+      "scenarios": 60,
+      "excluded_whole_scenarios": [
+        {
+          "scenario": "60",
+          "first_row": 632,
+          "rows": 11
+        },
+        {
+          "scenario": "61",
+          "first_row": 643,
+          "rows": 11
+        },
+        {
+          "scenario": "62",
+          "first_row": 654,
+          "rows": 11
+        },
+        {
+          "scenario": "63",
+          "first_row": 665,
+          "rows": 11
+        },
+        {
+          "scenario": "64",
+          "first_row": 676,
+          "rows": 11
+        },
+        {
+          "scenario": "65",
+          "first_row": 687,
+          "rows": 11
+        },
+        {
+          "scenario": "66",
+          "first_row": 698,
+          "rows": 11
+        },
+        {
+          "scenario": "67",
+          "first_row": 709,
+          "rows": 11
+        },
+        {
+          "scenario": "68",
+          "first_row": 720,
+          "rows": 11
+        },
+        {
+          "scenario": "69",
+          "first_row": 731,
+          "rows": 11
+        },
+        {
+          "scenario": "70",
+          "first_row": 742,
+          "rows": 11
+        },
+        {
+          "scenario": "71",
+          "first_row": 753,
+          "rows": 11
+        },
+        {
+          "scenario": "72",
+          "first_row": 764,
+          "rows": 11
+        },
+        {
+          "scenario": "73",
+          "first_row": 775,
+          "rows": 11
+        },
+        {
+          "scenario": "74",
+          "first_row": 786,
+          "rows": 11
+        },
+        {
+          "scenario": "75",
+          "first_row": 797,
+          "rows": 11
+        },
+        {
+          "scenario": "76",
+          "first_row": 808,
+          "rows": 11
+        },
+        {
+          "scenario": "77",
+          "first_row": 819,
+          "rows": 11
+        },
+        {
+          "scenario": "78",
+          "first_row": 830,
+          "rows": 11
+        },
+        {
+          "scenario": "79",
+          "first_row": 841,
+          "rows": 11
+        },
+        {
+          "scenario": "80",
+          "first_row": 852,
+          "rows": 11
+        },
+        {
+          "scenario": "81",
+          "first_row": 863,
+          "rows": 11
+        },
+        {
+          "scenario": "82",
+          "first_row": 874,
+          "rows": 11
+        },
+        {
+          "scenario": "83",
+          "first_row": 885,
+          "rows": 11
+        },
+        {
+          "scenario": "84",
+          "first_row": 896,
+          "rows": 11
+        },
+        {
+          "scenario": "85",
+          "first_row": 907,
+          "rows": 11
+        },
+        {
+          "scenario": "86",
+          "first_row": 918,
+          "rows": 11
+        },
+        {
+          "scenario": "87",
+          "first_row": 929,
+          "rows": 11
+        },
+        {
+          "scenario": "88",
+          "first_row": 940,
+          "rows": 11
+        },
+        {
+          "scenario": "89",
+          "first_row": 951,
+          "rows": 11
+        },
+        {
+          "scenario": "90",
+          "first_row": 962,
+          "rows": 11
+        },
+        {
+          "scenario": "91",
+          "first_row": 973,
+          "rows": 11
+        }
+      ],
+      "unchanged": false
+    },
+    "raw_context": {
+      "source": "pcie_symbolic_value_context.txt",
+      "source_sha256": "91798bdfe236aba55c72021d5a53daee3a9f4785df2e41c5bfeba2eec50dde22",
+      "path": "pcie_symbolic_value_context_binary.txt",
+      "sha256": "21b2d4da6db65ee7dbc650e6728246c6a0ff36ee7b6f1150ae71c3e58f80a145",
+      "source_rows": 1047,
+      "rows": 997,
+      "scenarios": 14,
+      "excluded_whole_scenarios": [
+        {
+          "scenario": "11",
+          "first_row": 962,
+          "rows": 12
+        },
+        {
+          "scenario": "12",
+          "first_row": 974,
+          "rows": 13
+        },
+        {
+          "scenario": "13",
+          "first_row": 987,
+          "rows": 12
+        },
+        {
+          "scenario": "14",
+          "first_row": 999,
+          "rows": 13
+        }
+      ],
+      "unchanged": false
+    },
+    "drained_main": {
+      "source": "pcie_symbolic_numeric_ab_drained_main_r1.txt",
+      "source_sha256": "5819b36c311e5990e3c5b07be611edb9afa32776c700842ccbe6cebd3be615df",
+      "path": "pcie_symbolic_numeric_ab_binary_drained_main_r1.txt",
+      "sha256": "a87251d9ff823bda0141768206bba5380bd5d43b2374c78f4e1bf1da717dcaa6",
+      "source_rows": 22607,
+      "rows": 18794,
+      "scenarios": 65,
+      "excluded_whole_scenarios": [
+        {
+          "scenario": "10",
+          "first_row": 383,
+          "rows": 3787
+        },
+        {
+          "scenario": "20",
+          "first_row": 4287,
+          "rows": 13
+        },
+        {
+          "scenario": "30",
+          "first_row": 4415,
+          "rows": 13
+        }
+      ],
+      "unchanged": false
+    },
+    "drained_ownership": {
+      "source": "pcie_symbolic_numeric_ab_drained_ownership_r1.txt",
+      "source_sha256": "4cdb0fd4434acb4e59c21cf46caf044f3045e5fbc367abcf4cd1aa5e6158d398",
+      "path": "pcie_symbolic_numeric_ab_drained_ownership_r1.txt",
+      "sha256": "4cdb0fd4434acb4e59c21cf46caf044f3045e5fbc367abcf4cd1aa5e6158d398",
+      "source_rows": 61840,
+      "rows": 61840,
+      "scenarios": 3872,
+      "excluded_whole_scenarios": [],
+      "unchanged": true
+    },
+    "drained_rq": {
+      "source": "pcie_symbolic_numeric_ab_drained_rq_r1.txt",
+      "source_sha256": "712035c6bde28def0865cf7d07b48e082835832ca9310c29fde91c7249c7c479",
+      "path": "pcie_symbolic_numeric_ab_drained_rq_r1.txt",
+      "sha256": "712035c6bde28def0865cf7d07b48e082835832ca9310c29fde91c7249c7c479",
+      "source_rows": 9806,
+      "rows": 9806,
+      "scenarios": 240,
+      "excluded_whole_scenarios": [],
+      "unchanged": true
+    },
+    "drained_prefix": {
+      "source": "pcie_symbolic_numeric_ab_drained_prefix_r1.txt",
+      "source_sha256": "c11b31b96ac0bfb75df0885e7e4b81665be093f64c87426369760e8950a7a11e",
+      "path": "pcie_symbolic_numeric_ab_drained_prefix_r1.txt",
+      "sha256": "c11b31b96ac0bfb75df0885e7e4b81665be093f64c87426369760e8950a7a11e",
+      "source_rows": 780,
+      "rows": 780,
+      "scenarios": 60,
+      "excluded_whole_scenarios": [],
+      "unchanged": true
+    },
+    "drained_lanes": {
+      "source": "pcie_symbolic_numeric_ab_drained_lanes_r1.txt",
+      "source_sha256": "42d34b49390a0705fbaaee7cbe83b10959c26141299ba07f04c4fb48d6f63095",
+      "path": "pcie_symbolic_numeric_ab_binary_drained_lanes_r1.txt",
+      "sha256": "34b30fe5ae5310744902c1de4c46ea2f6aad24e8a67f851d87b980d9b710a12f",
+      "source_rows": 1348,
+      "rows": 872,
+      "scenarios": 60,
+      "excluded_whole_scenarios": [
+        {
+          "scenario": "60",
+          "first_row": 872,
+          "rows": 15
+        },
+        {
+          "scenario": "61",
+          "first_row": 887,
+          "rows": 15
+        },
+        {
+          "scenario": "62",
+          "first_row": 902,
+          "rows": 15
+        },
+        {
+          "scenario": "63",
+          "first_row": 917,
+          "rows": 15
+        },
+        {
+          "scenario": "64",
+          "first_row": 932,
+          "rows": 15
+        },
+        {
+          "scenario": "65",
+          "first_row": 947,
+          "rows": 15
+        },
+        {
+          "scenario": "66",
+          "first_row": 962,
+          "rows": 15
+        },
+        {
+          "scenario": "67",
+          "first_row": 977,
+          "rows": 15
+        },
+        {
+          "scenario": "68",
+          "first_row": 992,
+          "rows": 15
+        },
+        {
+          "scenario": "69",
+          "first_row": 1007,
+          "rows": 15
+        },
+        {
+          "scenario": "70",
+          "first_row": 1022,
+          "rows": 15
+        },
+        {
+          "scenario": "71",
+          "first_row": 1037,
+          "rows": 15
+        },
+        {
+          "scenario": "72",
+          "first_row": 1052,
+          "rows": 15
+        },
+        {
+          "scenario": "73",
+          "first_row": 1067,
+          "rows": 15
+        },
+        {
+          "scenario": "74",
+          "first_row": 1082,
+          "rows": 15
+        },
+        {
+          "scenario": "75",
+          "first_row": 1097,
+          "rows": 15
+        },
+        {
+          "scenario": "76",
+          "first_row": 1112,
+          "rows": 15
+        },
+        {
+          "scenario": "77",
+          "first_row": 1127,
+          "rows": 15
+        },
+        {
+          "scenario": "78",
+          "first_row": 1142,
+          "rows": 15
+        },
+        {
+          "scenario": "79",
+          "first_row": 1157,
+          "rows": 15
+        },
+        {
+          "scenario": "80",
+          "first_row": 1172,
+          "rows": 15
+        },
+        {
+          "scenario": "81",
+          "first_row": 1187,
+          "rows": 15
+        },
+        {
+          "scenario": "82",
+          "first_row": 1202,
+          "rows": 15
+        },
+        {
+          "scenario": "83",
+          "first_row": 1217,
+          "rows": 15
+        },
+        {
+          "scenario": "84",
+          "first_row": 1232,
+          "rows": 15
+        },
+        {
+          "scenario": "85",
+          "first_row": 1247,
+          "rows": 15
+        },
+        {
+          "scenario": "86",
+          "first_row": 1262,
+          "rows": 15
+        },
+        {
+          "scenario": "87",
+          "first_row": 1277,
+          "rows": 15
+        },
+        {
+          "scenario": "88",
+          "first_row": 1292,
+          "rows": 15
+        },
+        {
+          "scenario": "89",
+          "first_row": 1307,
+          "rows": 15
+        },
+        {
+          "scenario": "90",
+          "first_row": 1322,
+          "rows": 15
+        },
+        {
+          "scenario": "91",
+          "first_row": 1337,
+          "rows": 11
+        }
+      ],
+      "unchanged": false
+    },
+    "drained_context": {
+      "source": "pcie_symbolic_numeric_ab_drained_context_r1.txt",
+      "source_sha256": "6a7fa190f268ead8f8ce9b053a921aa823e57088cd04fdccdb24d2db17d10ec3",
+      "path": "pcie_symbolic_numeric_ab_binary_drained_context_r1.txt",
+      "sha256": "da2ce7a72915a7ed84bbf968f1e35494a987a2dba6b42ca92257a848687dea9d",
+      "source_rows": 1115,
+      "rows": 1049,
+      "scenarios": 14,
+      "excluded_whole_scenarios": [
+        {
+          "scenario": "11",
+          "first_row": 1006,
+          "rows": 16
+        },
+        {
+          "scenario": "12",
+          "first_row": 1022,
+          "rows": 17
+        },
+        {
+          "scenario": "13",
+          "first_row": 1039,
+          "rows": 16
+        },
+        {
+          "scenario": "14",
+          "first_row": 1055,
+          "rows": 17
+        }
+      ],
+      "unchanged": false
+    },
+    "directed": {
+      "source": "pcie_symbolic_ced_directed_r1.txt",
+      "source_sha256": "8541ad0d3033a4a11e614578bbe810f9793310027489a4c2c5e5cc29bf5a5a5a",
+      "path": "pcie_symbolic_ced_binary_directed_r1.txt",
+      "sha256": "6e650c621fe73fa3003c0fb0361e4cd52b2c0691e91f6b40bfa096a12e1cda86",
+      "source_rows": 217,
+      "rows": 191,
+      "scenarios": 14,
+      "excluded_whole_scenarios": [
+        {
+          "scenario": "14",
+          "first_row": 191,
+          "rows": 13
+        },
+        {
+          "scenario": "15",
+          "first_row": 204,
+          "rows": 13
+        }
+      ],
+      "unchanged": false
+    },
+    "controls": {
+      "source": "pcie_symbolic_numeric_ab_controls_r1.txt",
+      "source_sha256": "1638b2b2cce9a96226b8f57c493a4d189f906c097562ebc6f13e89bdc03a4c94",
+      "path": "pcie_symbolic_numeric_ab_controls_r1.txt",
+      "sha256": "1638b2b2cce9a96226b8f57c493a4d189f906c097562ebc6f13e89bdc03a4c94",
+      "source_rows": 352,
+      "rows": 352,
+      "scenarios": 30,
+      "excluded_whole_scenarios": [],
+      "unchanged": true
+    }
+  },
+  "total_rows": 169601,
+  "total_source_rows": 178185,
+  "generator_sha256": "94f60f7526b6d74cb9096bfa05120d5d4ab8ccbe4b393fdfdefd0770583d0516",
+  "selector": {
+    "path": "tools/generate_ntrpu_pcie_symbolic_ced_binary_vectors_r3.py",
+    "sha256": "faa052adb5effff6c9941a2676fc409d76b95539a490470e04a06565b1f28e24"
+  },
+  "scope": "All fourteen numeric raw/drained/directed/control banks. Exclude complete cold-isolated scenarios with X/Z inputs only; no filtering by fault or malformed binary traffic. Four-state proof retained separately; no supplemental historical main corpus."
+}

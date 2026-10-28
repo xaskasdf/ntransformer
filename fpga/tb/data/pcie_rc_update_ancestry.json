@@ -1,0 +1,10 @@
+{
+  "rows": 89632,
+  "exhaustive_eop_pointer_rows": 65536,
+  "sop_pointer_and_context_rows": 4096,
+  "sampled_rows": 20000,
+  "random_seed": 1380143941,
+  "sha256": "58777dd61c3b8dba3c0e82082d2e5a2ac235f4d3699f0e207f7e032c7c94d3e0",
+  "generator_sha256": "d2f9ccc34ae3606e8b61a3df902ed382273922d7e0ea9ef77f7c63075ba3edaa",
+  "scope": "Binary control selection and ancestry only. No byte arithmetic, four-state universal equivalence or full monitor qualification."
+}

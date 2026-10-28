@@ -1,0 +1,155 @@
+{
+  "rows": 252,
+  "scenarios": [
+    {
+      "id": 0,
+      "name": "delayed_arming_and_immediate_guards",
+      "first_vector": 0,
+      "fault_expected": false,
+      "last_vector": 21,
+      "reference_fault": false,
+      "peak_tags": 0,
+      "peak_reads": 0,
+      "peak_span_bytes": 0
+    },
+    {
+      "id": 1,
+      "name": "posted_write_and_each_pipeline_stage",
+      "first_vector": 22,
+      "fault_expected": false,
+      "last_vector": 64,
+      "reference_fault": false,
+      "peak_tags": 0,
+      "peak_reads": 0,
+      "peak_span_bytes": 0
+    },
+    {
+      "id": 2,
+      "name": "read_completion_last_retirement",
+      "first_vector": 65,
+      "fault_expected": false,
+      "last_vector": 89,
+      "reference_fault": false,
+      "peak_tags": 1,
+      "peak_reads": 1,
+      "peak_span_bytes": 4
+    },
+    {
+      "id": 3,
+      "name": "isolated_late_requester_fault",
+      "first_vector": 90,
+      "fault_expected": true,
+      "last_vector": 118,
+      "reference_fault": true,
+      "peak_tags": 1,
+      "peak_reads": 1,
+      "peak_span_bytes": 4
+    },
+    {
+      "id": 4,
+      "name": "early_fault_survives_profile_restore",
+      "first_vector": 119,
+      "fault_expected": true,
+      "last_vector": 145,
+      "reference_fault": true,
+      "peak_tags": 0,
+      "peak_reads": 0,
+      "peak_span_bytes": 0
+    },
+    {
+      "id": 5,
+      "name": "cold_busy_distance_0",
+      "first_vector": 146,
+      "fault_expected": false,
+      "last_vector": 158,
+      "reference_fault": false,
+      "peak_tags": 1,
+      "peak_reads": 1,
+      "peak_span_bytes": 4,
+      "intentionally_cold_cancelled": true
+    },
+    {
+      "id": 6,
+      "name": "cold_busy_distance_1",
+      "first_vector": 159,
+      "fault_expected": false,
+      "last_vector": 172,
+      "reference_fault": false,
+      "peak_tags": 1,
+      "peak_reads": 1,
+      "peak_span_bytes": 4,
+      "intentionally_cold_cancelled": true
+    },
+    {
+      "id": 7,
+      "name": "cold_busy_distance_2",
+      "first_vector": 173,
+      "fault_expected": false,
+      "last_vector": 187,
+      "reference_fault": false,
+      "peak_tags": 1,
+      "peak_reads": 1,
+      "peak_span_bytes": 4,
+      "intentionally_cold_cancelled": true
+    },
+    {
+      "id": 8,
+      "name": "cold_busy_distance_3",
+      "first_vector": 188,
+      "fault_expected": false,
+      "last_vector": 203,
+      "reference_fault": false,
+      "peak_tags": 1,
+      "peak_reads": 1,
+      "peak_span_bytes": 4,
+      "intentionally_cold_cancelled": true
+    },
+    {
+      "id": 9,
+      "name": "cold_busy_distance_4",
+      "first_vector": 204,
+      "fault_expected": false,
+      "last_vector": 220,
+      "reference_fault": false,
+      "peak_tags": 1,
+      "peak_reads": 1,
+      "peak_span_bytes": 4,
+      "intentionally_cold_cancelled": true
+    },
+    {
+      "id": 10,
+      "name": "cold_busy_distance_5",
+      "first_vector": 221,
+      "fault_expected": false,
+      "last_vector": 238,
+      "reference_fault": false,
+      "peak_tags": 1,
+      "peak_reads": 1,
+      "peak_span_bytes": 4,
+      "intentionally_cold_cancelled": true
+    },
+    {
+      "id": 11,
+      "name": "final_cold_rearm",
+      "first_vector": 239,
+      "fault_expected": false,
+      "last_vector": 251,
+      "reference_fault": false,
+      "peak_tags": 0,
+      "peak_reads": 0,
+      "peak_span_bytes": 0
+    }
+  ],
+  "witnesses": {
+    "arming_origin": 10,
+    "posted_origin": 34,
+    "completion_origin": 80,
+    "late_fault_origin": 103,
+    "early_fault_origin": 131,
+    "profile_restored_origin": 132
+  },
+  "vectors_sha256": "ea296a9ea50e87a62db90636224fea6dd07ca5c279c7946d41cb558ead07afaf",
+  "generator_sha256": "54285a9a1cd94448d7fc5783b8200f93a94e6e56aabf3c677974a60346412078",
+  "native_rows": 0,
+  "scope": "Directed monitor arming,posted drain,held traffic,read completion,isolated late fault,early fault after profile restoration,and six busy cold distances. Between-edge X/Z guard probes belong to the independent testbench."
+}

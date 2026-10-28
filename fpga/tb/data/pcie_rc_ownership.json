@@ -1,0 +1,12 @@
+{
+  "rows": 155168,
+  "ownership_rows": 65536,
+  "inherited_rows": 89632,
+  "exhaustive_eop_pointer_rows": 65536,
+  "sop_pointer_and_context_rows": 4096,
+  "sampled_rows": 20000,
+  "random_seed": 1380143941,
+  "sha256": "1619a7c0e10dd49bb00730a96751a4e9044686b13ef902cbdb0fdfc7612e0c0a",
+  "generator_sha256": "43ae2b15d4403ed8582b05ea59188e8c3261fda01b990f52c7e1fd7aa4b9c06e",
+  "scope": "Binary ownership, releases, control selection and ancestry only. No byte arithmetic, four-state universal equivalence or full monitor qualification."
+}

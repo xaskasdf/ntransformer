@@ -1,0 +1,1123 @@
+{
+  "banks": {
+    "raw_main": {
+      "source": "pcie_request_inventory_r7.txt",
+      "source_sha256": "3fe611730d06843028a1dbdd5a548b892b68a5a480b705184c17df5bcdcf9041",
+      "path": "pcie_symbolic_ced_binary_raw_main_r1.txt",
+      "sha256": "d3f5cc8fc562c5417345ce9c0a2afef85c17acd73746669b515c86ee0a5d5b19",
+      "source_rows": 22339,
+      "rows": 18538,
+      "excluded_whole_scenarios": [
+        {
+          "scenario": "10",
+          "first_row": 343,
+          "rows": 3783
+        },
+        {
+          "scenario": "20",
+          "first_row": 4207,
+          "rows": 9
+        },
+        {
+          "scenario": "30",
+          "first_row": 4295,
+          "rows": 9
+        }
+      ],
+      "scenarios": 65,
+      "unchanged": false
+    },
+    "raw_ownership": {
+      "source": "pcie_rc_ownership_integration.txt",
+      "source_sha256": "5ccac5334769e0a8856caba8e33d179bbadd8239eadbe039d79a71aa711609f1",
+      "path": "pcie_rc_ownership_integration.txt",
+      "sha256": "5ccac5334769e0a8856caba8e33d179bbadd8239eadbe039d79a71aa711609f1",
+      "source_rows": 46356,
+      "rows": 46356,
+      "excluded_whole_scenarios": [],
+      "scenarios": 3872,
+      "unchanged": true
+    },
+    "raw_rq": {
+      "source": "pcie_rq_admission_integration.txt",
+      "source_sha256": "9874f830709f5e9eed61a1235ad87b067eb73f2d41ee0504bb105d74203e34c2",
+      "path": "pcie_rq_admission_integration.txt",
+      "sha256": "9874f830709f5e9eed61a1235ad87b067eb73f2d41ee0504bb105d74203e34c2",
+      "source_rows": 8850,
+      "rows": 8850,
+      "excluded_whole_scenarios": [],
+      "scenarios": 240,
+      "unchanged": true
+    },
+    "raw_prefix": {
+      "source": "pcie_rc_prefix_integration.txt",
+      "source_sha256": "d4c5b30344b46ad60c5239d1b5d24707ac1ef8627b7f20869101b7504b24bd29",
+      "path": "pcie_rc_prefix_integration.txt",
+      "sha256": "d4c5b30344b46ad60c5239d1b5d24707ac1ef8627b7f20869101b7504b24bd29",
+      "source_rows": 544,
+      "rows": 544,
+      "excluded_whole_scenarios": [],
+      "scenarios": 60,
+      "unchanged": true
+    },
+    "raw_lanes": {
+      "source": "pcie_rc_lane_integration_rtl.txt",
+      "source_sha256": "0720aae9bdd2a10da99bb729356110d83557426f82577fce31eb6f78eaefe1a7",
+      "path": "pcie_rc_lane_integration_binary.txt",
+      "sha256": "10495dfe26c02880664ec1c64fd51cf5b969d22d4a3f659b58e05f20407c7024",
+      "source_rows": 984,
+      "rows": 632,
+      "excluded_whole_scenarios": [
+        {
+          "scenario": "60",
+          "first_row": 632,
+          "rows": 11
+        },
+        {
+          "scenario": "61",
+          "first_row": 643,
+          "rows": 11
+        },
+        {
+          "scenario": "62",
+          "first_row": 654,
+          "rows": 11
+        },
+        {
+          "scenario": "63",
+          "first_row": 665,
+          "rows": 11
+        },
+        {
+          "scenario": "64",
+          "first_row": 676,
+          "rows": 11
+        },
+        {
+          "scenario": "65",
+          "first_row": 687,
+          "rows": 11
+        },
+        {
+          "scenario": "66",
+          "first_row": 698,
+          "rows": 11
+        },
+        {
+          "scenario": "67",
+          "first_row": 709,
+          "rows": 11
+        },
+        {
+          "scenario": "68",
+          "first_row": 720,
+          "rows": 11
+        },
+        {
+          "scenario": "69",
+          "first_row": 731,
+          "rows": 11
+        },
+        {
+          "scenario": "70",
+          "first_row": 742,
+          "rows": 11
+        },
+        {
+          "scenario": "71",
+          "first_row": 753,
+          "rows": 11
+        },
+        {
+          "scenario": "72",
+          "first_row": 764,
+          "rows": 11
+        },
+        {
+          "scenario": "73",
+          "first_row": 775,
+          "rows": 11
+        },
+        {
+          "scenario": "74",
+          "first_row": 786,
+          "rows": 11
+        },
+        {
+          "scenario": "75",
+          "first_row": 797,
+          "rows": 11
+        },
+        {
+          "scenario": "76",
+          "first_row": 808,
+          "rows": 11
+        },
+        {
+          "scenario": "77",
+          "first_row": 819,
+          "rows": 11
+        },
+        {
+          "scenario": "78",
+          "first_row": 830,
+          "rows": 11
+        },
+        {
+          "scenario": "79",
+          "first_row": 841,
+          "rows": 11
+        },
+        {
+          "scenario": "80",
+          "first_row": 852,
+          "rows": 11
+        },
+        {
+          "scenario": "81",
+          "first_row": 863,
+          "rows": 11
+        },
+        {
+          "scenario": "82",
+          "first_row": 874,
+          "rows": 11
+        },
+        {
+          "scenario": "83",
+          "first_row": 885,
+          "rows": 11
+        },
+        {
+          "scenario": "84",
+          "first_row": 896,
+          "rows": 11
+        },
+        {
+          "scenario": "85",
+          "first_row": 907,
+          "rows": 11
+        },
+        {
+          "scenario": "86",
+          "first_row": 918,
+          "rows": 11
+        },
+        {
+          "scenario": "87",
+          "first_row": 929,
+          "rows": 11
+        },
+        {
+          "scenario": "88",
+          "first_row": 940,
+          "rows": 11
+        },
+        {
+          "scenario": "89",
+          "first_row": 951,
+          "rows": 11
+        },
+        {
+          "scenario": "90",
+          "first_row": 962,
+          "rows": 11
+        },
+        {
+          "scenario": "91",
+          "first_row": 973,
+          "rows": 11
+        }
+      ],
+      "scenarios": 60,
+      "unchanged": false
+    },
+    "raw_context": {
+      "source": "pcie_symbolic_value_context.txt",
+      "source_sha256": "91798bdfe236aba55c72021d5a53daee3a9f4785df2e41c5bfeba2eec50dde22",
+      "path": "pcie_symbolic_value_context_binary.txt",
+      "sha256": "21b2d4da6db65ee7dbc650e6728246c6a0ff36ee7b6f1150ae71c3e58f80a145",
+      "source_rows": 1047,
+      "rows": 997,
+      "excluded_whole_scenarios": [
+        {
+          "scenario": "11",
+          "first_row": 962,
+          "rows": 12
+        },
+        {
+          "scenario": "12",
+          "first_row": 974,
+          "rows": 13
+        },
+        {
+          "scenario": "13",
+          "first_row": 987,
+          "rows": 12
+        },
+        {
+          "scenario": "14",
+          "first_row": 999,
+          "rows": 13
+        }
+      ],
+      "scenarios": 14,
+      "unchanged": false
+    },
+    "drained_main": {
+      "source": "pcie_symbolic_ced_drained_main_r1.txt",
+      "source_sha256": "11df84bc02f18037fd9915a8a861ca3713c0d917e39a49035ff5bd05ab2fb789",
+      "path": "pcie_symbolic_ced_binary_drained_main_r1.txt",
+      "sha256": "039c45dd79ba93c0eedabf3059e23fad64161654857b811346ccb99137120c4e",
+      "source_rows": 22473,
+      "rows": 18666,
+      "excluded_whole_scenarios": [
+        {
+          "scenario": "10",
+          "first_row": 363,
+          "rows": 3785
+        },
+        {
+          "scenario": "20",
+          "first_row": 4247,
+          "rows": 11
+        },
+        {
+          "scenario": "30",
+          "first_row": 4355,
+          "rows": 11
+        }
+      ],
+      "scenarios": 65,
+      "unchanged": false
+    },
+    "drained_ownership": {
+      "source": "pcie_symbolic_ced_drained_ownership_r1.txt",
+      "source_sha256": "445f5238d1164b0957d8c8ba02ea89e939876914b28ac661693b5473aa0c96bc",
+      "path": "pcie_symbolic_ced_drained_ownership_r1.txt",
+      "sha256": "445f5238d1164b0957d8c8ba02ea89e939876914b28ac661693b5473aa0c96bc",
+      "source_rows": 54098,
+      "rows": 54098,
+      "excluded_whole_scenarios": [],
+      "scenarios": 3872,
+      "unchanged": true
+    },
+    "drained_rq": {
+      "source": "pcie_symbolic_ced_drained_rq_r1.txt",
+      "source_sha256": "9e1c0553f8796410e8974b1078b20513bf0ad59a4c1a19a2a461db6ad8d7cdfa",
+      "path": "pcie_symbolic_ced_drained_rq_r1.txt",
+      "sha256": "9e1c0553f8796410e8974b1078b20513bf0ad59a4c1a19a2a461db6ad8d7cdfa",
+      "source_rows": 9328,
+      "rows": 9328,
+      "excluded_whole_scenarios": [],
+      "scenarios": 240,
+      "unchanged": true
+    },
+    "drained_prefix": {
+      "source": "pcie_symbolic_ced_drained_prefix_r1.txt",
+      "source_sha256": "491ff88e0f8f61323832d626e3dc5ad98d2c0687cd2c3f2512cae939d30fdbeb",
+      "path": "pcie_symbolic_ced_drained_prefix_r1.txt",
+      "sha256": "491ff88e0f8f61323832d626e3dc5ad98d2c0687cd2c3f2512cae939d30fdbeb",
+      "source_rows": 662,
+      "rows": 662,
+      "excluded_whole_scenarios": [],
+      "scenarios": 60,
+      "unchanged": true
+    },
+    "drained_lanes": {
+      "source": "pcie_symbolic_ced_drained_lanes_r1.txt",
+      "source_sha256": "adeae100c4036c240a1743856817ed28caa5717063d9e969c9ae2511af3907f8",
+      "path": "pcie_symbolic_ced_binary_drained_lanes_r1.txt",
+      "sha256": "7a5d0badbfe919bb799e34a493f4c597bbbdb578056d16d1ac3b37fa8def93bf",
+      "source_rows": 1166,
+      "rows": 752,
+      "excluded_whole_scenarios": [
+        {
+          "scenario": "60",
+          "first_row": 752,
+          "rows": 13
+        },
+        {
+          "scenario": "61",
+          "first_row": 765,
+          "rows": 13
+        },
+        {
+          "scenario": "62",
+          "first_row": 778,
+          "rows": 13
+        },
+        {
+          "scenario": "63",
+          "first_row": 791,
+          "rows": 13
+        },
+        {
+          "scenario": "64",
+          "first_row": 804,
+          "rows": 13
+        },
+        {
+          "scenario": "65",
+          "first_row": 817,
+          "rows": 13
+        },
+        {
+          "scenario": "66",
+          "first_row": 830,
+          "rows": 13
+        },
+        {
+          "scenario": "67",
+          "first_row": 843,
+          "rows": 13
+        },
+        {
+          "scenario": "68",
+          "first_row": 856,
+          "rows": 13
+        },
+        {
+          "scenario": "69",
+          "first_row": 869,
+          "rows": 13
+        },
+        {
+          "scenario": "70",
+          "first_row": 882,
+          "rows": 13
+        },
+        {
+          "scenario": "71",
+          "first_row": 895,
+          "rows": 13
+        },
+        {
+          "scenario": "72",
+          "first_row": 908,
+          "rows": 13
+        },
+        {
+          "scenario": "73",
+          "first_row": 921,
+          "rows": 13
+        },
+        {
+          "scenario": "74",
+          "first_row": 934,
+          "rows": 13
+        },
+        {
+          "scenario": "75",
+          "first_row": 947,
+          "rows": 13
+        },
+        {
+          "scenario": "76",
+          "first_row": 960,
+          "rows": 13
+        },
+        {
+          "scenario": "77",
+          "first_row": 973,
+          "rows": 13
+        },
+        {
+          "scenario": "78",
+          "first_row": 986,
+          "rows": 13
+        },
+        {
+          "scenario": "79",
+          "first_row": 999,
+          "rows": 13
+        },
+        {
+          "scenario": "80",
+          "first_row": 1012,
+          "rows": 13
+        },
+        {
+          "scenario": "81",
+          "first_row": 1025,
+          "rows": 13
+        },
+        {
+          "scenario": "82",
+          "first_row": 1038,
+          "rows": 13
+        },
+        {
+          "scenario": "83",
+          "first_row": 1051,
+          "rows": 13
+        },
+        {
+          "scenario": "84",
+          "first_row": 1064,
+          "rows": 13
+        },
+        {
+          "scenario": "85",
+          "first_row": 1077,
+          "rows": 13
+        },
+        {
+          "scenario": "86",
+          "first_row": 1090,
+          "rows": 13
+        },
+        {
+          "scenario": "87",
+          "first_row": 1103,
+          "rows": 13
+        },
+        {
+          "scenario": "88",
+          "first_row": 1116,
+          "rows": 13
+        },
+        {
+          "scenario": "89",
+          "first_row": 1129,
+          "rows": 13
+        },
+        {
+          "scenario": "90",
+          "first_row": 1142,
+          "rows": 13
+        },
+        {
+          "scenario": "91",
+          "first_row": 1155,
+          "rows": 11
+        }
+      ],
+      "scenarios": 60,
+      "unchanged": false
+    },
+    "drained_context": {
+      "source": "pcie_symbolic_ced_drained_context_r1.txt",
+      "source_sha256": "3c1a6763e1cbd5f07f630f75f462e33fd8391b9904f956d21067ed335ecf1b1a",
+      "path": "pcie_symbolic_ced_binary_drained_context_r1.txt",
+      "sha256": "7511b7126d22b0cc59f3f6b03c0cf1157cd64264c105cc13c08e7fff6609ccee",
+      "source_rows": 1081,
+      "rows": 1023,
+      "excluded_whole_scenarios": [
+        {
+          "scenario": "11",
+          "first_row": 984,
+          "rows": 14
+        },
+        {
+          "scenario": "12",
+          "first_row": 998,
+          "rows": 15
+        },
+        {
+          "scenario": "13",
+          "first_row": 1013,
+          "rows": 14
+        },
+        {
+          "scenario": "14",
+          "first_row": 1027,
+          "rows": 15
+        }
+      ],
+      "scenarios": 14,
+      "unchanged": false
+    },
+    "directed": {
+      "source": "pcie_symbolic_ced_directed_r1.txt",
+      "source_sha256": "8541ad0d3033a4a11e614578bbe810f9793310027489a4c2c5e5cc29bf5a5a5a",
+      "path": "pcie_symbolic_ced_binary_directed_r1.txt",
+      "sha256": "6e650c621fe73fa3003c0fb0361e4cd52b2c0691e91f6b40bfa096a12e1cda86",
+      "source_rows": 217,
+      "rows": 191,
+      "excluded_whole_scenarios": [
+        {
+          "scenario": "14",
+          "first_row": 191,
+          "rows": 13
+        },
+        {
+          "scenario": "15",
+          "first_row": 204,
+          "rows": 13
+        }
+      ],
+      "scenarios": 14,
+      "unchanged": false
+    },
+    "established_main": {
+      "source": "pcie_request_inventory_binary_r5.txt",
+      "source_sha256": "1697dda1d539738b568751f26e35883e22af438dbaf187dd2a03a5708ed39a0b",
+      "path": "pcie_request_inventory_binary_r5.txt",
+      "sha256": "1697dda1d539738b568751f26e35883e22af438dbaf187dd2a03a5708ed39a0b",
+      "source_rows": 22330,
+      "rows": 22330,
+      "excluded_whole_scenarios": [],
+      "scenarios": 67,
+      "unchanged": true
+    },
+    "established_main_drained": {
+      "source": "pcie_symbolic_ced_established_main_drained_r1.txt",
+      "source_sha256": "2e5164c05354c612db96487da442e4616ddd61c4d65d21340a2966d948a223ec",
+      "path": "pcie_symbolic_ced_established_main_drained_r1.txt",
+      "sha256": "2e5164c05354c612db96487da442e4616ddd61c4d65d21340a2966d948a223ec",
+      "source_rows": 22462,
+      "rows": 22462,
+      "excluded_whole_scenarios": [],
+      "scenarios": 67,
+      "unchanged": true
+    }
+  },
+  "supplemental_main": {
+    "source": "pcie_request_inventory_binary_r5.txt",
+    "source_sha256": "1697dda1d539738b568751f26e35883e22af438dbaf187dd2a03a5708ed39a0b",
+    "drained_path": "pcie_symbolic_ced_established_main_drained_r1.txt",
+    "insertions": [
+      {
+        "before_original_row": 197,
+        "first_output_row": 197,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 0,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 206,
+        "first_output_row": 208,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 0,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 213,
+        "first_output_row": 217,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 0,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 284,
+        "first_output_row": 290,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 0,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 291,
+        "first_output_row": 299,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 0,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 298,
+        "first_output_row": 308,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 0,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 305,
+        "first_output_row": 317,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 0,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 312,
+        "first_output_row": 326,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 0,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 335,
+        "first_output_row": 351,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 0,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 343,
+        "first_output_row": 361,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 0,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 4126,
+        "first_output_row": 4146,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 0,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 4135,
+        "first_output_row": 4157,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 1,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 4144,
+        "first_output_row": 4168,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 1,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 4153,
+        "first_output_row": 4179,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 1,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 4162,
+        "first_output_row": 4190,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 1,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 4171,
+        "first_output_row": 4201,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 1,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 4180,
+        "first_output_row": 4212,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 1,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 4189,
+        "first_output_row": 4223,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 1,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 4198,
+        "first_output_row": 4234,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 1,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 4207,
+        "first_output_row": 4245,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 1,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 4216,
+        "first_output_row": 4256,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 1,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 4224,
+        "first_output_row": 4266,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 1,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 4232,
+        "first_output_row": 4276,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 1,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 4241,
+        "first_output_row": 4287,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 1,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 4250,
+        "first_output_row": 4298,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 1,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 4259,
+        "first_output_row": 4309,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 1,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 4268,
+        "first_output_row": 4320,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 1,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 4277,
+        "first_output_row": 4331,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 1,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 4286,
+        "first_output_row": 4342,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 1,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 4295,
+        "first_output_row": 4353,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 1,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 4305,
+        "first_output_row": 4365,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 1,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 4952,
+        "first_output_row": 5014,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 0,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 5022,
+        "first_output_row": 5086,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 0,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 5033,
+        "first_output_row": 5099,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 0,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 5040,
+        "first_output_row": 5108,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 0,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 5047,
+        "first_output_row": 5117,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 0,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 5056,
+        "first_output_row": 5128,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 1,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 21894,
+        "first_output_row": 21968,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 0,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 21902,
+        "first_output_row": 21978,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 0,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 21910,
+        "first_output_row": 21988,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 0,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 21923,
+        "first_output_row": 22003,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 0,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 21933,
+        "first_output_row": 22015,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 0,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 22131,
+        "first_output_row": 22215,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 0,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 22140,
+        "first_output_row": 22226,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 1,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 22151,
+        "first_output_row": 22239,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 1,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 22159,
+        "first_output_row": 22249,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 1,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 22167,
+        "first_output_row": 22259,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 1,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 22175,
+        "first_output_row": 22269,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 1,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 22183,
+        "first_output_row": 22279,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 1,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 22192,
+        "first_output_row": 22290,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 1,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 22201,
+        "first_output_row": 22301,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 1,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 22210,
+        "first_output_row": 22312,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 1,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 22218,
+        "first_output_row": 22322,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 1,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 22226,
+        "first_output_row": 22332,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 1,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 22234,
+        "first_output_row": 22342,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 1,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 22242,
+        "first_output_row": 22352,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 1,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 22250,
+        "first_output_row": 22362,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 1,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 22258,
+        "first_output_row": 22372,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 1,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 22266,
+        "first_output_row": 22382,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 1,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 22274,
+        "first_output_row": 22392,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 1,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 22282,
+        "first_output_row": 22402,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 1,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 22290,
+        "first_output_row": 22412,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 1,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 22298,
+        "first_output_row": 22422,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 1,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 22306,
+        "first_output_row": 22432,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 1,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 22314,
+        "first_output_row": 22442,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 1,
+        "held_drop": false
+      },
+      {
+        "before_original_row": 22322,
+        "first_output_row": 22452,
+        "count": 2,
+        "expected_observing": 1,
+        "expected_fault": 1,
+        "held_drop": false
+      }
+    ],
+    "generator": "generate_ntrpu_pcie_symbolic_ced_drained_vectors.py",
+    "generator_sha256": "bef86c4d14474f627adb133277c72c354b87efbfabfb8160c7b5df01e14dd052",
+    "scope": "Previously reviewed binary corpus, retained as a separate supplemental bank; not an exact subset of raw r7."
+  },
+  "generator_sha256": "faa052adb5effff6c9941a2676fc409d76b95539a490470e04a06565b1f28e24",
+  "smoke": {
+    "path": "pcie_symbolic_ced_binary_smoke_r1.txt",
+    "sha256": "dd133bae7a09b80174fd03187ce3eb0a5dde884e1ee9004d3387230bb10104cc",
+    "rows": 64,
+    "source": "pcie_symbolic_ced_binary_directed_r1.txt",
+    "source_sha256": "6e650c621fe73fa3003c0fb0361e4cd52b2c0691e91f6b40bfa096a12e1cda86"
+  },
+  "scope": "Netlist replay uses complete cold-isolated scenarios with known 0/1 inputs. Four-state raw RTL banks remain mandatory and unchanged. No post-fault or malformed binary traffic is filtered."
+}

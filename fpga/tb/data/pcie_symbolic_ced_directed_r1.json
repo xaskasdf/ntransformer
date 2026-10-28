@@ -1,0 +1,191 @@
+{
+  "rows": 217,
+  "scenarios": [
+    {
+      "id": 0,
+      "name": "cold_after_request_distance_0",
+      "first_vector": 0,
+      "fault_expected": false,
+      "last_vector": 4,
+      "reference_fault": false,
+      "peak_tags": 1,
+      "peak_reads": 1,
+      "peak_span_bytes": 64,
+      "intentionally_cold_cancelled": true
+    },
+    {
+      "id": 1,
+      "name": "rearm_after_request_distance_0",
+      "first_vector": 5,
+      "fault_expected": false,
+      "last_vector": 11,
+      "reference_fault": false,
+      "peak_tags": 1,
+      "peak_reads": 1,
+      "peak_span_bytes": 4
+    },
+    {
+      "id": 2,
+      "name": "cold_after_request_distance_1",
+      "first_vector": 12,
+      "fault_expected": false,
+      "last_vector": 17,
+      "reference_fault": false,
+      "peak_tags": 1,
+      "peak_reads": 1,
+      "peak_span_bytes": 64,
+      "intentionally_cold_cancelled": true
+    },
+    {
+      "id": 3,
+      "name": "rearm_after_request_distance_1",
+      "first_vector": 18,
+      "fault_expected": false,
+      "last_vector": 24,
+      "reference_fault": false,
+      "peak_tags": 1,
+      "peak_reads": 1,
+      "peak_span_bytes": 4
+    },
+    {
+      "id": 4,
+      "name": "cold_after_request_distance_2",
+      "first_vector": 25,
+      "fault_expected": false,
+      "last_vector": 31,
+      "reference_fault": false,
+      "peak_tags": 1,
+      "peak_reads": 1,
+      "peak_span_bytes": 64,
+      "intentionally_cold_cancelled": true
+    },
+    {
+      "id": 5,
+      "name": "rearm_after_request_distance_2",
+      "first_vector": 32,
+      "fault_expected": false,
+      "last_vector": 38,
+      "reference_fault": false,
+      "peak_tags": 1,
+      "peak_reads": 1,
+      "peak_span_bytes": 4
+    },
+    {
+      "id": 6,
+      "name": "cold_after_detached_context_distance_0",
+      "first_vector": 39,
+      "fault_expected": false,
+      "last_vector": 44,
+      "reference_fault": false,
+      "peak_tags": 1,
+      "peak_reads": 2,
+      "peak_span_bytes": 68,
+      "intentionally_cold_cancelled": true
+    },
+    {
+      "id": 7,
+      "name": "rearm_after_context_distance_0",
+      "first_vector": 45,
+      "fault_expected": false,
+      "last_vector": 51,
+      "reference_fault": false,
+      "peak_tags": 1,
+      "peak_reads": 1,
+      "peak_span_bytes": 4
+    },
+    {
+      "id": 8,
+      "name": "cold_after_detached_context_distance_1",
+      "first_vector": 52,
+      "fault_expected": false,
+      "last_vector": 58,
+      "reference_fault": false,
+      "peak_tags": 1,
+      "peak_reads": 2,
+      "peak_span_bytes": 68,
+      "intentionally_cold_cancelled": true
+    },
+    {
+      "id": 9,
+      "name": "rearm_after_context_distance_1",
+      "first_vector": 59,
+      "fault_expected": false,
+      "last_vector": 65,
+      "reference_fault": false,
+      "peak_tags": 1,
+      "peak_reads": 1,
+      "peak_span_bytes": 4
+    },
+    {
+      "id": 10,
+      "name": "cold_after_detached_context_distance_2",
+      "first_vector": 66,
+      "fault_expected": false,
+      "last_vector": 73,
+      "reference_fault": false,
+      "peak_tags": 1,
+      "peak_reads": 2,
+      "peak_span_bytes": 68,
+      "intentionally_cold_cancelled": true
+    },
+    {
+      "id": 11,
+      "name": "rearm_after_context_distance_2",
+      "first_vector": 74,
+      "fault_expected": false,
+      "last_vector": 80,
+      "reference_fault": false,
+      "peak_tags": 1,
+      "peak_reads": 1,
+      "peak_span_bytes": 4
+    },
+    {
+      "id": 12,
+      "name": "warm_reset_and_link_loss_do_not_cancel_origins",
+      "first_vector": 81,
+      "fault_expected": true,
+      "last_vector": 91,
+      "reference_fault": true,
+      "peak_tags": 1,
+      "peak_reads": 2,
+      "peak_span_bytes": 68
+    },
+    {
+      "id": 13,
+      "name": "adjacent_tag_reuse_crosses_sequence_wrap",
+      "first_vector": 92,
+      "fault_expected": false,
+      "last_vector": 190,
+      "reference_fault": false,
+      "peak_tags": 1,
+      "peak_reads": 1,
+      "peak_span_bytes": 4
+    },
+    {
+      "id": 14,
+      "name": "unknown_tag_retained_context_x",
+      "first_vector": 191,
+      "fault_expected": true,
+      "last_vector": 203,
+      "reference_fault": true,
+      "peak_tags": 1,
+      "peak_reads": 1,
+      "peak_span_bytes": 32
+    },
+    {
+      "id": 15,
+      "name": "unknown_tag_retained_context_z",
+      "first_vector": 204,
+      "fault_expected": true,
+      "last_vector": 216,
+      "reference_fault": true,
+      "peak_tags": 1,
+      "peak_reads": 1,
+      "peak_span_bytes": 32
+    }
+  ],
+  "vectors_sha256": "8541ad0d3033a4a11e614578bbe810f9793310027489a4c2c5e5cc29bf5a5a5a",
+  "generator_sha256": "c0754370285a3a65e45ee7513a0c3d730745e85fb48c562a03a7a65463d4572c",
+  "native_rows": 0,
+  "scope": "Directed C/E/D raw stage lifetime; 0/1/2-cycle cold distances, cold raw activity, warm reset/link preservation, adjacent reuse/wrap and unknown tag context. Independent R7 remains oracle after fault."
+}

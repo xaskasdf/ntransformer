@@ -1,0 +1,222 @@
+"""Experimental concurrent-fragment ledger; qualified serial checker stays unchanged."""
+import argparse,hashlib,json,re
+from collections import Counter,deque
+from pathlib import Path
+sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
+
+def accounting(lines,depth):
+    """Rebuild tracker state independently, applying each edge atomically."""
+    groups={};states={};peaks=Counter();checks=0
+    for line in lines:
+        e=line.split()
+        if len(e)<5 or e[0] not in ('RR','RW'):continue
+        if e[0]=='RR' and e[1] not in ('AR','NR'):continue
+        if e[0]=='RW' and e[1] not in ('STATE','RESERVE','VALIDATE','RETIRE'):continue
+        ts,epoch,lane=map(int,e[2:5]);groups.setdefault((ts,epoch,lane),[]).append(e[1:])
+    for (ts,epoch,lane),events in sorted(groups.items()):
+        key=(epoch,lane)
+        s=states.setdefault(key,dict(reserved=deque(),accepted=deque(),raw=deque(),validated=deque(),
+                                     budget=0,offered=None,held=False,fault=False))
+        sample=[e for e in events if e[0]=='STATE'];assert len(sample)==1
+        reserved,accepted,budget,offered,raw_count,validated_count,fault=map(int,sample[0][4:])
+        assert reserved==len(s['reserved'])<=depth and accepted==len(s['accepted'])<=reserved
+        assert budget==s['budget'] and offered==int(s['offered'] is not None)
+        assert raw_count==len(s['raw'])<=2 and validated_count==len(s['validated'])<=2
+        if s['fault']:assert fault
+        s['fault']=bool(fault);checks+=1
+        for metric,value in [('reserved',reserved),('accepted',accepted),('raw',raw_count),('validated',validated_count)]:
+            peaks[metric]=max(peaks[metric],value)
+        # The state above is sampled before every edge. Independently process
+        # downstream pops before upstream pushes; each queue remains registered.
+        for e in events:
+            if e[0]=='RETIRE':
+                assert s['validated'] and tuple(e[4:])==s['validated'].popleft()
+        for e in events:
+            if e[0]=='VALIDATE':
+                assert not fault and s['raw'] and s['accepted']
+                payload=tuple(e[4:]);assert payload==s['raw'].popleft()
+                rid,resp,last=map(int,payload[:3]);f=s['accepted'][0]
+                assert rid==0 and resp in (0,2,3) and last==int(f['left']==1)
+                f['left']-=1;s['validated'].append(payload)
+                if last:
+                    assert s['reserved'][0] is f
+                    s['accepted'].popleft();s['reserved'].popleft()
+        for e in events:
+            if e[0]=='NR':
+                assert not fault and s['budget']>0
+                s['budget']-=1;s['raw'].append(tuple(e[4:]))
+        for e in events:
+            if e[0]=='AR':
+                f=s['offered'];assert f is not None
+                assert (int(e[4],16),int(e[5]))==(f['addr'],f['left'])
+                s['offered']=None;s['accepted'].append(f);s['budget']+=f['left']
+        for e in events:
+            if e[0]=='RESERVE':
+                assert not fault and not offered and reserved<depth
+                f=dict(addr=int(e[4],16),left=int(e[5]));assert 1<=f['left']<=16
+                assert s['offered'] is None;s['reserved'].append(f);s['offered']=f
+        assert len(s['reserved'])<=depth and len(s['accepted'])<=len(s['reserved'])
+        assert 0<=s['budget']<=16*depth and len(s['raw'])<=2 and len(s['validated'])<=2
+    assert checks>100 and all(k in peaks for k in ('reserved','accepted','raw','validated'))
+    return dict(samples=checks,peaks=dict(peaks),epochs=len({e for e,lane in states}))
+
+def pattern(tag,beat):
+    words=[((tag*0x9e3779b9)^(beat*0x10203)^(j*0x1010101))&0xffffffff for j in range(16)]
+    return int.from_bytes(b''.join(w.to_bytes(4,'little') for w in words),'little')
+
+def replay(lines,native=0):
+    events=[s.split()[1:] for s in lines if s.startswith('RR ')]
+    config=[r for r in events if r[0]=='CONFIG'];assert len(config)==1 and f'native={native}' in config[0]
+    versions=[int(v.split('=')[1]) for v in config[0] if v.startswith('revision=')]
+    assert len(versions)<=1
+    revision=versions[0] if versions else 0
+    assert revision==3
+    windows=[int(v.split('=')[1]) for v in config[0] if v.startswith('window=')]
+    assert len(windows)==1 and windows[0] in (1,2,4,8)
+    window=windows[0]
+    ready_checks=[r for r in events if r[0]=='READY_CUT']
+    assert len(ready_checks)==(1 if revision and not native else 0)
+    if ready_checks:assert ready_checks[0][2]=='1'
+    cases=4 if native else 20
+    assert [int(r[1]) for r in events if r[0]=='CASE']==list(range(1,cases+1))
+    assert [int(r[1]) for r in events if r[0]=='PASS']==list(range(1,cases+1))
+    finish=[r for r in events if r[0]=='ALL_PASS'];assert len(finish)==1
+    total={k:int(v) for k,v in (f.split('=') for f in finish[0][1:])};assert total['cases']==cases
+    boots=[r for r in events if r[0]=='BOOT'];assert [int(r[2]) for r in boots]==list(range(1,(1 if native else 12)+1))
+    assert all(r[3:5]==['1','1'] for r in boots)
+    writes={};wactive={};memory={};commands={};active={};fragments={};counts=Counter();samples={};quarantines=[];case=0
+    for r in events:
+        kind=r[0]
+        if kind=='CASE':case=int(r[1])
+        if kind in ('WCMD','WI','WCPL','CMD','AR','NR','DATA','CPL'):
+            ts,epoch,lane=map(int,r[1:4]);key=(epoch,lane);assert lane in (0,1)
+        if kind=='WCMD':
+            tag,n,addr=int(r[4]),int(r[5]),int(r[6],16);ck=(epoch,tag)
+            assert ck not in writes and key not in wactive and 1<=n<=64 and tag%2==lane
+            assert addr==(lane<<33)+0x10000+(tag//2)*4096
+            writes[ck]=dict(lane=lane,n=n,addr=addr,beats=0,complete=False);wactive[key]=ck;counts['writes']+=1
+        elif kind=='WI':
+            assert key in wactive;ck=wactive[key];w=writes[ck];value=int(r[4],16)
+            assert w['beats']<w['n'] and value==pattern(ck[1],w['beats'])
+            for half in (0,1):memory[epoch,w['addr']+w['beats']*64+half*32]=(value>>(256*half))&((1<<256)-1)
+            w['beats']+=1
+        elif kind=='WCPL':
+            assert key in wactive and wactive[key]==(epoch,int(r[4]));w=writes[wactive.pop(key)]
+            assert w['beats']==w['n'] and not w['complete'];w['complete']=True
+        elif kind=='CMD':
+            tag,n,addr=int(r[4]),int(r[5]),int(r[6],16);ck=(epoch,tag)
+            assert ck not in commands and key not in active and tag%2==lane
+            invalid=not(1<=n<=64 and addr%64==0 and 0<=addr<2**34 and addr+n*64<=2**34 and addr//4096==(addr+n*64-1)//4096)
+            if not invalid:assert ck in writes and writes[ck]['complete'] and writes[ck]['addr']==addr and writes[ck]['n']==n
+            commands[ck]=dict(lane=lane,n=n,addr=addr,invalid=invalid,issued=0,received=0,delivered=0,error=0,complete=False,quarantine=False,case=case,protocol_bad=False)
+            active[key]=ck;counts['commands']+=1
+        elif kind=='AR':
+            assert key in active;c=commands[active[key]];addr,n=int(r[4],16),int(r[5])
+            assert not c['invalid'] and 1<=n<=16 and addr==c['addr']+c['issued']*32 and c['issued']+n<=2*c['n']
+            fragments.setdefault(key,deque()).append(dict(addr=addr,n=n,received=0,bad=False));
+            assert len(fragments[key])<=window;c['issued']+=n;counts['native_addresses']+=1
+        elif kind=='NR':
+            assert key in active and key in fragments;c=commands[active[key]];f=fragments[key][0]
+            rid,resp,last,value=int(r[4]),int(r[5]),int(r[6]),int(r[7],16)
+            assert f['received']<f['n']
+            malformed=rid!=0 or resp not in (0,2,3) or last!=int(f['received']+1==f['n'])
+            if malformed:
+                assert revision in (1,2,3) and lane==0
+                assert ((c['case']==13 and rid==32 and f['received']==0) or
+                        (c['case']==14 and last==1 and f['received']==0) or
+                        (c['case']==15 and last==0 and f['received']+1==f['n']) or
+                        (c['case']==16 and resp==1 and f['received']==0))
+                f['bad']=True;c['protocol_bad']=True;counts['captured_malformed']+=1
+            assert value==memory[epoch,f['addr']+f['received']*32]
+            f['received']+=1;c['received']+=1;c['error']=max(c['error'],resp if resp in (2,3) else 0);counts['native_reads']+=1
+            if f['received']==f['n']:
+                fragments[key].popleft()
+                if not fragments[key]:del fragments[key]
+        elif kind=='DATA':
+            assert key in active and active[key]==(epoch,int(r[4]));c=commands[active[key]]
+            beat,last,value=int(r[5]),int(r[6]),int(r[7],16)
+            assert not c['invalid'] and not c['protocol_bad'] and c['error']==0 and c['received']==c['issued']==2*c['n'] and key not in fragments
+            assert beat==c['delivered']<c['n'] and last==int(beat+1==c['n']) and value==pattern(int(r[4]),beat)
+            c['delivered']+=1;counts['output_beats']+=1;samples.setdefault(ts,set()).add(lane)
+        elif kind=='CPL':
+            assert key in active and active[key]==(epoch,int(r[4])) and key not in fragments
+            c=commands[active.pop(key)];assert not c['protocol_bad'];status,nbytes=int(r[5]),int(r[6])
+            expected=1 if c['invalid'] else 2 if c['error'] else 0
+            assert status==expected and nbytes==c['delivered']*64
+            assert c['delivered']==(c['n'] if expected==0 else 0)
+            assert (c['issued'],c['received'])==((0,0) if c['invalid'] else (2*c['n'],2*c['n']))
+            assert not c['complete'];c['complete']=True;counts['completions']+=1
+        elif kind=='QUARANTINE':
+            epoch,tag,case=map(int,r[2:5]);ck=(epoch,tag);c=commands[ck];key=(epoch,c['lane'])
+            # A malformed terminal beat can exhaust the capture ledger while
+            # its descriptor and raw response remain quarantined in the RTL.
+            assert case in range(13,18) and active[key]==ck and not c['invalid']
+            assert not c['complete'] and not c['quarantine'] and c['delivered']==0 and c['received']<2*c['n']
+            c['quarantine']=True;quarantines.append(case)
+            if revision and case<17:assert c['protocol_bad']
+    assert not wactive and all(v['complete'] for v in writes.values())
+    assert all(c['complete']!=c['quarantine'] for c in commands.values())
+    assert len(active)==len(quarantines)==(0 if native else 5)
+    assert set(fragments)<=set(active)
+    assert quarantines==([] if native else list(range(13,18)))
+    for marker in ('FULL_RESERVED','CPL_HELD'):assert sum(r[0]==marker for r in events)==1
+    counts['dual']=sum(len(v)==2 for v in samples.values());assert counts['dual']>0
+    for name in ('commands','writes','native_reads','output_beats','completions','dual'):assert total[name]==counts[name],name
+    assert sum(c['invalid'] for c in commands.values())==(0 if native else 5)
+    assert sum(c['error']!=0 for c in commands.values())==(0 if native else 2)
+    assert counts['captured_malformed']==(4 if revision and not native else 0)
+    tracker=accounting(lines,window)
+    return dict(tracker=tracker,revision=revision,window=window,ready_cut_checks=len(ready_checks),cases=cases,**counts,quarantined_commands=len(quarantines),invalid_commands=sum(c['invalid'] for c in commands.values()),
+                read_error_commands=sum(c['error']!=0 for c in commands.values()),boot_ps=int(boots[0][1]))
+
+def controls(lines,native):
+    passed=[]
+    edits=[('data','RR DATA ',7),('native_data','RR NR ',7),('write_data','RR WI ',4),('address','RR AR ',4),
+           ('command_length','RR CMD ',5),('native_id','RR NR ',4),('native_last','RR NR ',6),('completion_status','RR CPL ',5),('completion_bytes','RR CPL ',6)]
+    for label,prefix,column in edits:
+        mutated=list(lines);index=next(i for i,s in enumerate(mutated) if s.startswith(prefix));fields=mutated[index].split()
+        # fields include the RR prefix, whereas column is numbered after it.
+        j=column+1;radix=16 if label in ('data','native_data','write_data','address') else 10
+        fields[j]=format(int(fields[j],radix)^1,'x') if radix==16 else str(int(fields[j])^1);mutated[index]=' '.join(fields)
+        try:replay(mutated,native)
+        except (AssertionError,KeyError):passed.append(label)
+        else:raise AssertionError('Undetected corruption '+label)
+    for prefix in ('WCMD','WI','WCPL','CMD','AR','NR','DATA','CPL','ALL_PASS','BOOT','FULL_RESERVED','CPL_HELD')+(() if native else ('QUARANTINE',))+ (('READY_CUT',) if any(s.startswith('RR READY_CUT ') for s in lines) else ()):
+        mutated=list(lines);index=next(i for i,s in enumerate(mutated) if s.startswith('RR '+prefix+' '));del mutated[index]
+        try:replay(mutated,native)
+        except (AssertionError,KeyError):passed.append('missing_'+prefix)
+        else:raise AssertionError('Undetected deletion '+prefix)
+    for label,column in [('reserved_credit',5),('accepted_credit',6),('capture_budget',7),
+                         ('offered_slot',8),('raw_occupancy',9),('validated_occupancy',10)]:
+        mutated=list(lines)
+        index=next(i for i,s in enumerate(mutated) if s.startswith('RW STATE ') and int(s.split()[column])>0)
+        words=mutated[index].split();words[column]=str(int(words[column])^1);mutated[index]=' '.join(words)
+        try:replay(mutated,native)
+        except (AssertionError,KeyError):passed.append(label)
+        else:raise AssertionError('Undetected tracker corruption '+label)
+    for kind in ('RESERVE','VALIDATE','RETIRE'):
+        mutated=list(lines);del mutated[next(i for i,s in enumerate(mutated) if s.startswith('RW '+kind+' '))]
+        try:replay(mutated,native)
+        except (AssertionError,KeyError):passed.append('missing_tracker_'+kind)
+        else:raise AssertionError('Undetected missing tracker '+kind)
+    return passed
+
+def review(out):
+    r=json.loads((out/'result.json').read_text());assert r['experiment']=='read_window'
+    assert r['status']=='EXPORTED_PENDING_REVIEW' and r['returncode']==0 and not r['timed_out'] and r['sources']==r['sources_after']
+    assert all(sha(out/n)==h for n,h in json.loads((out/'FILES.json').read_text()).items())
+    log=(out/'suite/simulation.log').read_text();assert not re.search(r'(?im)^\s*(ERROR:|Fatal:|FAIL )',log)
+    lines=log.splitlines();counts=replay(lines,r['native_profile'])
+    configs={}
+    for name in ('hbm_read_cdc','hbm_read_width','hbm_read_protocol'):
+        configs[name]=dict(s.split('\t',1) for s in (out/'suite'/(name+'_config.tsv')).read_text().splitlines() if s.startswith('CONFIG.'))
+        assert configs[name]['CONFIG.READ_WRITE_MODE']=='READ_ONLY'
+    assert configs['hbm_read_cdc']['CONFIG.ACLK_ASYNC']=='1' and configs['hbm_read_cdc']['CONFIG.SYNCHRONIZATION_STAGES']=='3'
+    assert configs['hbm_read_width']['CONFIG.SI_DATA_WIDTH']=='512' and configs['hbm_read_width']['CONFIG.MI_DATA_WIDTH']=='256'
+    assert configs['hbm_read_width']['CONFIG.MAX_SPLIT_BEATS']=='16'
+    assert configs['hbm_read_protocol']['CONFIG.MI_PROTOCOL']=='AXI3'
+    return dict(status='READ_WINDOW_PREFLIGHT_REVIEWED',result_sha256=sha(out/'result.json'),seconds=r['seconds'],
+                common=r['common'],native_profile=r['native_profile'],**counts,negative_controls=controls(lines,r['native_profile']),
+                read_return_synthesizable=True,amd_conversion_and_cdc=True,native_hbm_controller=False,physical_timing_qualified=False,board_qualified=False)
+if __name__=='__main__':
+    ap=argparse.ArgumentParser();ap.add_argument('output',type=Path);a=ap.parse_args();print(json.dumps(review(a.output),indent=2))

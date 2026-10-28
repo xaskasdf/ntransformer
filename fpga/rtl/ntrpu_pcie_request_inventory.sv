@@ -1,0 +1,310 @@
+`timescale 1ns / 1ps
+// Passive PG213 observer: 512-bit DWORD-aligned RQ2/RC4, client tags, one PF.
+// Only configuration-cold reset clears state. There is deliberately no ACK.
+// This inventory does not certify posted-write receipt or hidden core queues.
+module ntrpu_pcie_request_inventory (
+    input wire clk, cold_rst_n,
+    input wire profile_valid, user_reset, link_up,
+    input wire [15:0] requester_id,
+    input wire [1:0] attribute_mask,
+    input wire rq_valid, rc_valid, rc_ready,
+    input wire [3:0] rq_ready,
+    input wire [511:0] rq_data, rc_data,
+    input wire [136:0] rq_user,
+    input wire [160:0] rc_user,
+    output reg observing=0,
+    output reg [255:0] allocated_tags=0,
+    output reg [8:0] tag_count=0, outstanding_reads=0,
+    output reg [20:0] remaining_bytes=0,
+    output reg rq_partial=0, rc_partial=0,
+    output reg [31:0] requests=0, completed_reads=0, posted_writes=0,
+    output reg [15:0] fault_sources=0,
+    output wire protocol_fault, inventory_empty
+);
+    // faults: profile/link, handshake/stall, framing, descriptor, unknown,
+    // duplicate/capacity, orphan, identity, byte-count/address, terminal,
+    // payload enables/length, completion error, discontinue, counter range.
+    reg [12:0] remaining [0:255], next_remaining [0:255];
+    reg [11:0] address_next [0:255], next_address [0:255];
+    reg [2:0] traffic_class [0:255], next_tc [0:255];
+    reg [1:0] attributes [0:255], next_attributes [0:255];
+    reg [15:0] saved_requester=0;
+    reg [1:0] saved_attribute_mask=0;
+    reg [10:0] rq_seen=0, rq_expected=0;
+    reg [3:0] rq_first=0, rq_last=0;
+    reg [10:0] rq_count=0;
+    reg rq_write=0, rq_aborted=0;
+    reg [10:0] rc_seen=0, rc_expected=0;
+    reg [7:0] rc_tag=0;
+    reg rc_terminal=0, rc_normal=0, rc_owned=0;
+    reg [12:0] rc_original=0, rc_delivered=0;
+    reg [11:0] rc_address=0;
+    reg rq_held=0, rc_held=0;
+    reg [511:0] held_rq_data=0, held_rc_data=0;
+    reg [136:0] held_rq_user=0;
+    reg [160:0] held_rc_user=0;
+
+    reg [255:0] next_tags;
+    reg [15:0] faults;
+    reg rp, cp, rw, ra, ct, cn, co;
+    reg [10:0] rs, rexp, rcount, cs, cexp;
+    reg [3:0] rfirst, rlast;
+    reg [7:0] ctag;
+    reg [12:0] coriginal, cdelivered;
+    reg [11:0] caddress;
+    integer ntags, nreads, nbytes;
+    reg [31:0] nrequests, ncompleted, nwrites;
+    integer i, lane, slot, j, starts, ends, ptr, prev_ptr;
+    integer first_index, last_index, span, first_address, available, delivered;
+    integer payload_index, expected_enable, word_mask;
+    reg [15:0] sop_map, eop_map;
+    reg [1:0] rq_start_slot [0:15];
+    reg [127:0] h;
+    reg [10:0] count;
+    reg [7:0] tag;
+    reg [3:0] kind, error_code;
+    reg terminal, normal;
+
+    assign protocol_fault=|fault_sources;
+    assign inventory_empty=observing && profile_valid && !user_reset && link_up &&
+        !protocol_fault && tag_count==0 && outstanding_reads==0 &&
+        remaining_bytes==0 && !rq_partial && !rc_partial && !rq_held && !rc_held &&
+        !rq_valid && !rc_valid;
+
+    function automatic integer thermometer(input [3:0] mask);
+        case (mask)
+            0: thermometer=0;
+            1: thermometer=1;
+            3: thermometer=2;
+            7: thermometer=3;
+            15: thermometer=4;
+            default: thermometer=-1;
+        endcase
+    endfunction
+
+    always @* begin
+        next_tags=allocated_tags; faults=fault_sources;
+        ntags=tag_count; nreads=outstanding_reads; nbytes=remaining_bytes;
+        nrequests=requests; ncompleted=completed_reads; nwrites=posted_writes;
+        rp=rq_partial; rs=rq_seen; rexp=rq_expected; rfirst=rq_first; rlast=rq_last;
+        rcount=rq_count; rw=rq_write; ra=rq_aborted;
+        cp=rc_partial; cs=rc_seen; cexp=rc_expected; ctag=rc_tag;
+        ct=rc_terminal; cn=rc_normal; co=rc_owned;
+        coriginal=rc_original; cdelivered=rc_delivered; caddress=rc_address;
+        for (i=0;i<256;i=i+1) begin
+            next_remaining[i]=remaining[i]; next_address[i]=address_next[i];
+            next_tc[i]=traffic_class[i]; next_attributes[i]=attributes[i];
+        end
+        sop_map=0; eop_map=0; starts=0; ends=0; ptr=0; prev_ptr=-1;
+        h=0; count=0; tag=0; kind=0; error_code=0; terminal=0; normal=0;
+        first_index=0; last_index=0; span=0; first_address=0;
+        available=0; delivered=0; payload_index=0; expected_enable=0; word_mask=0;
+        for (i=0;i<16;i=i+1) rq_start_slot[i]=0;
+        if (observing) begin
+            if (profile_valid!==1'b1 || user_reset!==1'b0 || link_up!==1'b1 ||
+                requester_id!==saved_requester || attribute_mask!==saved_attribute_mask)
+                faults[0]=1;
+            if ((rq_valid!==1'b0 && rq_valid!==1'b1) ||
+                (rc_valid!==1'b0 && rc_valid!==1'b1) ||
+                (rq_ready!==4'b0000 && rq_ready!==4'b1111) ||
+                (rc_ready!==1'b0 && rc_ready!==1'b1)) faults[1]=1;
+            if (rq_held && (rq_valid!==1'b1 || rq_data!==held_rq_data || rq_user!==held_rq_user)) faults[1]=1;
+            if (rc_held && (rc_valid!==1'b1 || rc_data!==held_rc_data || rc_user!==held_rc_user)) faults[1]=1;
+
+            // RC first: a terminal descriptor permits same-edge tag reuse.
+            // Its payload context stays separate until EOP, including across cycles.
+            if (rc_valid===1'b1 && rc_ready===1'b1) begin
+                starts=thermometer(rc_user[67:64]); ends=thermometer(rc_user[79:76]);
+                if (starts<0 || ends<0 || (^rc_user[96:0])===1'bx) faults[2]=1;
+                sop_map=0; eop_map=0; prev_ptr=-1;
+                for (slot=0;slot<4;slot=slot+1) begin
+                    if (slot<starts) begin
+                        ptr=4*rc_user[68+slot*2+:2];
+                        if (ptr<=prev_ptr) faults[2]=1;
+                        sop_map[ptr]=1; prev_ptr=ptr;
+                    end
+                end
+                prev_ptr=-1;
+                for (slot=0;slot<4;slot=slot+1) begin
+                    if (slot<ends) begin
+                        ptr=rc_user[80+slot*4+:4];
+                        if (ptr<=prev_ptr) faults[2]=1;
+                        eop_map[ptr]=1; prev_ptr=ptr;
+                    end
+                end
+                if ((!cp && starts==0) || (rc_user[96] && (starts!=0 || ends==0))) faults[2]=1;
+                if (rc_user[96]) begin faults[12]=1; cn=0; end
+                for (lane=0;lane<16;lane=lane+1) begin
+                    if (sop_map[lane]) begin
+                        if (cp) faults[2]=1;
+                        h=rc_data >> (lane*32); error_code=h[15:12];
+                        tag=h[71:64]; terminal=h[30]; count=h[42:32];
+                        normal=(error_code==0 && h[45:43]==0 && h[46]==0);
+                        if ((^error_code)===1'bx) faults[4]=1;
+                        if (error_code==9) begin
+                            if ((^{h[71:64],h[55:48],h[30]})===1'bx) faults[4]=1;
+                        end else if ((^h[95:0])===1'bx) faults[4]=1;
+                        cp=1; cs=0; cexp=3+count; ctag=tag; ct=terminal; cn=normal;
+                        co=next_tags[tag]; coriginal=next_remaining[tag];
+                        caddress=next_address[tag]; cdelivered=0;
+                        if (!co) faults[6]=1;
+                        if (h[50:48]!==saved_requester[2:0]) faults[7]=1;
+                        if (!normal) faults[11]=1;
+                        if (normal && co) begin
+                            if (h[63:48]!==saved_requester || h[91:89]!==next_tc[tag] ||
+                                h[94:92]!=={1'b0,next_attributes[tag]}) faults[7]=1;
+                            if (h[28:16]!==next_remaining[tag] || h[11:0]!==next_address[tag]) faults[8]=1;
+                            available=count*4-next_address[tag][1:0];
+                            delivered=(available<next_remaining[tag]) ? available : next_remaining[tag];
+                            if (count<1 || count>1024 || delivered<1 ||
+                                count!=((next_address[tag][1:0]+delivered+3)/4)) faults[10]=1;
+                            if (terminal!==(delivered==next_remaining[tag])) faults[9]=1;
+                            cdelivered=delivered;
+                        end
+                        if (terminal && co) begin next_tags[tag]=0; ntags=ntags-1; end
+                    end
+                    if (cp) begin
+                        expected_enable=0;
+                        if (cs>=3 && cn) begin
+                            for (j=0;j<4;j=j+1) begin
+                                payload_index=(cs-3)*4+j;
+                                if (payload_index>=caddress[1:0] && payload_index<caddress[1:0]+cdelivered)
+                                    expected_enable=expected_enable | (1<<j);
+                            end
+                        end
+                        if (cs<3 && rc_user[lane*4+:4]!==4'b0) faults[10]=1;
+                        if (cs>=3 && cn) begin
+                            if (rc_user[lane*4+:4]!==expected_enable[3:0]) faults[10]=1;
+                            for (j=0;j<4;j=j+1)
+                                if (expected_enable[j] && (^rc_data[lane*32+j*8+:8])===1'bx) faults[4]=1;
+                        end
+                        cs=cs+1;
+                        if (cs>1027) faults[10]=1;
+                    end else if (rc_user[lane*4+:4]!==4'b0) faults[10]=1;
+                    if (eop_map[lane]) begin
+                        if (!cp || cs<3) faults[2]=1;
+                        if (cn && cs!=cexp) faults[10]=1;
+                        if (co) begin
+                            if (ct) begin
+                                nreads=nreads-1; nbytes=nbytes-coriginal;
+                                ncompleted=ncompleted+1;
+                            end else if (cn) begin
+                                next_remaining[ctag]=coriginal-cdelivered;
+                                next_address[ctag]=caddress+cdelivered;
+                                nbytes=nbytes-cdelivered;
+                            end
+                        end
+                        cp=0; cs=0; co=0;
+                    end
+                end
+            end
+
+            if (rq_valid===1'b1 && rq_ready===4'b1111) begin
+                starts=thermometer({2'b0,rq_user[21:20]}); ends=thermometer({2'b0,rq_user[27:26]});
+                if (starts<0 || ends<0 || (^rq_user[72:0])===1'bx || rq_user[19:16]!=0) faults[2]=1;
+                sop_map=0; eop_map=0; prev_ptr=-1;
+                for (slot=0;slot<2;slot=slot+1) begin
+                    if (slot<starts) begin
+                        ptr=4*rq_user[22+slot*2+:2];
+                        if ((ptr!=0 && ptr!=8) || ptr<=prev_ptr || (!rp && slot==0 && ptr!=0)) faults[2]=1;
+                        sop_map[ptr]=1; rq_start_slot[ptr]=slot; prev_ptr=ptr;
+                    end
+                end
+                prev_ptr=-1;
+                for (slot=0;slot<2;slot=slot+1) begin
+                    if (slot<ends) begin
+                        ptr=rq_user[28+slot*4+:4];
+                        if (ptr<=prev_ptr) faults[2]=1;
+                        eop_map[ptr]=1; prev_ptr=ptr;
+                    end
+                end
+                if ((!rp && starts==0) || (rq_user[36] && starts!=0)) faults[2]=1;
+                if (rq_user[36]) begin faults[12]=1; ra=1; end
+                for (lane=0;lane<16;lane=lane+1) begin
+                    if (sop_map[lane]) begin
+                        if (rp) faults[2]=1;
+                        h=rq_data >> (lane*32); count=h[74:64]; kind=h[78:75]; tag=h[103:96];
+                        if ((^h)===1'bx) faults[4]=1;
+                        if ((kind!=0 && kind!=1) || count<1 || count>1024 || h[1:0]!=0 || h[79]) faults[3]=1;
+                        if (h[82:80]!==saved_requester[2:0] || (h[120] && h[95:80]!==saved_requester)) faults[7]=1;
+                        rfirst=rq_user[4*rq_start_slot[lane]+:4];
+                        rlast=rq_user[8+4*rq_start_slot[lane]+:4];
+                        if ((count==1 && rlast!=0) || (count>1 && (rfirst==0 || rlast==0))) faults[3]=1;
+                        if (h[11:0]+count*4>4096) faults[3]=1;
+                        first_index=0; last_index=0;
+                        for (j=3;j>=0;j=j-1) if (rfirst[j]) first_index=j;
+                        for (j=0;j<4;j=j+1) if ((count==1 ? rfirst[j] : rlast[j])) last_index=j;
+                        span=(count==1 && rfirst==0) ? 1 : (count-1)*4+last_index-first_index+1;
+                        first_address=h[11:0]+first_index;
+                        rp=1; rs=0; rw=(kind==1); ra=0; rcount=count; rexp=4+(rw ? count : 0);
+                        if (kind==0) begin
+                            if (next_tags[tag] || ntags>=256) faults[5]=1;
+                            else begin
+                                next_tags[tag]=1; ntags=ntags+1; nreads=nreads+1; nbytes=nbytes+span;
+                                next_remaining[tag]=span; next_address[tag]=first_address;
+                                next_tc[tag]=h[123:121]; next_attributes[tag]=h[125:124]&saved_attribute_mask;
+                            end
+                        end
+                    end
+                    if (rp) begin
+                        if (rw && rs>=4 && !ra) begin
+                            payload_index=rs-4;
+                            word_mask=(payload_index==0) ? rfirst : ((payload_index==rcount-1) ? rlast : 15);
+                            for (j=0;j<4;j=j+1)
+                                if (word_mask[j] && (^rq_data[lane*32+j*8+:8])===1'bx) faults[4]=1;
+                        end
+                        rs=rs+1;
+                        if (rs>1028) faults[10]=1;
+                    end
+                    if (eop_map[lane]) begin
+                        if (!rp || rs<4) faults[2]=1;
+                        if (!ra && rs!=rexp) faults[10]=1;
+                        nrequests=nrequests+1;
+                        if (rw) nwrites=nwrites+1;
+                        rp=0; rs=0;
+                    end
+                end
+            end
+            if (ntags<0 || ntags>256 || nreads<0 || nreads>257 || nbytes<0 || nbytes>1052672) faults[13]=1;
+        end
+    end
+
+    integer reset_index;
+    always @(posedge clk) begin
+        if (!cold_rst_n) begin
+            observing<=0; allocated_tags<=0; tag_count<=0; outstanding_reads<=0;
+            remaining_bytes<=0; rq_partial<=0; rc_partial<=0; fault_sources<=0;
+            requests<=0; completed_reads<=0; posted_writes<=0;
+            rq_seen<=0; rc_seen<=0; rq_held<=0; rc_held<=0;
+            rq_expected<=0; rq_first<=0; rq_last<=0; rq_count<=0; rq_write<=0; rq_aborted<=0;
+            rc_expected<=0; rc_tag<=0; rc_terminal<=0; rc_normal<=0; rc_owned<=0;
+            rc_original<=0; rc_delivered<=0; rc_address<=0;
+            saved_requester<=0; saved_attribute_mask<=0;
+            for (reset_index=0;reset_index<256;reset_index=reset_index+1) begin
+                remaining[reset_index]<=0; address_next[reset_index]<=0;
+                traffic_class[reset_index]<=0; attributes[reset_index]<=0;
+            end
+        end else if (!observing) begin
+            if (profile_valid===1'b1 && user_reset===1'b0 && link_up===1'b1) begin
+                observing<=1; saved_requester<=requester_id; saved_attribute_mask<=attribute_mask;
+                // Arming is allowed only at a quiet public boundary.
+                if (rq_valid!==1'b0 || rc_valid!==1'b0 || (^{requester_id,attribute_mask})===1'bx) fault_sources[0]<=1;
+            end
+        end else begin
+            allocated_tags<=next_tags; tag_count<=ntags; outstanding_reads<=nreads; remaining_bytes<=nbytes;
+            requests<=nrequests; completed_reads<=ncompleted; posted_writes<=nwrites; fault_sources<=faults;
+            rq_partial<=rp; rq_seen<=rs; rq_expected<=rexp; rq_first<=rfirst; rq_last<=rlast;
+            rq_count<=rcount; rq_write<=rw; rq_aborted<=ra;
+            rc_partial<=cp; rc_seen<=cs; rc_expected<=cexp; rc_tag<=ctag;
+            rc_terminal<=ct; rc_normal<=cn; rc_owned<=co;
+            rc_original<=coriginal; rc_delivered<=cdelivered; rc_address<=caddress;
+            for (reset_index=0;reset_index<256;reset_index=reset_index+1) begin
+                remaining[reset_index]<=next_remaining[reset_index]; address_next[reset_index]<=next_address[reset_index];
+                traffic_class[reset_index]<=next_tc[reset_index]; attributes[reset_index]<=next_attributes[reset_index];
+            end
+            rq_held<=rq_valid && rq_ready==0; rc_held<=rc_valid && !rc_ready;
+            if (rq_valid && rq_ready==0) begin held_rq_data<=rq_data; held_rq_user<=rq_user; end
+            if (rc_valid && !rc_ready) begin held_rc_data<=rc_data; held_rc_user<=rc_user; end
+        end
+    end
+endmodule

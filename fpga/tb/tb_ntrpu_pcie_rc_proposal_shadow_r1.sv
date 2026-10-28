@@ -1,0 +1,186 @@
+`timescale 1ns / 1ps
+module tb_ntrpu_pcie_rc_proposal_shadow_r1;
+    reg clk=0; always #2 clk=~clk;
+    reg cold_rst_n=0, profile_valid=1, user_reset=0, link_up=1;
+    reg [15:0] requester_id=16'h01a0;
+    reg [1:0] attribute_mask=3;
+    reg rq_valid=0, rc_valid=0, rc_ready=1;
+    reg [3:0] rq_ready=15;
+    reg [511:0] rq_data=0, rc_data=0;
+    reg [136:0] rq_user=0;
+    reg [160:0] rc_user=0;
+    wire observing, protocol_fault, inventory_empty, rq_partial, rc_partial;
+    wire [255:0] allocated_tags;
+    wire [8:0] tag_count, outstanding_reads;
+    wire [20:0] remaining_bytes;
+    wire [31:0] requests, completed_reads, posted_writes;
+    wire [15:0] fault_sources;
+    ntrpu_pcie_request_inventory dut(.*);
+    integer fd,fields,index=0,scenario,native_ps,last_scenario=-1,cases=0;
+    integer expected_observing,expected_fault,check_state,etags,ereads,ebytes,erp,ecp,erequests,ecompleted,ewrites;
+    reg [255:0] expected_bitmap;
+    string vector_file;
+
+    reg [3:0] accepted_headers=0;
+    wire [3:0] header_seen, proposal_valid, length_error, terminal_error;
+    wire [383:0] captured_headers;
+    wire [51:0] delivered_bytes, proposed_remaining;
+    wire [47:0] proposed_address;
+    ntrpu_pcie_rc_proposal proposal_unit (
+        .clk(clk),.cold_rst_n(cold_rst_n),.header_valid(accepted_headers),.header_data(rc_data),
+        .header_seen(header_seen),.proposal_valid(proposal_valid),.captured_headers(captured_headers),
+        .delivered_bytes(delivered_bytes),.proposed_remaining(proposed_remaining),
+        .proposed_address(proposed_address),.length_error(length_error),.terminal_error(terminal_error)
+    );
+    integer starts,slot,position;
+    always @* begin
+        accepted_headers=0;starts=-1;position=0;
+        case (rc_user[67:64])
+            0:starts=0;1:starts=1;3:starts=2;7:starts=3;15:starts=4;
+            default:starts=-1;
+        endcase
+        if (cold_rst_n && observing && rc_valid===1'b1 && rc_ready===1'b1)
+            for (slot=0;slot<4;slot=slot+1)
+                if (slot<starts) begin position=rc_user[68+slot*2+:2];accepted_headers[position]=1;end
+    end
+    reg cap_accept;
+    reg [3:0] cap_headers, cap_owned, reference_valid, reference_complete;
+    reg [51:0] expected_original, reference_remaining, reference_removed;
+    reg [47:0] expected_address, reference_address;
+    reg [31:0] reference_tags;
+    integer q,k,newest_lane;
+    reg [7:0] lookup_tag;
+    task capture_reference;
+        begin
+            cap_accept=cold_rst_n && observing && rc_valid===1'b1 && rc_ready===1'b1;
+            cap_headers=accepted_headers;cap_owned=0;expected_original=0;expected_address=0;
+            reference_valid=0;reference_complete=0;reference_remaining=0;
+            reference_removed=0;reference_address=0;reference_tags=0;
+            if (cold_rst_n) begin
+                reference_valid=dut.rc_update_valid;reference_complete=dut.rc_complete_events;
+                for (k=0;k<4;k=k+1) begin
+                    reference_tags[k*8+:8]=dut.rc_update_tag[k];
+                    reference_remaining[k*13+:13]=dut.rc_update_remaining[k];
+                    reference_address[k*12+:12]=dut.rc_update_address[k];
+                    reference_removed[k*13+:13]=dut.rc_removed_span[k];
+                end
+            end
+            for (q=0;q<4;q=q+1) begin
+                if (cap_headers[q]) begin
+                    lookup_tag=rc_data[q*128+64+:8];
+                    cap_owned[q]=dut.allocated_tags[lookup_tag];
+                    expected_original[q*13+:13]=dut.remaining[lookup_tag];
+                    expected_address[q*12+:12]=dut.address_next[lookup_tag];
+                    newest_lane=-1;
+                    for (k=0;k<4;k=k+1) begin
+                        if (k<q && dut.rc_release_valid[k] && dut.rc_release_tag[k]==lookup_tag) cap_owned[q]=0;
+                        if (dut.rc_update_valid[k] && dut.rc_update_tag[k]==lookup_tag && dut.rc_update_lane[k]<q*4 && (newest_lane<0 || dut.rc_update_lane[k]>newest_lane)) begin
+                            newest_lane=dut.rc_update_lane[k];
+                            expected_original[q*13+:13]=dut.rc_update_remaining[k];
+                            expected_address[q*12+:12]=dut.rc_update_address[k];
+                        end
+                    end
+                end
+            end
+        end
+    endtask
+    // Simulation-only retained proposal context, independent of future tag reuse.
+    reg context_active=0,context_owned=0,context_terminal=0,context_normal=0,context_ready=0;
+    reg [7:0] context_tag=0;
+    reg [12:0] context_original=0,context_delivered=0,context_remaining=0;
+    reg [11:0] context_address=0;
+    reg [3:0] candidate_valid,candidate_complete,unresolved;
+    reg [31:0] candidate_tags;
+    reg [51:0] candidate_remaining,candidate_removed;
+    reg [47:0] candidate_address;
+    reg [15:0] end_map;
+    integer end_slot[0:15];
+    integer ends,lane,n;
+    task check_proposal_events;
+        begin
+            candidate_valid=0;candidate_complete=0;unresolved=0;
+            candidate_tags=0;candidate_remaining=0;candidate_removed=0;candidate_address=0;
+            if (!cold_rst_n) begin
+                context_active=0;context_owned=0;context_terminal=0;context_normal=0;context_ready=0;
+                context_tag=0;context_original=0;context_delivered=0;context_remaining=0;context_address=0;
+            end else if (cap_accept) begin
+                end_map=0;ends=-1;
+                for (n=0;n<16;n=n+1) end_slot[n]=0;
+                case (rc_user[79:76])
+                    0:ends=0;1:ends=1;3:ends=2;7:ends=3;15:ends=4;
+                    default:ends=-1;
+                endcase
+                for (n=0;n<4;n=n+1)
+                    if (n<ends) begin end_map[rc_user[80+n*4+:4]]=1;end_slot[rc_user[80+n*4+:4]]=n;end
+                if (rc_user[96]) context_normal=0;
+                for (lane=0;lane<16;lane=lane+1) begin
+                    if (lane%4==0 && header_seen[lane/4]) begin
+                        q=lane/4;context_active=1;context_owned=cap_owned[q];
+                        context_tag=captured_headers[q*96+64+:8];
+                        context_original=captured_headers[q*96+16+:13];
+                        context_terminal=captured_headers[q*96+30];
+                        context_normal=proposal_valid[q];context_ready=proposal_valid[q];
+                        context_delivered=delivered_bytes[q*13+:13];
+                        context_remaining=proposed_remaining[q*13+:13];
+                        context_address=proposed_address[q*12+:12];
+                    end
+                    if (end_map[lane]) begin
+                        n=end_slot[lane];
+                        if (context_active && context_owned) begin
+                            if (!context_ready) unresolved[n]=1;
+                            else if (context_terminal) begin
+                                candidate_complete[n]=1;
+                                candidate_removed[n*13+:13]=context_original;
+                            end else if (context_normal) begin
+                                candidate_valid[n]=1;candidate_tags[n*8+:8]=context_tag;
+                                candidate_remaining[n*13+:13]=context_remaining;
+                                candidate_address[n*12+:12]=context_address;
+                                candidate_removed[n*13+:13]=context_delivered;
+                            end
+                        end
+                        context_active=0;context_owned=0;
+                    end
+                end
+            end
+            $display("RC_PROP_ROW index=%0d scenario=%0d seen=%h valid=%h headers=%h delivered=%h remaining=%h address=%h length=%h terminal=%h",index,scenario,header_seen,proposal_valid,captured_headers,delivered_bytes,proposed_remaining,proposed_address,length_error,terminal_error);
+            $display("RC_PROP_CONTEXT index=%0d owned=%h original=%h address=%h",index,cap_owned,expected_original,expected_address);
+            $display("RC_PROP_EVENTS index=%0d valid=%h complete=%h tags=%h remaining=%h address=%h removed=%h unresolved=%h ref_valid=%h ref_complete=%h ref_tags=%h ref_remaining=%h ref_address=%h ref_removed=%h",index,candidate_valid,candidate_complete,candidate_tags,candidate_remaining,candidate_address,candidate_removed,unresolved,reference_valid,reference_complete,reference_tags,reference_remaining,reference_address,reference_removed);
+            if (header_seen!==cap_headers) $fatal(1,"Proposal capture mask differs row=%0d seen=%h expected=%h reset=%b accept=%b",index,header_seen,cap_headers,cold_rst_n,cap_accept);
+            if (!protocol_fault && ({candidate_valid,candidate_complete,candidate_tags,candidate_remaining,candidate_address,candidate_removed}!=={reference_valid,reference_complete,reference_tags,reference_remaining,reference_address,reference_removed} || unresolved!=0))
+                $fatal(1,"Healthy proposal events diverged row=%0d",index);
+        end
+    endtask
+
+    initial begin
+        if (!$value$plusargs("VECTORS=%s",vector_file)) $fatal(1,"missing VECTORS");
+        fd=$fopen(vector_file,"r"); if (!fd) $fatal(1,"cannot open vectors");
+        while (!$feof(fd)) begin
+            @(negedge clk);
+            fields=$fscanf(fd,"%d %d %d %d %d %d %h %h %d %h %b %h %d %d %b %h %d %d %d %d %d %d %d %d %d %d %d %h\n",
+                scenario,native_ps,cold_rst_n,profile_valid,user_reset,link_up,requester_id,attribute_mask,
+                rq_valid,rq_ready,rq_data,rq_user,rc_valid,rc_ready,rc_data,rc_user,
+                expected_observing,expected_fault,check_state,etags,ereads,ebytes,erp,ecp,erequests,ecompleted,ewrites,expected_bitmap);
+            if (fields==-1 && $feof(fd)) break;
+            if (fields!=28) $fatal(1,"bad vector fields=%0d row=%0d",fields,index);
+            #1;capture_reference();
+            @(posedge clk); #0.001;
+            check_proposal_events();
+            if (scenario!=last_scenario) begin cases=cases+1;last_scenario=scenario;end
+            $display("PCIE_INV_ROW index=%0d scenario=%0d native_ps=%0d observing=%0d fault=%04h tags=%0d reads=%0d bytes=%0d rq_partial=%0d rc_partial=%0d requests=%0d completed=%0d writes=%0d bitmap=%064h empty=%0d",
+                index,scenario,native_ps,observing,fault_sources,tag_count,outstanding_reads,remaining_bytes,rq_partial,rc_partial,requests,completed_reads,posted_writes,allocated_tags,inventory_empty);
+            if (observing!==expected_observing[0] || protocol_fault!==expected_fault[0])
+                $fatal(1,"state/fault mismatch row=%0d expected_fault=%0d",index,expected_fault);
+            if (protocol_fault && inventory_empty) $fatal(1,"faulty inventory presented empty");
+            if (check_state && (tag_count!==etags[8:0] || outstanding_reads!==ereads[8:0] || remaining_bytes!==ebytes[20:0] ||
+                rq_partial!==erp[0] || rc_partial!==ecp[0] || requests!==erequests[31:0] ||
+                completed_reads!==ecompleted[31:0] || posted_writes!==ewrites[31:0] || allocated_tags!==expected_bitmap))
+                $fatal(1,"inventory mismatch row=%0d expected_tags=%0d reads=%0d bytes=%0d requests=%0d completed=%0d writes=%0d",index,etags,ereads,ebytes,erequests,ecompleted,ewrites);
+            index=index+1;
+        end
+        $fclose(fd);
+        $display("PCIE_INV_SUITE_PASS rows=%0d scenarios=%0d native_endpoint=0 native_trace_replayed=1 global_drain=0",index,cases);
+        $display("RC_PROP_SHADOW_SUITE_PASS rows=%0d scenarios=%0d",index,cases);
+        $finish;
+    end
+    initial begin #200000; $fatal(1,"vector bench watchdog"); end
+endmodule

@@ -1,0 +1,202 @@
+`timescale 1ns / 1ps
+// External AXI4 interface evidence only. The persistent host-domain producer
+// fence must cover every upstream queue; this module does not impose it.
+// No transport reset port, no containment and no endpoint-reset permission.
+module ntrpu_axi4_pair_drain_r2 (
+    input wire mgmt_clk,host_clk,device_clk,cold_rst_n,
+    input wire req_valid,host_source_fenced,
+    input wire [63:0] generation,tag,
+    input wire host_awvalid,
+    input wire host_awready,
+    input wire [63:0] host_awaddr,
+    input wire [3:0] host_awid,
+    input wire [7:0] host_awlen,
+    input wire [2:0] host_awsize,
+    input wire [2:0] host_awprot,
+    input wire [1:0] host_awburst,
+    input wire [3:0] host_awcache,
+    input wire host_awlock,
+    input wire host_wvalid,
+    input wire host_wready,
+    input wire [511:0] host_wdata,
+    input wire [63:0] host_wstrb,
+    input wire host_wlast,
+    input wire host_bvalid,
+    input wire host_bready,
+    input wire [3:0] host_bid,
+    input wire [1:0] host_bresp,
+    input wire host_arvalid,
+    input wire host_arready,
+    input wire [63:0] host_araddr,
+    input wire [3:0] host_arid,
+    input wire [7:0] host_arlen,
+    input wire [2:0] host_arsize,
+    input wire [2:0] host_arprot,
+    input wire [1:0] host_arburst,
+    input wire [3:0] host_arcache,
+    input wire host_arlock,
+    input wire host_rvalid,
+    input wire host_rready,
+    input wire [511:0] host_rdata,
+    input wire [3:0] host_rid,
+    input wire [1:0] host_rresp,
+    input wire host_rlast,
+    input wire device_awvalid,
+    input wire device_awready,
+    input wire [63:0] device_awaddr,
+    input wire [3:0] device_awid,
+    input wire [7:0] device_awlen,
+    input wire [2:0] device_awsize,
+    input wire [2:0] device_awprot,
+    input wire [1:0] device_awburst,
+    input wire [3:0] device_awcache,
+    input wire device_awlock,
+    input wire device_wvalid,
+    input wire device_wready,
+    input wire [511:0] device_wdata,
+    input wire [63:0] device_wstrb,
+    input wire device_wlast,
+    input wire device_bvalid,
+    input wire device_bready,
+    input wire [3:0] device_bid,
+    input wire [1:0] device_bresp,
+    input wire device_arvalid,
+    input wire device_arready,
+    input wire [63:0] device_araddr,
+    input wire [3:0] device_arid,
+    input wire [7:0] device_arlen,
+    input wire [2:0] device_arsize,
+    input wire [2:0] device_arprot,
+    input wire [1:0] device_arburst,
+    input wire [3:0] device_arcache,
+    input wire device_arlock,
+    input wire device_rvalid,
+    input wire device_rready,
+    input wire [511:0] device_rdata,
+    input wire [3:0] device_rid,
+    input wire [1:0] device_rresp,
+    input wire device_rlast,
+    output wire external_drain_ack,host_certificate,device_certificate,
+    output wire host_mailbox_busy,device_mailbox_busy,
+    output wire [5:0] host_fault_sources,device_fault_sources,
+    output wire [11:0] fault_mgmt,
+    output wire [5:0] host_aw_pending,host_w_pending,device_aw_pending,device_w_pending,
+    output wire [7:0] host_ar_pending,device_ar_pending,
+    output wire [8:0] host_w_partial,device_w_partial
+);
+    wire hreq,dreq,hack,dack;
+    wire [2:0] hk,dk;
+    wire [63:0] hg,dg,ht,dt,ha,da;
+    wire hcached,dcached;
+    wire [11:0] synchronized_faults;
+    reg [11:0] retained_faults=0;
+    wire accepted_request=req_valid && cold_rst_n && !(|fault_mgmt);
+    assign fault_mgmt=retained_faults | synchronized_faults;
+    assign host_certificate=hcached && !(|fault_mgmt);
+    assign device_certificate=dcached && !(|fault_mgmt);
+    assign external_drain_ack=host_certificate && device_certificate;
+    // Each source is already a retained local register. Do not require a
+    // further source edge: that clock may stop immediately after the fault.
+    for(genvar i=0;i<6;i=i+1)begin:fault_sources
+        xpm_cdc_single #(.DEST_SYNC_FF(3),.INIT_SYNC_FF(1),.SIM_ASSERT_CHK(1),.SRC_INPUT_REG(0)) host_fault_cdc(
+            .src_clk(1'b0),.src_in(host_fault_sources[i]),.dest_clk(mgmt_clk),.dest_out(synchronized_faults[i]));
+        xpm_cdc_single #(.DEST_SYNC_FF(3),.INIT_SYNC_FF(1),.SIM_ASSERT_CHK(1),.SRC_INPUT_REG(0)) device_fault_cdc(
+            .src_clk(1'b0),.src_in(device_fault_sources[i]),.dest_clk(mgmt_clk),.dest_out(synchronized_faults[i+6]));
+    end
+    always @(posedge mgmt_clk)begin
+        if(!cold_rst_n)retained_faults<=0;
+        else retained_faults<=retained_faults | synchronized_faults;
+    end
+    ntrpu_tagged_reset_mailbox host_mailbox(
+        .mgmt_clk(mgmt_clk),.peer_clk(host_clk),.req_valid(accepted_request),.req_kind(3'd1),
+        .req_generation(generation),.req_tag(tag),.ack_valid(hcached),
+        .ack_kind(),.ack_generation(),.ack_tag(),.busy(host_mailbox_busy),.obsolete_completions(),
+        .peer_req_valid(hreq),.peer_req_kind(hk),.peer_req_generation(hg),.peer_req_tag(ht),
+        .peer_ack_valid(hack),.peer_ack_kind(3'd1),.peer_ack_generation(hg),.peer_ack_tag(ha),.rejected_peer_ack_cycles());
+    ntrpu_tagged_reset_mailbox device_mailbox(
+        .mgmt_clk(mgmt_clk),.peer_clk(device_clk),.req_valid(accepted_request && host_certificate),.req_kind(3'd1),
+        .req_generation(generation),.req_tag(tag),.ack_valid(dcached),
+        .ack_kind(),.ack_generation(),.ack_tag(),.busy(device_mailbox_busy),.obsolete_completions(),
+        .peer_req_valid(dreq),.peer_req_kind(dk),.peer_req_generation(dg),.peer_req_tag(dt),
+        .peer_ack_valid(dack),.peer_ack_kind(3'd1),.peer_ack_generation(dg),.peer_ack_tag(da),.rejected_peer_ack_cycles());
+    ntrpu_axi4_drain_monitor_r2 #(.WRITE_DEPTH(32)) host_ledger(
+        .clk(host_clk),.cold_rst_n(cold_rst_n),.req_valid(hreq && hk==1),.req_tag(ht),
+        .source_fenced(host_source_fenced),.ack_valid(hack),.ack_tag(ha),.protocol_fault(),
+        .fault_sources(host_fault_sources),.aw_pending(host_aw_pending),.w_pending(host_w_pending),
+        .ar_pending(host_ar_pending),.w_partial(host_w_partial),
+        .awvalid(host_awvalid),
+        .awready(host_awready),
+        .awaddr(host_awaddr),
+        .awid(host_awid),
+        .awlen(host_awlen),
+        .awsize(host_awsize),
+        .awprot(host_awprot),
+        .awburst(host_awburst),
+        .awcache(host_awcache),
+        .awlock(host_awlock),
+        .wvalid(host_wvalid),
+        .wready(host_wready),
+        .wdata(host_wdata),
+        .wstrb(host_wstrb),
+        .wlast(host_wlast),
+        .bvalid(host_bvalid),
+        .bready(host_bready),
+        .bid(host_bid),
+        .bresp(host_bresp),
+        .arvalid(host_arvalid),
+        .arready(host_arready),
+        .araddr(host_araddr),
+        .arid(host_arid),
+        .arlen(host_arlen),
+        .arsize(host_arsize),
+        .arprot(host_arprot),
+        .arburst(host_arburst),
+        .arcache(host_arcache),
+        .arlock(host_arlock),
+        .rvalid(host_rvalid),
+        .rready(host_rready),
+        .rdata(host_rdata),
+        .rid(host_rid),
+        .rresp(host_rresp),
+        .rlast(host_rlast));
+    ntrpu_axi4_drain_monitor_r2 #(.WRITE_DEPTH(32)) device_ledger(
+        .clk(device_clk),.cold_rst_n(cold_rst_n),.req_valid(dreq && dk==1),.req_tag(dt),
+        .source_fenced(dreq),.ack_valid(dack),.ack_tag(da),.protocol_fault(),
+        .fault_sources(device_fault_sources),.aw_pending(device_aw_pending),.w_pending(device_w_pending),
+        .ar_pending(device_ar_pending),.w_partial(device_w_partial),
+        .awvalid(device_awvalid),
+        .awready(device_awready),
+        .awaddr(device_awaddr),
+        .awid(device_awid),
+        .awlen(device_awlen),
+        .awsize(device_awsize),
+        .awprot(device_awprot),
+        .awburst(device_awburst),
+        .awcache(device_awcache),
+        .awlock(device_awlock),
+        .wvalid(device_wvalid),
+        .wready(device_wready),
+        .wdata(device_wdata),
+        .wstrb(device_wstrb),
+        .wlast(device_wlast),
+        .bvalid(device_bvalid),
+        .bready(device_bready),
+        .bid(device_bid),
+        .bresp(device_bresp),
+        .arvalid(device_arvalid),
+        .arready(device_arready),
+        .araddr(device_araddr),
+        .arid(device_arid),
+        .arlen(device_arlen),
+        .arsize(device_arsize),
+        .arprot(device_arprot),
+        .arburst(device_arburst),
+        .arcache(device_arcache),
+        .arlock(device_arlock),
+        .rvalid(device_rvalid),
+        .rready(device_rready),
+        .rdata(device_rdata),
+        .rid(device_rid),
+        .rresp(device_rresp),
+        .rlast(device_rlast));
+endmodule

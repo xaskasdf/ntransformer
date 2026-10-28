@@ -1,0 +1,69 @@
+{
+  "rows": 28912,
+  "phases": [
+    {
+      "id": 0,
+      "name": "cold_reset_overrides_all_ports",
+      "start": 0,
+      "rows": 65
+    },
+    {
+      "id": 1,
+      "name": "fill_and_read_every_tag",
+      "start": 65,
+      "rows": 107
+    },
+    {
+      "id": 2,
+      "name": "all_write_valid_and_full_masks",
+      "start": 172,
+      "rows": 4096
+    },
+    {
+      "id": 3,
+      "name": "same_tag_every_cycle_full_rate",
+      "start": 4268,
+      "rows": 4096
+    },
+    {
+      "id": 4,
+      "name": "six_distinct_tags_same_low_bank_bits",
+      "start": 8364,
+      "rows": 4096
+    },
+    {
+      "id": 5,
+      "name": "random_aliases_masks_cutoffs_and_reset",
+      "start": 12460,
+      "rows": 16384
+    },
+    {
+      "id": 6,
+      "name": "invalid_cutoff_does_not_discard_writes",
+      "start": 28844,
+      "rows": 2
+    },
+    {
+      "id": 7,
+      "name": "inactive_queries_do_not_expose_data",
+      "start": 28846,
+      "rows": 1
+    },
+    {
+      "id": 8,
+      "name": "reset_under_contention_and_full_table_scan",
+      "start": 28847,
+      "rows": 65
+    }
+  ],
+  "seed": 1346586949,
+  "vectors_sha256": "96f0a192941238eb6fa5966318e50fe4a9c3172d6779a0d770fd9687faf0dcf1",
+  "scope": "Known binary metadata primitive inputs; no PCIe protocol/native traffic, allocation bitmap or live payload context.",
+  "metadata": {
+    "tags": 256,
+    "width": 30,
+    "lookups": 4,
+    "updates": 6,
+    "latency": 1
+  }
+}

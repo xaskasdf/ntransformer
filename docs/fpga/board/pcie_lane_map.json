@@ -1,0 +1,193 @@
+{
+  "status": "synthesized_isolated_not_pcb_release",
+  "part": "xcvu5p-flva2104-2-i",
+  "vivado": "2026.1 SW6511674 IP6504888",
+  "run": "20261002T160051Z-V4-pcie-lane-synth-r2",
+  "source_sha256": "3ea18e5e1361592849d081a3e99901bf9cdddef1bc138503b320614bbc3a3ce9",
+  "review_files_sha256": {
+    "lane_trace.tsv": "e45f729e0d9429c659a948fc6afcfd54e1f5a617321cb9035046144a53a481ab",
+    "io.rpt": "68c663ef3d094fbe95ea63b8a769486476f81480b6cd26adf4fc2528ba35f74b"
+  },
+  "limits": [
+    "No placement/routing or board timing qualification",
+    "PERST voltage translation and DDR coexistence pending"
+  ],
+  "lanes": [
+    {
+      "lane": 0,
+      "site": "GTYE4_CHANNEL_X1Y15",
+      "bank": 227,
+      "balls": {
+        "rxp": "AA4",
+        "rxn": "AA3",
+        "txp": "Y7",
+        "txn": "Y6"
+      }
+    },
+    {
+      "lane": 1,
+      "site": "GTYE4_CHANNEL_X1Y14",
+      "bank": 227,
+      "balls": {
+        "rxp": "AB2",
+        "rxn": "AB1",
+        "txp": "AB7",
+        "txn": "AB6"
+      }
+    },
+    {
+      "lane": 2,
+      "site": "GTYE4_CHANNEL_X1Y13",
+      "bank": 227,
+      "balls": {
+        "rxp": "AC4",
+        "rxn": "AC3",
+        "txp": "AD7",
+        "txn": "AD6"
+      }
+    },
+    {
+      "lane": 3,
+      "site": "GTYE4_CHANNEL_X1Y12",
+      "bank": 227,
+      "balls": {
+        "rxp": "AD2",
+        "rxn": "AD1",
+        "txp": "AF7",
+        "txn": "AF6"
+      }
+    },
+    {
+      "lane": 4,
+      "site": "GTYE4_CHANNEL_X1Y11",
+      "bank": 226,
+      "balls": {
+        "rxp": "AE4",
+        "rxn": "AE3",
+        "txp": "AH7",
+        "txn": "AH6"
+      }
+    },
+    {
+      "lane": 5,
+      "site": "GTYE4_CHANNEL_X1Y10",
+      "bank": 226,
+      "balls": {
+        "rxp": "AF2",
+        "rxn": "AF1",
+        "txp": "AK7",
+        "txn": "AK6"
+      }
+    },
+    {
+      "lane": 6,
+      "site": "GTYE4_CHANNEL_X1Y9",
+      "bank": 226,
+      "balls": {
+        "rxp": "AG4",
+        "rxn": "AG3",
+        "txp": "AM7",
+        "txn": "AM6"
+      }
+    },
+    {
+      "lane": 7,
+      "site": "GTYE4_CHANNEL_X1Y8",
+      "bank": 226,
+      "balls": {
+        "rxp": "AH2",
+        "rxn": "AH1",
+        "txp": "AN5",
+        "txn": "AN4"
+      }
+    },
+    {
+      "lane": 8,
+      "site": "GTYE4_CHANNEL_X1Y7",
+      "bank": 225,
+      "balls": {
+        "rxp": "AJ4",
+        "rxn": "AJ3",
+        "txp": "AP7",
+        "txn": "AP6"
+      }
+    },
+    {
+      "lane": 9,
+      "site": "GTYE4_CHANNEL_X1Y6",
+      "bank": 225,
+      "balls": {
+        "rxp": "AK2",
+        "rxn": "AK1",
+        "txp": "AR5",
+        "txn": "AR4"
+      }
+    },
+    {
+      "lane": 10,
+      "site": "GTYE4_CHANNEL_X1Y5",
+      "bank": 225,
+      "balls": {
+        "rxp": "AM2",
+        "rxn": "AM1",
+        "txp": "AT7",
+        "txn": "AT6"
+      }
+    },
+    {
+      "lane": 11,
+      "site": "GTYE4_CHANNEL_X1Y4",
+      "bank": 225,
+      "balls": {
+        "rxp": "AP2",
+        "rxn": "AP1",
+        "txp": "AU5",
+        "txn": "AU4"
+      }
+    },
+    {
+      "lane": 12,
+      "site": "GTYE4_CHANNEL_X1Y3",
+      "bank": 224,
+      "balls": {
+        "rxp": "AT2",
+        "rxn": "AT1",
+        "txp": "AW5",
+        "txn": "AW4"
+      }
+    },
+    {
+      "lane": 13,
+      "site": "GTYE4_CHANNEL_X1Y2",
+      "bank": 224,
+      "balls": {
+        "rxp": "AV2",
+        "rxn": "AV1",
+        "txp": "BA5",
+        "txn": "BA4"
+      }
+    },
+    {
+      "lane": 14,
+      "site": "GTYE4_CHANNEL_X1Y1",
+      "bank": 224,
+      "balls": {
+        "rxp": "AY2",
+        "rxn": "AY1",
+        "txp": "BC5",
+        "txn": "BC4"
+      }
+    },
+    {
+      "lane": 15,
+      "site": "GTYE4_CHANNEL_X1Y0",
+      "bank": 224,
+      "balls": {
+        "rxp": "BB2",
+        "rxn": "BB1",
+        "txp": "BE5",
+        "txn": "BE4"
+      }
+    }
+  ]
+}

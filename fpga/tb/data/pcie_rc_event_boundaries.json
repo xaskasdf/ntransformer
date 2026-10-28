@@ -1,0 +1,100 @@
+{
+  "rows": 370,
+  "phases": [
+    {
+      "id": 0,
+      "name": "cold_reset_cancels_captured_terminal",
+      "start": 0,
+      "rows": 7
+    },
+    {
+      "id": 1,
+      "name": "cold_reset_cancels_retained_payload",
+      "start": 7,
+      "rows": 9
+    },
+    {
+      "id": 2,
+      "name": "sequence_wrap_and_changed_ownership_during_payload",
+      "start": 16,
+      "rows": 8
+    },
+    {
+      "id": 3,
+      "name": "observing_pause_retains_context",
+      "start": 24,
+      "rows": 12
+    },
+    {
+      "id": 4,
+      "name": "stalls_before_and_inside_packet",
+      "start": 36,
+      "rows": 15
+    },
+    {
+      "id": 5,
+      "name": "sustained_four_same_tag_splits",
+      "start": 51,
+      "rows": 261
+    },
+    {
+      "id": 6,
+      "name": "missing_expected_metadata",
+      "start": 312,
+      "rows": 6
+    },
+    {
+      "id": 7,
+      "name": "wrong_independent_identity_tc_attributes",
+      "start": 318,
+      "rows": 6
+    },
+    {
+      "id": 8,
+      "name": "cold_reset_cancels_captured_validation_fault",
+      "start": 324,
+      "rows": 7
+    },
+    {
+      "id": 9,
+      "name": "payload_enable_fault_retained_to_eop",
+      "start": 331,
+      "rows": 7
+    },
+    {
+      "id": 10,
+      "name": "non_normal_terminal_remains_unresolved",
+      "start": 338,
+      "rows": 6
+    },
+    {
+      "id": 11,
+      "name": "overlap_preserves_lost_obligation",
+      "start": 344,
+      "rows": 7
+    },
+    {
+      "id": 12,
+      "name": "discontinue_keeps_failure_explicit",
+      "start": 351,
+      "rows": 7
+    },
+    {
+      "id": 13,
+      "name": "orphan_eop_after_completed_packet",
+      "start": 358,
+      "rows": 7
+    },
+    {
+      "id": 14,
+      "name": "final_cold_reset",
+      "start": 365,
+      "rows": 5
+    }
+  ],
+  "vectors_sha256": "fa76d2f770553dd152672bf9fc0e24e15d9bacb0eb3a4deb6a33c9b6e8f64437",
+  "binary_inputs_only": true,
+  "lanes": 4,
+  "latency_cycles": 2,
+  "scope": "Production RC stage boundaries with explicit metadata/ownership inputs; not the integrated inventory bank or native PCIe endpoint."
+}

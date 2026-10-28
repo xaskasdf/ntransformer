@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "status": "preliminary_not_vivado_validated",
+  "review_date": "2026-10-02",
+  "scope": "Four independent DDR4 channels, three unshared HP banks per channel; bench prototype",
+  "sources": {
+    "package_maps": {
+      "document": "UG575 v1.22, 2026-03-10",
+      "url": "https://docs.amd.com/api/khub/documents/GnuVZDIoTcrlIuu8Aok5XQ/content",
+      "sha256": "8c63d0ab99b32ca14688e437a9502af887b4a19ca20b59d81db27c7890720e65",
+      "method": "Manual visual transcription of bonded HP bank groups; physical zones are not Vivado SLR identifiers"
+    },
+    "ddr_rules": "https://docs.amd.com/r/en-US/pg150-ultrascale-memory-ip/DDR4-Pin-Rules?contentId=vIJySmS_aQOK66n82tWyUg",
+    "pcie_options": "https://docs.amd.com/r/en-US/pg213-pcie4-ultrascale-plus/Virtex-UltraScale-Devices-Available-GT-Quads",
+    "configuration": "https://docs.amd.com/r/en-US/ug570-ultrascale-configuration/Configuration-Pin-Definitions"
+  },
+  "profiles": [
+    {
+      "id": "vu5p_flva2104_bench",
+      "device": "XCVU5P",
+      "package": "FLVA2104",
+      "full_part": null,
+      "package_map_page": 152,
+      "package_map_figure": "1-111",
+      "bonded_hp_groups": [
+        {"column": "left", "physical_slr_zone": "lower", "banks": [44, 45, 46, 47]},
+        {"column": "left", "physical_slr_zone": "upper", "banks": [50, 51, 52, 53]},
+        {"column": "right", "physical_slr_zone": "lower", "banks": [64, 65, 66, 67]},
+        {"column": "right", "physical_slr_zone": "upper", "banks": [70, 71, 72, 73]}
+      ],
+      "ddr_channels": [
+        {"id": 0, "banks": [44, 45, 46]},
+        {"id": 1, "banks": [50, 51, 52]},
+        {"id": 2, "banks": [64, 65, 66]},
+        {"id": 3, "banks": [70, 71, 72]}
+      ],
+      "unassigned_hp_banks": [47, 53, 67, 73],
+      "configuration": {
+        "tandem": false,
+        "dedicated_bank": 0,
+        "mode": "jtag_or_qspi_x4_internal_configuration_clock",
+        "bank65_configuration_signals": []
+      },
+      "pcie_gen3_x16": {
+        "block": "PCIE4_X1Y0",
+        "lane0_gt_quad": 227,
+        "reserved_gt_quads": [224, 225, 226, 227],
+        "lane_order_verified": false
+      }
+    },
+    {
+      "id": "vu9p_flga2104_bench",
+      "device": "XCVU9P",
+      "package": "FLGA2104",
+      "full_part": null,
+      "package_map_page": 160,
+      "package_map_figure": "1-119",
+      "bonded_hp_groups": [
+        {"column": "left", "physical_slr_zone": "lower", "banks": [40, 41, 42, 43]},
+        {"column": "left", "physical_slr_zone": "middle", "banks": [45, 46, 47, 48]},
+        {"column": "right", "physical_slr_zone": "middle", "banks": [64, 65, 66, 67]},
+        {"column": "right", "physical_slr_zone": "upper", "banks": [70, 71, 72, 73]}
+      ],
+      "ddr_channels": [
+        {"id": 0, "banks": [40, 41, 42]},
+        {"id": 1, "banks": [45, 46, 47]},
+        {"id": 2, "banks": [64, 65, 66]},
+        {"id": 3, "banks": [70, 71, 72]}
+      ],
+      "unassigned_hp_banks": [43, 48, 67, 73],
+      "configuration": {
+        "tandem": false,
+        "dedicated_bank": 0,
+        "mode": "jtag_or_qspi_x4_internal_configuration_clock",
+        "bank65_configuration_signals": []
+      },
+      "pcie_gen3_x16": {
+        "block": "PCIE4_X1Y2",
+        "lane0_gt_quad": 227,
+        "reserved_gt_quads": [224, 225, 226, 227],
+        "lane_order_verified": false
+      }
+    }
+  ]
+}

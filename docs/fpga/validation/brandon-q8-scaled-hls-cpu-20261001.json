@@ -1,0 +1,367 @@
+{
+  "schema": 1,
+  "status": "passed",
+  "started_utc": "2026-10-01T06:34:46.408444+00:00",
+  "model_id": "xaskasdf/brandon-tiny-10m-instruct",
+  "revision": "ca6329de991a1cfc17b2a7a1aaae2cc38c08577a",
+  "weight_sha256": "2ff727cc8921d21e5e7b153babd288efc5524b166e9417e1b439ac8c11fe44cf",
+  "config_sha256": "602cab332932b65003fd386c67816406d14d9dd548740c6dc0395734f45b39ae",
+  "audit": {
+    "stored_elements": 30019416,
+    "unique_parameters": 10706776,
+    "stored_tensors": 329,
+    "canonical_tensors": 112,
+    "shared_copies_identical": true
+  },
+  "reference": {
+    "backend": "numpy",
+    "numpy": "2.5.3"
+  },
+  "python": "3.14.7",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "runner_sha256": "5bcd33f158d41262fba232ca5b5aae4826127c919624f91ade9bc4ef98fcaa9d",
+  "executable_sha256": "ee2c74935a23902221eb7adbb2adac2486f3083fec75edca7371708a2cb2ddf9",
+  "inputs": "synthetic normal vectors, unit RMS; not model activations",
+  "seed": 20261001,
+  "samples_per_layer": 8,
+  "scope": "isolated FFN with real weights; no norm, residual, attention, logits or quality evaluation",
+  "limits": {
+    "relative_l2": 0.05,
+    "q8_reference_atol": 1e-06,
+    "q8_reference_rtol": 1e-05
+  },
+  "layers": [
+    {
+      "samples": 8,
+      "relative_l2": 0.0135194573682,
+      "max_abs_error": 0.0275832414627,
+      "q8_reference_max_abs_error": 0,
+      "per_sample": {
+        "macs": 557056,
+        "local_weight_bytes": 591872,
+        "peer_bytes": 3488,
+        "dma_bytes": 4928,
+        "gemv_commands": 5,
+        "swiglu_commands": 2,
+        "resident_bytes": 638976
+      },
+      "unique_layer": 0,
+      "logical_layers": [
+        0,
+        1
+      ],
+      "fixture_sha256": "c0db6f4ac2cdaff63efe4b3452daca6c974ea780c9de80a8dd49ddc26bf3a8a3",
+      "shape": [
+        256,
+        720,
+        256
+      ],
+      "padded_hidden": 736
+    },
+    {
+      "samples": 8,
+      "relative_l2": 0.0144549740931,
+      "max_abs_error": 0.0406830310822,
+      "q8_reference_max_abs_error": 0,
+      "per_sample": {
+        "macs": 557056,
+        "local_weight_bytes": 591872,
+        "peer_bytes": 3488,
+        "dma_bytes": 4928,
+        "gemv_commands": 5,
+        "swiglu_commands": 2,
+        "resident_bytes": 638976
+      },
+      "unique_layer": 1,
+      "logical_layers": [
+        2,
+        3
+      ],
+      "fixture_sha256": "4ec8e841e137edb66ff2a02b1fc8a043b2aed99def47ace6ec182f91e4c903b2",
+      "shape": [
+        256,
+        720,
+        256
+      ],
+      "padded_hidden": 736
+    },
+    {
+      "samples": 8,
+      "relative_l2": 0.0153573068478,
+      "max_abs_error": 0.0670533180237,
+      "q8_reference_max_abs_error": 0,
+      "per_sample": {
+        "macs": 557056,
+        "local_weight_bytes": 591872,
+        "peer_bytes": 3488,
+        "dma_bytes": 4928,
+        "gemv_commands": 5,
+        "swiglu_commands": 2,
+        "resident_bytes": 638976
+      },
+      "unique_layer": 2,
+      "logical_layers": [
+        4,
+        5
+      ],
+      "fixture_sha256": "498bebf682d1369b3d3de3504ce8edc2997557b88a6c84ebe8b37496976078f8",
+      "shape": [
+        256,
+        720,
+        256
+      ],
+      "padded_hidden": 736
+    },
+    {
+      "samples": 8,
+      "relative_l2": 0.0145445840926,
+      "max_abs_error": 0.270504951477,
+      "q8_reference_max_abs_error": 0,
+      "per_sample": {
+        "macs": 557056,
+        "local_weight_bytes": 591872,
+        "peer_bytes": 3488,
+        "dma_bytes": 4928,
+        "gemv_commands": 5,
+        "swiglu_commands": 2,
+        "resident_bytes": 638976
+      },
+      "unique_layer": 3,
+      "logical_layers": [
+        6,
+        7
+      ],
+      "fixture_sha256": "3a5882042137920b43b838f0b155402121e75a4be259026ce1381dae561ad40e",
+      "shape": [
+        256,
+        720,
+        256
+      ],
+      "padded_hidden": 736
+    },
+    {
+      "samples": 8,
+      "relative_l2": 0.0087162422729,
+      "max_abs_error": 0.0900846794248,
+      "q8_reference_max_abs_error": 0,
+      "per_sample": {
+        "macs": 557056,
+        "local_weight_bytes": 591872,
+        "peer_bytes": 3488,
+        "dma_bytes": 4928,
+        "gemv_commands": 5,
+        "swiglu_commands": 2,
+        "resident_bytes": 638976
+      },
+      "unique_layer": 4,
+      "logical_layers": [
+        8,
+        9
+      ],
+      "fixture_sha256": "88d31bc1a402bfcd46d175aab197ab360962dde3155ccaed8a5e1a3837309121",
+      "shape": [
+        256,
+        720,
+        256
+      ],
+      "padded_hidden": 736
+    },
+    {
+      "samples": 8,
+      "relative_l2": 0.0155496234435,
+      "max_abs_error": 0.156584739685,
+      "q8_reference_max_abs_error": 0,
+      "per_sample": {
+        "macs": 557056,
+        "local_weight_bytes": 591872,
+        "peer_bytes": 3488,
+        "dma_bytes": 4928,
+        "gemv_commands": 5,
+        "swiglu_commands": 2,
+        "resident_bytes": 638976
+      },
+      "unique_layer": 5,
+      "logical_layers": [
+        10,
+        11
+      ],
+      "fixture_sha256": "e203c0d1ab0d66c843cad9852d54f0fa50e7aeb37017f73a4933a8824dbc3985",
+      "shape": [
+        256,
+        720,
+        256
+      ],
+      "padded_hidden": 736
+    },
+    {
+      "samples": 8,
+      "relative_l2": 0.0149881984685,
+      "max_abs_error": 0.0281671285629,
+      "q8_reference_max_abs_error": 0,
+      "per_sample": {
+        "macs": 557056,
+        "local_weight_bytes": 591872,
+        "peer_bytes": 3488,
+        "dma_bytes": 4928,
+        "gemv_commands": 5,
+        "swiglu_commands": 2,
+        "resident_bytes": 638976
+      },
+      "unique_layer": 6,
+      "logical_layers": [
+        12,
+        13
+      ],
+      "fixture_sha256": "7e5fc66fc391880db694e293e1916ce5e20e46c0e7f89e657f6856809842a70c",
+      "shape": [
+        256,
+        720,
+        256
+      ],
+      "padded_hidden": 736
+    },
+    {
+      "samples": 8,
+      "relative_l2": 0.014464522978,
+      "max_abs_error": 0.0307121872902,
+      "q8_reference_max_abs_error": 0,
+      "per_sample": {
+        "macs": 557056,
+        "local_weight_bytes": 591872,
+        "peer_bytes": 3488,
+        "dma_bytes": 4928,
+        "gemv_commands": 5,
+        "swiglu_commands": 2,
+        "resident_bytes": 638976
+      },
+      "unique_layer": 7,
+      "logical_layers": [
+        14,
+        15
+      ],
+      "fixture_sha256": "7688836e8a46f90be06cd842a8e1cef84f32001de3370bf9a7177c707e0100b6",
+      "shape": [
+        256,
+        720,
+        256
+      ],
+      "padded_hidden": 736
+    },
+    {
+      "samples": 8,
+      "relative_l2": 0.0145688955289,
+      "max_abs_error": 0.0290600061417,
+      "q8_reference_max_abs_error": 0,
+      "per_sample": {
+        "macs": 557056,
+        "local_weight_bytes": 591872,
+        "peer_bytes": 3488,
+        "dma_bytes": 4928,
+        "gemv_commands": 5,
+        "swiglu_commands": 2,
+        "resident_bytes": 638976
+      },
+      "unique_layer": 8,
+      "logical_layers": [
+        16,
+        17
+      ],
+      "fixture_sha256": "0c8608cd53c889ad54e39528bef4f7167121065eaab0bd9ebbabd6f38f1159f1",
+      "shape": [
+        256,
+        720,
+        256
+      ],
+      "padded_hidden": 736
+    },
+    {
+      "samples": 8,
+      "relative_l2": 0.014669129564,
+      "max_abs_error": 0.0200249105692,
+      "q8_reference_max_abs_error": 0,
+      "per_sample": {
+        "macs": 557056,
+        "local_weight_bytes": 591872,
+        "peer_bytes": 3488,
+        "dma_bytes": 4928,
+        "gemv_commands": 5,
+        "swiglu_commands": 2,
+        "resident_bytes": 638976
+      },
+      "unique_layer": 9,
+      "logical_layers": [
+        18,
+        19
+      ],
+      "fixture_sha256": "c34730e30c4d81698b58d4a7c67e124c73712292db639118c614d488b0eca868",
+      "shape": [
+        256,
+        720,
+        256
+      ],
+      "padded_hidden": 736
+    },
+    {
+      "samples": 8,
+      "relative_l2": 0.0149585487943,
+      "max_abs_error": 0.0321654304862,
+      "q8_reference_max_abs_error": 0,
+      "per_sample": {
+        "macs": 557056,
+        "local_weight_bytes": 591872,
+        "peer_bytes": 3488,
+        "dma_bytes": 4928,
+        "gemv_commands": 5,
+        "swiglu_commands": 2,
+        "resident_bytes": 638976
+      },
+      "unique_layer": 10,
+      "logical_layers": [
+        20,
+        21
+      ],
+      "fixture_sha256": "96cf53780452f5c7325e349fdaca494f29e5b7991a8924a05456d76c1af56ed1",
+      "shape": [
+        256,
+        720,
+        256
+      ],
+      "padded_hidden": 736
+    },
+    {
+      "samples": 8,
+      "relative_l2": 0.0138397414767,
+      "max_abs_error": 0.028596162796,
+      "q8_reference_max_abs_error": 0,
+      "per_sample": {
+        "macs": 557056,
+        "local_weight_bytes": 591872,
+        "peer_bytes": 3488,
+        "dma_bytes": 4928,
+        "gemv_commands": 5,
+        "swiglu_commands": 2,
+        "resident_bytes": 638976
+      },
+      "unique_layer": 11,
+      "logical_layers": [
+        22,
+        23
+      ],
+      "fixture_sha256": "e79c25547ae9d3bab64c6e185820d8815d190742a9d339a1fa7e0056a8f88008",
+      "shape": [
+        256,
+        720,
+        256
+      ],
+      "padded_hidden": 736
+    }
+  ],
+  "finished_utc": "2026-10-01T06:34:47.463530+00:00",
+  "hls_execution": "ordinary C++ on CPU; no RTL validation",
+  "source_sha256": {
+    "fpga/hls/gemv_q8_0/ntrpu_gemv_q8_0.cpp": "a26603386a01d437e79ecc3b5b300cfa52462ed96648024cc2bd3335dbb93f40",
+    "fpga/hls/gemv_q8_0/ntrpu_gemv_q8_0.h": "6ec72f022941fe910555b5dc285df37629333d2580230a20e5f8dad3d4011a37",
+    "src/ntrpu/q8_0.cpp": "5d6e45d84e811e4b5437375413545eb1243731c2a17d30a33bb9bdab1be9d2cb",
+    "src/ntrpu/q8_0.h": "a9fac7fb636a42123f57adfcb813fdac9fe88a7a6c5e49ec63337de7364f9078"
+  }
+}

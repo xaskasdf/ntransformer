@@ -1,0 +1,33 @@
+{
+  "source_archive": "D:\\AI\\recovered_projects.7z",
+  "archive_sha256": "70c05a41ebd76a18c7c85f9ef2a357d9027e18b2bf84991d4e303c18b3947fb0",
+  "archive_member": "recovered_projects/claude-sessions/f49844040.elf",
+  "member_sha256": "e41946c4bc4e67da3a6dfd400691a09a4b3a3a86c22a00ed04e0509ce0938693",
+  "member_size_bytes": 10416128,
+  "byte_offset_start_inclusive": 9199618,
+  "byte_offset_end_exclusive": 10349247,
+  "recovered_size_bytes": 1149629,
+  "recovered_sha256": "52e1454df470487512a430a956d24590d97f7331903e34e1ff0248f6f8ceb4a8",
+  "output_file": "unified_core_int8_loop_csynth.rpt",
+  "method": "Contiguous ASCII run from the report header through the first non-ASCII/control byte. Bytes preserved exactly.",
+  "scope": "HLS loop report fragment only; not source code, not a full-chip implementation or a verified bitstream.",
+  "archive_audit": {
+    "files": 5497,
+    "unique_contents": 2992,
+    "total_bytes": 729573884,
+    "term_unique_file_counts": {
+      "vivado": 2,
+      "alveo": 0,
+      "u50_u250": 1,
+      "fpga": 7,
+      "xilinx": 12,
+      "ddr4": 15,
+      "512_capacity": 16,
+      "rdimm": 0,
+      "project": 0,
+      "hdl": 1,
+      "hls": 1,
+      "ntransformer": 94
+    }
+  }
+}

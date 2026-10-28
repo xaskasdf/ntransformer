@@ -1,0 +1,30 @@
+// Connectivity only; no arithmetic. Exclude from actual Vivado filesets.
+module ntrpu_post_attention_r1 (
+    input wire ap_clk,
+    input wire ap_rst,
+    input wire ap_start,
+    output wire ap_done,
+    output wire ap_ready,
+    output wire ap_idle,
+    output wire [31:0] ap_return,
+    input wire [31:0] elements,
+    input wire [31:0] epsilon_bits,
+    output wire [10:0] residual_input_address0,
+    output wire residual_input_ce0,
+    input wire [31:0] residual_input_q0,
+    output wire [10:0] branch_address0,
+    output wire branch_ce0,
+    input wire [31:0] branch_q0,
+    output wire [10:0] norm_weight_address0,
+    output wire norm_weight_ce0,
+    input wire [31:0] norm_weight_q0,
+    output wire [10:0] residual_output_address0,
+    output wire residual_output_ce0,
+    output wire residual_output_we0,
+    output wire [31:0] residual_output_d0,
+    output wire [8:0] ffn_input_address0,
+    output wire ffn_input_ce0,
+    output wire ffn_input_we0,
+    output wire [63:0] ffn_input_d0
+);
+endmodule

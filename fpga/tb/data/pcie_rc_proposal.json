@@ -1,0 +1,40 @@
+{
+  "rows": 69876,
+  "phases": [
+    {
+      "id": 0,
+      "name": "reset_and_inactive_outputs",
+      "start": 0,
+      "rows": 2
+    },
+    {
+      "id": 1,
+      "name": "all_counts_low_offsets_and_boundary_byte_counts",
+      "start": 2,
+      "rows": 53232
+    },
+    {
+      "id": 2,
+      "name": "non_normal_status_error_poison",
+      "start": 53234,
+      "rows": 256
+    },
+    {
+      "id": 3,
+      "name": "random_full_width_and_lane_masks",
+      "start": 53490,
+      "rows": 16384
+    },
+    {
+      "id": 4,
+      "name": "reset_after_contention",
+      "start": 69874,
+      "rows": 2
+    }
+  ],
+  "seed": 1380143186,
+  "vectors_sha256": "1dd6a4107ebae9aea3567ad8f4b0f6f48de760d24e1aeb0cefc26495bc02307d",
+  "scope": "Binary proposal arithmetic only; expected metadata, ownership, framing, payload context and inventory are external.",
+  "lanes": 4,
+  "latency_cycles": 1
+}

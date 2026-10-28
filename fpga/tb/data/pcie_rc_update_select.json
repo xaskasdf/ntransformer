@@ -1,0 +1,10 @@
+{
+  "rows": 89632,
+  "exhaustive_eop_pointer_rows": 65536,
+  "sop_pointer_and_context_rows": 4096,
+  "sampled_rows": 20000,
+  "random_seed": 1380143941,
+  "sha256": "45014c1233bed07e17a124c32b958971dcef6c75406aff6fdeb3bb7a4d21b3ab",
+  "generator_sha256": "e70687f9e39bb49cf10a4a39f5417ce14ec12b2705ec30298aa60e9736ffbe17",
+  "scope": "Binary control selection only. No byte arithmetic, four-state universal equivalence or full monitor qualification."
+}

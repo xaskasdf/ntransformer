@@ -1,0 +1,36 @@
+{
+  "rows": 281904,
+  "phases": [
+    {
+      "id": 0,
+      "name": "all_sop_eop_retained_0",
+      "start": 0,
+      "rows": 120816
+    },
+    {
+      "id": 1,
+      "name": "all_sop_eop_retained_1",
+      "start": 120816,
+      "rows": 161088
+    }
+  ],
+  "cases": 80544,
+  "sop_subsets": 16,
+  "eop_position_sets": 2517,
+  "retained_context_modes": 2,
+  "count_samples": [
+    0,
+    1,
+    4,
+    13,
+    32,
+    1024,
+    1025,
+    2047
+  ],
+  "all_physical_sop_eop_combinations": true,
+  "binary_inputs_only": true,
+  "latency_cycles": 2,
+  "vectors_sha256": "986ed88b00d58827225fb812fac044b25a29b4dd4c9cd8aad4a5b0a66efbab9e",
+  "scope": "Ordered pointer encodings, all physical SOP subsets and EOP sets of cardinality0..4. Includes invalid packet layouts. Count/enable samples are distributed, not an exhaustive cross product; no allocation bank or native endpoint."
+}

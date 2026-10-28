@@ -1,0 +1,124 @@
+    // Expected records come from the independent S1/R7/probe/model consumers.
+    // Candidate A/B outputs are only observed, never used to build expectations.
+    import ntrpu_pcie_symbolic_numeric_pkg_r1::*;
+    wire a_record_t numeric_a;
+    wire b_record_t numeric_b;
+    ntrpu_pcie_symbolic_apply_r1 apply_stage(.clk(clk),.cold_rst_n(cold_rst_n),
+        .in_control(ced.d_control),.in_record(ced.out_record),.out_a(numeric_a));
+    ntrpu_pcie_symbolic_delivery_r1 delivery_stage(.clk(clk),.cold_rst_n(cold_rst_n),
+        .in_a(numeric_a),.out_b(numeric_b));
+    a_record_t expected_a, numeric_history_a [0:3];
+    b_record_t expected_b, numeric_history_b [0:3];
+    reg [179:0] numeric_history_query [0:3], numeric_actual_query;
+    reg [70:0] numeric_history_context [0:3], numeric_actual_context;
+    reg [207:0] numeric_history_lanes [0:3], numeric_actual_lanes;
+    reg [20:0] numeric_history_bytes [0:3];
+    reg signed [22:0] numeric_history_candidate [0:3], numeric_actual_candidate;
+    integer numeric_history_origin [0:3];
+    reg [3:0] numeric_history_valid=0;
+    integer numeric_captured=0, numeric_a_retired=0, numeric_b_retired=0;
+    integer numeric_cancelled_a=0, numeric_cancelled_b=0, numeric_busy_cold=0;
+    integer numeric_slot, numeric_hist, numeric_lane;
+    reg [16:0] numeric_sum;
+    reg [15:0] numeric_lanes_used;
+    reg [24:0] numeric_expected_value;
+    task check_numeric;
+        begin
+            if (!cold_rst_n) begin
+                if (numeric_a!=='0 || numeric_b!=='0)
+                    $fatal(1,"NUMERIC_COLD_MISMATCH row=%0d",index);
+                if (numeric_history_valid!=0) numeric_busy_cold=numeric_busy_cold+1;
+                for (numeric_hist=0;numeric_hist<4;numeric_hist=numeric_hist+1)
+                    if (numeric_history_valid[numeric_hist] && numeric_history_origin[numeric_hist]<expected_rows) begin
+                        numeric_cancelled_b=numeric_cancelled_b+1;
+                        if (numeric_hist<3) numeric_cancelled_a=numeric_cancelled_a+1;
+                    end
+                numeric_history_valid=0;
+            end else begin
+                if (numeric_history_valid[2]) begin
+                    if (numeric_a!==numeric_history_a[2])
+                        $fatal(1,"NUMERIC_A_MISMATCH row=%0d origin=%0d",index,numeric_history_origin[2]);
+                    if (numeric_history_origin[2]<expected_rows) numeric_a_retired=numeric_a_retired+1;
+                end else if (numeric_a!=='0) $fatal(1,"NUMERIC_A_FILL_MISMATCH row=%0d",index);
+                if (numeric_history_valid[3]) begin
+                    if (numeric_b!==numeric_history_b[3])
+                        $fatal(1,"NUMERIC_B_MISMATCH row=%0d origin=%0d",index,numeric_history_origin[3]);
+                    numeric_actual_query=0; numeric_actual_lanes=0; numeric_lanes_used=0;
+                    for (numeric_slot=0;numeric_slot<4;numeric_slot=numeric_slot+1) begin
+                        if (numeric_b.origin.record.queries[numeric_slot].valid) begin
+                            numeric_actual_query[176+numeric_slot]=1;
+                            numeric_actual_query[172+numeric_slot]=numeric_b.origin.record.queries[numeric_slot].owned;
+                            numeric_actual_query[52+numeric_slot*30+:30]={
+                                numeric_b.origin.record.queries[numeric_slot].attributes_tc,
+                                numeric_b.origin.queries[numeric_slot][11:0],numeric_b.origin.queries[numeric_slot][24:12]};
+                            numeric_actual_query[numeric_slot*13+:13]=numeric_b.query_delivered[numeric_slot];
+                        end
+                        if (numeric_b.origin.record.eops[numeric_slot].valid) begin
+                            numeric_lane=numeric_b.origin.record.eops[numeric_slot].lane;
+                            if ((^numeric_b.origin.record.eops[numeric_slot].lane)===1'bx || numeric_lanes_used[numeric_lane])
+                                $fatal(1,"NUMERIC_EOP_ALIAS_MISMATCH row=%0d",index);
+                            numeric_lanes_used[numeric_lane]=1;
+                            numeric_actual_lanes[numeric_lane*13+:13]=numeric_b.eop_removed[numeric_slot];
+                        end
+                    end
+                    numeric_actual_context={numeric_b.origin.record.pre_rc_context.seen,
+                        numeric_b.origin.record.pre_rc_context.expected,numeric_b.origin.record.pre_rc_context.tag,
+                        numeric_b.origin.record.pre_rc_context.terminal,numeric_b.origin.record.pre_rc_context.normal,
+                        numeric_b.origin.record.pre_rc_context.owned,numeric_b.origin.context_value[24:12],
+                        numeric_b.context_delivered,numeric_b.origin.context_value[11:0]};
+                    if (numeric_actual_query!==numeric_history_query[3]) $fatal(1,"NUMERIC_R7_QUERY_MISMATCH row=%0d",index);
+                    if (numeric_actual_context!==numeric_history_context[3]) $fatal(1,"NUMERIC_R7_CONTEXT_MISMATCH row=%0d",index);
+                    if (numeric_actual_lanes!==numeric_history_lanes[3]) $fatal(1,"NUMERIC_LANES_MISMATCH row=%0d",index);
+                    numeric_sum=0;
+                    for (numeric_lane=0;numeric_lane<16;numeric_lane=numeric_lane+1)
+                        numeric_sum=numeric_sum+numeric_actual_lanes[numeric_lane*13+:13];
+                    numeric_actual_candidate=$signed({2'b0,numeric_history_bytes[3]})+
+                        $signed({{8{numeric_b.origin.record.rq_spans[0][14]}},numeric_b.origin.record.rq_spans[0]})+
+                        $signed({{8{numeric_b.origin.record.rq_spans[1][14]}},numeric_b.origin.record.rq_spans[1]})-
+                        $signed({6'b0,numeric_sum});
+                    if (numeric_actual_candidate!==numeric_history_candidate[3]) $fatal(1,"NUMERIC_BYTES_MISMATCH row=%0d",index);
+                    if (numeric_history_origin[3]<expected_rows) numeric_b_retired=numeric_b_retired+1;
+                end else if (numeric_b!=='0) $fatal(1,"NUMERIC_B_FILL_MISMATCH row=%0d",index);
+                for (numeric_hist=3;numeric_hist>0;numeric_hist=numeric_hist-1) begin
+                    numeric_history_a[numeric_hist]=numeric_history_a[numeric_hist-1];
+                    numeric_history_b[numeric_hist]=numeric_history_b[numeric_hist-1];
+                    numeric_history_query[numeric_hist]=numeric_history_query[numeric_hist-1];
+                    numeric_history_context[numeric_hist]=numeric_history_context[numeric_hist-1];
+                    numeric_history_lanes[numeric_hist]=numeric_history_lanes[numeric_hist-1];
+                    numeric_history_bytes[numeric_hist]=numeric_history_bytes[numeric_hist-1];
+                    numeric_history_candidate[numeric_hist]=numeric_history_candidate[numeric_hist-1];
+                    numeric_history_origin[numeric_hist]=numeric_history_origin[numeric_hist-1];
+                    numeric_history_valid[numeric_hist]=numeric_history_valid[numeric_hist-1];
+                end
+                expected_a='0; expected_b='0;
+                expected_a.control=s1_ports[2497:2107]; expected_a.record=s1.out_record;
+                for (numeric_slot=0;numeric_slot<4;numeric_slot=numeric_slot+1) begin
+                    if (s1.out_record.queries[numeric_slot].valid) begin
+                        expected_a.queries[numeric_slot]=model.symbolic_value(s1.out_record.queries[numeric_slot].description);
+                        expected_b.query_delivered[numeric_slot]=model.symbolic_delivery(s1.out_record.queries[numeric_slot].description,
+                            s1.out_record.queries[numeric_slot].words,s1.out_record.queries[numeric_slot].delivery_enabled);
+                    end
+                    if (s1.out_record.eops[numeric_slot].valid) begin
+                        numeric_expected_value=model.symbolic_value(s1.out_record.eops[numeric_slot].description);
+                        expected_a.eops[numeric_slot]=numeric_expected_value;
+                        expected_b.eop_delivered[numeric_slot]=model.symbolic_delivery(s1.out_record.eops[numeric_slot].description,
+                            s1.out_record.eops[numeric_slot].words,s1.out_record.eops[numeric_slot].delivery_enabled);
+                        expected_b.eop_removed[numeric_slot]=s1.out_record.eops[numeric_slot].terminal ?
+                            numeric_expected_value[24:12] : expected_b.eop_delivered[numeric_slot];
+                    end
+                end
+                expected_a.context_value=model.symbolic_value(s1.out_record.pre_rc_context.description);
+                expected_b.context_delivered=model.symbolic_delivery(s1.out_record.pre_rc_context.description,
+                    s1.out_record.pre_rc_context.words,s1.out_record.pre_rc_context.delivery_enabled);
+                expected_b.origin=expected_a;
+                numeric_history_a[0]=expected_a; numeric_history_b[0]=expected_b;
+                numeric_history_query[0]=saved_query; numeric_history_context[0]=saved_rc;
+                numeric_history_lanes[0]=saved_lanes; numeric_history_bytes[0]=saved_bytes;
+                numeric_history_candidate[0]=saved_byte_candidate;
+                numeric_history_origin[0]=index; numeric_history_valid[0]=1;
+                if (index<expected_rows) numeric_captured=numeric_captured+1;
+            end
+            if (index%2048==0) $display("NUMERIC_PROGRESS bank=%s row=%0d a_retired=%0d b_retired=%0d cancelled_a=%0d cancelled_b=%0d",
+                bank,index,numeric_a_retired,numeric_b_retired,numeric_cancelled_a,numeric_cancelled_b);
+        end
+    endtask
