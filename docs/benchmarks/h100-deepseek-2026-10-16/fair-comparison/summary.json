@@ -1,0 +1,1409 @@
+{
+  "protocol": {
+    "schema": 1,
+    "hardware": "2x H100 80GB SXM5, CUDA_VISIBLE_DEVICES=1,0, same host and CPU budget",
+    "workloads": [
+      "p32",
+      "p128",
+      "p512",
+      "heldout-p512"
+    ],
+    "decode_steps": 64,
+    "warmup_rounds": [
+      0,
+      1
+    ],
+    "measured_rounds": [
+      2,
+      3,
+      4
+    ],
+    "independent_launches": 2,
+    "main_engines": [
+      "nt-slru",
+      "llama"
+    ],
+    "additional_control": "nt-lru on p512 in both launches",
+    "nt": {
+      "cache_gib_per_gpu": 62,
+      "protected_percent": 80,
+      "peer_mode": "execute",
+      "routed_compute": "fp32",
+      "q8_cooperative": true
+    },
+    "llama_pilot": {
+      "workload": "p128 prefix and 16 consumed continuation tokens",
+      "cpu_moe_layers": [
+        20,
+        22
+      ],
+      "threads": [
+        26,
+        52
+      ],
+      "operation_offload": [
+        true,
+        false
+      ],
+      "ubatch": 512,
+      "gpu_count": 2,
+      "split_mode": "layer, 1:1, balanced routed-expert residency",
+      "score": "median of warm prefill_seconds + 4 * decode_seconds; rounds 1 and 2",
+      "failure_policy": "Only explicit CUDA OOM marks a pilot infeasible; other failures stop the worker"
+    },
+    "order": "Reverse engine order on the second launch; alternate initial order by workload",
+    "cache_protocol": "Clear sequence/KV state per request; retain each engine's weights/cache; do not flush the global OS file cache",
+    "cold_results": "Diagnostic only: OS cache state is not controlled; record phase page faults and I/O blocks",
+    "quality": "Same 65 target tokens and full vocabulary logits; finite/repeat checks, NLL and KL; no bitwise cross-engine requirement or task-quality certification",
+    "scope": "A bounded native-configuration comparison, not exhaustive tuning or equal VRAM allocation"
+  },
+  "selected_llama": {
+    "cpu_moe": 20,
+    "threads": 52,
+    "op_offload": false
+  },
+  "workloads": {
+    "p32": {
+      "nt-slru": {
+        "decode_tokens_per_second": 23.532914963540964,
+        "prefill_tokens_per_second": 25.24606725393345,
+        "median_request_seconds": 3.9876456835,
+        "decode_range_seconds": [
+          2.716447479,
+          2.724000253
+        ],
+        "warm_major_page_faults": 0,
+        "warm_input_blocks": 0,
+        "cross_launch_logits_equal": true,
+        "launches": [
+          {
+            "label": "nt-slru-p32-r0",
+            "decode_seconds": [
+              2.71764917,
+              2.721287027,
+              2.716447479
+            ],
+            "prefill_seconds": [
+              1.26722401,
+              1.26720909,
+              1.265582923
+            ],
+            "request_seconds": [
+              3.98487318,
+              3.9884961169999995,
+              3.9820304020000004
+            ],
+            "warm_major_page_faults": 0,
+            "warm_input_blocks": 0,
+            "cold_request_seconds": 9.183528977,
+            "cold_major_page_faults": 0,
+            "repeat_bitwise_equal": true,
+            "logits_sha256": "85bd202457452d765c1d194c7d1633a66b82aabc6b43309006145a542892bbe3",
+            "sampled_peak_vram_mib": {
+              "0": 64017.0,
+              "1": 72505.0
+            },
+            "peak_rss_mib": 90983.4765625,
+            "setup": {
+              "kind": "setup",
+              "label": "nt-slru-p32-r0",
+              "load_seconds": 0.010032648,
+              "tokenize_seconds": 0.045039321,
+              "initialize_seconds": 0.498879518,
+              "setup_wall_seconds": 0.554200252,
+              "prompt_tokens": 32,
+              "decode_steps": 64,
+              "layers": 40,
+              "vocab": 129280,
+              "eos_id": 1,
+              "shards": 10,
+              "model_file_bytes": 507954227008,
+              "teacher_forcing": true,
+              "tokenizer_pre": "joyai-llm"
+            }
+          },
+          {
+            "label": "nt-slru-p32-r1",
+            "decode_seconds": [
+              2.720219226,
+              2.724000253,
+              2.718970955
+            ],
+            "prefill_seconds": [
+              1.270899534,
+              1.270099784,
+              1.267824295
+            ],
+            "request_seconds": [
+              3.99111876,
+              3.994100037,
+              3.98679525
+            ],
+            "warm_major_page_faults": 0,
+            "warm_input_blocks": 0,
+            "cold_request_seconds": 9.226602915,
+            "cold_major_page_faults": 0,
+            "repeat_bitwise_equal": true,
+            "logits_sha256": "85bd202457452d765c1d194c7d1633a66b82aabc6b43309006145a542892bbe3",
+            "sampled_peak_vram_mib": {
+              "0": 64017.0,
+              "1": 72505.0
+            },
+            "peak_rss_mib": 91027.875,
+            "setup": {
+              "kind": "setup",
+              "label": "nt-slru-p32-r1",
+              "load_seconds": 0.009759707,
+              "tokenize_seconds": 0.045936237,
+              "initialize_seconds": 0.502432479,
+              "setup_wall_seconds": 0.558395837,
+              "prompt_tokens": 32,
+              "decode_steps": 64,
+              "layers": 40,
+              "vocab": 129280,
+              "eos_id": 1,
+              "shards": 10,
+              "model_file_bytes": 507954227008,
+              "teacher_forcing": true,
+              "tokenizer_pre": "joyai-llm"
+            }
+          }
+        ]
+      },
+      "llama": {
+        "decode_tokens_per_second": 33.713193164062105,
+        "prefill_tokens_per_second": 84.0886724247918,
+        "median_request_seconds": 2.2788012770000003,
+        "decode_range_seconds": [
+          1.8762833929999998,
+          1.9001609070000007
+        ],
+        "warm_major_page_faults": 0,
+        "warm_input_blocks": 0,
+        "cross_launch_logits_equal": true,
+        "launches": [
+          {
+            "label": "llama-p32-r0",
+            "decode_seconds": [
+              1.8972719939999998,
+              1.9001141749999997,
+              1.8762833929999998
+            ],
+            "prefill_seconds": [
+              0.380285395,
+              0.380646862,
+              0.382183016
+            ],
+            "request_seconds": [
+              2.277557389,
+              2.2807610369999995,
+              2.258466409
+            ],
+            "warm_major_page_faults": 0,
+            "warm_input_blocks": 0,
+            "cold_request_seconds": 2.485013204,
+            "cold_major_page_faults": 205,
+            "repeat_bitwise_equal": true,
+            "logits_sha256": "851497a96ce22c5b9d1c3a634225aa5977483a320a80cf1396b89e7fe8a67642",
+            "sampled_peak_vram_mib": {
+              "0": 74479.0,
+              "1": 73919.0
+            },
+            "peak_rss_mib": 285600.01171875,
+            "setup": {
+              "context_init_seconds": 0.087123239,
+              "cpu_moe_layer_ids": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                21,
+                22,
+                23,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29
+              ],
+              "cpu_moe_layers": 20,
+              "decode_steps": 64,
+              "device": "CUDA0",
+              "devices": [
+                "CUDA0",
+                "CUDA1"
+              ],
+              "eos_id": 1,
+              "gpu_count": 2,
+              "gpu_moe_layers": 20,
+              "kind": "setup",
+              "kv_requested": "f32",
+              "log_level": "info",
+              "model_load_seconds": 26.598142377,
+              "n_batch": 512,
+              "n_ctx": 1024,
+              "n_ubatch": 512,
+              "prompt_tokens": 32,
+              "setup_wall_seconds": 26.936429597,
+              "split_mode": "layer",
+              "system_info": "CUDA : ARCHS = 900 | USE_GRAPHS = 1 | FA_QUANTS = q4_0-q4_0,q8_0-q8_0,f16-f16,bf16-bf16 | CPU : SSE3 = 1 | SSSE3 = 1 | AVX = 1 | AVX_VNNI = 1 | AVX2 = 1 | F16C = 1 | FMA = 1 | BMI2 = 1 | AVX512 = 1 | AVX512_VBMI = 1 | AVX512_VNNI = 1 | AVX512_BF16 = 1 | LLAMAFILE = 1 | OPENMP = 1 | REPACK = 1 | ",
+              "teacher_forcing": true,
+              "threads": 52,
+              "vocab": 129280
+            }
+          },
+          {
+            "label": "llama-p32-r1",
+            "decode_seconds": [
+              1.8936326430000003,
+              1.8994612130000001,
+              1.9001609070000007
+            ],
+            "prefill_seconds": [
+              0.380085129,
+              0.380583952,
+              0.380517373
+            ],
+            "request_seconds": [
+              2.2737177720000004,
+              2.280045165,
+              2.280678280000001
+            ],
+            "warm_major_page_faults": 0,
+            "warm_input_blocks": 0,
+            "cold_request_seconds": 2.5031464559999996,
+            "cold_major_page_faults": 166,
+            "repeat_bitwise_equal": true,
+            "logits_sha256": "851497a96ce22c5b9d1c3a634225aa5977483a320a80cf1396b89e7fe8a67642",
+            "sampled_peak_vram_mib": {
+              "0": 74479.0,
+              "1": 73919.0
+            },
+            "peak_rss_mib": 285600.0703125,
+            "setup": {
+              "context_init_seconds": 0.090493468,
+              "cpu_moe_layer_ids": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                21,
+                22,
+                23,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29
+              ],
+              "cpu_moe_layers": 20,
+              "decode_steps": 64,
+              "device": "CUDA0",
+              "devices": [
+                "CUDA0",
+                "CUDA1"
+              ],
+              "eos_id": 1,
+              "gpu_count": 2,
+              "gpu_moe_layers": 20,
+              "kind": "setup",
+              "kv_requested": "f32",
+              "log_level": "info",
+              "model_load_seconds": 26.61609202,
+              "n_batch": 512,
+              "n_ctx": 1024,
+              "n_ubatch": 512,
+              "prompt_tokens": 32,
+              "setup_wall_seconds": 26.95835645,
+              "split_mode": "layer",
+              "system_info": "CUDA : ARCHS = 900 | USE_GRAPHS = 1 | FA_QUANTS = q4_0-q4_0,q8_0-q8_0,f16-f16,bf16-bf16 | CPU : SSE3 = 1 | SSSE3 = 1 | AVX = 1 | AVX_VNNI = 1 | AVX2 = 1 | F16C = 1 | FMA = 1 | BMI2 = 1 | AVX512 = 1 | AVX512_VBMI = 1 | AVX512_VNNI = 1 | AVX512_BF16 = 1 | LLAMAFILE = 1 | OPENMP = 1 | REPACK = 1 | ",
+              "teacher_forcing": true,
+              "threads": 52,
+              "vocab": 129280
+            }
+          }
+        ]
+      }
+    },
+    "p128": {
+      "nt-slru": {
+        "decode_tokens_per_second": 21.60566797449162,
+        "prefill_tokens_per_second": 23.84742254730587,
+        "median_request_seconds": 8.329447397500001,
+        "decode_range_seconds": [
+          2.944621021,
+          3.013095804
+        ],
+        "warm_major_page_faults": 0,
+        "warm_input_blocks": 0,
+        "cross_launch_logits_equal": true,
+        "launches": [
+          {
+            "label": "nt-slru-p128-r0",
+            "decode_seconds": [
+              2.960516498,
+              2.962700717,
+              2.961670617
+            ],
+            "prefill_seconds": [
+              5.36961545,
+              5.36606213,
+              5.368850605
+            ],
+            "request_seconds": [
+              8.330131948,
+              8.328762847,
+              8.330521222
+            ],
+            "warm_major_page_faults": 0,
+            "warm_input_blocks": 0,
+            "cold_request_seconds": 14.921555872999999,
+            "cold_major_page_faults": 0,
+            "repeat_bitwise_equal": true,
+            "logits_sha256": "9262595f4e7b22366e7f351643c984c1bfb3e968f3925de880557c02b928fceb",
+            "sampled_peak_vram_mib": {
+              "0": 64017.0,
+              "1": 72505.0
+            },
+            "peak_rss_mib": 112605.51953125,
+            "setup": {
+              "kind": "setup",
+              "label": "nt-slru-p128-r0",
+              "load_seconds": 0.01006609,
+              "tokenize_seconds": 0.045621782,
+              "initialize_seconds": 0.494171832,
+              "setup_wall_seconds": 0.550129505,
+              "prompt_tokens": 128,
+              "decode_steps": 64,
+              "layers": 40,
+              "vocab": 129280,
+              "eos_id": 1,
+              "shards": 10,
+              "model_file_bytes": 507954227008,
+              "teacher_forcing": true,
+              "tokenizer_pre": "joyai-llm"
+            }
+          },
+          {
+            "label": "nt-slru-p128-r1",
+            "decode_seconds": [
+              2.944621021,
+              2.965936636,
+              3.013095804
+            ],
+            "prefill_seconds": [
+              5.33472364,
+              5.335820239,
+              5.375187621
+            ],
+            "request_seconds": [
+              8.279344661,
+              8.301756875,
+              8.388283425000001
+            ],
+            "warm_major_page_faults": 0,
+            "warm_input_blocks": 0,
+            "cold_request_seconds": 14.872748919,
+            "cold_major_page_faults": 0,
+            "repeat_bitwise_equal": true,
+            "logits_sha256": "9262595f4e7b22366e7f351643c984c1bfb3e968f3925de880557c02b928fceb",
+            "sampled_peak_vram_mib": {
+              "0": 64017.0,
+              "1": 72505.0
+            },
+            "peak_rss_mib": 112630.42578125,
+            "setup": {
+              "kind": "setup",
+              "label": "nt-slru-p128-r1",
+              "load_seconds": 0.009852189,
+              "tokenize_seconds": 0.045533637,
+              "initialize_seconds": 0.52193177,
+              "setup_wall_seconds": 0.577606118,
+              "prompt_tokens": 128,
+              "decode_steps": 64,
+              "layers": 40,
+              "vocab": 129280,
+              "eos_id": 1,
+              "shards": 10,
+              "model_file_bytes": 507954227008,
+              "teacher_forcing": true,
+              "tokenizer_pre": "joyai-llm"
+            }
+          }
+        ]
+      },
+      "llama": {
+        "decode_tokens_per_second": 33.895529412516886,
+        "prefill_tokens_per_second": 95.99576481085019,
+        "median_request_seconds": 3.2220555685000005,
+        "decode_range_seconds": [
+          1.8774027620000007,
+          1.9037327370000001
+        ],
+        "warm_major_page_faults": 0,
+        "warm_input_blocks": 0,
+        "cross_launch_logits_equal": true,
+        "launches": [
+          {
+            "label": "llama-p128-r0",
+            "decode_seconds": [
+              1.9037327370000001,
+              1.8927207940000004,
+              1.8955705199999993
+            ],
+            "prefill_seconds": [
+              1.332193993,
+              1.33159028,
+              1.33015592
+            ],
+            "request_seconds": [
+              3.23592673,
+              3.224311074,
+              3.225726439999999
+            ],
+            "warm_major_page_faults": 0,
+            "warm_input_blocks": 0,
+            "cold_request_seconds": 3.46956439,
+            "cold_major_page_faults": 217,
+            "repeat_bitwise_equal": true,
+            "logits_sha256": "6faea97ec7f911f4c4f2aeb7cf56d61a3bc110ce8212415dc5b00d6e67254f7a",
+            "sampled_peak_vram_mib": {
+              "0": 74475.0,
+              "1": 73915.0
+            },
+            "peak_rss_mib": 285600.14453125,
+            "setup": {
+              "context_init_seconds": 0.088853221,
+              "cpu_moe_layer_ids": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                21,
+                22,
+                23,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29
+              ],
+              "cpu_moe_layers": 20,
+              "decode_steps": 64,
+              "device": "CUDA0",
+              "devices": [
+                "CUDA0",
+                "CUDA1"
+              ],
+              "eos_id": 1,
+              "gpu_count": 2,
+              "gpu_moe_layers": 20,
+              "kind": "setup",
+              "kv_requested": "f32",
+              "log_level": "info",
+              "model_load_seconds": 26.393990965,
+              "n_batch": 512,
+              "n_ctx": 1024,
+              "n_ubatch": 512,
+              "prompt_tokens": 128,
+              "setup_wall_seconds": 26.706662311,
+              "split_mode": "layer",
+              "system_info": "CUDA : ARCHS = 900 | USE_GRAPHS = 1 | FA_QUANTS = q4_0-q4_0,q8_0-q8_0,f16-f16,bf16-bf16 | CPU : SSE3 = 1 | SSSE3 = 1 | AVX = 1 | AVX_VNNI = 1 | AVX2 = 1 | F16C = 1 | FMA = 1 | BMI2 = 1 | AVX512 = 1 | AVX512_VBMI = 1 | AVX512_VNNI = 1 | AVX512_BF16 = 1 | LLAMAFILE = 1 | OPENMP = 1 | REPACK = 1 | ",
+              "teacher_forcing": true,
+              "threads": 52,
+              "vocab": 129280
+            }
+          },
+          {
+            "label": "llama-p128-r1",
+            "decode_seconds": [
+              1.8812599609999996,
+              1.883588419,
+              1.8774027620000007
+            ],
+            "prefill_seconds": [
+              1.336168196,
+              1.334590323,
+              1.342397301
+            ],
+            "request_seconds": [
+              3.2174281569999996,
+              3.218178742,
+              3.219800063000001
+            ],
+            "warm_major_page_faults": 0,
+            "warm_input_blocks": 0,
+            "cold_request_seconds": 3.475262301,
+            "cold_major_page_faults": 214,
+            "repeat_bitwise_equal": true,
+            "logits_sha256": "6faea97ec7f911f4c4f2aeb7cf56d61a3bc110ce8212415dc5b00d6e67254f7a",
+            "sampled_peak_vram_mib": {
+              "0": 74475.0,
+              "1": 73915.0
+            },
+            "peak_rss_mib": 285600.296875,
+            "setup": {
+              "context_init_seconds": 0.089883042,
+              "cpu_moe_layer_ids": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                21,
+                22,
+                23,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29
+              ],
+              "cpu_moe_layers": 20,
+              "decode_steps": 64,
+              "device": "CUDA0",
+              "devices": [
+                "CUDA0",
+                "CUDA1"
+              ],
+              "eos_id": 1,
+              "gpu_count": 2,
+              "gpu_moe_layers": 20,
+              "kind": "setup",
+              "kv_requested": "f32",
+              "log_level": "info",
+              "model_load_seconds": 26.599082607,
+              "n_batch": 512,
+              "n_ctx": 1024,
+              "n_ubatch": 512,
+              "prompt_tokens": 128,
+              "setup_wall_seconds": 26.940024195,
+              "split_mode": "layer",
+              "system_info": "CUDA : ARCHS = 900 | USE_GRAPHS = 1 | FA_QUANTS = q4_0-q4_0,q8_0-q8_0,f16-f16,bf16-bf16 | CPU : SSE3 = 1 | SSSE3 = 1 | AVX = 1 | AVX_VNNI = 1 | AVX2 = 1 | F16C = 1 | FMA = 1 | BMI2 = 1 | AVX512 = 1 | AVX512_VBMI = 1 | AVX512_VNNI = 1 | AVX512_BF16 = 1 | LLAMAFILE = 1 | OPENMP = 1 | REPACK = 1 | ",
+              "teacher_forcing": true,
+              "threads": 52,
+              "vocab": 129280
+            }
+          }
+        ]
+      }
+    },
+    "p512": {
+      "nt-slru": {
+        "decode_tokens_per_second": 18.197538590807827,
+        "prefill_tokens_per_second": 20.22606518877248,
+        "median_request_seconds": 28.8331385415,
+        "decode_range_seconds": [
+          3.512074247,
+          3.519593271
+        ],
+        "warm_major_page_faults": 0,
+        "warm_input_blocks": 0,
+        "cross_launch_logits_equal": true,
+        "launches": [
+          {
+            "label": "nt-slru-p512-r0",
+            "decode_seconds": [
+              3.512236938,
+              3.512074247,
+              3.518942309
+            ],
+            "prefill_seconds": [
+              25.279767022,
+              25.30688473,
+              25.315463137
+            ],
+            "request_seconds": [
+              28.792003960000002,
+              28.818958977,
+              28.834405445999998
+            ],
+            "warm_major_page_faults": 0,
+            "warm_input_blocks": 0,
+            "cold_request_seconds": 36.834352041,
+            "cold_major_page_faults": 640,
+            "repeat_bitwise_equal": true,
+            "logits_sha256": "794433ef8fa573097eaa9d91992af3bbdd766eb02e07c2e2af9c2e6c61a0ddb0",
+            "sampled_peak_vram_mib": {
+              "0": 64017.0,
+              "1": 72511.0
+            },
+            "peak_rss_mib": 151784.9921875,
+            "setup": {
+              "kind": "setup",
+              "label": "nt-slru-p512-r0",
+              "load_seconds": 0.01007351,
+              "tokenize_seconds": 0.045318531,
+              "initialize_seconds": 0.518193584,
+              "setup_wall_seconds": 0.57395436,
+              "prompt_tokens": 512,
+              "decode_steps": 64,
+              "layers": 40,
+              "vocab": 129280,
+              "eos_id": 1,
+              "shards": 10,
+              "model_file_bytes": 507954227008,
+              "teacher_forcing": true,
+              "tokenizer_pre": "joyai-llm"
+            }
+          },
+          {
+            "label": "nt-slru-p512-r1",
+            "decode_seconds": [
+              3.516366246,
+              3.519593271,
+              3.51755207
+            ],
+            "prefill_seconds": [
+              25.340566164,
+              25.312278366,
+              26.193942816
+            ],
+            "request_seconds": [
+              28.85693241,
+              28.831871637000003,
+              29.711494886
+            ],
+            "warm_major_page_faults": 0,
+            "warm_input_blocks": 0,
+            "cold_request_seconds": 36.408364589,
+            "cold_major_page_faults": 0,
+            "repeat_bitwise_equal": true,
+            "logits_sha256": "794433ef8fa573097eaa9d91992af3bbdd766eb02e07c2e2af9c2e6c61a0ddb0",
+            "sampled_peak_vram_mib": {
+              "0": 64017.0,
+              "1": 72511.0
+            },
+            "peak_rss_mib": 151681.5625,
+            "setup": {
+              "kind": "setup",
+              "label": "nt-slru-p512-r1",
+              "load_seconds": 0.009977112,
+              "tokenize_seconds": 0.044775988,
+              "initialize_seconds": 0.49472985,
+              "setup_wall_seconds": 0.549847951,
+              "prompt_tokens": 512,
+              "decode_steps": 64,
+              "layers": 40,
+              "vocab": 129280,
+              "eos_id": 1,
+              "shards": 10,
+              "model_file_bytes": 507954227008,
+              "teacher_forcing": true,
+              "tokenizer_pre": "joyai-llm"
+            }
+          }
+        ]
+      },
+      "llama": {
+        "decode_tokens_per_second": 31.569259030228768,
+        "prefill_tokens_per_second": 104.56001476468279,
+        "median_request_seconds": 6.919685063999999,
+        "decode_range_seconds": [
+          2.005383685,
+          2.0734764439999993
+        ],
+        "warm_major_page_faults": 0,
+        "warm_input_blocks": 0,
+        "cross_launch_logits_equal": true,
+        "launches": [
+          {
+            "label": "llama-p512-r0",
+            "decode_seconds": [
+              2.005383685,
+              2.0734764439999993,
+              2.0402142659999996
+            ],
+            "prefill_seconds": [
+              4.897118599,
+              4.897076623,
+              4.89634204
+            ],
+            "request_seconds": [
+              6.902502284,
+              6.970553066999999,
+              6.936556306
+            ],
+            "warm_major_page_faults": 0,
+            "warm_input_blocks": 0,
+            "cold_request_seconds": 7.244501159,
+            "cold_major_page_faults": 248,
+            "repeat_bitwise_equal": true,
+            "logits_sha256": "1b48a92ded0f092ef753754d46df2369e8a86cb60cc796bf892096e4e108df2e",
+            "sampled_peak_vram_mib": {
+              "0": 74481.0,
+              "1": 73921.0
+            },
+            "peak_rss_mib": 285600.12890625,
+            "setup": {
+              "context_init_seconds": 0.089453658,
+              "cpu_moe_layer_ids": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                21,
+                22,
+                23,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29
+              ],
+              "cpu_moe_layers": 20,
+              "decode_steps": 64,
+              "device": "CUDA0",
+              "devices": [
+                "CUDA0",
+                "CUDA1"
+              ],
+              "eos_id": 1,
+              "gpu_count": 2,
+              "gpu_moe_layers": 20,
+              "kind": "setup",
+              "kv_requested": "f32",
+              "log_level": "info",
+              "model_load_seconds": 26.601931754,
+              "n_batch": 512,
+              "n_ctx": 1024,
+              "n_ubatch": 512,
+              "prompt_tokens": 512,
+              "setup_wall_seconds": 26.94664259,
+              "split_mode": "layer",
+              "system_info": "CUDA : ARCHS = 900 | USE_GRAPHS = 1 | FA_QUANTS = q4_0-q4_0,q8_0-q8_0,f16-f16,bf16-bf16 | CPU : SSE3 = 1 | SSSE3 = 1 | AVX = 1 | AVX_VNNI = 1 | AVX2 = 1 | F16C = 1 | FMA = 1 | BMI2 = 1 | AVX512 = 1 | AVX512_VBMI = 1 | AVX512_VNNI = 1 | AVX512_BF16 = 1 | LLAMAFILE = 1 | OPENMP = 1 | REPACK = 1 | ",
+              "teacher_forcing": true,
+              "threads": 52,
+              "vocab": 129280
+            }
+          },
+          {
+            "label": "llama-p512-r1",
+            "decode_seconds": [
+              2.0233918819999994,
+              2.0311853849999997,
+              2.019867816
+            ],
+            "prefill_seconds": [
+              4.894847568,
+              4.889701876,
+              4.898615051
+            ],
+            "request_seconds": [
+              6.91823945,
+              6.920887261,
+              6.918482867
+            ],
+            "warm_major_page_faults": 0,
+            "warm_input_blocks": 0,
+            "cold_request_seconds": 7.601851364000002,
+            "cold_major_page_faults": 266,
+            "repeat_bitwise_equal": true,
+            "logits_sha256": "1b48a92ded0f092ef753754d46df2369e8a86cb60cc796bf892096e4e108df2e",
+            "sampled_peak_vram_mib": {
+              "0": 74481.0,
+              "1": 73921.0
+            },
+            "peak_rss_mib": 285600.375,
+            "setup": {
+              "context_init_seconds": 0.089692656,
+              "cpu_moe_layer_ids": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                21,
+                22,
+                23,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29
+              ],
+              "cpu_moe_layers": 20,
+              "decode_steps": 64,
+              "device": "CUDA0",
+              "devices": [
+                "CUDA0",
+                "CUDA1"
+              ],
+              "eos_id": 1,
+              "gpu_count": 2,
+              "gpu_moe_layers": 20,
+              "kind": "setup",
+              "kv_requested": "f32",
+              "log_level": "info",
+              "model_load_seconds": 26.358820248,
+              "n_batch": 512,
+              "n_ctx": 1024,
+              "n_ubatch": 512,
+              "prompt_tokens": 512,
+              "setup_wall_seconds": 26.697346679,
+              "split_mode": "layer",
+              "system_info": "CUDA : ARCHS = 900 | USE_GRAPHS = 1 | FA_QUANTS = q4_0-q4_0,q8_0-q8_0,f16-f16,bf16-bf16 | CPU : SSE3 = 1 | SSSE3 = 1 | AVX = 1 | AVX_VNNI = 1 | AVX2 = 1 | F16C = 1 | FMA = 1 | BMI2 = 1 | AVX512 = 1 | AVX512_VBMI = 1 | AVX512_VNNI = 1 | AVX512_BF16 = 1 | LLAMAFILE = 1 | OPENMP = 1 | REPACK = 1 | ",
+              "teacher_forcing": true,
+              "threads": 52,
+              "vocab": 129280
+            }
+          }
+        ]
+      },
+      "nt-lru": {
+        "decode_tokens_per_second": 17.753126690971015,
+        "prefill_tokens_per_second": 19.246022840241363,
+        "median_request_seconds": 30.206730430999997,
+        "decode_range_seconds": [
+          3.602612142,
+          3.607396589
+        ],
+        "warm_major_page_faults": 0,
+        "warm_input_blocks": 0,
+        "cross_launch_logits_equal": true,
+        "launches": [
+          {
+            "label": "nt-lru-p512-r0",
+            "decode_seconds": [
+              3.604946649,
+              3.60560498,
+              3.602739549
+            ],
+            "prefill_seconds": [
+              26.605445607,
+              26.59154076,
+              26.588200362
+            ],
+            "request_seconds": [
+              30.210392256,
+              30.19714574,
+              30.190939910999997
+            ],
+            "warm_major_page_faults": 0,
+            "warm_input_blocks": 0,
+            "cold_request_seconds": 36.422990017,
+            "cold_major_page_faults": 0,
+            "repeat_bitwise_equal": true,
+            "logits_sha256": "794433ef8fa573097eaa9d91992af3bbdd766eb02e07c2e2af9c2e6c61a0ddb0",
+            "sampled_peak_vram_mib": {
+              "0": 64017.0,
+              "1": 72511.0
+            },
+            "peak_rss_mib": 151708.35546875,
+            "setup": {
+              "kind": "setup",
+              "label": "nt-lru-p512-r0",
+              "load_seconds": 0.009829702,
+              "tokenize_seconds": 0.045086351,
+              "initialize_seconds": 0.491415001,
+              "setup_wall_seconds": 0.546692345,
+              "prompt_tokens": 512,
+              "decode_steps": 64,
+              "layers": 40,
+              "vocab": 129280,
+              "eos_id": 1,
+              "shards": 10,
+              "model_file_bytes": 507954227008,
+              "teacher_forcing": true,
+              "tokenizer_pre": "joyai-llm"
+            }
+          },
+          {
+            "label": "nt-lru-p512-r1",
+            "decode_seconds": [
+              3.602612142,
+              3.605050904,
+              3.607396589
+            ],
+            "prefill_seconds": [
+              26.602608478,
+              26.603189338,
+              26.625138586
+            ],
+            "request_seconds": [
+              30.20522062,
+              30.208240242,
+              30.232535175
+            ],
+            "warm_major_page_faults": 0,
+            "warm_input_blocks": 0,
+            "cold_request_seconds": 36.50729895,
+            "cold_major_page_faults": 0,
+            "repeat_bitwise_equal": true,
+            "logits_sha256": "794433ef8fa573097eaa9d91992af3bbdd766eb02e07c2e2af9c2e6c61a0ddb0",
+            "sampled_peak_vram_mib": {
+              "0": 64017.0,
+              "1": 72511.0
+            },
+            "peak_rss_mib": 151794.68359375,
+            "setup": {
+              "kind": "setup",
+              "label": "nt-lru-p512-r1",
+              "load_seconds": 0.00972711,
+              "tokenize_seconds": 0.045472757,
+              "initialize_seconds": 0.502198617,
+              "setup_wall_seconds": 0.55777204,
+              "prompt_tokens": 512,
+              "decode_steps": 64,
+              "layers": 40,
+              "vocab": 129280,
+              "eos_id": 1,
+              "shards": 10,
+              "model_file_bytes": 507954227008,
+              "teacher_forcing": true,
+              "tokenizer_pre": "joyai-llm"
+            }
+          }
+        ]
+      }
+    },
+    "heldout-p512": {
+      "nt-slru": {
+        "decode_tokens_per_second": 18.296696595553875,
+        "prefill_tokens_per_second": 20.208075939009735,
+        "median_request_seconds": 28.834661939,
+        "decode_range_seconds": [
+          3.493412373,
+          3.500216284
+        ],
+        "warm_major_page_faults": 0,
+        "warm_input_blocks": 0,
+        "cross_launch_logits_equal": true,
+        "launches": [
+          {
+            "label": "nt-slru-heldout-p512-r0",
+            "decode_seconds": [
+              3.499943068,
+              3.496297224,
+              3.500216284
+            ],
+            "prefill_seconds": [
+              25.372513028,
+              25.332902856,
+              25.339907514
+            ],
+            "request_seconds": [
+              28.872456096,
+              28.82920008,
+              28.840123798
+            ],
+            "warm_major_page_faults": 0,
+            "warm_input_blocks": 0,
+            "cold_request_seconds": 36.246480992,
+            "cold_major_page_faults": 0,
+            "repeat_bitwise_equal": true,
+            "logits_sha256": "36812e672c9d03d5c47b4f0aea5722f85b8f1616335d1558893cbf47767404f7",
+            "sampled_peak_vram_mib": {
+              "0": 64017.0,
+              "1": 72511.0
+            },
+            "peak_rss_mib": 148683.4765625,
+            "setup": {
+              "kind": "setup",
+              "label": "nt-slru-heldout-p512-r0",
+              "load_seconds": 0.010344779,
+              "tokenize_seconds": 0.045016112,
+              "initialize_seconds": 0.497972217,
+              "setup_wall_seconds": 0.55369252,
+              "prompt_tokens": 512,
+              "decode_steps": 64,
+              "layers": 40,
+              "vocab": 129280,
+              "eos_id": 1,
+              "shards": 10,
+              "model_file_bytes": 507954227008,
+              "teacher_forcing": true,
+              "tokenizer_pre": "joyai-llm"
+            }
+          },
+          {
+            "label": "nt-slru-heldout-p512-r1",
+            "decode_seconds": [
+              3.499501134,
+              3.493412373,
+              3.496109226
+            ],
+            "prefill_seconds": [
+              25.358387403,
+              25.315130883,
+              25.330835831
+            ],
+            "request_seconds": [
+              28.857888536999997,
+              28.808543256,
+              28.826945057000003
+            ],
+            "warm_major_page_faults": 0,
+            "warm_input_blocks": 0,
+            "cold_request_seconds": 36.197535306,
+            "cold_major_page_faults": 0,
+            "repeat_bitwise_equal": true,
+            "logits_sha256": "36812e672c9d03d5c47b4f0aea5722f85b8f1616335d1558893cbf47767404f7",
+            "sampled_peak_vram_mib": {
+              "0": 64017.0,
+              "1": 72511.0
+            },
+            "peak_rss_mib": 148675.703125,
+            "setup": {
+              "kind": "setup",
+              "label": "nt-slru-heldout-p512-r1",
+              "load_seconds": 0.009877117,
+              "tokenize_seconds": 0.045874677,
+              "initialize_seconds": 0.522154594,
+              "setup_wall_seconds": 0.578301469,
+              "prompt_tokens": 512,
+              "decode_steps": 64,
+              "layers": 40,
+              "vocab": 129280,
+              "eos_id": 1,
+              "shards": 10,
+              "model_file_bytes": 507954227008,
+              "teacher_forcing": true,
+              "tokenizer_pre": "joyai-llm"
+            }
+          }
+        ]
+      },
+      "llama": {
+        "decode_tokens_per_second": 31.407136660004777,
+        "prefill_tokens_per_second": 104.59512583563495,
+        "median_request_seconds": 6.9349784775,
+        "decode_range_seconds": [
+          2.0056477790000002,
+          2.1084418640000004
+        ],
+        "warm_major_page_faults": 0,
+        "warm_input_blocks": 0,
+        "cross_launch_logits_equal": true,
+        "launches": [
+          {
+            "label": "llama-heldout-p512-r0",
+            "decode_seconds": [
+              2.059060281,
+              2.027220044,
+              2.0200202469999993
+            ],
+            "prefill_seconds": [
+              4.894107485,
+              4.894724786,
+              4.890902812
+            ],
+            "request_seconds": [
+              6.953167766,
+              6.92194483,
+              6.910923059
+            ],
+            "warm_major_page_faults": 0,
+            "warm_input_blocks": 0,
+            "cold_request_seconds": 9.567457534,
+            "cold_major_page_faults": 7264,
+            "repeat_bitwise_equal": true,
+            "logits_sha256": "eae9c0df6e9ae1a364e25efdbaf38cac3808e62f44c6e0ad91ca7b1bdd59731d",
+            "sampled_peak_vram_mib": {
+              "0": 74481.0,
+              "1": 73921.0
+            },
+            "peak_rss_mib": 285600.3203125,
+            "setup": {
+              "context_init_seconds": 0.089821055,
+              "cpu_moe_layer_ids": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                21,
+                22,
+                23,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29
+              ],
+              "cpu_moe_layers": 20,
+              "decode_steps": 64,
+              "device": "CUDA0",
+              "devices": [
+                "CUDA0",
+                "CUDA1"
+              ],
+              "eos_id": 1,
+              "gpu_count": 2,
+              "gpu_moe_layers": 20,
+              "kind": "setup",
+              "kv_requested": "f32",
+              "log_level": "info",
+              "model_load_seconds": 26.473054516,
+              "n_batch": 512,
+              "n_ctx": 1024,
+              "n_ubatch": 512,
+              "prompt_tokens": 512,
+              "setup_wall_seconds": 26.811255954,
+              "split_mode": "layer",
+              "system_info": "CUDA : ARCHS = 900 | USE_GRAPHS = 1 | FA_QUANTS = q4_0-q4_0,q8_0-q8_0,f16-f16,bf16-bf16 | CPU : SSE3 = 1 | SSSE3 = 1 | AVX = 1 | AVX_VNNI = 1 | AVX2 = 1 | F16C = 1 | FMA = 1 | BMI2 = 1 | AVX512 = 1 | AVX512_VBMI = 1 | AVX512_VNNI = 1 | AVX512_BF16 = 1 | LLAMAFILE = 1 | OPENMP = 1 | REPACK = 1 | ",
+              "teacher_forcing": true,
+              "threads": 52,
+              "vocab": 129280
+            }
+          },
+          {
+            "label": "llama-heldout-p512-r1",
+            "decode_seconds": [
+              2.1084418640000004,
+              2.0056477790000002,
+              2.0482867870000003
+            ],
+            "prefill_seconds": [
+              4.898073592,
+              4.895406368,
+              4.899725338
+            ],
+            "request_seconds": [
+              7.006515456000001,
+              6.901054147,
+              6.948012125
+            ],
+            "warm_major_page_faults": 0,
+            "warm_input_blocks": 0,
+            "cold_request_seconds": 7.327586705,
+            "cold_major_page_faults": 249,
+            "repeat_bitwise_equal": true,
+            "logits_sha256": "eae9c0df6e9ae1a364e25efdbaf38cac3808e62f44c6e0ad91ca7b1bdd59731d",
+            "sampled_peak_vram_mib": {
+              "0": 74481.0,
+              "1": 73921.0
+            },
+            "peak_rss_mib": 285600.36328125,
+            "setup": {
+              "context_init_seconds": 0.090071981,
+              "cpu_moe_layer_ids": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                21,
+                22,
+                23,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29
+              ],
+              "cpu_moe_layers": 20,
+              "decode_steps": 64,
+              "device": "CUDA0",
+              "devices": [
+                "CUDA0",
+                "CUDA1"
+              ],
+              "eos_id": 1,
+              "gpu_count": 2,
+              "gpu_moe_layers": 20,
+              "kind": "setup",
+              "kv_requested": "f32",
+              "log_level": "info",
+              "model_load_seconds": 26.522063546,
+              "n_batch": 512,
+              "n_ctx": 1024,
+              "n_ubatch": 512,
+              "prompt_tokens": 512,
+              "setup_wall_seconds": 26.859989322,
+              "split_mode": "layer",
+              "system_info": "CUDA : ARCHS = 900 | USE_GRAPHS = 1 | FA_QUANTS = q4_0-q4_0,q8_0-q8_0,f16-f16,bf16-bf16 | CPU : SSE3 = 1 | SSSE3 = 1 | AVX = 1 | AVX_VNNI = 1 | AVX2 = 1 | F16C = 1 | FMA = 1 | BMI2 = 1 | AVX512 = 1 | AVX512_VBMI = 1 | AVX512_VNNI = 1 | AVX512_BF16 = 1 | LLAMAFILE = 1 | OPENMP = 1 | REPACK = 1 | ",
+              "teacher_forcing": true,
+              "threads": 52,
+              "vocab": 129280
+            }
+          }
+        ]
+      }
+    }
+  },
+  "quality": {
+    "p32": [
+      {
+        "nt_nll": 2.169372916898479,
+        "llama_nll": 1.7577620499023625,
+        "nll_delta_llama_minus_nt": -0.4116108669961165,
+        "mean_kl_nt_to_llama": 0.9751981302647139,
+        "p99_kl_nt_to_llama": 18.26144946527777,
+        "argmax_agreement": 0.7230769230769231,
+        "positions": 65
+      },
+      {
+        "nt_nll": 2.169372916898479,
+        "llama_nll": 1.7577620499023625,
+        "nll_delta_llama_minus_nt": -0.4116108669961165,
+        "mean_kl_nt_to_llama": 0.9751981302647139,
+        "p99_kl_nt_to_llama": 18.26144946527777,
+        "argmax_agreement": 0.7230769230769231,
+        "positions": 65
+      }
+    ],
+    "p128": [
+      {
+        "nt_nll": 2.2443040208855547,
+        "llama_nll": 2.1370477695343104,
+        "nll_delta_llama_minus_nt": -0.10725625135124428,
+        "mean_kl_nt_to_llama": 0.5136424080641133,
+        "p99_kl_nt_to_llama": 7.078324606847146,
+        "argmax_agreement": 0.7230769230769231,
+        "positions": 65
+      },
+      {
+        "nt_nll": 2.2443040208855547,
+        "llama_nll": 2.1370477695343104,
+        "nll_delta_llama_minus_nt": -0.10725625135124428,
+        "mean_kl_nt_to_llama": 0.5136424080641133,
+        "p99_kl_nt_to_llama": 7.078324606847146,
+        "argmax_agreement": 0.7230769230769231,
+        "positions": 65
+      }
+    ],
+    "p512": [
+      {
+        "nt_nll": 2.533017072021829,
+        "llama_nll": 2.128645630879736,
+        "nll_delta_llama_minus_nt": -0.4043714411420929,
+        "mean_kl_nt_to_llama": 0.6207066090053781,
+        "p99_kl_nt_to_llama": 9.429619264730238,
+        "argmax_agreement": 0.7846153846153846,
+        "positions": 65
+      },
+      {
+        "nt_nll": 2.533017072021829,
+        "llama_nll": 2.128645630879736,
+        "nll_delta_llama_minus_nt": -0.4043714411420929,
+        "mean_kl_nt_to_llama": 0.6207066090053781,
+        "p99_kl_nt_to_llama": 9.429619264730238,
+        "argmax_agreement": 0.7846153846153846,
+        "positions": 65
+      }
+    ],
+    "heldout-p512": [
+      {
+        "nt_nll": 1.4638629682638145,
+        "llama_nll": 1.3709420708568876,
+        "nll_delta_llama_minus_nt": -0.09292089740692688,
+        "mean_kl_nt_to_llama": 0.4237216809547124,
+        "p99_kl_nt_to_llama": 2.2982895943984487,
+        "argmax_agreement": 0.6615384615384615,
+        "positions": 65
+      },
+      {
+        "nt_nll": 1.4638629682638145,
+        "llama_nll": 1.3709420708568876,
+        "nll_delta_llama_minus_nt": -0.09292089740692688,
+        "mean_kl_nt_to_llama": 0.4237216809547124,
+        "p99_kl_nt_to_llama": 2.2982895943984487,
+        "argmax_agreement": 0.6615384615384615,
+        "positions": 65
+      }
+    ]
+  },
+  "comparisons": {
+    "p32": {
+      "llama_over_nt_decode": 1.4325974158447106,
+      "llama_over_nt_prefill": 3.3307632265651357,
+      "llama_over_nt_request": 1.7498874183314754,
+      "paired_decode_ratios": [
+        1.4323982953389869,
+        1.4321004332084775
+      ],
+      "warm_without_observed_major_faults": true
+    },
+    "p128": {
+      "llama_over_nt_decode": 1.5688258031427258,
+      "llama_over_nt_prefill": 4.025414680367425,
+      "llama_over_nt_request": 2.5851346199400593,
+      "paired_decode_ratios": [
+        1.5624164787074242,
+        1.5765692660696564
+      ],
+      "warm_without_observed_major_faults": true
+    },
+    "p512": {
+      "llama_over_nt_decode": 1.7348092915255822,
+      "llama_over_nt_prefill": 5.169567772515843,
+      "llama_over_nt_request": 4.166828154001664,
+      "paired_decode_ratios": [
+        1.7215039599179045,
+        1.7384433046766572
+      ],
+      "warm_without_observed_major_faults": true
+    },
+    "heldout-p512": {
+      "llama_over_nt_decode": 1.71654683652768,
+      "llama_over_nt_prefill": 5.175907204194743,
+      "llama_over_nt_request": 4.157858893513776,
+      "paired_decode_ratios": [
+        1.7264741823951697,
+        1.7068455687889958
+      ],
+      "warm_without_observed_major_faults": true
+    }
+  }
+}

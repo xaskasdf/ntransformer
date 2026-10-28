@@ -1,0 +1,8 @@
+{
+  "archive_sha256": "118d1aa6dcfb297e5b4c3e9b5aaab26dbf6e0c0dd6b1f7af51810e7ad57e12bc",
+  "verified_payload_files": 48,
+  "current_source_hashes_match": true,
+  "cross_binary_logits_exact": true,
+  "means_recomputed": true,
+  "warm_cache_deltas_verified": true
+}

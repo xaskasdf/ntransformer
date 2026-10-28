@@ -1,0 +1,226 @@
+{
+  "combined-p128": {
+    "decode": 11.596451971588033,
+    "comparison": {
+      "reference": "control-p128",
+      "aligned_vectors": 65,
+      "total_vectors": 65,
+      "max_abs": 0.0,
+      "relative_l2": 0.0,
+      "argmax_matches": 65,
+      "all_logits_bitwise_equal": true,
+      "consumed_ids_equal": true,
+      "expert_upload_bytes_equal": true,
+      "prefill_speedup": 1.3375949959040525,
+      "decode_speedup": 1.3443613256589215
+    }
+  },
+  "combined-p32": {
+    "decode": 11.536714104129882,
+    "comparison": {
+      "reference": "control-p32",
+      "aligned_vectors": 65,
+      "total_vectors": 65,
+      "max_abs": 0.0,
+      "relative_l2": 0.0,
+      "argmax_matches": 65,
+      "all_logits_bitwise_equal": true,
+      "consumed_ids_equal": true,
+      "expert_upload_bytes_equal": true,
+      "prefill_speedup": 1.3226359833965537,
+      "decode_speedup": 1.343567569539917
+    }
+  },
+  "combined-p512": {
+    "decode": 9.46163421042226,
+    "comparison": {
+      "reference": "control-p512",
+      "aligned_vectors": 65,
+      "total_vectors": 65,
+      "max_abs": 0.0,
+      "relative_l2": 0.0,
+      "argmax_matches": 65,
+      "all_logits_bitwise_equal": true,
+      "consumed_ids_equal": true,
+      "expert_upload_bytes_equal": true,
+      "prefill_speedup": 1.3395919749746459,
+      "decode_speedup": 1.2799262353808318
+    }
+  },
+  "control-p128": {
+    "decode": 8.625993436626258,
+    "comparison": {
+      "reference": "control-p128",
+      "aligned_vectors": 65,
+      "total_vectors": 65,
+      "max_abs": 0.0,
+      "relative_l2": 0.0,
+      "argmax_matches": 65,
+      "all_logits_bitwise_equal": true,
+      "consumed_ids_equal": true,
+      "expert_upload_bytes_equal": true,
+      "prefill_speedup": 1.0,
+      "decode_speedup": 1.0
+    }
+  },
+  "control-p32": {
+    "decode": 8.586627398338026,
+    "comparison": {
+      "reference": "control-p32",
+      "aligned_vectors": 65,
+      "total_vectors": 65,
+      "max_abs": 0.0,
+      "relative_l2": 0.0,
+      "argmax_matches": 65,
+      "all_logits_bitwise_equal": true,
+      "consumed_ids_equal": true,
+      "expert_upload_bytes_equal": true,
+      "prefill_speedup": 1.0,
+      "decode_speedup": 1.0
+    }
+  },
+  "control-p512": {
+    "decode": 7.392327736455083,
+    "comparison": {
+      "reference": "control-p512",
+      "aligned_vectors": 65,
+      "total_vectors": 65,
+      "max_abs": 0.0,
+      "relative_l2": 0.0,
+      "argmax_matches": 65,
+      "all_logits_bitwise_equal": true,
+      "consumed_ids_equal": true,
+      "expert_upload_bytes_equal": true,
+      "prefill_speedup": 1.0,
+      "decode_speedup": 1.0
+    }
+  },
+  "cooperative-p32": {
+    "decode": 9.061346576415843,
+    "comparison": {
+      "reference": "control-p32",
+      "aligned_vectors": 65,
+      "total_vectors": 65,
+      "max_abs": 0.0,
+      "relative_l2": 0.0,
+      "argmax_matches": 65,
+      "all_logits_bitwise_equal": true,
+      "consumed_ids_equal": true,
+      "expert_upload_bytes_equal": true,
+      "prefill_speedup": 1.0521089678012678,
+      "decode_speedup": 1.0552858713969238
+    }
+  },
+  "cooperative-register-p32": {
+    "decode": 11.542939841871746,
+    "comparison": {
+      "reference": "control-p32",
+      "aligned_vectors": 65,
+      "total_vectors": 65,
+      "max_abs": 0.0,
+      "relative_l2": 0.0,
+      "argmax_matches": 65,
+      "all_logits_bitwise_equal": true,
+      "consumed_ids_equal": true,
+      "expert_upload_bytes_equal": true,
+      "prefill_speedup": 1.2606650123776169,
+      "decode_speedup": 1.3442926199529661
+    }
+  },
+  "cooperative-register-trace": {
+    "decode": 11.514306369861595,
+    "comparison": {
+      "reference": "control-p32",
+      "aligned_vectors": 65,
+      "total_vectors": 65,
+      "max_abs": 0.0,
+      "relative_l2": 0.0,
+      "argmax_matches": 65,
+      "all_logits_bitwise_equal": true,
+      "consumed_ids_equal": true,
+      "expert_upload_bytes_equal": true,
+      "prefill_speedup": 1.3192436149832243,
+      "decode_speedup": 1.3409579612235454
+    }
+  },
+  "cooperative-trace": {
+    "decode": 9.022733075849496,
+    "comparison": {
+      "reference": "control-p32",
+      "aligned_vectors": 65,
+      "total_vectors": 65,
+      "max_abs": 0.0,
+      "relative_l2": 0.0,
+      "argmax_matches": 65,
+      "all_logits_bitwise_equal": true,
+      "consumed_ids_equal": true,
+      "expert_upload_bytes_equal": true,
+      "prefill_speedup": 1.0483142765706412,
+      "decode_speedup": 1.0507889369458234
+    }
+  },
+  "lut-control": {
+    "decode": 8.606681114238748,
+    "comparison": {
+      "reference": "control-p32",
+      "aligned_vectors": 65,
+      "total_vectors": 65,
+      "max_abs": 0.0,
+      "relative_l2": 0.0,
+      "argmax_matches": 65,
+      "all_logits_bitwise_equal": true,
+      "consumed_ids_equal": true,
+      "expert_upload_bytes_equal": true,
+      "prefill_speedup": 1.001060175872591,
+      "decode_speedup": 1.002335458960826
+    }
+  },
+  "lut-trace": {
+    "decode": 8.572290568822082,
+    "comparison": {
+      "reference": "control-p32",
+      "aligned_vectors": 65,
+      "total_vectors": 65,
+      "max_abs": 0.0,
+      "relative_l2": 0.0,
+      "argmax_matches": 65,
+      "all_logits_bitwise_equal": true,
+      "consumed_ids_equal": true,
+      "expert_upload_bytes_equal": true,
+      "prefill_speedup": 0.9891679083426738,
+      "decode_speedup": 0.9983303305418005
+    }
+  },
+  "pilot-control": {
+    "decode": 8.607000964825845,
+    "comparison": {
+      "reference": "control-p32",
+      "aligned_vectors": 65,
+      "total_vectors": 65,
+      "max_abs": 0.0,
+      "relative_l2": 0.0,
+      "argmax_matches": 65,
+      "all_logits_bitwise_equal": true,
+      "consumed_ids_equal": true,
+      "expert_upload_bytes_equal": true,
+      "prefill_speedup": 1.0018159161232674,
+      "decode_speedup": 1.0023727088113503
+    }
+  },
+  "pilot-trace": {
+    "decode": 8.573332701349518,
+    "comparison": {
+      "reference": "control-p32",
+      "aligned_vectors": 65,
+      "total_vectors": 65,
+      "max_abs": 0.0,
+      "relative_l2": 0.0,
+      "argmax_matches": 65,
+      "all_logits_bitwise_equal": true,
+      "consumed_ids_equal": true,
+      "expert_upload_bytes_equal": true,
+      "prefill_speedup": 0.9965471622625287,
+      "decode_speedup": 0.9984516974626055
+    }
+  }
+}

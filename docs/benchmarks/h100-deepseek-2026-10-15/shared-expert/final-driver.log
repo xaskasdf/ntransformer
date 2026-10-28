@@ -1,0 +1,15 @@
+build-final 0 2.92
+compile-candidate 0 1.57
+compile-probe 0 1.02
+gpu-tests 0 49.58
+shared-real 0 5.92
+shared-max 0 6.77
+gpu1 0 19.99
+cpu1 0 20.75
+cpu2 0 20.55
+gpu2 0 20.05
+trace-gpu 0 17.49
+trace-cpu 0 17.29
+real-state 0 17.79
+probe-gpu 0 54.6
+compare 0 0.31

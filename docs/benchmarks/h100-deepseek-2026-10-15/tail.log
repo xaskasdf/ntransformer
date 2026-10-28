@@ -1,0 +1,4 @@
+PASS grouped output max_abs=2.38418579e-07
+PASS grouped output max_abs=1.75088644e-07
+PASS grouped output max_abs=1.07288361e-06
+PASS tail (fresh backbone, no expert cache)

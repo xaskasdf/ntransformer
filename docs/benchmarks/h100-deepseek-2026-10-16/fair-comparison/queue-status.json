@@ -1,0 +1,13 @@
+{
+  "state": "complete",
+  "pid": 2223534,
+  "utc": "2026-10-16T07:12:39.084860+00:00",
+  "archive": {
+    "sha256": "1a735ca148527172f05fa30f327e9f65b544ff1c58e96d6957c9d71a5c6d94bf",
+    "bytes": 714091233,
+    "payload_files": 527
+  },
+  "persist": "/lambda/nfs/btiny/ntransformer-training/deepseek-fair-20261016",
+  "checked_at_utc": "2026-10-16T08:30:46.650878+00:00",
+  "local_collection": "complete"
+}

@@ -1,0 +1,14 @@
+{
+  "binary": "1b1881dfc825d035aa1705f6616acbe3e8cb4a712264916ff11b6dd58ab1acbf",
+  "library": "5e3eef7a28c205028c75b533ec70c60d4b98f4ae7ab7c108426175e57ebab1b9",
+  "baseline_library": "7e40ac671d701b02acda4f6be7c5c0cc06b2b5483f1da4492a574e79c8aadc90",
+  "sources": {
+    "source/src/model/ds41/ds41_gpu.cu": "dd9c6387369df556c8b3aaaae901e9ba031bd70ee8e52e50cebe357cfeefa0e6",
+    "source/src/model/ds41/ds41_gpu.h": "b34dfebfb4cc50ea2de23f8d64cc7e6d8b65a5a773337de745d1eedb1e25e0b8",
+    "source/src/model/ds41/ds41_forward.cpp": "f33d560a89caab74dd8eed6bd791fb4bccdc1cadd4789e49148b23b3fa452fda",
+    "source/src/model/ds41/ds41_hc.h": "13d9f761c2bdeb62b8248da69a30083170af80d6aaaa6eaf023c5f0ecd47dd90",
+    "source/tests/test_ds41_backbone.cpp": "03df0fc9494407ee95f1c085cfde7b4a8ae6675060cacbbc545c6769397f8c41",
+    "benchmark_ds41.cpp": "f8853c32948d3faffd9bd381bb2b6f839b5939269779912a4e309492ab213414"
+  },
+  "post_benchmark_test_extension": "Distinct prologue inputs per layer and owner; benchmark executable/library unchanged"
+}

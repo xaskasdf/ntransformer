@@ -1,0 +1,34 @@
+GGUF v3: 18 tensors, 68 metadata entries
+Loaded 10 split shards, 1046 tensors total
+ds41-gpu: lm head resident (1.23 GiB)
+ds41-gpu: expert cache on NVIDIA H100 80GB HBM3: 10622 slots x 5.98 MiB = 62.0 GiB
+[gputime] calls=240 resident=0.325s launch=0.012s copy=0.069s
+[gputime] calls=480 resident=0.326s launch=0.023s copy=0.136s
+{"round":-1,"phase":"prefill","tokens":16,"seconds":5.243236354,"moe":2.533678433,"attention":1.507897112,"engram":0.048734148,"hc":0.376794659,"other":0.776120384,"qkv":0.545569127,"rope":0.000000000,"compression":0.059010142,"attention_loop":0.191140331,"attention_tail":0.710348624,"router":0.208557031,"routed":1.621486905,"shared":0.701792150,"gpu_calls":640.000000000,"cpu_calls":0.000000000,"overlapped_calls":640.000000000}
+ds41-gpu: expert cache: 11520 lookups, 5844 hits (50.7%), 0 evictions
+[gputime] calls=720 resident=0.326s launch=0.034s copy=0.204s
+{"round":-1,"phase":"decode","tokens":4,"seconds":0.931446847,"moe":0.449040974,"attention":0.179359053,"engram":0.011964754,"hc":0.091251582,"other":0.196095031,"qkv":0.054426490,"rope":0.000000000,"compression":0.012116834,"attention_loop":0.049764331,"attention_tail":0.062608536,"router":0.045190811,"routed":0.232431243,"shared":0.170980797,"gpu_calls":160.000000000,"cpu_calls":0.000000000,"overlapped_calls":160.000000000}
+ds41-gpu: expert cache: 14400 lookups, 8007 hits (55.6%), 0 evictions
+[gputime] calls=960 resident=0.326s launch=0.045s copy=0.271s
+[gputime] calls=1200 resident=0.326s launch=0.056s copy=0.339s
+[gputime] calls=1440 resident=0.326s launch=0.067s copy=0.406s
+{"round":0,"phase":"prefill","tokens":16,"seconds":2.790983790,"moe":0.962190930,"attention":0.700936359,"engram":0.043761022,"hc":0.329009354,"other":0.755078405,"qkv":0.215816890,"rope":0.000000000,"compression":0.043950052,"attention_loop":0.189732653,"attention_tail":0.249829314,"router":0.180456513,"routed":0.099599948,"shared":0.680393926,"gpu_calls":640.000000000,"cpu_calls":0.000000000,"overlapped_calls":640.000000000}
+ds41-gpu: expert cache: 25920 lookups, 19527 hits (75.3%), 0 evictions
+{"round":0,"phase":"decode","tokens":4,"seconds":0.708840102,"moe":0.240573866,"attention":0.178306899,"engram":0.010925982,"hc":0.082951714,"other":0.192207124,"qkv":0.054019177,"rope":0.000000000,"compression":0.011913679,"attention_loop":0.049441084,"attention_tail":0.062529209,"router":0.045362340,"routed":0.024826544,"shared":0.169948118,"gpu_calls":160.000000000,"cpu_calls":0.000000000,"overlapped_calls":160.000000000}
+ds41-gpu: expert cache: 28800 lookups, 22407 hits (77.8%), 0 evictions
+[gputime] calls=1680 resident=0.327s launch=0.078s copy=0.473s
+[gputime] calls=1920 resident=0.327s launch=0.089s copy=0.541s
+[gputime] calls=2160 resident=0.327s launch=0.100s copy=0.608s
+{"round":1,"phase":"prefill","tokens":16,"seconds":2.790239613,"moe":0.960881056,"attention":0.701247126,"engram":0.043586333,"hc":0.331454870,"other":0.753062109,"qkv":0.215634384,"rope":0.000000000,"compression":0.044708813,"attention_loop":0.189369304,"attention_tail":0.249952206,"router":0.181159120,"routed":0.100524861,"shared":0.677539255,"gpu_calls":640.000000000,"cpu_calls":0.000000000,"overlapped_calls":640.000000000}
+ds41-gpu: expert cache: 40320 lookups, 33927 hits (84.1%), 0 evictions
+[gputime] calls=2400 resident=0.327s launch=0.111s copy=0.676s
+{"round":1,"phase":"decode","tokens":4,"seconds":0.705352454,"moe":0.239888456,"attention":0.178124339,"engram":0.010893568,"hc":0.083386756,"other":0.191867524,"qkv":0.053921711,"rope":0.000000000,"compression":0.011876961,"attention_loop":0.049506498,"attention_tail":0.062419545,"router":0.045163581,"routed":0.024689569,"shared":0.169625918,"gpu_calls":160.000000000,"cpu_calls":0.000000000,"overlapped_calls":160.000000000}
+ds41-gpu: expert cache: 43200 lookups, 36807 hits (85.2%), 0 evictions
+[gputime] calls=2640 resident=0.327s launch=0.122s copy=0.743s
+[gputime] calls=2880 resident=0.327s launch=0.133s copy=0.811s
+{"round":2,"phase":"prefill","tokens":16,"seconds":2.792760613,"moe":0.959754846,"attention":0.701053194,"engram":0.043773794,"hc":0.330168234,"other":0.758002717,"qkv":0.215739149,"rope":0.000000000,"compression":0.044110407,"attention_loop":0.189765814,"attention_tail":0.249842053,"router":0.180618606,"routed":0.099258933,"shared":0.678232948,"gpu_calls":640.000000000,"cpu_calls":0.000000000,"overlapped_calls":640.000000000}
+ds41-gpu: expert cache: 54720 lookups, 48327 hits (88.3%), 0 evictions
+[gputime] calls=3120 resident=0.328s launch=0.144s copy=0.878s
+{"round":2,"phase":"decode","tokens":4,"seconds":0.711296322,"moe":0.240872753,"attention":0.178767930,"engram":0.010925922,"hc":0.083647872,"other":0.195903861,"qkv":0.053928818,"rope":0.000000000,"compression":0.012070285,"attention_loop":0.049816011,"attention_tail":0.062549893,"router":0.045351187,"routed":0.024007856,"shared":0.171096259,"gpu_calls":160.000000000,"cpu_calls":0.000000000,"overlapped_calls":160.000000000}
+ds41-gpu: expert cache: 57600 lookups, 51207 hits (88.9%), 0 evictions
+PASS warm repeats exact, all logits finite

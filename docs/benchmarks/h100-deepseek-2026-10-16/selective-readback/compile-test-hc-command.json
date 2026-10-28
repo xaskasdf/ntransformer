@@ -1,0 +1,33 @@
+{
+  "command": [
+    "/home/ubuntu/ntransformer-h100/env/bin/x86_64-conda-linux-gnu-g++",
+    "-std=c++20",
+    "-O3",
+    "-march=native",
+    "-fPIC",
+    "-I/home/ubuntu/ntransformer-h100/ds41-readback-20261016/source/src",
+    "-I/home/ubuntu/ntransformer-h100/ds41-readback-20261016/source/include",
+    "-I/home/ubuntu/ntransformer-h100/env/targets/x86_64-linux/include",
+    "/home/ubuntu/ntransformer-h100/ds41-readback-20261016/source/tests/test_ds41_hc.cpp",
+    "/home/ubuntu/ntransformer-h100/ds41-readback-20261016/libntransformer-readback.a",
+    "-L/home/ubuntu/ntransformer-h100/env/targets/x86_64-linux/lib",
+    "-lcudart",
+    "-lcudadevrt",
+    "-lcudart_static",
+    "-ldl",
+    "-lrt",
+    "-lpthread",
+    "-o",
+    "/home/ubuntu/ntransformer-h100/ds41-readback-20261016/test-hc"
+  ],
+  "returncode": 0,
+  "utc_start": "2026-10-16T14:19:31.450492+00:00",
+  "wall_seconds": 1.8661416110116988,
+  "process_group": 2878513,
+  "environment": {
+    "CUDA_VISIBLE_DEVICES": "1,0",
+    "LD_LIBRARY_PATH": "/home/ubuntu/ntransformer-h100/ds41-fair-20261016/llama-lib:/home/ubuntu/ntransformer-h100/env/targets/x86_64-linux/lib:/home/ubuntu/ntransformer-h100/env/lib:/home/ubuntu/brandon-mini/.venv/lib/python3.12/site-packages/nvidia/cu13/lib",
+    "GGML_BACKEND_PATH": "/home/ubuntu/ntransformer-h100/ds41-fair-20261016/llama-lib",
+    "OMP_NUM_THREADS": "52"
+  }
+}

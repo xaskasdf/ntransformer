@@ -1,0 +1,20 @@
+{
+  "command": [
+    "/home/ubuntu/ntransformer-h100/ds41-gap-20261015/bench-llama",
+    "/home/ubuntu/ntransformer-h100/models/deepseek-v41-flash-q8/DeepSeek-V4.1-Flash-Q8_0-00001-of-00010.gguf",
+    "/home/ubuntu/ntransformer-h100/ds41-gap-20261015/workload-single.json",
+    "/home/ubuntu/ntransformer-h100/ds41-gap-20261015/llama-single-control",
+    "1",
+    "52",
+    "31",
+    "1"
+  ],
+  "returncode": 0,
+  "utc_start": "2026-10-15T19:42:26.305479+00:00",
+  "wall_seconds": 27.55094669701066,
+  "process_group": 3150011,
+  "environment": {
+    "CUDA_VISIBLE_DEVICES": "1",
+    "LD_LIBRARY_PATH": "/home/ubuntu/ntransformer-h100/ds41-gap-20261015/cupti-13.1/nvidia/cu13/lib:/home/ubuntu/ntransformer-h100/llama-bench-20261015/build/bin:/home/ubuntu/ntransformer-h100/env/targets/x86_64-linux/lib:/home/ubuntu/ntransformer-h100/env/lib:/home/ubuntu/brandon-mini/.venv/lib/python3.12/site-packages/nvidia/cu13/lib"
+  }
+}

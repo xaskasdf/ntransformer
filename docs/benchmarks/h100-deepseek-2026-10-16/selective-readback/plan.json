@@ -1,0 +1,26 @@
+{
+  "paired_workloads": [
+    "p32",
+    "p512"
+  ],
+  "independent_launches": 2,
+  "measured_rounds": [
+    2,
+    3,
+    4
+  ],
+  "additional_quality_workloads": [
+    "p128",
+    "heldout-p512"
+  ],
+  "warmup_rounds": [
+    0,
+    1
+  ],
+  "decode_tokens": 64,
+  "baseline": "Corrected HC, selective readback disabled",
+  "candidate": "Same executable, selective readback enabled",
+  "scope": "Paired speed measurement with reversed ordering; full logits checked against fixed-HC reference",
+  "precision": "Unchanged FP32 routed compute and Q8 backbone",
+  "model": "/home/ubuntu/ntransformer-h100/models/deepseek-v41-flash-q8/DeepSeek-V4.1-Flash-Q8_0-00001-of-00010.gguf"
+}

@@ -1,0 +1,4 @@
+/home/ubuntu/ntransformer-h100/ds41-readback-20261016/benchmark_ds41.cpp:7:10: fatal error: benchmark_resources.h: No such file or directory
+    7 | #include "benchmark_resources.h"
+      |          ^~~~~~~~~~~~~~~~~~~~~~~
+compilation terminated.

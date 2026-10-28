@@ -1,0 +1,25 @@
+GGUF v3: 18 tensors, 68 metadata entries
+Loaded 10 split shards, 1046 tensors total
+Tokenizer: 129280 tokens, 127741 merges, BOS=0, EOS=1, pre=joyai-llm, encoding=GPT2-BPE(merges)
+ds41-gpu: lm head resident (1.23 GiB)
+ds41-gpu: expert cache on NVIDIA H100 80GB HBM3: 10622 slots x 5.98 MiB = 62.0 GiB
+BENCH round=0 phase=prefill tokens=32 seconds=7.360964
+ds41-gpu: expert cache: 23040 lookups, 14835 hits (64.4%), 0 evictions
+BENCH round=0 phase=decode tokens=64 seconds=10.032218
+ds41-gpu: expert cache: 69120 lookups, 54930 hits (79.5%), 3568 evictions
+PASS round=0 finite, repeat exact, EOS index=-1
+BENCH round=1 phase=prefill tokens=32 seconds=4.873776
+ds41-gpu: expert cache: 92160 lookups, 73950 hits (80.2%), 7588 evictions
+BENCH round=1 phase=decode tokens=64 seconds=9.491924
+ds41-gpu: expert cache: 138240 lookups, 114468 hits (82.8%), 13150 evictions
+PASS round=1 finite, repeat exact, EOS index=-1
+BENCH round=2 phase=prefill tokens=32 seconds=4.878076
+ds41-gpu: expert cache: 161280 lookups, 133488 hits (82.8%), 17170 evictions
+BENCH round=2 phase=decode tokens=64 seconds=9.474849
+ds41-gpu: expert cache: 207360 lookups, 174006 hits (83.9%), 22732 evictions
+PASS round=2 finite, repeat exact, EOS index=-1
+BENCH round=3 phase=prefill tokens=32 seconds=4.880704
+ds41-gpu: expert cache: 230400 lookups, 193026 hits (83.8%), 26752 evictions
+BENCH round=3 phase=decode tokens=64 seconds=9.474414
+ds41-gpu: expert cache: 276480 lookups, 233544 hits (84.5%), 32314 evictions
+PASS round=3 finite, repeat exact, EOS index=-1

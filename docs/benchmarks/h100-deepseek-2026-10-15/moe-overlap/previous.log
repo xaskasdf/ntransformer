@@ -1,0 +1,19 @@
+GGUF v3: 18 tensors, 68 metadata entries
+Loaded 10 split shards, 1046 tensors total
+ds41-gpu: lm head resident (1.23 GiB)
+ds41-gpu: expert cache on NVIDIA H100 80GB HBM3: 10622 slots x 5.98 MiB = 62.0 GiB
+[gputime] calls=240 resident=0.326s launch=0.013s copy=0.069s
+[gputime] calls=480 resident=0.326s launch=0.024s copy=0.136s
+{"round":-1,"phase":"prefill","tokens":16,"seconds":5.874061118,"moe":3.232897539,"attention":1.511589295,"engram":0.048546967,"hc":0.329797950,"other":0.751218224,"qkv":0.545829842,"rope":0.000000000,"compression":0.059754143,"attention_loop":0.191463018,"attention_tail":0.712688027}
+ds41-gpu: expert cache: 11520 lookups, 5844 hits (50.7%), 0 evictions
+[gputime] calls=720 resident=0.327s launch=0.036s copy=0.204s
+{"round":-1,"phase":"decode","tokens":4,"seconds":1.086634266,"moe":0.619288497,"attention":0.178538737,"engram":0.011898638,"hc":0.082831201,"other":0.190431196,"qkv":0.054276454,"rope":0.000000000,"compression":0.012046974,"attention_loop":0.049179200,"attention_tail":0.062566111}
+ds41-gpu: expert cache: 14400 lookups, 8007 hits (55.6%), 0 evictions
+[gputime] calls=960 resident=0.327s launch=0.047s copy=0.272s
+[gputime] calls=1200 resident=0.327s launch=0.058s copy=0.339s
+[gputime] calls=1440 resident=0.327s launch=0.070s copy=0.407s
+{"round":0,"phase":"prefill","tokens":16,"seconds":3.456696152,"moe":1.634646214,"attention":0.700791693,"engram":0.043426985,"hc":0.327906306,"other":0.749915674,"qkv":0.216044514,"rope":0.000000000,"compression":0.044032652,"attention_loop":0.189349954,"attention_tail":0.249614415}
+ds41-gpu: expert cache: 25920 lookups, 19527 hits (75.3%), 0 evictions
+{"round":0,"phase":"decode","tokens":4,"seconds":0.878264394,"moe":0.409998041,"attention":0.178459370,"engram":0.010913663,"hc":0.082938613,"other":0.191911062,"qkv":0.054011025,"rope":0.000000000,"compression":0.012006230,"attention_loop":0.049560914,"attention_tail":0.062449043}
+ds41-gpu: expert cache: 28800 lookups, 22407 hits (77.8%), 0 evictions
+PASS warm repeats exact, all logits finite

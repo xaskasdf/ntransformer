@@ -1,0 +1,1 @@
+PASS router/HC: 72 exact F32/BF16 projections, AVX2/scalar order, tails, buffer growth and bounds

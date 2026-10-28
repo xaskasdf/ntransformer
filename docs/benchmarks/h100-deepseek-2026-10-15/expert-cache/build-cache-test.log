@@ -1,0 +1,3 @@
+[ 50%] Building CXX object CMakeFiles/test_ds41_cache.dir/tests/test_ds41_cache.cpp.o
+[100%] Linking CXX executable test_ds41_cache
+[100%] Built target test_ds41_cache

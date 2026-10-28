@@ -1,0 +1,1 @@
+PASS 3 CPU log checks: actual pilot validated with original bytes preserved; OOM recognized; non-OOM failure rejected

@@ -1,0 +1,15 @@
+{
+  "archive_sha256": "397b14442aa1895c641f30b047da03d7ea9121d061e9e204d9f2cdf5ea92630c",
+  "verified_payload_files": 99,
+  "current_source_hashes_match": true,
+  "cross_binary_logits_exact": true,
+  "means_recomputed": true,
+  "warm_cache_deltas_verified": true,
+  "all_routed_calls_gpu": true,
+  "all_candidate_calls_overlapped": true,
+  "tail_launch_deltas_verified": true,
+  "moe_launch_deltas_verified": true,
+  "all_three_synthetic_shapes_exact": true,
+  "source_archive_hashes_match": true,
+  "optimization_document_matches": true
+}

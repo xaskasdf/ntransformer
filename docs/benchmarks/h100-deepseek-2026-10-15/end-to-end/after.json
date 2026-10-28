@@ -1,0 +1,4 @@
+{
+  "gpu": "index, memory.used [MiB], utilization.gpu [%]\n0, 0 MiB, 2 %\n1, 0 MiB, 0 %\n",
+  "compute_apps": ""
+}

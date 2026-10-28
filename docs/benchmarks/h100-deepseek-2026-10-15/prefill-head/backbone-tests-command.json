@@ -1,0 +1,21 @@
+{
+  "command": [
+    "ctest",
+    "--test-dir",
+    "/home/ubuntu/ntransformer-h100/ds41-prefill-20261015/build",
+    "-V",
+    "-R",
+    "test_ds41_backbone"
+  ],
+  "environment": {
+    "CUDA_VISIBLE_DEVICES": "1",
+    "DS41_GPU": "1",
+    "DS41_VRAM_GB": "62",
+    "DS41_GPU_ATTN": "1",
+    "DS41_PROFILE": "1",
+    "DS41_GPU_TIMING": "1",
+    "LD_LIBRARY_PATH": "/home/ubuntu/ntransformer-h100/env/targets/x86_64-linux/lib:/home/ubuntu/ntransformer-h100/env/lib"
+  },
+  "returncode": 0,
+  "seconds": 22.196898212016094
+}

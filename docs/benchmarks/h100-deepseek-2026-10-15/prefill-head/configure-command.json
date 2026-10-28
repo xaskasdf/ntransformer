@@ -1,0 +1,25 @@
+{
+  "command": [
+    "cmake",
+    "-S",
+    "/home/ubuntu/ntransformer-h100/ds41-prefill-20261015/source",
+    "-B",
+    "/home/ubuntu/ntransformer-h100/ds41-prefill-20261015/build",
+    "-DNTRANSFORMER_BUILD_NTRPU_SIM=OFF",
+    "-DCMAKE_BUILD_TYPE=Release",
+    "-DCMAKE_CXX_COMPILER=/home/ubuntu/ntransformer-h100/env/bin/x86_64-conda-linux-gnu-g++",
+    "-DCMAKE_CUDA_HOST_COMPILER=/home/ubuntu/ntransformer-h100/env/bin/x86_64-conda-linux-gnu-gcc",
+    "-DCMAKE_CUDA_COMPILER=/home/ubuntu/ntransformer-h100/env/bin/nvcc"
+  ],
+  "environment": {
+    "CUDA_VISIBLE_DEVICES": "1",
+    "DS41_GPU": "1",
+    "DS41_VRAM_GB": "62",
+    "DS41_GPU_ATTN": "1",
+    "DS41_PROFILE": "1",
+    "DS41_GPU_TIMING": "1",
+    "LD_LIBRARY_PATH": "/home/ubuntu/ntransformer-h100/env/targets/x86_64-linux/lib:/home/ubuntu/ntransformer-h100/env/lib"
+  },
+  "returncode": 0,
+  "seconds": 8.008100501989247
+}

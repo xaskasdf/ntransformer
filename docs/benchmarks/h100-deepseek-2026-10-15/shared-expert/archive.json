@@ -1,0 +1,7 @@
+{
+  "sha256": "dbb57cac6661c228dfaae91cba5502b496f63fcf97bec3c2a8ef69216936f986",
+  "archive": "shared-expert.tar.gz",
+  "files": 179,
+  "bytes": 65102119,
+  "persistent": "/lambda/nfs/btiny/ntransformer-training/deepseek-shared-20261015"
+}

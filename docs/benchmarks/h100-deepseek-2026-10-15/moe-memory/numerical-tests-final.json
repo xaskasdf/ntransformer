@@ -1,0 +1,92 @@
+[
+  {
+    "case": "test_ds41_mxfp4-small-control-final",
+    "sha256": "2ffb61a6725863daee466bae6a7017b197105c1e886394559d0655202b984c06",
+    "matches_control": true
+  },
+  {
+    "case": "test_ds41_mxfp4-small-cooperative-final",
+    "sha256": "2ffb61a6725863daee466bae6a7017b197105c1e886394559d0655202b984c06",
+    "matches_control": true
+  },
+  {
+    "case": "test_ds41_mxfp4-small-defaults-final",
+    "sha256": "2ffb61a6725863daee466bae6a7017b197105c1e886394559d0655202b984c06",
+    "matches_control": true
+  },
+  {
+    "case": "test_ds41_mxfp4-unaligned-control-final",
+    "sha256": "c8e6026bcfc6c28819bc24f48f48eff22d03600774ff8e1828c0eee51561715f",
+    "matches_control": true
+  },
+  {
+    "case": "test_ds41_mxfp4-unaligned-cooperative-final",
+    "sha256": "c8e6026bcfc6c28819bc24f48f48eff22d03600774ff8e1828c0eee51561715f",
+    "matches_control": true
+  },
+  {
+    "case": "test_ds41_mxfp4-unaligned-defaults-final",
+    "sha256": "c8e6026bcfc6c28819bc24f48f48eff22d03600774ff8e1828c0eee51561715f",
+    "matches_control": true
+  },
+  {
+    "case": "test_ds41_mxfp4-wide-control-final",
+    "sha256": "91fcd5afb952f1f1becde7545d98af415f66f33694b0a18faeab55b91a6b4a8d",
+    "matches_control": true
+  },
+  {
+    "case": "test_ds41_mxfp4-wide-cooperative-final",
+    "sha256": "91fcd5afb952f1f1becde7545d98af415f66f33694b0a18faeab55b91a6b4a8d",
+    "matches_control": true
+  },
+  {
+    "case": "test_ds41_mxfp4-wide-defaults-final",
+    "sha256": "91fcd5afb952f1f1becde7545d98af415f66f33694b0a18faeab55b91a6b4a8d",
+    "matches_control": true
+  },
+  {
+    "case": "test_ds41_moe_overlap-small-control-final",
+    "sha256": "67c125e0b156176a9a8eb77a3cf233f06b7829d401914d7ded3c74c6eed41dc8",
+    "matches_control": true
+  },
+  {
+    "case": "test_ds41_moe_overlap-small-cooperative-final",
+    "sha256": "67c125e0b156176a9a8eb77a3cf233f06b7829d401914d7ded3c74c6eed41dc8",
+    "matches_control": true
+  },
+  {
+    "case": "test_ds41_moe_overlap-small-defaults-final",
+    "sha256": "67c125e0b156176a9a8eb77a3cf233f06b7829d401914d7ded3c74c6eed41dc8",
+    "matches_control": true
+  },
+  {
+    "case": "test_ds41_moe_overlap-real-control-final",
+    "sha256": "a5012208c2a31feb342daa3d7fbf40f622f91fe32e00e1c1d9d512873bb02ab7",
+    "matches_control": true
+  },
+  {
+    "case": "test_ds41_moe_overlap-real-cooperative-final",
+    "sha256": "a5012208c2a31feb342daa3d7fbf40f622f91fe32e00e1c1d9d512873bb02ab7",
+    "matches_control": true
+  },
+  {
+    "case": "test_ds41_moe_overlap-real-defaults-final",
+    "sha256": "a5012208c2a31feb342daa3d7fbf40f622f91fe32e00e1c1d9d512873bb02ab7",
+    "matches_control": true
+  },
+  {
+    "case": "test_ds41_moe_overlap-max-control-final",
+    "sha256": "4b0a34405200daa2e226c723525011d204e0819f848bd4f3dd3aabd3be1e5045",
+    "matches_control": true
+  },
+  {
+    "case": "test_ds41_moe_overlap-max-cooperative-final",
+    "sha256": "4b0a34405200daa2e226c723525011d204e0819f848bd4f3dd3aabd3be1e5045",
+    "matches_control": true
+  },
+  {
+    "case": "test_ds41_moe_overlap-max-defaults-final",
+    "sha256": "4b0a34405200daa2e226c723525011d204e0819f848bd4f3dd3aabd3be1e5045",
+    "matches_control": true
+  }
+]

@@ -1,0 +1,90 @@
+{
+  "note": "Warm in-process paired latency. Not full model startup or autoregressive decode throughput.",
+  "pairs": [
+    {
+      "pair": 0,
+      "all_seconds": 4.36903752,
+      "last_seconds": 4.3482892,
+      "speedup_percent": 0.47716053476847264
+    },
+    {
+      "pair": 1,
+      "all_seconds": 4.368012503,
+      "last_seconds": 4.350923289,
+      "speedup_percent": 0.39277212823323193
+    },
+    {
+      "pair": 2,
+      "all_seconds": 4.355520319,
+      "last_seconds": 4.341575048,
+      "speedup_percent": 0.32120303912341885
+    },
+    {
+      "pair": 3,
+      "all_seconds": 4.360416373,
+      "last_seconds": 4.338334555,
+      "speedup_percent": 0.5089929723043118
+    }
+  ],
+  "mean_all_seconds": 4.36324667875,
+  "mean_last_seconds": 4.344780523,
+  "all_tokens_per_second": 3.6669941394612464,
+  "last_tokens_per_second": 3.6825795722708365,
+  "mean_speedup_percent": 0.4250192996457791,
+  "saved_ms_per_prompt": 18.466155750000546,
+  "removed_heads": 15,
+  "logical_head_weight_bytes_avoided": 19857408000,
+  "logits_d2h_bytes_avoided": 7756800,
+  "cpu_vs_gpu_attention_single_token": {
+    "max_abs": 3.337860107421875e-06,
+    "relative_l2": 2.608169524673824e-07,
+    "bitwise": false,
+    "top1": [
+      5,
+      5
+    ],
+    "top8_identical": true
+  },
+  "cli_logits": {
+    "max_abs": 0.0,
+    "relative_l2": 0.0,
+    "bitwise": true,
+    "top1": [
+      11111,
+      11111
+    ],
+    "top8_identical": true
+  },
+  "cli": {
+    "cli-all": {
+      "tokens": 6,
+      "heads": 6,
+      "mode": "all",
+      "seconds": 3.966520953,
+      "generated_text": "Paris. It is",
+      "generated_count": 4
+    },
+    "cli-last": {
+      "tokens": 6,
+      "heads": 1,
+      "mode": "last",
+      "seconds": 3.949960193,
+      "generated_text": "Paris. It is",
+      "generated_count": 4
+    }
+  },
+  "real_prompt": 16,
+  "tiny_prompt": 18,
+  "continuation": 4,
+  "real_schedules_passed": 2,
+  "tiny_schedules_passed": 2,
+  "gpu_prologue_failures": 0,
+  "source_sha256": {
+    "src/model/ds41/ds41_forward.cpp": "329943f167ec474a3252e01393a9644434b4098b0b0ccd407dc73161f5365f57",
+    "src/model/ds41/ds41_forward.h": "c6eecad7d04a2ee47e2b0b9efd13258434fab3c661a63604faffa027a51f9fe1",
+    "src/model/ds41/ds41_gpu.cu": "d9edbb95b438b86a26c4dbb1b49041f676fd5a7fdf0b0ffe2dfd3b21e262cdf2",
+    "tests/test_ds41_prefill.cpp": "82e585aec4728eb4537d9b4a18a7664f020f9c33071bda41dc95d50d398b24f3",
+    "CMakeLists.txt": "3bb8aca1dd3451257aaed2d4671686f2fde70532cd4bfe2bf955356247ecdcb9"
+  },
+  "fixture_sha256": "83bae5061d15e7f77b930e501fbe76932b30217ff390addec72dcd05ecc9e19a"
+}

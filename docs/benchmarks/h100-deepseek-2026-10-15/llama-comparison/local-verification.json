@@ -1,0 +1,11 @@
+{
+  "archive_sha256": "307cc4054b4db8c40b169de8e8969320ad861137cc198bfd47d5f14d98826225",
+  "payload_files_verified": 208,
+  "source_matches_working_tree": true,
+  "baseline_matches_previous_local_artifact": true,
+  "runtime_libraries_match_measured_hashes": true,
+  "analysis_recomputed": true,
+  "report_reproduced_exactly": true,
+  "float_tolerance": 1e-12,
+  "comparison_is_same_input_work_not_claim_of_numerical_equivalence": true
+}

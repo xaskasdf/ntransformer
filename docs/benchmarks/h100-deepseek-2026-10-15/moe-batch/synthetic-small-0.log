@@ -1,0 +1,3 @@
+ds41-gpu: expert cache on NVIDIA H100 80GB HBM3: 61680 slots x 0.02 MiB = 1.0 GiB
+coverage: 20 calls, 0 batched, 510 launches, 20 traced, 1 aborted
+PASS scoped overlap: bitwise outputs, callback ownership, exception recovery, bounds

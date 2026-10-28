@@ -1,0 +1,9 @@
+{
+  "threshold_status": {
+    "stage": "control",
+    "state": "running",
+    "pid": 2259676,
+    "updated_at": "2026-10-15T08:08:44.331504+00:00"
+  },
+  "processes": "2268152 Thu Oct 15 08:08:43 2026 /home/ubuntu/brandon-mini/.venv/bin/python -m torch.distributed.run --standalone --nproc_per_node=2 scripts/train_mini_native.py --phase sft --config /lambda/nfs/btiny/brandon-mini/sources/threshold-v1/configs/model_mini_108m_robustness.yaml --data-dir /lambda/nfs/btiny/brandon-mini/data/threshold-v1/control --output-dir /lambda/nfs/btiny/brandon-mini/stages/threshold-v1/control --init-checkpoint /lambda/nfs/btiny/brandon-mini/stages/transfer-v1/diverse/last.pt\n2268185 Thu Oct 15 08:08:50 2026 /home/ubuntu/brandon-mini/.venv/bin/python -u scripts/train_mini_native.py --phase sft --config /lambda/nfs/btiny/brandon-mini/sources/threshold-v1/configs/model_mini_108m_robustness.yaml --data-dir /lambda/nfs/btiny/brandon-mini/data/threshold-v1/control --output-dir /lambda/nfs/btiny/brandon-mini/stages/threshold-v1/control --init-checkpoint /lambda/nfs/btiny/brandon-mini/stages/transfer-v1/diverse/last.pt\n2268186 Thu Oct 15 08:08:50 2026 /home/ubuntu/brandon-mini/.venv/bin/python -u scripts/train_mini_native.py --phase sft --config /lambda/nfs/btiny/brandon-mini/sources/threshold-v1/configs/model_mini_108m_robustness.yaml --data-dir /lambda/nfs/btiny/brandon-mini/data/threshold-v1/control --output-dir /lambda/nfs/btiny/brandon-mini/stages/threshold-v1/control --init-checkpoint /lambda/nfs/btiny/brandon-mini/stages/transfer-v1/diverse/last.pt"
+}

@@ -1,0 +1,13 @@
+/home/ubuntu/ntransformer-h100/env/bin/x86_64-conda-linux-gnu-ld: warning: libcuda.so.1, needed by /home/ubuntu/ntransformer-h100/llama-bench-20261015/build/bin/libllama.so, not found (try using -rpath or -rpath-link)
+/home/ubuntu/ntransformer-h100/env/bin/x86_64-conda-linux-gnu-ld: /home/ubuntu/ntransformer-h100/llama-bench-20261015/build/bin/libggml-cuda.so.0: undefined reference to `cuMemCreate'
+/home/ubuntu/ntransformer-h100/env/bin/x86_64-conda-linux-gnu-ld: /home/ubuntu/ntransformer-h100/llama-bench-20261015/build/bin/libggml-cuda.so.0: undefined reference to `cuMemAddressReserve'
+/home/ubuntu/ntransformer-h100/env/bin/x86_64-conda-linux-gnu-ld: /home/ubuntu/ntransformer-h100/llama-bench-20261015/build/bin/libggml-cuda.so.0: undefined reference to `cuMemUnmap'
+/home/ubuntu/ntransformer-h100/env/bin/x86_64-conda-linux-gnu-ld: /home/ubuntu/ntransformer-h100/llama-bench-20261015/build/bin/libggml-cuda.so.0: undefined reference to `cuMemSetAccess'
+/home/ubuntu/ntransformer-h100/env/bin/x86_64-conda-linux-gnu-ld: /home/ubuntu/ntransformer-h100/llama-bench-20261015/build/bin/libggml-cuda.so.0: undefined reference to `cuDeviceGet'
+/home/ubuntu/ntransformer-h100/env/bin/x86_64-conda-linux-gnu-ld: /home/ubuntu/ntransformer-h100/llama-bench-20261015/build/bin/libggml-cuda.so.0: undefined reference to `cuMemAddressFree'
+/home/ubuntu/ntransformer-h100/env/bin/x86_64-conda-linux-gnu-ld: /home/ubuntu/ntransformer-h100/llama-bench-20261015/build/bin/libggml-cuda.so.0: undefined reference to `cuGetErrorString'
+/home/ubuntu/ntransformer-h100/env/bin/x86_64-conda-linux-gnu-ld: /home/ubuntu/ntransformer-h100/llama-bench-20261015/build/bin/libggml-cuda.so.0: undefined reference to `cuDeviceGetAttribute'
+/home/ubuntu/ntransformer-h100/env/bin/x86_64-conda-linux-gnu-ld: /home/ubuntu/ntransformer-h100/llama-bench-20261015/build/bin/libggml-cuda.so.0: undefined reference to `cuMemMap'
+/home/ubuntu/ntransformer-h100/env/bin/x86_64-conda-linux-gnu-ld: /home/ubuntu/ntransformer-h100/llama-bench-20261015/build/bin/libggml-cuda.so.0: undefined reference to `cuMemRelease'
+/home/ubuntu/ntransformer-h100/env/bin/x86_64-conda-linux-gnu-ld: /home/ubuntu/ntransformer-h100/llama-bench-20261015/build/bin/libggml-cuda.so.0: undefined reference to `cuMemGetAllocationGranularity'
+collect2: error: ld returned 1 exit status

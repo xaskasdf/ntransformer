@@ -1,0 +1,4 @@
+ later executions, and include the number of cache hits, misses, and bytes transferred. These details make the result useful beyond the machine on which it was collected.
+The passage discusses benchmarking an inference system with a expert cache. Which statement is most accurate based a careful reading?
+
+A) Repeating a request guarantees that all

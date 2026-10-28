@@ -1,0 +1,23 @@
+{
+  "cases_verified": 6,
+  "full_logit_values_per_case": 8403200,
+  "final_defaults_bitwise_equal_at_prompts": [
+    32,
+    128
+  ],
+  "historical_baseline": {
+    "32": {
+      "control_sha256": "f240718d58bff55e42d82c34ed1f11a529a1784d19ef0736198deb9796758fbe",
+      "original_baseline_sha256": "f240718d58bff55e42d82c34ed1f11a529a1784d19ef0736198deb9796758fbe",
+      "equal": true
+    },
+    "128": {
+      "control_sha256": "b3622dcb83a9fb0da25e392ed6078e426232007e910119ee1e931d8fa13f4473",
+      "original_baseline_sha256": "b3622dcb83a9fb0da25e392ed6078e426232007e910119ee1e931d8fa13f4473",
+      "equal": true
+    }
+  },
+  "router_weights_bytes": 157286400,
+  "gpu_coverage_complete": true,
+  "expert_upload_bytes_unchanged": true
+}

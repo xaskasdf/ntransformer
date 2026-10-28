@@ -1,0 +1,6 @@
+In file included from /home/ubuntu/ntransformer-h100/ds41-gap-20261015/cupti-include/cupti.h:68,
+                 from /home/ubuntu/ntransformer-h100/ds41-gap-20261015/trace.cpp:2:
+/home/ubuntu/ntransformer-h100/ds41-gap-20261015/cupti-include/cupti_version.h:53:10: fatal error: cuda_stdint.h: No such file or directory
+   53 | #include <cuda_stdint.h>
+      |          ^~~~~~~~~~~~~~~
+compilation terminated.

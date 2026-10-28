@@ -1,0 +1,18 @@
+configure 0 0.21
+build-candidate 0 16.34
+compile-candidate 0 1.67
+gpu-tests 0 1.72
+synthetic-small-0 0 0.21
+synthetic-small-1 0 0.21
+synthetic-real-0 0 0.51
+synthetic-real-1 0 0.51
+synthetic-max-0 1 0.76
+Traceback (most recent call last):
+  File "/home/ubuntu/ntransformer-h100/ds41-moe-batch-20261015/prepare.py", line 19, in <module>
+    run(label,[root/'build/test_ds41_moe_overlap',shape,root/(label+'.bin')],{'DS41_VRAM_GB':'1','DS41_MOE_BATCH':mode,'DS41_MOE_TRACE':'1'})
+  File "/home/ubuntu/ntransformer-h100/ds41-moe-batch-20261015/common.py", line 34, in run
+    if code:raise RuntimeError(label+' failed: '+(root/(label+'.log')).read_text()[-4000:])
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: synthetic-max-0 failed: ds41-gpu: not enough VRAM for an expert cache
+FAIL: overlap unavailable
+

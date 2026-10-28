@@ -1,0 +1,36 @@
+{
+  "command": [
+    "/home/ubuntu/ntransformer-h100/env/bin/x86_64-conda-linux-gnu-g++",
+    "-std=c++20",
+    "-O3",
+    "-march=native",
+    "-rdynamic",
+    "-I/home/ubuntu/ntransformer-h100/env/targets/x86_64-linux/include",
+    "-I/home/ubuntu/ntransformer-h100/ds41-gap-20261015/cupti131-include",
+    "-I/home/ubuntu/ntransformer-h100/ds41-shared-20261015/source/src",
+    "-I/home/ubuntu/ntransformer-h100/ds41-shared-20261015/source/include",
+    "/home/ubuntu/ntransformer-h100/ds41-gap-20261015/benchmark_ds41.cpp",
+    "/home/ubuntu/ntransformer-h100/ds41-shared-20261015/build/libntransformer_lib.a",
+    "/home/ubuntu/ntransformer-h100/ds41-gap-20261015/trace.o",
+    "-L/home/ubuntu/ntransformer-h100/ds41-gap-20261015/cupti-13.1/nvidia/cu13/lib",
+    "-l:libcupti.so.13",
+    "-L/home/ubuntu/ntransformer-h100/env/lib",
+    "-L/home/ubuntu/ntransformer-h100/env/targets/x86_64-linux/lib",
+    "-lcudart",
+    "-lcudadevrt",
+    "-lcudart_static",
+    "-ldl",
+    "-lrt",
+    "-lpthread",
+    "-o",
+    "/home/ubuntu/ntransformer-h100/ds41-gap-20261015/bench-nt"
+  ],
+  "returncode": 0,
+  "utc_start": "2026-10-15T19:24:52.214126+00:00",
+  "wall_seconds": 2.166524878994096,
+  "process_group": 3115897,
+  "environment": {
+    "CUDA_VISIBLE_DEVICES": "1",
+    "LD_LIBRARY_PATH": "/home/ubuntu/ntransformer-h100/ds41-gap-20261015/cupti-13.1/nvidia/cu13/lib:/home/ubuntu/ntransformer-h100/llama-bench-20261015/build/bin:/home/ubuntu/ntransformer-h100/env/targets/x86_64-linux/lib:/home/ubuntu/ntransformer-h100/env/lib:/home/ubuntu/brandon-mini/.venv/lib/python3.12/site-packages/nvidia/cu13/lib"
+  }
+}

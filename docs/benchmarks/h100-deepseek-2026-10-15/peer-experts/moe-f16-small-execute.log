@@ -1,0 +1,5 @@
+ds41-gpu: expert cache on NVIDIA H100 80GB HBM3: 123361 slots x 0.02 MiB = 2.0 GiB
+ds41-gpu: expert cache on NVIDIA H100 80GB HBM3: 123361 slots x 0.02 MiB = 2.0 GiB
+ds41-gpu: peer expert mode=execute; owner=expert_id%2, devices 0/1, direct P2P enabled
+coverage: 20 calls, 20 batched, 122 launches, 20 traced, 1 aborted
+PASS scoped overlap: bitwise outputs, callback ownership, exception recovery, bounds

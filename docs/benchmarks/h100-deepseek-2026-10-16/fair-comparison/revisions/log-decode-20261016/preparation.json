@@ -1,0 +1,7 @@
+{
+  "sha256": "19ad0fb72e3cbb7df158bbe444fd8cef6253a856ef7e1b3c4a1b55409c450200",
+  "bytes": 84473710,
+  "frozen_files": 235,
+  "revision": "paused-admission-20261016",
+  "scope": "Runnable preparation and CPU validation; GPU benchmark pending"
+}

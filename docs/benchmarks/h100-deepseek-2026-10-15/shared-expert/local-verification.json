@@ -1,0 +1,15 @@
+{
+  "archive_sha256": "dbb57cac6661c228dfaae91cba5502b496f63fcf97bec3c2a8ef69216936f986",
+  "verified_payload_files": 178,
+  "current_source_hashes_match": true,
+  "source_archive_hashes_match": true,
+  "optimization_document_matches": true,
+  "means_recomputed": true,
+  "warm_cache_coverage_verified": true,
+  "shared_gpu_coverage_verified": true,
+  "compared_logit_values": 3232000,
+  "numerical_errors_recomputed": true,
+  "all_top1_and_ordered_top8_equal": true,
+  "previous_cpu_control_bitwise": true,
+  "final_mask_change_bitwise": true
+}

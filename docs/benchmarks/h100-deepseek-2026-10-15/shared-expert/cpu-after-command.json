@@ -1,0 +1,35 @@
+{
+  "command": [
+    "/home/ubuntu/ntransformer-h100/ds41-shared-20261015/build/ntransformer",
+    "-m",
+    "/home/ubuntu/tiny-deepseek41.gguf",
+    "--token-ids",
+    "1,40,77,114,151,188,225,262,299,19,56,93,130,167,204,241,278,315",
+    "-n",
+    "4",
+    "--temperature",
+    "0",
+    "--dump-logits",
+    "/home/ubuntu/ntransformer-h100/ds41-shared-20261015/cpu-after.bin"
+  ],
+  "returncode": 0,
+  "seconds": 0.6646361719758715,
+  "environment": {
+    "CUDA_VISIBLE_DEVICES": "1",
+    "DS41_GPU": "0",
+    "DS41_GPU_ATTN": "1",
+    "DS41_VRAM_GB": "62",
+    "DS41_PROFILE": "1",
+    "DS41_GPU_TIMING": "1",
+    "LD_LIBRARY_PATH": "/home/ubuntu/ntransformer-h100/env/targets/x86_64-linux/lib:/home/ubuntu/ntransformer-h100/env/lib",
+    "DS41_DUMP_STAGES": "1"
+  },
+  "resources": {
+    "ru_utime": 0.5143510000000001,
+    "ru_stime": 3.5267470000000003,
+    "ru_majflt": 1005,
+    "ru_minflt": 1806,
+    "ru_nvcsw": 309881,
+    "ru_nivcsw": 5
+  }
+}

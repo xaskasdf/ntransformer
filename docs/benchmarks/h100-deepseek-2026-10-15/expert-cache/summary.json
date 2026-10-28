@@ -1,0 +1,436 @@
+{
+  "workloads": {
+    "p32": {
+      "lru": {
+        "routed_upload_bytes": 0.0,
+        "staged_slices": 0.0,
+        "transient_copy_threads": 0.0,
+        "peer_upload_bytes": 0.0,
+        "cache0_hits": 340.453125,
+        "cache1_hits": 379.546875,
+        "cache0_misses": 0.0,
+        "cache1_misses": 0.0,
+        "cache0_evictions": 0.0,
+        "cache1_evictions": 0.0,
+        "cache0_promotions": 0.0,
+        "cache1_promotions": 0.0,
+        "cache0_demotions": 0.0,
+        "cache1_demotions": 0.0,
+        "stage_ms_per_token": {
+          "moe": 11.685838890625,
+          "attention": 14.686775078125,
+          "engram": 2.70557221875,
+          "hc": 4.191576875,
+          "other": 9.291240552083332,
+          "routed": 8.085615515625001
+        },
+        "tokens_per_second": 23.414469548331386,
+        "prefill_tokens_per_second": 25.077987250460996,
+        "warm_decode_seconds": [
+          2.733352548,
+          2.738801735,
+          2.733299559
+        ],
+        "warm_request_seconds": [
+          4.01710722,
+          4.014168748,
+          4.009319029
+        ],
+        "cold_request_seconds": 9.252634678,
+        "cold_request_upload_bytes": 85223301120,
+        "warm_request_upload_bytes": 0,
+        "logits_sha256": "85bd202457452d765c1d194c7d1633a66b82aabc6b43309006145a542892bbe3",
+        "logit_values": 8403200,
+        "sampled_peak_vram_mib": {
+          "0": 64017.0,
+          "1": 72505.0
+        },
+        "peak_rss_mib": 90982.3984375
+      },
+      "slru": {
+        "routed_upload_bytes": 0.0,
+        "staged_slices": 0.0,
+        "transient_copy_threads": 0.0,
+        "peer_upload_bytes": 0.0,
+        "cache0_hits": 340.453125,
+        "cache1_hits": 379.546875,
+        "cache0_misses": 0.0,
+        "cache1_misses": 0.0,
+        "cache0_evictions": 0.0,
+        "cache1_evictions": 0.0,
+        "cache0_promotions": 7.421875,
+        "cache1_promotions": 7.484375,
+        "cache0_demotions": 0.0,
+        "cache1_demotions": 0.0,
+        "stage_ms_per_token": {
+          "moe": 11.677699406250001,
+          "attention": 14.66351271875,
+          "engram": 2.7380138489583334,
+          "hc": 4.228594041666667,
+          "other": 9.320883458333334,
+          "routed": 8.087450442708333
+        },
+        "tokens_per_second": 23.375073399602307,
+        "prefill_tokens_per_second": 25.018679258668016,
+        "warm_decode_seconds": [
+          2.743377975,
+          2.737042405,
+          2.737959317
+        ],
+        "warm_request_seconds": [
+          4.022422311,
+          4.015891566,
+          4.017049664
+        ],
+        "cold_request_seconds": 9.217790574999999,
+        "cold_request_upload_bytes": 85223301120,
+        "warm_request_upload_bytes": 0,
+        "logits_sha256": "85bd202457452d765c1d194c7d1633a66b82aabc6b43309006145a542892bbe3",
+        "logit_values": 8403200,
+        "sampled_peak_vram_mib": {
+          "0": 64017.0,
+          "1": 72505.0
+        },
+        "peak_rss_mib": 90979.83203125
+      }
+    },
+    "p128": {
+      "lru": {
+        "routed_upload_bytes": 0.0,
+        "staged_slices": 0.0,
+        "transient_copy_threads": 0.0,
+        "peer_upload_bytes": 0.0,
+        "cache0_hits": 342.140625,
+        "cache1_hits": 377.859375,
+        "cache0_misses": 0.0,
+        "cache1_misses": 0.0,
+        "cache0_evictions": 0.0,
+        "cache1_evictions": 0.0,
+        "cache0_promotions": 0.0,
+        "cache1_promotions": 0.0,
+        "cache0_demotions": 0.0,
+        "cache1_demotions": 0.0,
+        "stage_ms_per_token": {
+          "moe": 11.686639661458335,
+          "attention": 18.266207911458334,
+          "engram": 2.7346740572916666,
+          "hc": 4.20197928125,
+          "other": 9.265680161458333,
+          "routed": 8.078518005208334
+        },
+        "tokens_per_second": 21.583926810156054,
+        "prefill_tokens_per_second": 23.814056413831544,
+        "warm_decode_seconds": [
+          2.963159106,
+          2.965169432,
+          2.967169507
+        ],
+        "warm_request_seconds": [
+          8.338135874999999,
+          8.338865739000001,
+          8.346473086
+        ],
+        "cold_request_seconds": 14.914579182,
+        "cold_request_upload_bytes": 107671265280,
+        "warm_request_upload_bytes": 0,
+        "logits_sha256": "9262595f4e7b22366e7f351643c984c1bfb3e968f3925de880557c02b928fceb",
+        "logit_values": 8403200,
+        "sampled_peak_vram_mib": {
+          "0": 64017.0,
+          "1": 72505.0
+        },
+        "peak_rss_mib": 112694.7890625
+      },
+      "slru": {
+        "routed_upload_bytes": 0.0,
+        "staged_slices": 0.0,
+        "transient_copy_threads": 0.0,
+        "peer_upload_bytes": 0.0,
+        "cache0_hits": 342.140625,
+        "cache1_hits": 377.859375,
+        "cache0_misses": 0.0,
+        "cache1_misses": 0.0,
+        "cache0_evictions": 0.0,
+        "cache1_evictions": 0.0,
+        "cache0_promotions": 12.171875,
+        "cache1_promotions": 12.703125,
+        "cache0_demotions": 8.838541666666666,
+        "cache1_demotions": 9.697916666666666,
+        "stage_ms_per_token": {
+          "moe": 11.642905687500003,
+          "attention": 18.252869999999998,
+          "engram": 2.7177578854166664,
+          "hc": 4.225523145833333,
+          "other": 9.324021015625002,
+          "routed": 8.053890062499999
+        },
+        "tokens_per_second": 21.56858922620673,
+        "prefill_tokens_per_second": 23.75145126818021,
+        "warm_decode_seconds": [
+          2.968070842,
+          2.967277986,
+          2.961627781
+        ],
+        "warm_request_seconds": [
+          8.357215217,
+          8.399446154,
+          8.340334499
+        ],
+        "cold_request_seconds": 14.932024397000001,
+        "cold_request_upload_bytes": 107671265280,
+        "warm_request_upload_bytes": 0,
+        "logits_sha256": "9262595f4e7b22366e7f351643c984c1bfb3e968f3925de880557c02b928fceb",
+        "logit_values": 8403200,
+        "sampled_peak_vram_mib": {
+          "0": 64017.0,
+          "1": 72505.0
+        },
+        "peak_rss_mib": 112646.6796875
+      }
+    },
+    "p512": {
+      "lru": {
+        "routed_upload_bytes": 72264960.0,
+        "staged_slices": 11.53125,
+        "transient_copy_threads": 11.53125,
+        "peer_upload_bytes": 37013760.0,
+        "cache0_hits": 327.515625,
+        "cache1_hits": 380.953125,
+        "cache0_misses": 5.625,
+        "cache1_misses": 5.90625,
+        "cache0_evictions": 5.625,
+        "cache1_evictions": 5.90625,
+        "cache0_promotions": 0.0,
+        "cache1_promotions": 0.0,
+        "cache0_demotions": 0.0,
+        "cache1_demotions": 0.0,
+        "stage_ms_per_token": {
+          "moe": 15.406351020833334,
+          "attention": 24.768273942708333,
+          "engram": 2.755894671875,
+          "hc": 4.199483421875001,
+          "other": 9.483504630208333,
+          "routed": 11.791461604166665
+        },
+        "tokens_per_second": 17.60807564940153,
+        "prefill_tokens_per_second": 19.08274414788667,
+        "warm_decode_seconds": [
+          3.633965086,
+          3.634695879,
+          3.634830918
+        ],
+        "warm_request_seconds": [
+          30.466524534,
+          30.465218576999998,
+          30.453615895
+        ],
+        "cold_request_seconds": 36.704661216,
+        "cold_request_upload_bytes": 149502689280,
+        "warm_request_upload_bytes": 61421690880,
+        "logits_sha256": "794433ef8fa573097eaa9d91992af3bbdd766eb02e07c2e2af9c2e6c61a0ddb0",
+        "logit_values": 8403200,
+        "sampled_peak_vram_mib": {
+          "0": 64017.0,
+          "1": 72511.0
+        },
+        "peak_rss_mib": 151874.0234375
+      },
+      "slru": {
+        "routed_upload_bytes": 45826560.0,
+        "staged_slices": 7.3125,
+        "transient_copy_threads": 7.3125,
+        "peer_upload_bytes": 24088320.0,
+        "cache0_hits": 329.671875,
+        "cache1_hits": 383.015625,
+        "cache0_misses": 3.46875,
+        "cache1_misses": 3.84375,
+        "cache0_evictions": 3.46875,
+        "cache1_evictions": 3.84375,
+        "cache0_promotions": 3.046875,
+        "cache1_promotions": 3.46875,
+        "cache0_demotions": 3.046875,
+        "cache1_demotions": 3.46875,
+        "stage_ms_per_token": {
+          "moe": 14.093252739583333,
+          "attention": 24.7425825625,
+          "engram": 2.7435943125000004,
+          "hc": 4.207771317708333,
+          "other": 9.3651815,
+          "routed": 10.48780009375
+        },
+        "tokens_per_second": 18.075544711270584,
+        "prefill_tokens_per_second": 20.118552508707033,
+        "warm_decode_seconds": [
+          3.538169096,
+          3.544065599,
+          3.54069551
+        ],
+        "warm_request_seconds": [
+          28.985391131,
+          28.993212588,
+          29.030284864
+        ],
+        "cold_request_seconds": 36.578140168,
+        "cold_request_upload_bytes": 149540290560,
+        "warm_request_upload_bytes": 33316823040,
+        "logits_sha256": "794433ef8fa573097eaa9d91992af3bbdd766eb02e07c2e2af9c2e6c61a0ddb0",
+        "logit_values": 8403200,
+        "sampled_peak_vram_mib": {
+          "0": 64017.0,
+          "1": 72511.0
+        },
+        "peak_rss_mib": 151857.7734375
+      }
+    },
+    "heldout-p512": {
+      "lru": {
+        "routed_upload_bytes": 56989440.0,
+        "staged_slices": 9.09375,
+        "transient_copy_threads": 9.09375,
+        "peer_upload_bytes": 29963520.0,
+        "cache0_hits": 335.484375,
+        "cache1_hits": 375.421875,
+        "cache0_misses": 4.3125,
+        "cache1_misses": 4.78125,
+        "cache0_evictions": 4.3125,
+        "cache1_evictions": 4.78125,
+        "cache0_promotions": 0.0,
+        "cache1_promotions": 0.0,
+        "cache0_demotions": 0.0,
+        "cache1_demotions": 0.0,
+        "stage_ms_per_token": {
+          "moe": 14.559291588541667,
+          "attention": 24.736024598958334,
+          "engram": 2.7330522447916668,
+          "hc": 4.215060223958333,
+          "other": 9.220989947916665,
+          "routed": 10.957805052083335
+        },
+        "tokens_per_second": 17.973506108948012,
+        "prefill_tokens_per_second": 19.39295422231534,
+        "warm_decode_seconds": [
+          3.561918498,
+          3.560796631,
+          3.560034027
+        ],
+        "warm_request_seconds": [
+          29.963259631,
+          29.977265684,
+          29.957373853
+        ],
+        "cold_request_seconds": 36.56883892,
+        "cold_request_upload_bytes": 145686159360,
+        "warm_request_upload_bytes": 55217479680,
+        "logits_sha256": "36812e672c9d03d5c47b4f0aea5722f85b8f1616335d1558893cbf47767404f7",
+        "logit_values": 8403200,
+        "sampled_peak_vram_mib": {
+          "0": 64017.0,
+          "1": 72511.0
+        },
+        "peak_rss_mib": 148871.609375
+      },
+      "slru": {
+        "routed_upload_bytes": 39363840.0,
+        "staged_slices": 6.28125,
+        "transient_copy_threads": 6.28125,
+        "peer_upload_bytes": 19681920.0,
+        "cache0_hits": 336.65625,
+        "cache1_hits": 377.0625,
+        "cache0_misses": 3.140625,
+        "cache1_misses": 3.140625,
+        "cache0_evictions": 3.140625,
+        "cache1_evictions": 3.140625,
+        "cache0_promotions": 1.96875,
+        "cache1_promotions": 2.15625,
+        "cache0_demotions": 1.96875,
+        "cache1_demotions": 2.15625,
+        "stage_ms_per_token": {
+          "moe": 13.812972604166667,
+          "attention": 24.776039359375,
+          "engram": 2.7394852812656256,
+          "hc": 4.232529901041667,
+          "other": 9.462251765609375,
+          "routed": 10.199955541666666
+        },
+        "tokens_per_second": 18.13110126784955,
+        "prefill_tokens_per_second": 20.02742708182556,
+        "warm_decode_seconds": [
+          3.52984626,
+          3.549347532,
+          3.518973585
+        ],
+        "warm_request_seconds": [
+          29.119662289,
+          29.114288945,
+          29.073372273
+        ],
+        "cold_request_seconds": 50.347417001,
+        "cold_request_upload_bytes": 145742561280,
+        "warm_request_upload_bytes": 32750714880,
+        "logits_sha256": "36812e672c9d03d5c47b4f0aea5722f85b8f1616335d1558893cbf47767404f7",
+        "logit_values": 8403200,
+        "sampled_peak_vram_mib": {
+          "0": 64017.0,
+          "1": 72511.0
+        },
+        "peak_rss_mib": 148805.328125
+      }
+    }
+  },
+  "comparisons": {
+    "p32": {
+      "decode_speedup": 0.998317444320156,
+      "request_speedup": 0.9992828278858941,
+      "warm_decode_upload_reduction": null,
+      "separated_warm_decode_ranges": false,
+      "separated_warm_request_ranges": false
+    },
+    "p128": {
+      "decode_speedup": 0.9992893978892614,
+      "request_speedup": 0.9978043549766825,
+      "warm_decode_upload_reduction": null,
+      "separated_warm_decode_ranges": false,
+      "separated_warm_request_ranges": false
+    },
+    "p512": {
+      "decode_speedup": 1.0265485605114912,
+      "request_speedup": 1.0507707100250507,
+      "warm_decode_upload_reduction": 0.36585365853658536,
+      "separated_warm_decode_ranges": true,
+      "separated_warm_request_ranges": true
+    },
+    "heldout-p512": {
+      "decode_speedup": 1.0087681923574767,
+      "request_speedup": 1.0291599320046523,
+      "warm_decode_upload_reduction": 0.30927835051546393,
+      "separated_warm_decode_ranges": true,
+      "separated_warm_request_ranges": true
+    }
+  },
+  "replay": {
+    "0": {
+      "warm_decode_mib_per_token": 68.917236328125,
+      "first_use_misses": 0,
+      "recurrent_misses": 2214
+    },
+    "50": {
+      "warm_decode_mib_per_token": 61.9134521484375,
+      "first_use_misses": 0,
+      "recurrent_misses": 1989
+    },
+    "80": {
+      "warm_decode_mib_per_token": 43.70361328125,
+      "first_use_misses": 0,
+      "recurrent_misses": 1404
+    },
+    "90": {
+      "warm_decode_mib_per_token": 43.70361328125,
+      "first_use_misses": 0,
+      "recurrent_misses": 1404
+    }
+  },
+  "accepted_on_measured_workloads": false,
+  "bitwise_logit_values": 33612800,
+  "candidate_protected_percent": 80,
+  "default_policy": "lru"
+}

@@ -1,0 +1,18 @@
+{
+  "payload_files_verified": 335,
+  "archive_sha256": "94ca7b39678a4fdc98a86a13aec3ebd15008dc2a1cd1c47c2f51d1ab741402bb",
+  "archive_verified_locally": false,
+  "delivery": "unique payload download plus identical SHA256-verified copies",
+  "analysis_reproduced": true,
+  "source_snapshot_verified": true,
+  "workspace_matches_at_collection": {
+    "src/model/ds41/ds41_gpu.cu": true,
+    "src/model/ds41/ds41_gpu.h": true,
+    "src/model/ds41/ds41_cache.h": true,
+    "tests/test_ds41_cache.cpp": true,
+    "tools/benchmark_ds41.cpp": true,
+    "CMakeLists.txt": true,
+    "tools/replay_ds41_cache.cpp": true
+  },
+  "bitwise_logit_values": 33612800
+}

@@ -1,0 +1,32 @@
+[  3%] Building CUDA object CMakeFiles/ntransformer_ds41_shared.dir/src/model/ds41/ds41_shared.cu.o
+[  3%] Built target ntransformer_ds41_shared
+[  6%] Building CXX object CMakeFiles/ntransformer_lib.dir/src/model/ds41/ds41_forward.cpp.o
+[ 10%] Linking CUDA device code CMakeFiles/ntransformer_lib.dir/cmake_device_link.o
+[ 13%] Linking CXX static library libntransformer_lib.a
+[ 93%] Built target ntransformer_lib
+[ 96%] Linking CXX executable ntransformer
+[100%] Built target ntransformer
+[  3%] Built target ntransformer_ds41_shared
+[ 93%] Built target ntransformer_lib
+[ 96%] Linking CXX executable test_ds41_router
+[100%] Built target test_ds41_router
+[  3%] Built target ntransformer_ds41_shared
+[ 93%] Built target ntransformer_lib
+[ 96%] Linking CXX executable test_ds41_backbone
+[100%] Built target test_ds41_backbone
+[  3%] Built target ntransformer_ds41_shared
+[ 93%] Built target ntransformer_lib
+[ 96%] Linking CXX executable test_ds41_shared
+[100%] Built target test_ds41_shared
+[  3%] Built target ntransformer_ds41_shared
+[ 93%] Built target ntransformer_lib
+[ 96%] Linking CXX executable test_ds41_moe_overlap
+[100%] Built target test_ds41_moe_overlap
+[  3%] Built target ntransformer_ds41_shared
+[ 93%] Built target ntransformer_lib
+[ 96%] Linking CXX executable test_ds41_prefill
+[100%] Built target test_ds41_prefill
+[  3%] Built target ntransformer_ds41_shared
+[ 93%] Built target ntransformer_lib
+[ 96%] Linking CXX executable test_ds41_hc
+[100%] Built target test_ds41_hc

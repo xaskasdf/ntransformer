@@ -1,0 +1,6 @@
+{
+  "archive_verified_locally": true,
+  "archive_sha256": "19ad0fb72e3cbb7df158bbe444fd8cef6253a856ef7e1b3c4a1b55409c450200",
+  "frozen_payloads_verified": 235,
+  "scope": "Runnable preparation and CPU validation; GPU benchmark pending"
+}

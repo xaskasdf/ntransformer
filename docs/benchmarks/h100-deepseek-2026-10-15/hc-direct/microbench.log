@@ -1,0 +1,9 @@
+{"round":0,"direct":false,"operation":"collapse","repeats":400,"seconds":0.089657619}
+{"round":0,"direct":false,"operation":"post_mix","repeats":400,"seconds":0.094222734}
+{"round":1,"direct":true,"operation":"collapse","repeats":400,"seconds":0.004031806}
+{"round":1,"direct":true,"operation":"post_mix","repeats":400,"seconds":0.021277888}
+{"round":2,"direct":true,"operation":"collapse","repeats":400,"seconds":0.003999803}
+{"round":2,"direct":true,"operation":"post_mix","repeats":400,"seconds":0.021054544}
+{"round":3,"direct":false,"operation":"collapse","repeats":400,"seconds":0.089788856}
+{"round":3,"direct":false,"operation":"post_mix","repeats":400,"seconds":0.093348617}
+PASS HC direct/pool/scalar bitwise equality and output guards

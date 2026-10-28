@@ -1,0 +1,74 @@
+configure 0 2.92
+build-trace 0 23.35
+compile-trace-baseline 0 1.62
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+Traceback (most recent call last):
+  File "/home/ubuntu/ntransformer-h100/ds41-moe-batch-20261015/trace_baseline.py", line 9, in <module>
+    with admitted('trace-baseline',wait_seconds=600):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/contextlib.py", line 137, in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+  File "/home/ubuntu/ntransformer-h100/ds41-moe-batch-20261015/common.py", line 43, in admitted
+    f=stack.enter_context(path.open('a'));fcntl.flock(f,fcntl.LOCK_EX|fcntl.LOCK_NB)
+                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+BlockingIOError: [Errno 11] Resource temporarily unavailable

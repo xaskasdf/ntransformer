@@ -1,0 +1,722 @@
+[
+  {
+    "name": "blk.0.hc_attn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.0.hc_ffn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.1.hc_attn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.1.hc_ffn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.2.hc_attn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.2.hc_ffn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.3.hc_attn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.3.hc_ffn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.4.hc_attn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.4.hc_ffn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.5.hc_attn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.5.hc_ffn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.6.hc_attn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.6.hc_ffn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.7.hc_attn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.7.hc_ffn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.8.hc_attn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.8.hc_ffn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.9.hc_attn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.9.hc_ffn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.10.hc_attn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.10.hc_ffn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.11.hc_attn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.11.hc_ffn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.12.hc_attn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.12.hc_ffn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.13.hc_attn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.13.hc_ffn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.14.hc_attn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.14.hc_ffn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.15.hc_attn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.15.hc_ffn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.16.hc_attn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.16.hc_ffn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.17.hc_attn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.17.hc_ffn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.18.hc_attn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.18.hc_ffn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.19.hc_attn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.19.hc_ffn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.20.hc_attn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.20.hc_ffn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.21.hc_attn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.21.hc_ffn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.22.hc_attn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.22.hc_ffn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.23.hc_attn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.23.hc_ffn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.24.hc_attn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.24.hc_ffn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.25.hc_attn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.25.hc_ffn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.26.hc_attn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.26.hc_ffn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.27.hc_attn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.27.hc_ffn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.28.hc_attn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.28.hc_ffn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.29.hc_attn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.29.hc_ffn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.30.hc_attn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.30.hc_ffn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.31.hc_attn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.31.hc_ffn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.32.hc_attn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.32.hc_ffn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.33.hc_attn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.33.hc_ffn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.34.hc_attn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.34.hc_ffn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.35.hc_attn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.35.hc_ffn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.36.hc_attn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.36.hc_ffn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.37.hc_attn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.37.hc_ffn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.38.hc_attn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.38.hc_ffn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.39.hc_attn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  },
+  {
+    "name": "blk.39.hc_ffn_fn.weight",
+    "dtype": "F32",
+    "shape": [
+      20480,
+      24
+    ],
+    "bytes": 1966080
+  }
+]

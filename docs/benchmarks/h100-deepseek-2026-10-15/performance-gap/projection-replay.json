@@ -1,0 +1,34 @@
+{
+  "nt_fp32_input": {
+    "n": 1280,
+    "max_abs": 5.670947738067866e-07,
+    "relative_l2": 1.3583061237239419e-07,
+    "bitwise_equal": false,
+    "top1_a": 801,
+    "top1_b": 801
+  },
+  "nt_q8_1_input": {
+    "n": 1280,
+    "max_abs": 0.014964115345411866,
+    "relative_l2": 0.003365821475720493,
+    "bitwise_equal": false,
+    "top1_a": 801,
+    "top1_b": 801
+  },
+  "llama_fp32_input": {
+    "n": 1280,
+    "max_abs": 0.01496039158232576,
+    "relative_l2": 0.003365340197795755,
+    "bitwise_equal": false,
+    "top1_a": 801,
+    "top1_b": 801
+  },
+  "llama_q8_1_input": {
+    "n": 1280,
+    "max_abs": 3.95112512929785e-07,
+    "relative_l2": 7.005726882130354e-08,
+    "bitwise_equal": false,
+    "top1_a": 801,
+    "top1_b": 801
+  }
+}

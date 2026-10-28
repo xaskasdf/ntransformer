@@ -1,0 +1,26 @@
+GGUF v3: 18 tensors, 68 metadata entries
+Loaded 10 split shards, 1046 tensors total
+Loading DeepSeek-V4.1 model: /home/ubuntu/ntransformer-h100/models/deepseek-v41-flash-q8/DeepSeek-V4.1-Flash-Q8_0-00001-of-00010.gguf
+GGUF v3: 18 tensors, 68 metadata entries
+Loaded 10 split shards, 1046 tensors total
+deepseek41: 40 layers, hidden 5120, heads 64, head_dim 512, experts 6/384, engram layers 2, hc 4
+Tokenizer: 129280 tokens, 127741 merges, BOS=0, EOS=1, pre=joyai-llm, encoding=GPT2-BPE(merges)
+ds41-gpu: lm head resident (1.23 GiB)
+prompt: 6 tokens
+ds41-gpu: expert cache on NVIDIA H100 80GB HBM3: 10622 slots x 5.98 MiB = 62.0 GiB
+[gputime] calls=240 resident=0.325s launch=0.012s copy=0.069s
+[prefill] tokens=6 heads=1 mode=last seconds=3.949960193
+[prof] moe=2.11s attn=1.06s engram=0.11s hc=0.19s other=0.47s forwards=6[prof-attn] qkv=0.41s rope=0.00s comp=0.03s loop=0.07s tail=0.55s
+wrote logits (129280 floats) to /home/ubuntu/ntransformer-h100/ds41-prefill-20261015/cli-last.bin
+  top0: id=11111 logit=21.111401 token= Paris
+  top1: id=28534 logit=18.564301 token= ______
+  top2: id=260 logit=18.044895 token= a
+  top3: id=19275 logit=17.820702 token= ________
+  top4: id=834 logit=17.345646 token= one
+  top5: id=42761 logit=17.344959 token= ____
+  top6: id=12734 logit=17.028799 token= famous
+  top7: id=270 logit=16.923964 token= the
+ Paris. It isds41-gpu: expert cache: 7200 lookups, 3162 hits (43.9%), 0 evictions
+
+generated 4 tokens
+

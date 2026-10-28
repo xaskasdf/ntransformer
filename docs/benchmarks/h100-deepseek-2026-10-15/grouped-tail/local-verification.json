@@ -1,0 +1,11 @@
+{
+  "archive_sha256": "b84675ef72277ff8d388242d71b455bc13a42f98061799ec1d001c7a29b1269e",
+  "verified_payload_files": 82,
+  "current_source_hashes_match": true,
+  "cross_binary_logits_exact": true,
+  "means_recomputed": true,
+  "warm_cache_deltas_verified": true,
+  "all_routed_calls_gpu": true,
+  "all_candidate_calls_overlapped": true,
+  "tail_launch_deltas_verified": true
+}

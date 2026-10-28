@@ -1,0 +1,32 @@
+source/model/ds41/ds41_gpu.before.cu(154): warning #177-D: variable "p" was declared but never referenced
+          char* p = nullptr;
+                ^
+
+Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+
+source/model/ds41/ds41_gpu.before.cu(180): warning #177-D: function "nt::ds41::<unnamed>::ExpertCache::reset_for_slice" was declared but never referenced
+      void reset_for_slice(size_t slice_bytes, size_t cache_bytes) {
+           ^
+
+source/model/ds41/ds41_gpu.before.cu(216): warning #177-D: function "nt::ds41::<unnamed>::ExpertCache::slice_bytes" was declared but never referenced
+      size_t slice_bytes() const { return slice_bytes_; }
+             ^
+
+In member function 'const void* nt::ds41::ResidentRegistry::get(const void*, size_t)',
+    inlined from 'bool nt::ds41::gpu_attn_tail(const float*, int64_t, int64_t, const void*, const void*, int64_t, int64_t, int64_t, float*)' at source/model/ds41/ds41_gpu.before.cu:712:36:
+source/model/ds41/ds41_gpu.before.cu:570:16: warning: 'bytes' may be used uninitialized [-Wmaybe-uninitialized]
+  570 |         if (cudaMalloc(&dev, bytes) != cudaSuccess) return nullptr;
+      |         ~~~~~~~^~~~~~~~~~~~~~
+source/model/ds41/ds41_gpu.before.cu: In function 'bool nt::ds41::gpu_attn_tail(const float*, int64_t, int64_t, const void*, const void*, int64_t, int64_t, int64_t, float*)':
+source/model/ds41/ds41_gpu.before.cu:711:8: note: 'bytes' was declared here
+  711 |     size_t bytes;
+      |        ^~~~~
+In member function 'const void* nt::ds41::ResidentRegistry::get(const void*, size_t)',
+    inlined from 'bool nt::ds41::gpu_attn_prologue(const float*, int64_t, const void*, const void*, const void*, const void*, const void*, int64_t, int64_t, int64_t, int64_t, float, const float*, const float*, float*, float*, float*)' at source/model/ds41/ds41_gpu.before.cu:647:36:
+source/model/ds41/ds41_gpu.before.cu:570:16: warning: 'bytes' may be used uninitialized [-Wmaybe-uninitialized]
+  570 |         if (cudaMalloc(&dev, bytes) != cudaSuccess) return nullptr;
+      |         ~~~~~~~^~~~~~~~~~~~~~
+source/model/ds41/ds41_gpu.before.cu: In function 'bool nt::ds41::gpu_attn_prologue(const float*, int64_t, const void*, const void*, const void*, const void*, const void*, int64_t, int64_t, int64_t, int64_t, float, const float*, const float*, float*, float*, float*)':
+source/model/ds41/ds41_gpu.before.cu:646:8: note: 'bytes' was declared here
+  646 |     size_t bytes;
+      |        ^~~~~

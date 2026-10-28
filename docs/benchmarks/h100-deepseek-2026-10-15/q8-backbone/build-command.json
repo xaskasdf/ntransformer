@@ -1,0 +1,34 @@
+{
+  "command": [
+    "/home/ubuntu/ntransformer-h100/env/bin/cmake",
+    "--build",
+    "/home/ubuntu/ntransformer-h100/ds41-backbone-20261015/build",
+    "-j8",
+    "--target",
+    "ntransformer",
+    "test_ds41_q8",
+    "test_ds41_mxfp4",
+    "test_ds41_attention",
+    "test_ds41_router",
+    "test_ds41_backbone",
+    "test_ds41_shared",
+    "test_ds41_moe_overlap",
+    "test_ds41_prefill",
+    "test_ds41_hc"
+  ],
+  "returncode": 0,
+  "utc_start": "2026-10-16T00:08:30.235303+00:00",
+  "wall_seconds": 43.02447506398312,
+  "process_group": 1655210,
+  "environment": {
+    "CUDA_VISIBLE_DEVICES": "1,0",
+    "LD_LIBRARY_PATH": "/home/ubuntu/ntransformer-h100/env/targets/x86_64-linux/lib:/home/ubuntu/ntransformer-h100/env/lib",
+    "DS41_GPU": "1",
+    "DS41_GPU_ATTN": "1",
+    "DS41_PROFILE": "1",
+    "DS41_VRAM_GB": "62",
+    "DS41_PEER_VRAM_GB": "62",
+    "DS41_BENCH_ALL_LOGITS": "1",
+    "DS41_BENCH_TEACHER_FORCING": "1"
+  }
+}

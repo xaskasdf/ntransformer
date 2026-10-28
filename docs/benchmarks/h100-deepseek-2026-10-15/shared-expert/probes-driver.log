@@ -1,0 +1,8 @@
+build-strict-tests 0 1.27
+strict-shared-tests 0 5.52
+strict-real 0 5.72
+strict-max 0 6.52
+exp32 0 14.69
+probe-cpu 0 90.61
+probe-gpu 0 54.45
+compare 0 0.36

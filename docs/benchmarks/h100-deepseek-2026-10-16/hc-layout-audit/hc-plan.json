@@ -1,0 +1,19 @@
+{
+  "workloads": [
+    "p32",
+    "p128",
+    "p512",
+    "heldout-p512"
+  ],
+  "independent_launches": 1,
+  "repeats": 4,
+  "measured_rounds": [
+    2,
+    3,
+    4
+  ],
+  "scope": "Numerical correction with timing diagnostics against prior matched baseline; not paired speedup proof",
+  "change": "HC mixing matrix exported with destination as the fastest dimension",
+  "tokens": "Identical corpus inputs and 64 teacher-forced continuation tokens from fair benchmark",
+  "arithmetic": "Unchanged FP32 routed arithmetic; unchanged GPU kernels"
+}

@@ -1,0 +1,6 @@
+{
+  "archive_sha256": "f0177e88a2e58c56e0b5c6137dfda04a840c80ea9e754b0543bb60f48616d83b",
+  "verified_payload_files": 34,
+  "tested_sources_match_workspace": true,
+  "cmake_and_ctest_passed": true
+}

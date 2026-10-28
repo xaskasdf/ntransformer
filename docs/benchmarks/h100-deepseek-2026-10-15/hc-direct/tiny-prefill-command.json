@@ -1,0 +1,30 @@
+{
+  "command": [
+    "ctest",
+    "--test-dir",
+    "/home/ubuntu/ntransformer-h100/ds41-hc-20261015/build",
+    "-V",
+    "-R",
+    "^test_ds41_prefill$"
+  ],
+  "returncode": 0,
+  "seconds": 1.9664119170047343,
+  "environment": {
+    "CUDA_VISIBLE_DEVICES": "1",
+    "DS41_GPU": "0",
+    "DS41_GPU_ATTN": "1",
+    "DS41_VRAM_GB": "62",
+    "DS41_PROFILE": "1",
+    "DS41_GPU_TIMING": "1",
+    "LD_LIBRARY_PATH": "/home/ubuntu/ntransformer-h100/env/targets/x86_64-linux/lib:/home/ubuntu/ntransformer-h100/env/lib",
+    "DS41_TEST_MODEL": "/home/ubuntu/tiny-deepseek41.gguf"
+  },
+  "resources": {
+    "ru_utime": 1.6572140000000104,
+    "ru_stime": 10.277251,
+    "ru_majflt": 1283,
+    "ru_minflt": 2746,
+    "ru_nvcsw": 951389,
+    "ru_nivcsw": 38
+  }
+}

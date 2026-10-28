@@ -1,0 +1,10 @@
+{
+  "ctest_cases": 28,
+  "numerical_processes": 18,
+  "default_flags_unset_checked": true,
+  "kernel_source_unchanged": true,
+  "expert_cache_budget_gib": 2,
+  "concurrent_training": true,
+  "throughput_remeasured": false,
+  "performance_evidence": "Completed isolated candidate-source controls and combined P32/P128/P512 cases; final changes only flag defaults and a size comment."
+}

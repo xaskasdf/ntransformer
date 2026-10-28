@@ -1,0 +1,48 @@
+cpu-cross-binary 0 1.37
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+waiting for pipeline/GPU locks
+trace-baseline 0 18.39
+serial1 0 20.55
+batched1 0 19.81
+batched2 0 20.25
+serial2 0 20.45
+trace-batched 0 17.44
+previous 0 14.79
+real-state 0 17.64

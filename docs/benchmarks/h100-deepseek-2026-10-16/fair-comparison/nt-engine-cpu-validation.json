@@ -1,0 +1,6 @@
+{
+  "cache_sanitizers": "ASan+UBSan passed",
+  "replay_independent_lru": true,
+  "replay_scan_retention": true,
+  "replay_truncation_rejected": true
+}

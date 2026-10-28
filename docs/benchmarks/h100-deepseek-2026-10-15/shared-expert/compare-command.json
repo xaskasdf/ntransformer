@@ -1,0 +1,25 @@
+{
+  "command": [
+    "/home/ubuntu/brandon-mini/.venv/bin/python",
+    "/home/ubuntu/ntransformer-h100/ds41-shared-20261015/compare.py"
+  ],
+  "returncode": 0,
+  "seconds": 0.31412928699865006,
+  "environment": {
+    "CUDA_VISIBLE_DEVICES": "1",
+    "DS41_GPU": "1",
+    "DS41_GPU_ATTN": "1",
+    "DS41_VRAM_GB": "62",
+    "DS41_PROFILE": "1",
+    "DS41_GPU_TIMING": "1",
+    "LD_LIBRARY_PATH": "/home/ubuntu/ntransformer-h100/env/targets/x86_64-linux/lib:/home/ubuntu/ntransformer-h100/env/lib"
+  },
+  "resources": {
+    "ru_utime": 14.402916000000005,
+    "ru_stime": 0.04017799999996896,
+    "ru_majflt": 49,
+    "ru_minflt": 18423,
+    "ru_nvcsw": 37,
+    "ru_nivcsw": 115
+  }
+}

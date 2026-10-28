@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/home/ubuntu/ntransformer-h100/ds41-moe-pipeline-20261015/validate_small.py", line 62, in <module>
+    try: main()
+         ^^^^^^
+  File "/home/ubuntu/ntransformer-h100/ds41-moe-pipeline-20261015/validate_small.py", line 26, in main
+    assert expected == (ROOT/'source/src/model/ds41/ds41_gpu.cu').read_text()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

@@ -1,0 +1,226 @@
+--- a/src/model/ds41/ds41_forward.cpp
++++ b/src/model/ds41/ds41_forward.cpp
+@@ -252,52 +252,8 @@
+         post_[h] = 2.0f * sigmoid_f(mixes_[hc + h] * scale[1] + base[hc + h]);
+     }
+ 
+-    // comb matrix [dst][src]
+-    float m2[64];
+-    NT_CHECK(hc * hc <= 64, "hc comb too large");
+-    for (int dst = 0; dst < hc; dst++) {
+-        for (int src = 0; src < hc; src++) {
+-            m2[dst * hc + src] = mixes_[2 * hc + dst + src * hc] * scale[2] + base[2 * hc + dst + src * hc];
+-        }
+-    }
+-
+-    // sinkhorn: softmax over dst (per src), add eps, then alternating normalization
+-    for (int src = 0; src < hc; src++) {
+-        float mx = -std::numeric_limits<float>::infinity();
+-        for (int dst = 0; dst < hc; dst++) mx = std::max(mx, m2[dst * hc + src]);
+-        float sum = 0.0f;
+-        for (int dst = 0; dst < hc; dst++) {
+-            m2[dst * hc + src] = expf(m2[dst * hc + src] - mx);
+-            sum += m2[dst * hc + src];
+-        }
+-        for (int dst = 0; dst < hc; dst++) m2[dst * hc + src] /= sum;
+-    }
+-    for (int i = 0; i < hc * hc; i++) m2[i] += eps;
+-
+-    auto norm_cols = [&]() {  // divide by sum over src (per dst)
+-        for (int dst = 0; dst < hc; dst++) {
+-            float s = 0.0f;
+-            for (int src = 0; src < hc; src++) s += m2[dst * hc + src];
+-            s += eps;
+-            for (int src = 0; src < hc; src++) m2[dst * hc + src] /= s;
+-        }
+-    };
+-    auto norm_rows = [&]() {  // divide by sum over dst (per src)
+-        for (int src = 0; src < hc; src++) {
+-            float s = 0.0f;
+-            for (int dst = 0; dst < hc; dst++) s += m2[dst * hc + src];
+-            s += eps;
+-            for (int dst = 0; dst < hc; dst++) m2[dst * hc + src] /= s;
+-        }
+-    };
+-
+-    norm_cols();
+-    for (int i = 1; i < cfg_.hc_sinkhorn_iters; i++) {
+-        norm_rows();
+-        norm_cols();
+-    }
+-
+-    memcpy(comb_.data(), m2, sizeof(float) * hc * hc);
++    detail::hc_sinkhorn(mixes_.data() + 2 * hc, base + 2 * hc, scale[2],
++                        comb_.data(), hc, eps, cfg_.hc_sinkhorn_iters);
+     dbg_stage("hc_pre-" + std::to_string(il), pre_.data(), hc);
+     dbg_stage("hc_post-" + std::to_string(il), post_.data(), hc);
+     dbg_stage("hc_comb-" + std::to_string(il), comb_.data(), hc * hc);
+--- a/src/model/ds41/ds41_hc.h
++++ b/src/model/ds41/ds41_hc.h
+@@ -1,8 +1,58 @@
+ #pragma once
+ 
+ #include "ds41_model.h"
++#include <algorithm>
++#include <cmath>
++#include <limits>
+ 
+ namespace nt::ds41::detail {
++
++// Input and output follow GGUF/ggml's [dst, src] layout: dst varies fastest.
++// The temporary uses rows indexed by dst to preserve the reduction order.
++inline void hc_sinkhorn(const float* logits, const float* base, float scale,
++                        float* comb, int hc, float eps, int iterations) {
++    NT_CHECK(hc > 0 && hc <= 8 && iterations >= 1, "invalid HC Sinkhorn dimensions");
++    float matrix[64];
++    for (int dst = 0; dst < hc; ++dst) {
++        for (int src = 0; src < hc; ++src) {
++            matrix[dst * hc + src] = logits[dst + src * hc] * scale + base[dst + src * hc];
++        }
++    }
++    for (int src = 0; src < hc; ++src) {
++        float maximum = -std::numeric_limits<float>::infinity();
++        for (int dst = 0; dst < hc; ++dst) maximum = std::max(maximum, matrix[dst * hc + src]);
++        float sum = 0.0f;
++        for (int dst = 0; dst < hc; ++dst) {
++            matrix[dst * hc + src] = expf(matrix[dst * hc + src] - maximum);
++            sum += matrix[dst * hc + src];
++        }
++        for (int dst = 0; dst < hc; ++dst) matrix[dst * hc + src] /= sum;
++    }
++    for (int i = 0; i < hc * hc; ++i) matrix[i] += eps;
++    auto norm_cols = [&]() {
++        for (int dst = 0; dst < hc; ++dst) {
++            float sum = 0.0f;
++            for (int src = 0; src < hc; ++src) sum += matrix[dst * hc + src];
++            sum += eps;
++            for (int src = 0; src < hc; ++src) matrix[dst * hc + src] /= sum;
++        }
++    };
++    auto norm_rows = [&]() {
++        for (int src = 0; src < hc; ++src) {
++            float sum = 0.0f;
++            for (int dst = 0; dst < hc; ++dst) sum += matrix[dst * hc + src];
++            sum += eps;
++            for (int dst = 0; dst < hc; ++dst) matrix[dst * hc + src] /= sum;
++        }
++    };
++    norm_cols();
++    for (int i = 1; i < iterations; ++i) { norm_rows(); norm_cols(); }
++    // Export dst-fast storage for hc_post_mix. A flat copy would transpose
++    // the directed residual connections, while preserving row/column sums.
++    for (int dst = 0; dst < hc; ++dst)
++        for (int src = 0; src < hc; ++src)
++            comb[dst + src * hc] = matrix[dst * hc + src];
++}
+ 
+ // Small, elementwise hyper-connection operations. The direct path avoids a
+ // pool dispatch for only hc or hc*(hc+1) products per hidden coordinate.
+--- a/tests/test_ds41_hc.cpp
++++ b/tests/test_ds41_hc.cpp
+@@ -10,6 +10,88 @@
+ #include <vector>
+ 
+ using namespace nt::ds41;
++
++static void check_sinkhorn_layout() {
++    // A non-symmetric doubly stochastic matrix is unchanged by Sinkhorn
++    // (eps=0). Basis-vector residuals expose a producer/consumer transpose;
++    // checking only row/column sums or direct-vs-pool equivalence cannot.
++    const float expected[4][4] = {
++        {0.4f, 0.3f, 0.2f, 0.1f},
++        {0.1f, 0.4f, 0.3f, 0.2f},
++        {0.2f, 0.1f, 0.4f, 0.3f},
++        {0.3f, 0.2f, 0.1f, 0.4f},
++    };
++    float logits[16], base[16] = {}, comb[16], residual[16] = {};
++    float branch[4] = {}, post[4] = {}, out[16];
++    for (int dst = 0; dst < 4; ++dst)
++        for (int src = 0; src < 4; ++src)
++            logits[dst + src * 4] = logf(expected[dst][src]);
++    for (int src = 0; src < 4; ++src) residual[src + src * 4] = 1.0f;
++    for (int iterations : {1, 20}) {
++        detail::hc_sinkhorn(logits, base, 1.0f, comb, 4, 0.0f, iterations);
++        for (bool direct : {false, true}) {
++            detail::hc_post_mix(branch, residual, post, comb, out, 4, 4, direct, 4);
++            for (int dst = 0; dst < 4; ++dst) {
++                for (int src = 0; src < 4; ++src) {
++                    if (std::abs(comb[dst + src * 4] - expected[dst][src]) > 2e-6f ||
++                        std::abs(out[src + dst * 4] - expected[dst][src]) > 2e-6f)
++                        throw std::runtime_error("HC Sinkhorn producer/consumer transposes destination and source");
++                }
++            }
++        }
++    }
++}
++
++static void check_sinkhorn_reference() {
++    // Independent double-precision [dst][src] oracle, including nonuniform
++    // logits, affine scales, finite epsilon and the production iteration count.
++    for (int hc : {1, 2, 4, 8}) {
++        for (int iterations : {1, 3, 20}) {
++            for (float eps : {0.0f, 1e-6f, 1e-3f}) {
++                std::vector<float> logits(hc * hc), base(hc * hc), result(hc * hc + 2, 123.0f);
++                std::vector<std::vector<double>> ref(hc, std::vector<double>(hc));
++                for (int dst = 0; dst < hc; ++dst) {
++                    for (int src = 0; src < hc; ++src) {
++                        int i = dst + src * hc;
++                        logits[i] = float((i * 13 + dst * 7) % 29 - 14) / 5.0f;
++                        base[i] = float((i * 3 + src * 11) % 19 - 9) / 7.0f;
++                        ref[dst][src] = double(logits[i]) * 0.375 + base[i];
++                    }
++                }
++                for (int src = 0; src < hc; ++src) {
++                    double maximum = ref[0][src], sum = 0;
++                    for (int dst = 1; dst < hc; ++dst) maximum = std::max(maximum, ref[dst][src]);
++                    for (int dst = 0; dst < hc; ++dst) sum += ref[dst][src] = std::exp(ref[dst][src] - maximum);
++                    for (int dst = 0; dst < hc; ++dst) ref[dst][src] = ref[dst][src] / sum + eps;
++                }
++                for (int iteration = 0; iteration < iterations; ++iteration) {
++                    if (iteration) {
++                        for (int src = 0; src < hc; ++src) {
++                            double sum = eps;
++                            for (int dst = 0; dst < hc; ++dst) sum += ref[dst][src];
++                            for (int dst = 0; dst < hc; ++dst) ref[dst][src] /= sum;
++                        }
++                    }
++                    for (int dst = 0; dst < hc; ++dst) {
++                        double sum = eps;
++                        for (int src = 0; src < hc; ++src) sum += ref[dst][src];
++                        for (int src = 0; src < hc; ++src) ref[dst][src] /= sum;
++                    }
++                }
++                detail::hc_sinkhorn(logits.data(), base.data(), 0.375f, result.data() + 1, hc, eps, iterations);
++                if (result.front() != 123.0f || result.back() != 123.0f)
++                    throw std::runtime_error("HC Sinkhorn output guard overwritten");
++                for (int dst = 0; dst < hc; ++dst) {
++                    for (int src = 0; src < hc; ++src) {
++                        float actual = result[1 + dst + src * hc];
++                        if (!std::isfinite(actual) || std::abs(actual - ref[dst][src]) > 2e-6)
++                            throw std::runtime_error("HC Sinkhorn differs from directed double-precision reference");
++                    }
++                }
++            }
++        }
++    }
++}
+ 
+ static void equal(const std::vector<float>& a, const std::vector<float>& b) {
+     for (size_t i = 0; i < a.size(); i++) {
+@@ -86,13 +168,15 @@
+         if (argc == 2 && std::string(argv[1]) == "--benchmark") {
+             check(5120, 4, 0, true);
+         } else if (argc == 1) {
++            check_sinkhorn_layout();
++            check_sinkhorn_reference();
+             for (int hidden : {0, 1, 31, 65, 256, 5120, 8193})
+                 for (int hc : {1, 2, 4, 8})
+                     for (int pattern = 0; pattern < 3; pattern++) check(hidden, hc, pattern, false);
+         } else {
+             throw std::runtime_error("usage: test_ds41_hc [--benchmark]");
+         }
+-        std::puts("PASS HC direct/pool/scalar bitwise equality and output guards");
++        std::puts("PASS HC Sinkhorn layout/reference, direct/pool/scalar bitwise equality and output guards");
+         return 0;
+     } catch (const std::exception& e) { std::fprintf(stderr, "FAIL %s\n", e.what()); return 1; }
+ }

@@ -1,0 +1,66 @@
+{
+  "gpu": "index, uuid, name, driver_version, memory.total [MiB]\n0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 580.178.04, 81559 MiB\n1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 580.178.04, 81559 MiB\n",
+  "cpu": "Architecture:                         x86_64\nCPU op-mode(s):                       32-bit, 64-bit\nAddress sizes:                        52 bits physical, 57 bits virtual\nByte Order:                           Little Endian\nCPU(s):                               52\nOn-line CPU(s) list:                  0-51\nVendor ID:                            GenuineIntel\nModel name:                           Intel(R) Xeon(R) Platinum 8480+\nCPU family:                           6\nModel:                                143\nThread(s) per core:                   2\nCore(s) per socket:                   26\nSocket(s):                            1\nStepping:                             8\nBogoMIPS:                             4000.00\nFlags:                                fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon rep_good nopl xtopology cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch cpuid_fault invpcid_single ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx_vnni avx512_bf16 wbnoinvd arat avx512vbmi umip pku ospke waitpkg avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq la57 rdpid bus_lock_detect cldemote movdiri movdir64b fsrm md_clear serialize tsxldtrk avx512_fp16 arch_capabilities\nVirtualization:                       VT-x\nHypervisor vendor:                    KVM\nVirtualization type:                  full\nL1d cache:                            1.6 MiB (52 instances)\nL1i cache:                            1.6 MiB (52 instances)\nL2 cache:                             104 MiB (26 instances)\nL3 cache:                             16 MiB (1 instance)\nNUMA node(s):                         1\nNUMA node0 CPU(s):                    0-51\nVulnerability Gather data sampling:   Not affected\nVulnerability Itlb multihit:          Not affected\nVulnerability L1tf:                   Not affected\nVulnerability Mds:                    Not affected\nVulnerability Meltdown:               Not affected\nVulnerability Mmio stale data:        Unknown: No mitigations\nVulnerability Reg file data sampling: Not affected\nVulnerability Retbleed:               Not affected\nVulnerability Spec rstack overflow:   Not affected\nVulnerability Spec store bypass:      Mitigation; Speculative Store Bypass disabled via prctl and seccomp\nVulnerability Spectre v1:             Mitigation; usercopy/swapgs barriers and __user pointer sanitization\nVulnerability Spectre v2:             Mitigation; Enhanced / Automatic IBRS; IBPB conditional; RSB filling; PBRSB-eIBRS SW sequence; BHI SW loop, KVM SW loop\nVulnerability Srbds:                  Not affected\nVulnerability Tsx async abort:        Mitigation; TSX disabled\n",
+  "memory": "               total        used        free      shared  buff/cache   available\nMem:     475296235520  1370300416 67389906944     5468160 406536028160 469881237504\nSwap:              0           0           0\n",
+  "topology": "\t\u001b[4mGPU0\tGPU1\tCPU Affinity\tNUMA Affinity\tGPU NUMA ID\u001b[0m\nGPU0\t X \tNV18\t0-51\t0\t\tN/A\nGPU1\tNV18\t X \t0-51\t0\t\tN/A\n\nLegend:\n\n  X    = Self\n  SYS  = Connection traversing PCIe as well as the SMP interconnect between NUMA nodes (e.g., QPI/UPI)\n  NODE = Connection traversing PCIe as well as the interconnect between PCIe Host Bridges within a NUMA node\n  PHB  = Connection traversing PCIe as well as a PCIe Host Bridge (typically the CPU)\n  PXB  = Connection traversing multiple PCIe bridges (without traversing the PCIe Host Bridge)\n  PIX  = Connection traversing at most a single PCIe bridge\n  NV#  = Connection traversing a bonded set of # NVLinks\n",
+  "compiler": "x86_64-conda-linux-gnu-g++ (conda-forge gcc 14.4.0-7) 14.4.0\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "cuda": "nvcc: NVIDIA (R) Cuda compiler driver\nCopyright (c) 2005-2025 NVIDIA Corporation\nBuilt on Tue_Dec_16_07:23:41_PM_PST_2025\nCuda compilation tools, release 13.1, V13.1.115\nBuild cuda_13.1.r13.1/compiler.37061995_0\n",
+  "binary_sha256": "5321fd9d19dca78dc42be4887c6b7ed68b38b4cfe3161259d30a3008087ae065",
+  "library_sha256": "b07eefc14bc2ab9db8deb69280a7acd6357581b07f24b0e2e6306a60f14257a5",
+  "cli_sha256": "eca368b24fa9dfab4d884bcd55fc6460e2ecdb13b2be97f9353cadec24686ce0",
+  "source_sha256": "38b7fc088747a588a704992c7e5aea187e7c799017df9f172445cc975e2f9e99",
+  "model_shards": [
+    {
+      "name": "DeepSeek-V4.1-Flash-Q8_0-00001-of-00010.gguf",
+      "bytes": 43322444352,
+      "mtime_ns": 1792033697382001952
+    },
+    {
+      "name": "DeepSeek-V4.1-Flash-Q8_0-00002-of-00010.gguf",
+      "bytes": 43316676000,
+      "mtime_ns": 1792033689834048351
+    },
+    {
+      "name": "DeepSeek-V4.1-Flash-Q8_0-00003-of-00010.gguf",
+      "bytes": 43316676032,
+      "mtime_ns": 1792033684190082824
+    },
+    {
+      "name": "DeepSeek-V4.1-Flash-Q8_0-00004-of-00010.gguf",
+      "bytes": 43316676032,
+      "mtime_ns": 1792033718041873248
+    },
+    {
+      "name": "DeepSeek-V4.1-Flash-Q8_0-00005-of-00010.gguf",
+      "bytes": 43316676032,
+      "mtime_ns": 1792033694082022279
+    },
+    {
+      "name": "DeepSeek-V4.1-Flash-Q8_0-00006-of-00010.gguf",
+      "bytes": 43316676032,
+      "mtime_ns": 1792033684570080509
+    },
+    {
+      "name": "DeepSeek-V4.1-Flash-Q8_0-00007-of-00010.gguf",
+      "bytes": 28877784064,
+      "mtime_ns": 1792033408643564388
+    },
+    {
+      "name": "DeepSeek-V4.1-Flash-Q8_0-00008-of-00010.gguf",
+      "bytes": 104449677888,
+      "mtime_ns": 1792033326744382618
+    },
+    {
+      "name": "DeepSeek-V4.1-Flash-Q8_0-00009-of-00010.gguf",
+      "bytes": 104452537696,
+      "mtime_ns": 1792033353560114700
+    },
+    {
+      "name": "DeepSeek-V4.1-Flash-Q8_0-00010-of-00010.gguf",
+      "bytes": 10268402880,
+      "mtime_ns": 1792033003531611737
+    }
+  ],
+  "source_origin": "/home/ubuntu/ntransformer-h100/ds41-shared-20261015/source",
+  "corpus_sha256": "f6c98b968cd747705ac63821dde5ee4da10f710d1ae272daa86897afacabaef6"
+}

@@ -1,0 +1,31 @@
+{
+  "command": [
+    "cmake",
+    "--build",
+    "/home/ubuntu/ntransformer-h100/ds41-schedule-20261015/build",
+    "--target",
+    "ntransformer",
+    "test_ds41_parallel",
+    "test_ds41_prefill",
+    "-j",
+    "2"
+  ],
+  "returncode": 0,
+  "seconds": 41.669833103980636,
+  "environment": {
+    "CUDA_VISIBLE_DEVICES": "1",
+    "DS41_GPU": "1",
+    "DS41_GPU_ATTN": "1",
+    "DS41_VRAM_GB": "62",
+    "DS41_PROFILE": "1",
+    "LD_LIBRARY_PATH": "/home/ubuntu/ntransformer-h100/env/targets/x86_64-linux/lib:/home/ubuntu/ntransformer-h100/env/lib"
+  },
+  "resources": {
+    "ru_utime": 66.55162,
+    "ru_stime": 6.579567,
+    "ru_majflt": 0,
+    "ru_minflt": 3501208,
+    "ru_nvcsw": 1912,
+    "ru_nivcsw": 623
+  }
+}

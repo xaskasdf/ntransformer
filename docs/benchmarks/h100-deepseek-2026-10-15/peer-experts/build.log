@@ -1,0 +1,63 @@
+[  6%] Built target ntransformer_ds41_shared
+[  9%] Building CUDA object CMakeFiles/ntransformer_lib.dir/src/model/ds41/ds41_gpu.cu.o
+/home/ubuntu/ntransformer-h100/ds41-peer-20261015/source/src/model/ds41/ds41_gpu.cu(518): warning #177-D: function "nt::ds41::<unnamed>::ExpertCache::reset_for_slice" was declared but never referenced
+      void reset_for_slice(size_t slice_bytes, size_t cache_bytes) {
+           ^
+
+Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+
+/home/ubuntu/ntransformer-h100/ds41-peer-20261015/source/src/model/ds41/ds41_gpu.cu(518): warning #177-D: function "nt::ds41::<unnamed>::ExpertCache::reset_for_slice" was declared but never referenced
+      void reset_for_slice(size_t slice_bytes, size_t cache_bytes) {
+           ^
+
+Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+
+/home/ubuntu/ntransformer-h100/ds41-peer-20261015/source/src/model/ds41/ds41_gpu.cu(518): warning #177-D: function "nt::ds41::<unnamed>::ExpertCache::reset_for_slice" was declared but never referenced
+      void reset_for_slice(size_t slice_bytes, size_t cache_bytes) {
+           ^
+
+Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+
+/home/ubuntu/ntransformer-h100/ds41-peer-20261015/source/src/model/ds41/ds41_gpu.cu(518): warning #177-D: function "nt::ds41::<unnamed>::ExpertCache::reset_for_slice" was declared but never referenced
+      void reset_for_slice(size_t slice_bytes, size_t cache_bytes) {
+           ^
+
+Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+
+[ 12%] Linking CUDA device code CMakeFiles/ntransformer_lib.dir/cmake_device_link.o
+[ 16%] Linking CXX static library libntransformer_lib.a
+[ 93%] Built target ntransformer_lib
+[ 96%] Linking CXX executable ntransformer
+[100%] Built target ntransformer
+[  6%] Built target ntransformer_ds41_shared
+[ 93%] Built target ntransformer_lib
+[ 96%] Linking CXX executable test_ds41_mxfp4
+[100%] Built target test_ds41_mxfp4
+[  6%] Built target ntransformer_ds41_shared
+[ 93%] Built target ntransformer_lib
+[ 96%] Linking CXX executable test_ds41_attention
+[100%] Built target test_ds41_attention
+[  6%] Built target ntransformer_ds41_shared
+[ 93%] Built target ntransformer_lib
+[ 96%] Linking CXX executable test_ds41_router
+[100%] Built target test_ds41_router
+[  6%] Built target ntransformer_ds41_shared
+[ 93%] Built target ntransformer_lib
+[ 96%] Linking CXX executable test_ds41_backbone
+[100%] Built target test_ds41_backbone
+[  6%] Built target ntransformer_ds41_shared
+[ 93%] Built target ntransformer_lib
+[ 96%] Linking CXX executable test_ds41_shared
+[100%] Built target test_ds41_shared
+[  6%] Built target ntransformer_ds41_shared
+[ 93%] Built target ntransformer_lib
+[ 96%] Linking CXX executable test_ds41_moe_overlap
+[100%] Built target test_ds41_moe_overlap
+[  6%] Built target ntransformer_ds41_shared
+[ 93%] Built target ntransformer_lib
+[ 96%] Linking CXX executable test_ds41_prefill
+[100%] Built target test_ds41_prefill
+[  6%] Built target ntransformer_ds41_shared
+[ 93%] Built target ntransformer_lib
+[ 96%] Linking CXX executable test_ds41_hc
+[100%] Built target test_ds41_hc

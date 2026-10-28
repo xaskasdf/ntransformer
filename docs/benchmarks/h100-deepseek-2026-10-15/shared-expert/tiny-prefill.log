@@ -1,0 +1,96 @@
+UpdateCTestConfiguration  from :/home/ubuntu/ntransformer-h100/ds41-shared-20261015/build/DartConfiguration.tcl
+Parse Config file:/home/ubuntu/ntransformer-h100/ds41-shared-20261015/build/DartConfiguration.tcl
+Test project /home/ubuntu/ntransformer-h100/ds41-shared-20261015/build
+Constructing a list of tests
+Done constructing a list of tests
+Updating test list for fixtures
+Added 0 tests to meet fixture requirements
+Checking test dependency graph...
+Checking test dependency graph end
+test 9
+    Start 9: test_ds41_prefill
+
+9: Test command: /home/ubuntu/ntransformer-h100/ds41-shared-20261015/build/test_ds41_prefill
+9: Working Directory: /home/ubuntu/ntransformer-h100/ds41-shared-20261015/build
+9: Test timeout computed to be: 1500
+9: GGUF v3: 166 tensors, 50 metadata entries
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: [attn] gpu prologue failed at layer 0, falling back to CPU
+9: MODEL layers=6 vocab=320 prompt=18 window=16 topk=4 gpu_head=0
+9: PASS schedule=last prompt=18 continuation=4 exact=1 reset=1
+9: PASS schedule=mixed prompt=18 continuation=4 exact=1 reset=1
+9: PASS DS41 prefill state and logits
+1/1 Test #9: test_ds41_prefill ................   Passed    2.00 sec
+
+The following tests passed:
+	test_ds41_prefill
+
+100% tests passed out of 1
+
+Total Test time (real) =   2.00 sec

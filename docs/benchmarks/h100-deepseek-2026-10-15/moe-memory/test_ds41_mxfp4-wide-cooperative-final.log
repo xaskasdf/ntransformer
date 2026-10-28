@@ -1,0 +1,2 @@
+ds41-gpu: expert cache on NVIDIA H100 80GB HBM3: 3420 slots x 0.60 MiB = 2.0 GiB
+PASS MXFP4 rows=513 cols=2304 values=4617 max_abs=1.33832255e-05; cold/hit, partial CTA/tile, word alignment fallback

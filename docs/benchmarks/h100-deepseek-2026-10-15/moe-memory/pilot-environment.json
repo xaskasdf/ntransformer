@@ -1,0 +1,6 @@
+{
+  "base": "/home/ubuntu/ntransformer-h100/ds41-attention-20261015",
+  "binary_sha256": "554e70b911f3e8b098dfb08419d474ee270693f15e6012b39c88ef8c101c6ae2",
+  "harness_sha256": "3f973885e73bbdfdd5ddc40c7f7ce1aa9bd67ceb02fd09db4c8919f886fa6e4c",
+  "library_sha256": "4ff1fe1f1772f31b070459bd3ce35e07e1ded2717c886474ad690050a1faf6c4"
+}

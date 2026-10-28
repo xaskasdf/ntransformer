@@ -1,0 +1,26 @@
+{
+  "libggml-base.so.0": {
+    "original_file": "libggml-base.so.0.23.0",
+    "sha256": "166f33f04e8d5c517dc5be2cf5847e9d9df8fb16889f67c77ae7c7f0d670a146"
+  },
+  "libggml-cpu.so.0": {
+    "original_file": "libggml-cpu.so.0.23.0",
+    "sha256": "32977b485cc147795df272639bc6ae90d06c67cd60eb3ab2c8f487593be447be"
+  },
+  "libggml-cuda.so.0": {
+    "original_file": "libggml-cuda.so.0.23.0",
+    "sha256": "2ea487c9ef67f95df36dcdfb0eb3efdf5f68830cfef3bc12d5287a90277c14f9"
+  },
+  "libggml.so.0": {
+    "original_file": "libggml.so.0.23.0",
+    "sha256": "85cd186a8592bdec446f499ff03e303413d13cb77de3aa56cc017aa105c320ed"
+  },
+  "libllama-common.so.0": {
+    "original_file": "libllama-common.so.0.4.0",
+    "sha256": "f859732606991ddaa4c9281c24d14493ff862bd367e8b9cd0091cfb0ff846f8c"
+  },
+  "libllama.so.0": {
+    "original_file": "libllama.so.0.4.0",
+    "sha256": "87b6d63754309dbb3dd910e456a54e2e3ea9b9dd590576a0773c94f1c1739806"
+  }
+}

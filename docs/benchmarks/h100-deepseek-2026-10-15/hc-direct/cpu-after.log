@@ -1,0 +1,190 @@
+GGUF v3: 166 tensors, 50 metadata entries
+Loading DeepSeek-V4.1 model: /home/ubuntu/tiny-deepseek41.gguf
+GGUF v3: 166 tensors, 50 metadata entries
+deepseek41: 6 layers, hidden 256, heads 4, head_dim 128, experts 2/4, engram layers 1, hc 4
+Tokenizer: 320 tokens, 0 merges, BOS=1, EOS=2, pre=default, encoding=SentencePiece
+prompt: 18 tokens
+[attn] gpu prologue failed at layer 0, falling back to CPU
+[attn] gpu prologue failed at layer 0, falling back to CPU
+[attn] gpu prologue failed at layer 0, falling back to CPU
+[attn] gpu prologue failed at layer 0, falling back to CPU
+[attn] gpu prologue failed at layer 0, falling back to CPU
+[attn] gpu prologue failed at layer 0, falling back to CPU
+[attn] gpu prologue failed at layer 0, falling back to CPU
+[attn] gpu prologue failed at layer 0, falling back to CPU
+[attn] gpu prologue failed at layer 0, falling back to CPU
+[attn] gpu prologue failed at layer 0, falling back to CPU
+[attn] gpu prologue failed at layer 0, falling back to CPU
+[attn] gpu prologue failed at layer 0, falling back to CPU
+[attn] gpu prologue failed at layer 0, falling back to CPU
+[attn] gpu prologue failed at layer 0, falling back to CPU
+[attn] gpu prologue failed at layer 0, falling back to CPU
+[attn] gpu prologue failed at layer 0, falling back to CPU
+[attn] gpu prologue failed at layer 0, falling back to CPU
+[attn] gpu prologue failed at layer 0, falling back to CPU
+[prefill] tokens=18 heads=18 mode=all seconds=0.533188220
+[prof] moe=0.25s attn=0.23s engram=0.01s hc=0.03s other=0.03s forwards=18[prof-attn] qkv=0.08s rope=0.00s comp=0.05s loop=0.02s tail=0.07s
+[prof-moe] router=0.024s routed_host=0.147s shared_cpu=0.074s gpu=0 cpu=108 overlapped=0
+[stage] attn_derope-0 sum=2.672096
+[stage] attn_derope-1 sum=-4.450156
+[stage] attn_derope-2 sum=-11.944126
+[stage] attn_derope-3 sum=-12.051523
+[stage] attn_derope-4 sum=10.563642
+[stage] attn_derope-5 sum=-7.733397
+[stage] attn_norm-0 sum=-4.405441
+[stage] attn_norm-1 sum=1.898374
+[stage] attn_norm-2 sum=4.852873
+[stage] attn_norm-3 sum=-0.277477
+[stage] attn_norm-4 sum=0.731235
+[stage] attn_norm-5 sum=10.752806
+[stage] attn_out-0 sum=-1.308140
+[stage] attn_out-1 sum=-1.894905
+[stage] attn_out-2 sum=3.243007
+[stage] attn_out-3 sum=0.501022
+[stage] attn_out-4 sum=-2.512221
+[stage] attn_out-5 sum=0.907328
+[stage] attn_out_raw-0 sum=7.459355
+[stage] attn_out_raw-1 sum=-4.146874
+[stage] attn_out_raw-2 sum=-9.251781
+[stage] attn_out_raw-3 sum=-7.553462
+[stage] attn_out_raw-4 sum=16.011046
+[stage] attn_out_raw-5 sum=-8.858710
+[stage] attn_wo_a-0 sum=-0.998526
+[stage] attn_wo_a-1 sum=4.181992
+[stage] attn_wo_a-2 sum=3.602416
+[stage] attn_wo_a-3 sum=3.116943
+[stage] attn_wo_a-4 sum=2.658891
+[stage] attn_wo_a-5 sum=3.510409
+[stage] comp_kv-2 sum=-2.104824
+[stage] comp_kv-4 sum=-7.281037
+[stage] engram_embd-1 sum=8.486162
+[stage] engram_gate-1 sum=36.108038
+[stage] engram_kv-1 sum=-4.436738
+[stage] engram_out-1 sum=-11.998731
+[stage] ffn_moe_logits-0 sum=-0.340742
+[stage] ffn_moe_logits-1 sum=0.106200
+[stage] ffn_moe_logits-2 sum=0.391835
+[stage] ffn_moe_logits-3 sum=0.112241
+[stage] ffn_moe_logits-4 sum=0.711433
+[stage] ffn_moe_logits-5 sum=0.170952
+[stage] ffn_moe_out-0 sum=0.018239
+[stage] ffn_moe_out-1 sum=0.031382
+[stage] ffn_moe_out-2 sum=0.007750
+[stage] ffn_moe_out-3 sum=0.005063
+[stage] ffn_moe_out-4 sum=-0.052161
+[stage] ffn_moe_out-5 sum=0.014109
+[stage] ffn_moe_probs-0 sum=59.843864
+[stage] ffn_moe_probs-1 sum=59.977701
+[stage] ffn_moe_probs-2 sum=60.063761
+[stage] ffn_moe_probs-3 sum=59.979385
+[stage] ffn_moe_probs-4 sum=60.159537
+[stage] ffn_moe_probs-5 sum=59.997813
+[stage] ffn_moe_weights-0 sum=18.000000
+[stage] ffn_moe_weights-1 sum=18.000000
+[stage] ffn_moe_weights-2 sum=18.000000
+[stage] ffn_moe_weights-3 sum=18.000000
+[stage] ffn_moe_weights-4 sum=18.000000
+[stage] ffn_moe_weights-5 sum=18.000000
+[stage] ffn_norm-0 sum=-2.571775
+[stage] ffn_norm-1 sum=3.268844
+[stage] ffn_norm-2 sum=8.339366
+[stage] ffn_norm-3 sum=-11.226747
+[stage] ffn_norm-4 sum=-4.299973
+[stage] ffn_norm-5 sum=1.080969
+[stage] ffn_out-0 sum=0.021330
+[stage] ffn_out-1 sum=0.117121
+[stage] ffn_out-2 sum=-0.018169
+[stage] ffn_out-3 sum=0.014098
+[stage] ffn_out-4 sum=0.005725
+[stage] ffn_out-5 sum=0.048580
+[stage] ffn_shexp-0 sum=0.003092
+[stage] ffn_shexp-1 sum=0.085739
+[stage] ffn_shexp-2 sum=-0.025919
+[stage] ffn_shexp-3 sum=0.009035
+[stage] ffn_shexp-4 sum=0.057886
+[stage] ffn_shexp-5 sum=0.034471
+[stage] hc_attn_post-0 sum=-3.496430
+[stage] hc_attn_post-1 sum=-19.570597
+[stage] hc_attn_post-2 sum=-6.327599
+[stage] hc_attn_post-3 sum=-4.400534
+[stage] hc_attn_post-4 sum=-14.432670
+[stage] hc_attn_post-5 sum=-10.799743
+[stage] hc_attn_pre-0 sum=0.420424
+[stage] hc_attn_pre-1 sum=-5.794129
+[stage] hc_attn_pre-2 sum=-10.219854
+[stage] hc_attn_pre-3 sum=-3.113560
+[stage] hc_attn_pre-4 sum=-2.170456
+[stage] hc_attn_pre-5 sum=-7.094393
+[stage] hc_comb-0 sum=143.999858
+[stage] hc_comb-1 sum=143.999857
+[stage] hc_comb-2 sum=143.999859
+[stage] hc_comb-3 sum=143.999859
+[stage] hc_comb-4 sum=143.999858
+[stage] hc_comb-5 sum=143.999859
+[stage] hc_ffn_pre-0 sum=-1.978778
+[stage] hc_ffn_pre-1 sum=-9.729809
+[stage] hc_ffn_pre-2 sum=-3.886511
+[stage] hc_ffn_pre-3 sum=-2.224717
+[stage] hc_ffn_pre-4 sum=-7.121442
+[stage] hc_ffn_pre-5 sum=-5.256706
+[stage] hc_init sum=1.681696
+[stage] hc_mixes-0 sum=3.125904
+[stage] hc_mixes-1 sum=-53.191682
+[stage] hc_mixes-2 sum=-47.284414
+[stage] hc_mixes-3 sum=-17.828525
+[stage] hc_mixes-4 sum=109.390920
+[stage] hc_mixes-5 sum=28.775155
+[stage] hc_out sum=-5.036847
+[stage] hc_post-0 sum=144.253838
+[stage] hc_post-1 sum=144.140191
+[stage] hc_post-2 sum=140.994050
+[stage] hc_post-3 sum=143.103105
+[stage] hc_post-4 sum=144.118171
+[stage] hc_post-5 sum=141.278216
+[stage] hc_pre-0 sum=72.093671
+[stage] hc_pre-1 sum=73.083846
+[stage] hc_pre-2 sum=72.106729
+[stage] hc_pre-3 sum=71.467057
+[stage] hc_pre-4 sum=70.252024
+[stage] hc_pre-5 sum=72.188798
+[stage] idx_k_new-2 sum=3.601687
+[stage] idx_k_new-4 sum=0.286913
+[stage] idx_weights-2 sum=0.008086
+[stage] idx_weights-4 sum=-0.021023
+[stage] idx_weights-5 sum=0.005165
+[stage] kv-0 sum=2.426996
+[stage] kv-1 sum=-1.539131
+[stage] kv-2 sum=-1.769528
+[stage] kv-3 sum=0.878973
+[stage] kv-4 sum=9.539761
+[stage] kv-5 sum=1.648526
+[stage] l_last-0 sum=-3.407194
+[stage] l_last-1 sum=-19.100687
+[stage] l_last-2 sum=-6.398126
+[stage] l_last-3 sum=-4.345522
+[stage] l_last-4 sum=-14.408211
+[stage] l_last-5 sum=-10.611930
+[stage] q-0 sum=-4.579036
+[stage] q-1 sum=0.053905
+[stage] q-2 sum=3.835117
+[stage] q-3 sum=-1.811609
+[stage] q-4 sum=8.421358
+[stage] q-5 sum=-3.926042
+[stage] result_norm sum=4.047751
+[stage] result_output sum=-4.014505
+wrote logits (320 floats) to /home/ubuntu/ntransformer-h100/ds41-hc-20261015/cpu-after.bin
+  top0: id=233 logit=0.107340 token=æ
+  top1: id=279 logit=0.106199 token= t20
+  top2: id=102 logit=0.092409 token=c
+  top3: id=260 logit=0.090404 token= t1
+  top4: id=53 logit=0.090359 token=2
+  top5: id=103 logit=0.087258 token=d
+  top6: id=303 logit=0.081751 token= t44
+  top7: id=91 logit=0.079722 token=X
+æ[attn] gpu prologue failed at layer 0, falling back to CPU
+Ô[attn] gpu prologue failed at layer 0, falling back to CPU
+ t21[attn] gpu prologue failed at layer 0, falling back to CPU
+ t20[attn] gpu prologue failed at layer 0, falling back to CPU
+
+generated 4 tokens
+

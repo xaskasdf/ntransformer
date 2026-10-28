@@ -1,0 +1,27 @@
+{
+  "moe-small-control.f32": {
+    "candidate": "moe-small-candidate.f32",
+    "bytes": 9216,
+    "bitwise_equal": true
+  },
+  "moe-real-control.f32": {
+    "candidate": "moe-real-candidate.f32",
+    "bytes": 184320,
+    "bitwise_equal": true
+  },
+  "moe-max-control.f32": {
+    "candidate": "moe-max-candidate.f32",
+    "bytes": 294912,
+    "bitwise_equal": true
+  },
+  "prologue-control.f32": {
+    "candidate": "prologue-candidate.f32",
+    "bytes": 4224,
+    "bitwise_equal": true
+  },
+  "shared-real-control.f32": {
+    "candidate": "shared-real-candidate.f32",
+    "bytes": 81920,
+    "bitwise_equal": true
+  }
+}

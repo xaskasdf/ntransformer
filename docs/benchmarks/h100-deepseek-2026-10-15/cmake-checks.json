@@ -1,0 +1,43 @@
+[
+  {
+    "name": "configure",
+    "command": [
+      "cmake",
+      "-S",
+      "/home/ubuntu/ntransformer-h100/ds41-audit-20261015/cmake-source",
+      "-B",
+      "/home/ubuntu/ntransformer-h100/ds41-audit-20261015/cmake-build",
+      "-DNTRANSFORMER_BUILD_NTRPU_SIM=OFF",
+      "-DCMAKE_BUILD_TYPE=Release",
+      "-DCMAKE_CXX_COMPILER=/home/ubuntu/ntransformer-h100/env/bin/x86_64-conda-linux-gnu-g++",
+      "-DCMAKE_CUDA_HOST_COMPILER=/home/ubuntu/ntransformer-h100/env/bin/x86_64-conda-linux-gnu-gcc",
+      "-DCMAKE_CUDA_COMPILER=/home/ubuntu/ntransformer-h100/env/bin/nvcc"
+    ],
+    "returncode": 0
+  },
+  {
+    "name": "cmake-build",
+    "command": [
+      "cmake",
+      "--build",
+      "/home/ubuntu/ntransformer-h100/ds41-audit-20261015/cmake-build",
+      "--target",
+      "test_ds41_backbone",
+      "-j",
+      "2"
+    ],
+    "returncode": 0
+  },
+  {
+    "name": "ctest",
+    "command": [
+      "ctest",
+      "--test-dir",
+      "/home/ubuntu/ntransformer-h100/ds41-audit-20261015/cmake-build",
+      "-V",
+      "-R",
+      "test_ds41_backbone"
+    ],
+    "returncode": 0
+  }
+]

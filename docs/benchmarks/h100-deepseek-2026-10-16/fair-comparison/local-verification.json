@@ -1,0 +1,42 @@
+{
+  "payload_files_verified": 527,
+  "archive_sha256": "1a735ca148527172f05fa30f327e9f65b544ff1c58e96d6957c9d71a5c6d94bf",
+  "archive_verified_locally": false,
+  "delivery": "unique payload download plus verified identical copies",
+  "analysis_reproduced": true,
+  "numerical_reproduction_tolerance": 1e-12,
+  "report_text_identical": true,
+  "source_snapshot_verified": true,
+  "source_support_restored_from_preparation": {
+    "nt-source/tests/__pycache__/test_training_rotary.cpython-314.pyc": "84f4708806939f813945ada49fd125f048fce11168c1b63f6e2abbeb62940583",
+    "nt-source/tests/__pycache__/test_ntrpu_primitive_congruence_r1.cpython-314.pyc": "12570529217ed1ad8dc83b24127480198eff2e96216989bcabebf557804894b6",
+    "nt-source/tests/__pycache__/test_ntrpu_matrix_layout.cpython-314.pyc": "f4dd1099758cfbeda9c520e5a0659680881df633653ccc79eb2a2c0c1e2cf985",
+    "nt-source/tests/__pycache__/test_training_queue.cpython-314.pyc": "3f1851a137cbc4ccc08171287b9a5b71bd56c0fc8ddd8547cb40b209842ae8d2",
+    "nt-source/tests/__pycache__/test_training_attention.cpython-314.pyc": "631fd6175727bed5496cc2d5dc8ffdc64220a1203440248a9343aecad7939cc2",
+    "nt-source/tests/__pycache__/test_ntrpu_pcie_vcd.cpython-314.pyc": "6c0e8d8e083c6be9272228d9216a8ec2f50c88f498ab746f0d78d51a8e3eb6ea",
+    "nt-source/tests/__pycache__/test_ntrpu_pcie_straddle.cpython-314.pyc": "2d14bf6e03606b2bde99efd98656a84d3fa1761c2ae62eb5058c85b25df18a33",
+    "nt-source/tests/__pycache__/test_training_rms_compatible.cpython-314.pyc": "3361fc5a1a7bba1cae72fa003acfb9e11f12a321d52023775f97e2a5b1487c65",
+    "nt-source/tests/__pycache__/test_ntrpu_pcie_multi_review.cpython-314.pyc": "a97be3413f2d933f02c4b4c48928d0e3747fef898245da2660307c23ed41ed75",
+    "nt-source/tests/__pycache__/test_training_ops.cpython-314.pyc": "cefef1f9759fa28bc3b799483f8eda23c6ba2cac23015e81b0e2d3c12c2b136f",
+    "nt-source/tests/__pycache__/test_training_audit.cpython-314.pyc": "5759df1bdeea17c99722afe71217f02feaeaae4987be5c013c8ac5798e5a5c10",
+    "nt-source/tests/__pycache__/test_ntrpu_activation_layout.cpython-314.pyc": "a9b2bbdcec9c793989f7ad124f490bb649521f027029227abef21a57abfd1394",
+    "nt-source/tests/__pycache__/test_training_graph_storage.cpython-314.pyc": "362ce1e29595a7e344fa8977bfbe5292f3652c383722479d90cf3f71d0029329",
+    "nt-source/tests/__pycache__/test_training_ddp.cpython-314.pyc": "520d4cf696af7575e48a6ea548d085c466be9568da5aaebe6add29112fad6205",
+    "nt-source/tests/__pycache__/test_training_loss_labels.cpython-314.pyc": "74d66aa45514f433632f8f7bb258f9823c98ef3a9d4b6e677c2c111a738fc3a9",
+    "nt-source/tests/__pycache__/test_training_projection_casts.cpython-314.pyc": "86b87e8a4bafcb706a1a6613f2ade55857887541b041d918bed1ccaac6cd904d",
+    "nt-source/tests/__pycache__/test_ntrpu_hier_edif_clock.cpython-314.pyc": "f3cb58b3d6f0d45f54b3628554a1ba4487580c9e1362c773c22a8578cebb7225",
+    "nt-source/tests/__pycache__/test_ntrpu_pcie_request_inventory.cpython-314.pyc": "64729b2454756ac6ea4c563cb525bd2e78163c919df0f901c549b83fe84ce757",
+    "nt-source/tests/__pycache__/test_ntrpu_pcie_axi_model.cpython-314.pyc": "8142c93b2abb56b2ce18be474dc3dcd2873ad6cf574dcd7556051e16c52a73a2",
+    "nt-source/tests/__pycache__/test_ntrpu_hls_runner.cpython-314.pyc": "8dacf51afd6ebdf667f2fff7e2514b04110807f788ef75b44fd13a734160f77d",
+    "nt-source/tests/__pycache__/test_training_loss.cpython-314.pyc": "dac26997d84515f7d5057d934d00aaf7968ffe131ee7335df0de24610259d290",
+    "nt-source/tests/__pycache__/test_training_gradient_buckets.cpython-314.pyc": "2dc4da40a0c8ae3136974371a99d71589532ad526da52f320c144f2e2822bb5c",
+    "nt-source/tests/__pycache__/test_ntrpu_gemv_layout.cpython-314.pyc": "51f225d41dbcf404a440ce808ca40023a8651e076631cf0739fd936862da5f9e",
+    "nt-source/tests/__pycache__/test_training_measurement.cpython-314.pyc": "f55de79914c91e5debcc430ef81699360f3c1be5cd6f20909ab33bee2824c055",
+    "nt-source/tools/__pycache__/select_ds41_precision.cpython-312.pyc": "e6af1c6dc07172cb6a63867c1388fe76571c956563369b4edf383e0f33e4a065"
+  },
+  "workspace_matches_at_collection": {
+    "benchmark_ds41.cpp": true,
+    "benchmark_llama_ds41.cpp": true,
+    "benchmark_resources.h": true
+  }
+}

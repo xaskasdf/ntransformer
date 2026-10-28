@@ -1,0 +1,7 @@
+{
+  "sha256": "397b14442aa1895c641f30b047da03d7ea9121d061e9e204d9f2cdf5ea92630c",
+  "archive": "moe-batch.tar.gz",
+  "files": 100,
+  "bytes": 17110863,
+  "persistent": "/lambda/nfs/btiny/ntransformer-training/deepseek-moe-batch-20261015"
+}

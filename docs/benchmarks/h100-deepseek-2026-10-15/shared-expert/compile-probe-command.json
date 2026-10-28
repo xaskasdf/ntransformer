@@ -1,0 +1,41 @@
+{
+  "command": [
+    "/home/ubuntu/ntransformer-h100/env/bin/x86_64-conda-linux-gnu-g++",
+    "-std=c++20",
+    "-O3",
+    "-march=native",
+    "-I/home/ubuntu/ntransformer-h100/ds41-shared-20261015/source/src",
+    "-I/home/ubuntu/ntransformer-h100/ds41-shared-20261015/source/include",
+    "/home/ubuntu/ntransformer-h100/ds41-shared-20261015/probe.cpp",
+    "/home/ubuntu/ntransformer-h100/ds41-shared-20261015/build/libntransformer_lib.a",
+    "-L/home/ubuntu/ntransformer-h100/env/lib",
+    "-L/home/ubuntu/ntransformer-h100/env/targets/x86_64-linux/lib",
+    "-lcudart",
+    "-lcudadevrt",
+    "-lcudart_static",
+    "-ldl",
+    "-lrt",
+    "-lpthread",
+    "-o",
+    "/home/ubuntu/ntransformer-h100/ds41-shared-20261015/probe"
+  ],
+  "returncode": 0,
+  "seconds": 1.0150286639982369,
+  "environment": {
+    "CUDA_VISIBLE_DEVICES": "1",
+    "DS41_GPU": "1",
+    "DS41_GPU_ATTN": "1",
+    "DS41_VRAM_GB": "62",
+    "DS41_PROFILE": "1",
+    "DS41_GPU_TIMING": "1",
+    "LD_LIBRARY_PATH": "/home/ubuntu/ntransformer-h100/env/targets/x86_64-linux/lib:/home/ubuntu/ntransformer-h100/env/lib"
+  },
+  "resources": {
+    "ru_utime": 0.89167,
+    "ru_stime": 0.09574499999999997,
+    "ru_majflt": 0,
+    "ru_minflt": 42718,
+    "ru_nvcsw": 13,
+    "ru_nivcsw": 9
+  }
+}

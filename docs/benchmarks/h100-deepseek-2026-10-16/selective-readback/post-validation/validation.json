@@ -1,0 +1,8 @@
+{
+  "passed": true,
+  "benchmark_binary_unchanged": true,
+  "library_unchanged": true,
+  "source_sha256": "03df0fc9494407ee95f1c085cfde7b4a8ae6675060cacbbc545c6769397f8c41",
+  "assertions_enabled": true,
+  "timing_scope": "All compilation and additional checks started after performance runner completed"
+}

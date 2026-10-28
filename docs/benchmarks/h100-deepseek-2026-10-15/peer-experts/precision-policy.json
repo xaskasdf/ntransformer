@@ -1,0 +1,130 @@
+{
+  "schema": 1,
+  "scope": "routed MXFP4 dot products; FP32 accumulation",
+  "selected": "fp32",
+  "limits": {
+    "mean_kl": 0.005,
+    "p99_kl": 0.05,
+    "nll_increase": 0.01,
+    "relative_l2": null,
+    "speedup": 1.03
+  },
+  "candidates": {
+    "f16": {
+      "eligible": false,
+      "reasons": [
+        "workload 0: speed improvement not established",
+        "workload 1: speed improvement not established"
+      ],
+      "geometric_speedup": 0.9827892105354985,
+      "workloads": [
+        {
+          "mean_kl": 0.0004255703922708172,
+          "p99_kl": 0.0053007478874414135,
+          "max_kl": 0.008884422435124587,
+          "reference_nll": 2.169372916898479,
+          "candidate_nll": 2.173251004440309,
+          "nll_increase": 0.003878087541829859,
+          "perplexity_ratio": 1.003885617053543,
+          "max_relative_l2": 0.06677333909805916,
+          "argmax_agreement": 0.9846153846153847,
+          "bitwise_equal": false,
+          "speedup": 0.9803134980636543,
+          "conservative_speedup": 0.9801605000120024,
+          "reference_tokens_per_second": 16.352544277225213,
+          "tokens_per_second": 16.03061988264744
+        },
+        {
+          "mean_kl": 0.001169789399452332,
+          "p99_kl": 0.008246128139637232,
+          "max_kl": 0.01464952093560836,
+          "reference_nll": 2.2443040208855547,
+          "candidate_nll": 2.236912545307948,
+          "nll_increase": -0.007391475577606925,
+          "perplexity_ratio": 0.9926357741979825,
+          "max_relative_l2": 0.0578958181499497,
+          "argmax_agreement": 1.0,
+          "bitwise_equal": false,
+          "speedup": 0.9852711752442602,
+          "conservative_speedup": 0.983932160778247,
+          "reference_tokens_per_second": 15.43240092746617,
+          "tokens_per_second": 15.205099798645206
+        }
+      ]
+    },
+    "q8": {
+      "eligible": false,
+      "reasons": [
+        "workload 0: speed improvement not established",
+        "workload 1: mean_kl exceeds 0.005",
+        "workload 1: nll_increase exceeds 0.01",
+        "workload 1: speed improvement not established"
+      ],
+      "geometric_speedup": 0.984536702974649,
+      "workloads": [
+        {
+          "mean_kl": 0.00477306389489767,
+          "p99_kl": 0.039696033592438604,
+          "max_kl": 0.0667091823405782,
+          "reference_nll": 2.169372916898479,
+          "candidate_nll": 2.1479569566583754,
+          "nll_increase": -0.021415960240103785,
+          "perplexity_ratio": 0.9788117331157614,
+          "max_relative_l2": 0.3198011573840791,
+          "argmax_agreement": 0.9692307692307692,
+          "bitwise_equal": false,
+          "speedup": 0.9829057693397247,
+          "conservative_speedup": 0.9818961567550085,
+          "reference_tokens_per_second": 16.352544277225213,
+          "tokens_per_second": 16.073010113467962
+        },
+        {
+          "mean_kl": 0.005000135434319257,
+          "p99_kl": 0.021195057808811354,
+          "max_kl": 0.026922410359705655,
+          "reference_nll": 2.2443040208855547,
+          "candidate_nll": 2.2548770575881942,
+          "nll_increase": 0.010573036702639392,
+          "perplexity_ratio": 1.0106291287687188,
+          "max_relative_l2": 0.22941844755775923,
+          "argmax_agreement": 1.0,
+          "bitwise_equal": false,
+          "speedup": 0.9861703428145875,
+          "conservative_speedup": 0.9855575927605307,
+          "reference_tokens_per_second": 15.43240092746617,
+          "tokens_per_second": 15.218976113091474
+        }
+      ]
+    }
+  },
+  "evidence": [
+    {
+      "context": 32,
+      "prompt_sha256": "019a859ae5626ee44d099898fdcecd7fbc3aeccc2236a16092aad4f03989dcfd",
+      "target_sha256": "65794138b92be82dfae83c6be43d64610dc273ce4edf1b49284318cb6f26b8cf"
+    },
+    {
+      "context": 128,
+      "prompt_sha256": "95147a95bbe9a573823ff5f3f12ed2b3f3683828f8b9a2b8d6ee7067e88a3b8e",
+      "target_sha256": "e54de3147527c51c876b8bee76f6e6a21588852d5a739f11d2b341598609c58e"
+    }
+  ],
+  "environment": {
+    "CUDA_VISIBLE_DEVICES": "1,0",
+    "LD_LIBRARY_PATH": "/home/ubuntu/ntransformer-h100/env/targets/x86_64-linux/lib:/home/ubuntu/ntransformer-h100/env/lib",
+    "DS41_GPU": "1",
+    "DS41_GPU_ATTN": "1",
+    "DS41_PROFILE": "1",
+    "DS41_VRAM_GB": "62",
+    "DS41_PEER_VRAM_GB": "62",
+    "DS41_BENCH_ALL_LOGITS": "1",
+    "DS41_BENCH_TEACHER_FORCING": "1",
+    "DS41_PEER_MODE": "execute",
+    "DS41_MXFP4_COMPUTE": "fp32"
+  },
+  "binary_sha256": "57ea3cc53d8d529170641ffffd9c567d5323b3749483d01a4310cd5306fd7c11",
+  "gpu": "index, uuid, name, driver_version, memory.total [MiB]\n0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 580.178.04, 81559 MiB\n1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 580.178.04, 81559 MiB\n",
+  "model": "/home/ubuntu/ntransformer-h100/models/deepseek-v41-flash-q8/DeepSeek-V4.1-Flash-Q8_0-00001-of-00010.gguf",
+  "corpus_sha256": "f6c98b968cd747705ac63821dde5ee4da10f710d1ae272daa86897afacabaef6",
+  "assurance": "local numerical calibration; task quality and broader corpora remain separate evaluations"
+}

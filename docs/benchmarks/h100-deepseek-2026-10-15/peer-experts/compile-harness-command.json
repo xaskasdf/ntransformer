@@ -1,0 +1,37 @@
+{
+  "command": [
+    "/home/ubuntu/ntransformer-h100/env/bin/x86_64-conda-linux-gnu-g++",
+    "-std=c++20",
+    "-O3",
+    "-march=native",
+    "-I/home/ubuntu/ntransformer-h100/ds41-peer-20261015/source/src",
+    "-I/home/ubuntu/ntransformer-h100/ds41-peer-20261015/source/include",
+    "/home/ubuntu/ntransformer-h100/ds41-peer-20261015/benchmark_ds41.cpp",
+    "/home/ubuntu/ntransformer-h100/ds41-peer-20261015/build/libntransformer_lib.a",
+    "-L/home/ubuntu/ntransformer-h100/env/lib",
+    "-L/home/ubuntu/ntransformer-h100/env/targets/x86_64-linux/lib",
+    "-lcudart",
+    "-lcudadevrt",
+    "-lcudart_static",
+    "-ldl",
+    "-lrt",
+    "-lpthread",
+    "-o",
+    "/home/ubuntu/ntransformer-h100/ds41-peer-20261015/bench"
+  ],
+  "returncode": 0,
+  "utc_start": "2026-10-15T23:19:34.974365+00:00",
+  "wall_seconds": 2.2668188409879804,
+  "process_group": 1409652,
+  "environment": {
+    "CUDA_VISIBLE_DEVICES": "1,0",
+    "LD_LIBRARY_PATH": "/home/ubuntu/ntransformer-h100/env/targets/x86_64-linux/lib:/home/ubuntu/ntransformer-h100/env/lib",
+    "DS41_GPU": "1",
+    "DS41_GPU_ATTN": "1",
+    "DS41_PROFILE": "1",
+    "DS41_VRAM_GB": "62",
+    "DS41_PEER_VRAM_GB": "62",
+    "DS41_BENCH_ALL_LOGITS": "1",
+    "DS41_BENCH_TEACHER_FORCING": "1"
+  }
+}

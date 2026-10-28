@@ -1,0 +1,3 @@
+Transformer inference is a sequence of dependent computations. A request begins with a prompt, and the model processes its tokens to construct attention state. Once this preparation is complete, it predicts a new token, appends that token to the history, and repeats the process. The time to the first token and the time between later tokens describe different parts of the user experience.
+
+An inference engine must place weights, activations, and cached attention data somewhere in the memory hierarchy. Some values remain on the accelerator, while others move from system memory when they are needed. A mixture of experts selects a small subset of its expert networks for each token. Keeping

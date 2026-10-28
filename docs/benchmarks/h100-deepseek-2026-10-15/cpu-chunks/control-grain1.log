@@ -1,0 +1,13 @@
+GGUF v3: 18 tensors, 68 metadata entries
+Loaded 10 split shards, 1046 tensors total
+ds41-gpu: lm head resident (1.23 GiB)
+ds41-gpu: expert cache on NVIDIA H100 80GB HBM3: 10622 slots x 5.98 MiB = 62.0 GiB
+{"round":-1,"phase":"prefill","tokens":16,"seconds":7.322144692,"moe":3.963022231,"attention":1.509885309,"engram":0.155173756,"hc":0.485189379,"other":1.208861630,"qkv":0.546084794,"rope":0.000000000,"compression":0.059111408,"attention_loop":0.190977645,"attention_tail":0.711990169}
+ds41-gpu: expert cache: 11520 lookups, 5844 hits (50.7%), 0 evictions
+{"round":-1,"phase":"decode","tokens":4,"seconds":1.295089454,"moe":0.668864565,"attention":0.177923495,"engram":0.016281773,"hc":0.121668403,"other":0.306732334,"qkv":0.053816388,"rope":0.000000000,"compression":0.012150142,"attention_loop":0.049397999,"attention_tail":0.062162012}
+ds41-gpu: expert cache: 14400 lookups, 8007 hits (55.6%), 0 evictions
+{"round":0,"phase":"prefill","tokens":16,"seconds":4.280285693,"moe":1.834243667,"attention":0.698731243,"engram":0.061986854,"hc":0.479918953,"other":1.205396682,"qkv":0.215612218,"rope":0.000000000,"compression":0.044117665,"attention_loop":0.188937225,"attention_tail":0.248558146}
+ds41-gpu: expert cache: 25920 lookups, 19527 hits (75.3%), 0 evictions
+{"round":0,"phase":"decode","tokens":4,"seconds":1.082461183,"moe":0.459177220,"attention":0.178572013,"engram":0.015388190,"hc":0.119980447,"other":0.305648100,"qkv":0.054053295,"rope":0.000000000,"compression":0.012252014,"attention_loop":0.049646095,"attention_tail":0.062225778}
+ds41-gpu: expert cache: 28800 lookups, 22407 hits (77.8%), 0 evictions
+PASS warm repeats exact, all logits finite

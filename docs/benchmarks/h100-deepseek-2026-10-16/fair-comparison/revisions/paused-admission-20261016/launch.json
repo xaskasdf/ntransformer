@@ -1,0 +1,9 @@
+{
+  "pid": 2149017,
+  "preparation": {
+    "sha256": "d241713f202e0cb26215ba2d20df86e451b3a5472d8039eccb76f206ef9beb80",
+    "bytes": 84467161,
+    "frozen_files": 230,
+    "scope": "Runnable preparation, CPU placement/analysis validation only; GPU benchmark pending"
+  }
+}

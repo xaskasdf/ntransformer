@@ -1,0 +1,7 @@
+{
+  "sha256": "1d1afd1ef07136d60a06414eb0d2548d4f8ec61e3877d72867eb4d73eeab05c5",
+  "archive": "hc-direct.tar.gz",
+  "files": 63,
+  "bytes": 12315416,
+  "persistent": "/lambda/nfs/btiny/ntransformer-training/deepseek-hc-20261015"
+}

@@ -1,0 +1,28 @@
+{
+  "command": [
+    "/home/ubuntu/ntransformer-h100/ds41-moe-batch-20261015/build/test_ds41_moe_overlap",
+    "small",
+    "/home/ubuntu/ntransformer-h100/ds41-moe-batch-20261015/synthetic-small-0.bin"
+  ],
+  "returncode": 0,
+  "seconds": 0.2139481850026641,
+  "environment": {
+    "CUDA_VISIBLE_DEVICES": "1",
+    "DS41_GPU": "1",
+    "DS41_GPU_ATTN": "1",
+    "DS41_VRAM_GB": "1",
+    "DS41_PROFILE": "1",
+    "DS41_GPU_TIMING": "1",
+    "LD_LIBRARY_PATH": "/home/ubuntu/ntransformer-h100/env/targets/x86_64-linux/lib:/home/ubuntu/ntransformer-h100/env/lib",
+    "DS41_MOE_BATCH": "0",
+    "DS41_MOE_TRACE": "1"
+  },
+  "resources": {
+    "ru_utime": 0.007955000000000823,
+    "ru_stime": 0.19888700000000048,
+    "ru_majflt": 0,
+    "ru_minflt": 8020,
+    "ru_nvcsw": 1218,
+    "ru_nivcsw": 2
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "command": [
+    "/home/ubuntu/ntransformer-h100/ds41-gap-20261015/bench-nt",
+    "/home/ubuntu/ntransformer-h100/models/deepseek-v41-flash-q8/DeepSeek-V4.1-Flash-Q8_0-00001-of-00010.gguf",
+    "/home/ubuntu/ntransformer-h100/ds41-gap-20261015/corpus.txt",
+    "32",
+    "64",
+    "2",
+    "/home/ubuntu/ntransformer-h100/ds41-gap-20261015/nt-trace-p32",
+    "nt-trace-p32"
+  ],
+  "returncode": -11,
+  "utc_start": "2026-10-15T19:02:56.803578+00:00",
+  "wall_seconds": 46.69047604998923,
+  "process_group": 3082630,
+  "environment": {
+    "CUDA_VISIBLE_DEVICES": "1",
+    "LD_LIBRARY_PATH": "/home/ubuntu/ntransformer-h100/llama-bench-20261015/build/bin:/home/ubuntu/ntransformer-h100/env/targets/x86_64-linux/lib:/home/ubuntu/ntransformer-h100/env/lib:/home/ubuntu/brandon-mini/.venv/lib/python3.12/site-packages/nvidia/cu13/lib",
+    "DS41_GPU": "1",
+    "DS41_GPU_ATTN": "1",
+    "DS41_VRAM_GB": "62",
+    "DS41_PROFILE": "1",
+    "DS41_SHARED_GPU": "1",
+    "DS41_MOE_BATCH": "1",
+    "DS41_GROUPED_TAIL": "1",
+    "DS41_HC_DIRECT": "1",
+    "DS41_MOE_OVERLAP": "1"
+  }
+}

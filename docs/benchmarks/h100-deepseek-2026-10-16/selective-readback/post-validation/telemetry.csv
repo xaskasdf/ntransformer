@@ -1,0 +1,7 @@
+timestamp, index, uuid, memory.used [MiB], utilization.gpu [%], power.draw [W], temperature.gpu
+2026/10/16 14:36:21.950, 0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1 MiB, 0 %, 69.10 W, 24
+2026/10/16 14:36:21.959, 1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1 MiB, 0 %, 67.77 W, 24
+2026/10/16 14:36:22.980, 0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4 MiB, 0 %, 69.15 W, 23
+2026/10/16 14:36:22.980, 1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 23 MiB, 0 %, 93.89 W, 25
+2026/10/16 14:36:23.981, 0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1 MiB, 0 %, 69.06 W, 23
+2026/10/16 14:36:23.999, 1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 4 MiB, 0 %, 117.18 W, 25

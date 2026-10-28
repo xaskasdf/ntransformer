@@ -1,0 +1,95 @@
+{
+  "selected": {
+    "label": "pilot-cpu20-t52-offload0",
+    "config": {
+      "cpu_moe": 20,
+      "threads": 52,
+      "op_offload": false
+    },
+    "feasible": true,
+    "score_seconds": 3.416752421
+  },
+  "pilots": [
+    {
+      "label": "pilot-cpu20-t26-offload1",
+      "config": {
+        "cpu_moe": 20,
+        "threads": 26,
+        "op_offload": true
+      },
+      "feasible": true,
+      "score_seconds": 6.9584025655
+    },
+    {
+      "label": "pilot-cpu20-t26-offload0",
+      "config": {
+        "cpu_moe": 20,
+        "threads": 26,
+        "op_offload": false
+      },
+      "feasible": true,
+      "score_seconds": 3.5874942795
+    },
+    {
+      "label": "pilot-cpu20-t52-offload1",
+      "config": {
+        "cpu_moe": 20,
+        "threads": 52,
+        "op_offload": true
+      },
+      "feasible": true,
+      "score_seconds": 6.5323970085
+    },
+    {
+      "label": "pilot-cpu20-t52-offload0",
+      "config": {
+        "cpu_moe": 20,
+        "threads": 52,
+        "op_offload": false
+      },
+      "feasible": true,
+      "score_seconds": 3.416752421
+    },
+    {
+      "label": "pilot-cpu22-t26-offload1",
+      "config": {
+        "cpu_moe": 22,
+        "threads": 26,
+        "op_offload": true
+      },
+      "feasible": true,
+      "score_seconds": 7.2039963685
+    },
+    {
+      "label": "pilot-cpu22-t26-offload0",
+      "config": {
+        "cpu_moe": 22,
+        "threads": 26,
+        "op_offload": false
+      },
+      "feasible": true,
+      "score_seconds": 3.80800694
+    },
+    {
+      "label": "pilot-cpu22-t52-offload1",
+      "config": {
+        "cpu_moe": 22,
+        "threads": 52,
+        "op_offload": true
+      },
+      "feasible": true,
+      "score_seconds": 7.0190191725
+    },
+    {
+      "label": "pilot-cpu22-t52-offload0",
+      "config": {
+        "cpu_moe": 22,
+        "threads": 52,
+        "op_offload": false
+      },
+      "feasible": true,
+      "score_seconds": 3.5179678130000003
+    }
+  ],
+  "rule": "median of warm prefill_seconds + 4 * decode_seconds; rounds 1 and 2"
+}

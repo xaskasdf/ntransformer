@@ -1,0 +1,137 @@
+[
+  {
+    "case": "moe-fp32-small-0",
+    "sha256": "67c125e0b156176a9a8eb77a3cf233f06b7829d401914d7ded3c74c6eed41dc8",
+    "matches_single_gpu": true
+  },
+  {
+    "case": "moe-fp32-small-copy",
+    "sha256": "67c125e0b156176a9a8eb77a3cf233f06b7829d401914d7ded3c74c6eed41dc8",
+    "matches_single_gpu": true
+  },
+  {
+    "case": "moe-fp32-small-execute",
+    "sha256": "67c125e0b156176a9a8eb77a3cf233f06b7829d401914d7ded3c74c6eed41dc8",
+    "matches_single_gpu": true
+  },
+  {
+    "case": "moe-fp32-real-0",
+    "sha256": "a5012208c2a31feb342daa3d7fbf40f622f91fe32e00e1c1d9d512873bb02ab7",
+    "matches_single_gpu": true
+  },
+  {
+    "case": "moe-fp32-real-copy",
+    "sha256": "a5012208c2a31feb342daa3d7fbf40f622f91fe32e00e1c1d9d512873bb02ab7",
+    "matches_single_gpu": true
+  },
+  {
+    "case": "moe-fp32-real-execute",
+    "sha256": "a5012208c2a31feb342daa3d7fbf40f622f91fe32e00e1c1d9d512873bb02ab7",
+    "matches_single_gpu": true
+  },
+  {
+    "case": "moe-fp32-max-0",
+    "sha256": "4b0a34405200daa2e226c723525011d204e0819f848bd4f3dd3aabd3be1e5045",
+    "matches_single_gpu": true
+  },
+  {
+    "case": "moe-fp32-max-copy",
+    "sha256": "4b0a34405200daa2e226c723525011d204e0819f848bd4f3dd3aabd3be1e5045",
+    "matches_single_gpu": true
+  },
+  {
+    "case": "moe-fp32-max-execute",
+    "sha256": "4b0a34405200daa2e226c723525011d204e0819f848bd4f3dd3aabd3be1e5045",
+    "matches_single_gpu": true
+  },
+  {
+    "case": "moe-f16-small-0",
+    "sha256": "02408d80c1bdfedbef3462c92f417b192eb663f58b7fcd1f9fc8c64f54424d41",
+    "matches_single_gpu": true
+  },
+  {
+    "case": "moe-f16-small-copy",
+    "sha256": "02408d80c1bdfedbef3462c92f417b192eb663f58b7fcd1f9fc8c64f54424d41",
+    "matches_single_gpu": true
+  },
+  {
+    "case": "moe-f16-small-execute",
+    "sha256": "02408d80c1bdfedbef3462c92f417b192eb663f58b7fcd1f9fc8c64f54424d41",
+    "matches_single_gpu": true
+  },
+  {
+    "case": "moe-f16-real-0",
+    "sha256": "abb1aa400a18bf0fb37671e6c5dee22bf2e4ce0b8c47ee425348472e5abac44c",
+    "matches_single_gpu": true
+  },
+  {
+    "case": "moe-f16-real-copy",
+    "sha256": "abb1aa400a18bf0fb37671e6c5dee22bf2e4ce0b8c47ee425348472e5abac44c",
+    "matches_single_gpu": true
+  },
+  {
+    "case": "moe-f16-real-execute",
+    "sha256": "abb1aa400a18bf0fb37671e6c5dee22bf2e4ce0b8c47ee425348472e5abac44c",
+    "matches_single_gpu": true
+  },
+  {
+    "case": "moe-f16-max-0",
+    "sha256": "ef9057e3e3935a2c5cff5fdc3394b61c331efb82244e9ff04b2045db2d9647bf",
+    "matches_single_gpu": true
+  },
+  {
+    "case": "moe-f16-max-copy",
+    "sha256": "ef9057e3e3935a2c5cff5fdc3394b61c331efb82244e9ff04b2045db2d9647bf",
+    "matches_single_gpu": true
+  },
+  {
+    "case": "moe-f16-max-execute",
+    "sha256": "ef9057e3e3935a2c5cff5fdc3394b61c331efb82244e9ff04b2045db2d9647bf",
+    "matches_single_gpu": true
+  },
+  {
+    "case": "moe-q8-small-0",
+    "sha256": "49364307e480558ae0d197fecbc7772a0559513af5a46dabe7ac4357323a5b98",
+    "matches_single_gpu": true
+  },
+  {
+    "case": "moe-q8-small-copy",
+    "sha256": "49364307e480558ae0d197fecbc7772a0559513af5a46dabe7ac4357323a5b98",
+    "matches_single_gpu": true
+  },
+  {
+    "case": "moe-q8-small-execute",
+    "sha256": "49364307e480558ae0d197fecbc7772a0559513af5a46dabe7ac4357323a5b98",
+    "matches_single_gpu": true
+  },
+  {
+    "case": "moe-q8-real-0",
+    "sha256": "faf8019508cd66fe30639fec782fed8af7f87c34a5ba3fbb254723c8ea3ae087",
+    "matches_single_gpu": true
+  },
+  {
+    "case": "moe-q8-real-copy",
+    "sha256": "faf8019508cd66fe30639fec782fed8af7f87c34a5ba3fbb254723c8ea3ae087",
+    "matches_single_gpu": true
+  },
+  {
+    "case": "moe-q8-real-execute",
+    "sha256": "faf8019508cd66fe30639fec782fed8af7f87c34a5ba3fbb254723c8ea3ae087",
+    "matches_single_gpu": true
+  },
+  {
+    "case": "moe-q8-max-0",
+    "sha256": "a70abe96056de382d91f09987bc157b8175e7382161c77ca48561f83b9898f27",
+    "matches_single_gpu": true
+  },
+  {
+    "case": "moe-q8-max-copy",
+    "sha256": "a70abe96056de382d91f09987bc157b8175e7382161c77ca48561f83b9898f27",
+    "matches_single_gpu": true
+  },
+  {
+    "case": "moe-q8-max-execute",
+    "sha256": "a70abe96056de382d91f09987bc157b8175e7382161c77ca48561f83b9898f27",
+    "matches_single_gpu": true
+  }
+]

@@ -1,0 +1,365 @@
+{
+  "tensors": [
+    {
+      "name": "blk.0.ffn_gate_inp.weight",
+      "dtype": "BF16",
+      "shape": [
+        5120,
+        384
+      ],
+      "bytes": 3932160
+    },
+    {
+      "name": "blk.1.ffn_gate_inp.weight",
+      "dtype": "BF16",
+      "shape": [
+        5120,
+        384
+      ],
+      "bytes": 3932160
+    },
+    {
+      "name": "blk.2.ffn_gate_inp.weight",
+      "dtype": "BF16",
+      "shape": [
+        5120,
+        384
+      ],
+      "bytes": 3932160
+    },
+    {
+      "name": "blk.3.ffn_gate_inp.weight",
+      "dtype": "BF16",
+      "shape": [
+        5120,
+        384
+      ],
+      "bytes": 3932160
+    },
+    {
+      "name": "blk.4.ffn_gate_inp.weight",
+      "dtype": "BF16",
+      "shape": [
+        5120,
+        384
+      ],
+      "bytes": 3932160
+    },
+    {
+      "name": "blk.5.ffn_gate_inp.weight",
+      "dtype": "BF16",
+      "shape": [
+        5120,
+        384
+      ],
+      "bytes": 3932160
+    },
+    {
+      "name": "blk.6.ffn_gate_inp.weight",
+      "dtype": "BF16",
+      "shape": [
+        5120,
+        384
+      ],
+      "bytes": 3932160
+    },
+    {
+      "name": "blk.7.ffn_gate_inp.weight",
+      "dtype": "BF16",
+      "shape": [
+        5120,
+        384
+      ],
+      "bytes": 3932160
+    },
+    {
+      "name": "blk.8.ffn_gate_inp.weight",
+      "dtype": "BF16",
+      "shape": [
+        5120,
+        384
+      ],
+      "bytes": 3932160
+    },
+    {
+      "name": "blk.9.ffn_gate_inp.weight",
+      "dtype": "BF16",
+      "shape": [
+        5120,
+        384
+      ],
+      "bytes": 3932160
+    },
+    {
+      "name": "blk.10.ffn_gate_inp.weight",
+      "dtype": "BF16",
+      "shape": [
+        5120,
+        384
+      ],
+      "bytes": 3932160
+    },
+    {
+      "name": "blk.11.ffn_gate_inp.weight",
+      "dtype": "BF16",
+      "shape": [
+        5120,
+        384
+      ],
+      "bytes": 3932160
+    },
+    {
+      "name": "blk.12.ffn_gate_inp.weight",
+      "dtype": "BF16",
+      "shape": [
+        5120,
+        384
+      ],
+      "bytes": 3932160
+    },
+    {
+      "name": "blk.13.ffn_gate_inp.weight",
+      "dtype": "BF16",
+      "shape": [
+        5120,
+        384
+      ],
+      "bytes": 3932160
+    },
+    {
+      "name": "blk.14.ffn_gate_inp.weight",
+      "dtype": "BF16",
+      "shape": [
+        5120,
+        384
+      ],
+      "bytes": 3932160
+    },
+    {
+      "name": "blk.15.ffn_gate_inp.weight",
+      "dtype": "BF16",
+      "shape": [
+        5120,
+        384
+      ],
+      "bytes": 3932160
+    },
+    {
+      "name": "blk.16.ffn_gate_inp.weight",
+      "dtype": "BF16",
+      "shape": [
+        5120,
+        384
+      ],
+      "bytes": 3932160
+    },
+    {
+      "name": "blk.17.ffn_gate_inp.weight",
+      "dtype": "BF16",
+      "shape": [
+        5120,
+        384
+      ],
+      "bytes": 3932160
+    },
+    {
+      "name": "blk.18.ffn_gate_inp.weight",
+      "dtype": "BF16",
+      "shape": [
+        5120,
+        384
+      ],
+      "bytes": 3932160
+    },
+    {
+      "name": "blk.19.ffn_gate_inp.weight",
+      "dtype": "BF16",
+      "shape": [
+        5120,
+        384
+      ],
+      "bytes": 3932160
+    },
+    {
+      "name": "blk.20.ffn_gate_inp.weight",
+      "dtype": "BF16",
+      "shape": [
+        5120,
+        384
+      ],
+      "bytes": 3932160
+    },
+    {
+      "name": "blk.21.ffn_gate_inp.weight",
+      "dtype": "BF16",
+      "shape": [
+        5120,
+        384
+      ],
+      "bytes": 3932160
+    },
+    {
+      "name": "blk.22.ffn_gate_inp.weight",
+      "dtype": "BF16",
+      "shape": [
+        5120,
+        384
+      ],
+      "bytes": 3932160
+    },
+    {
+      "name": "blk.23.ffn_gate_inp.weight",
+      "dtype": "BF16",
+      "shape": [
+        5120,
+        384
+      ],
+      "bytes": 3932160
+    },
+    {
+      "name": "blk.24.ffn_gate_inp.weight",
+      "dtype": "BF16",
+      "shape": [
+        5120,
+        384
+      ],
+      "bytes": 3932160
+    },
+    {
+      "name": "blk.25.ffn_gate_inp.weight",
+      "dtype": "BF16",
+      "shape": [
+        5120,
+        384
+      ],
+      "bytes": 3932160
+    },
+    {
+      "name": "blk.26.ffn_gate_inp.weight",
+      "dtype": "BF16",
+      "shape": [
+        5120,
+        384
+      ],
+      "bytes": 3932160
+    },
+    {
+      "name": "blk.27.ffn_gate_inp.weight",
+      "dtype": "BF16",
+      "shape": [
+        5120,
+        384
+      ],
+      "bytes": 3932160
+    },
+    {
+      "name": "blk.28.ffn_gate_inp.weight",
+      "dtype": "BF16",
+      "shape": [
+        5120,
+        384
+      ],
+      "bytes": 3932160
+    },
+    {
+      "name": "blk.29.ffn_gate_inp.weight",
+      "dtype": "BF16",
+      "shape": [
+        5120,
+        384
+      ],
+      "bytes": 3932160
+    },
+    {
+      "name": "blk.30.ffn_gate_inp.weight",
+      "dtype": "BF16",
+      "shape": [
+        5120,
+        384
+      ],
+      "bytes": 3932160
+    },
+    {
+      "name": "blk.31.ffn_gate_inp.weight",
+      "dtype": "BF16",
+      "shape": [
+        5120,
+        384
+      ],
+      "bytes": 3932160
+    },
+    {
+      "name": "blk.32.ffn_gate_inp.weight",
+      "dtype": "BF16",
+      "shape": [
+        5120,
+        384
+      ],
+      "bytes": 3932160
+    },
+    {
+      "name": "blk.33.ffn_gate_inp.weight",
+      "dtype": "BF16",
+      "shape": [
+        5120,
+        384
+      ],
+      "bytes": 3932160
+    },
+    {
+      "name": "blk.34.ffn_gate_inp.weight",
+      "dtype": "BF16",
+      "shape": [
+        5120,
+        384
+      ],
+      "bytes": 3932160
+    },
+    {
+      "name": "blk.35.ffn_gate_inp.weight",
+      "dtype": "BF16",
+      "shape": [
+        5120,
+        384
+      ],
+      "bytes": 3932160
+    },
+    {
+      "name": "blk.36.ffn_gate_inp.weight",
+      "dtype": "BF16",
+      "shape": [
+        5120,
+        384
+      ],
+      "bytes": 3932160
+    },
+    {
+      "name": "blk.37.ffn_gate_inp.weight",
+      "dtype": "BF16",
+      "shape": [
+        5120,
+        384
+      ],
+      "bytes": 3932160
+    },
+    {
+      "name": "blk.38.ffn_gate_inp.weight",
+      "dtype": "BF16",
+      "shape": [
+        5120,
+        384
+      ],
+      "bytes": 3932160
+    },
+    {
+      "name": "blk.39.ffn_gate_inp.weight",
+      "dtype": "BF16",
+      "shape": [
+        5120,
+        384
+      ],
+      "bytes": 3932160
+    }
+  ],
+  "total_bytes": 157286400
+}

@@ -1,0 +1,14 @@
+{
+  "archive_sha256": "564a3526253eadb3a6e3794cc7573dcdb5010c6d77d6e06297bcd9c555974190",
+  "payload_files_verified": 543,
+  "analysis_recomputed": true,
+  "report_reproduced_exactly": true,
+  "local_implementation_matches_measured_source": [
+    "src/model/ds41/ds41_gpu.cu",
+    "src/model/ds41/ds41_gpu.h",
+    "src/model/ds41/ds41_shared.cu",
+    "src/model/ds41/ds41_forward.cpp",
+    "src/model/ds41/ds41_forward.h",
+    "tests/test_ds41_router.cpp"
+  ]
+}

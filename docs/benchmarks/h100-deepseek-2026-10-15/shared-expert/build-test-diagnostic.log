@@ -1,0 +1,5 @@
+[  3%] Built target ntransformer_ds41_shared
+[ 93%] Built target ntransformer_lib
+[ 96%] Building CXX object CMakeFiles/test_ds41_shared.dir/tests/test_ds41_shared.cpp.o
+[100%] Linking CXX executable test_ds41_shared
+[100%] Built target test_ds41_shared

@@ -1,0 +1,12 @@
+{
+  "pid": 2223534,
+  "replaces_pid": 2219240,
+  "preparation": {
+    "sha256": "33c39ae86273ba27944370312242bf267867c63345a6c20d99a0037d764b348c",
+    "bytes": 84477925,
+    "frozen_files": 239,
+    "revision": "log-decode-20261016",
+    "scope": "Runnable preparation and CPU validation; full GPU comparison restarts after archived log-decoding failure"
+  },
+  "utc": "2026-10-16T06:39:45.109618+00:00"
+}

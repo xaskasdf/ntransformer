@@ -1,0 +1,6 @@
+{
+  "bitwise_logits": true,
+  "stage_sums_equal": true,
+  "stages": 147,
+  "sha256": "f4b7c281576b067260339fc9f37c8a1dc202a633d84967dba92e912af4b15f73"
+}

@@ -1,0 +1,10 @@
+{
+  "archive_sha256": "8f96edc77eb6eed94d1e20732b2161308367dd3c2cb2c02b8635aece1bc8a444",
+  "payload_files_verified": 49,
+  "benchmark_source_matches_working_tree": true,
+  "analysis_recomputed": true,
+  "report_reproduced_with_normalized_newlines": true,
+  "float_comparison_relative_and_absolute_tolerance": 1e-12,
+  "observed_competing_gpu_processes": 0,
+  "finite_logit_values_checked": 100838400
+}

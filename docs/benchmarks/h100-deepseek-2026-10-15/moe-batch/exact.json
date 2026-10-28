@@ -1,0 +1,15 @@
+{
+  "bitwise_equal": true,
+  "logit_vectors": 5,
+  "floats_per_vector": 129280,
+  "sha256": "8c8ea79cda4da03fe1d1bbd8774b17eaf71b1a7602bc0a8952d061a9a37cd470",
+  "runs": [
+    "previous",
+    "trace-baseline",
+    "trace-batched",
+    "serial1",
+    "batched1",
+    "batched2",
+    "serial2"
+  ]
+}

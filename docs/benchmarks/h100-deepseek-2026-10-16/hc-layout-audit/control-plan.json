@@ -1,0 +1,57 @@
+{
+  "scope": "Diagnostic ubatch ablation, not a replacement benchmark",
+  "baseline": "/home/ubuntu/ntransformer-h100/ds41-fair-20261016",
+  "workloads": [
+    "p32",
+    "p512"
+  ],
+  "ubatch": 1,
+  "repeats": 1,
+  "threads": 52,
+  "cpu_expert_layers": 20,
+  "gpu_count": 2,
+  "op_offload": false,
+  "binary_sha256": "7ed352b7bed76c6cdf3f899a0418b68eed48b043c564fa91eaaf4edae2b4c6a7",
+  "model_identity": {
+    "DeepSeek-V4.1-Flash-Q8_0-00001-of-00010.gguf": {
+      "bytes": 43322444352,
+      "mtime_ns": 1792033697382001952
+    },
+    "DeepSeek-V4.1-Flash-Q8_0-00002-of-00010.gguf": {
+      "bytes": 43316676000,
+      "mtime_ns": 1792033689834048351
+    },
+    "DeepSeek-V4.1-Flash-Q8_0-00003-of-00010.gguf": {
+      "bytes": 43316676032,
+      "mtime_ns": 1792033684190082824
+    },
+    "DeepSeek-V4.1-Flash-Q8_0-00004-of-00010.gguf": {
+      "bytes": 43316676032,
+      "mtime_ns": 1792033718041873248
+    },
+    "DeepSeek-V4.1-Flash-Q8_0-00005-of-00010.gguf": {
+      "bytes": 43316676032,
+      "mtime_ns": 1792033694082022279
+    },
+    "DeepSeek-V4.1-Flash-Q8_0-00006-of-00010.gguf": {
+      "bytes": 43316676032,
+      "mtime_ns": 1792033684570080509
+    },
+    "DeepSeek-V4.1-Flash-Q8_0-00007-of-00010.gguf": {
+      "bytes": 28877784064,
+      "mtime_ns": 1792033408643564388
+    },
+    "DeepSeek-V4.1-Flash-Q8_0-00008-of-00010.gguf": {
+      "bytes": 104449677888,
+      "mtime_ns": 1792033326744382618
+    },
+    "DeepSeek-V4.1-Flash-Q8_0-00009-of-00010.gguf": {
+      "bytes": 104452537696,
+      "mtime_ns": 1792033353560114700
+    },
+    "DeepSeek-V4.1-Flash-Q8_0-00010-of-00010.gguf": {
+      "bytes": 10268402880,
+      "mtime_ns": 1792033003531611737
+    }
+  }
+}

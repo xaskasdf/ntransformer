@@ -1,0 +1,1300 @@
+{"buffer":"CUDA0","name":"hc_init","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"REPEAT","sources":["CUDA0#embd (reshaped)#0"]}
+{"buffer":"CUDA0","name":"hc_attn_pre-0","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["hc_init","hc_pre_init"]}
+{"buffer":"CUDA0","name":"attn_norm-0","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-0","blk.0.attn_norm.weight"]}
+{"buffer":"CUDA0","name":"qr-0","nb":[4,5120,5120,5120],"ne":[1280,1,1,1],"op":"MUL","sources":["norm-0","blk.0.attn_q_a_norm.weight"]}
+{"buffer":"CUDA0","name":"q-0","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-0","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-0 (view)","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"VIEW","sources":["kv-0"]}
+{"buffer":"CUDA0","name":"q-0 (view)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"VIEW","sources":["q-0"]}
+{"buffer":"CUDA0","name":"q-0 (view) (permuted)","nb":[4,131072,2048,131072],"ne":[512,1,64,1],"op":"PERMUTE","sources":["q-0 (view)"]}
+{"buffer":"CUDA0","name":"attn_derope-0","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE_BACK","sources":["attn_raw-0 (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"attn_derope-0 (reshaped)","nb":[4,16384,131072,131072],"ne":[4096,8,1,1],"op":"RESHAPE","sources":["attn_derope-0"]}
+{"buffer":"CUDA0","name":"attn_derope-0 (reshaped) (permuted)","nb":[4,131072,16384,131072],"ne":[4096,1,8,1],"op":"PERMUTE","sources":["attn_derope-0 (reshaped)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-0","nb":[4,4096,4096,32768],"ne":[1024,1,8,1],"op":"MUL_MAT","sources":["blk.0.attn_output_a.weight","attn_derope-0 (reshaped) (permuted)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-0 (permuted)","nb":[4,4096,4096,32768],"ne":[1024,8,1,1],"op":"PERMUTE","sources":["attn_wo_a-0"]}
+{"buffer":"CUDA0","name":"attn_wo_a-0 (permuted) (cont)","nb":[4,32768,32768,32768],"ne":[8192,1,1,1],"op":"CONT","sources":["attn_wo_a-0 (permuted)"]}
+{"buffer":"CUDA0","name":"attn_out-0","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.0.attn_output_b.weight","attn_wo_a-0 (permuted) (cont)"]}
+{"buffer":"CUDA0","name":"hc_attn_post-0","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["attn_out-0","hc_init","hc_post-0","hc_comb-0"]}
+{"buffer":"CUDA0","name":"hc_attn_post-0 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["hc_attn_post-0"]}
+{"buffer":"CUDA0","name":"hc_ffn_pre-0","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["hc_attn_post-0","hc_pre-0"]}
+{"buffer":"CUDA0","name":"ffn_norm-0","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-0","blk.0.ffn_norm.weight"]}
+{"buffer":"CUDA0","name":"ffn_moe_logits-0","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"MUL_MAT","sources":["blk.0.ffn_gate_inp.weight","ffn_norm-0"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-0","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"SQRT","sources":["node_73"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-0 (reshaped)","nb":[4,4,1536,1536],"ne":[1,384,1,1],"op":"RESHAPE","sources":["ffn_moe_probs-0"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-0","nb":[4,4,24,24],"ne":[1,6,1,1],"op":"GET_ROWS","sources":["ffn_moe_probs-0 (reshaped)","ffn_moe_topk-0"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-0 (reshaped)","nb":[4,24,24,24],"ne":[6,1,1,1],"op":"RESHAPE","sources":["ffn_moe_weights-0"]}
+{"buffer":"CUDA0","name":"ffn_norm-0 (reshaped)","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"RESHAPE","sources":["ffn_norm-0"]}
+{"buffer":"CUDA0","name":"ffn_moe_out-0","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["node_101","ffn_moe_weighted-0 (view)"]}
+{"buffer":"CUDA0","name":"ffn_shexp-0","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.0.ffn_down_shexp.weight","ffn_swiglu_limited-0"]}
+{"buffer":"CUDA0","name":"ffn_out-0","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["ffn_moe_out-0","ffn_shexp-0"]}
+{"buffer":"CUDA0","name":"l_last-0","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["ffn_out-0","hc_attn_post-0","hc_post-0","hc_comb-0"]}
+{"buffer":"CUDA_Host","name":"engram_embd-1","nb":[4,24576,24576,24576],"ne":[6144,1,1,1],"op":"RESHAPE","sources":["node_109"]}
+{"buffer":"CUDA0","name":"engram_kv-1","nb":[4,102400,102400,102400],"ne":[25600,1,1,1],"op":"MUL_MAT","sources":["blk.1.engram_wkv.weight","CUDA0#engram_embd-1#0"]}
+{"buffer":"CUDA0","name":"engram_kv-1 (view)","nb":[4,102400,102400,102400],"ne":[5120,1,1,1],"op":"VIEW","sources":["engram_kv-1"]}
+{"buffer":"CUDA0","name":"engram_kv-1 (view) (cont)","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"CONT","sources":["engram_kv-1 (view)"]}
+{"buffer":"CUDA0","name":"engram_kv-1 (view) (cont) (reshaped)","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"RESHAPE","sources":["engram_kv-1 (view) (cont)"]}
+{"buffer":"CUDA0","name":"engram_kv-1 (view)","nb":[4,102400,102400,102400],"ne":[20480,1,1,1],"op":"VIEW","sources":["engram_kv-1"]}
+{"buffer":"CUDA0","name":"engram_kv-1 (view) (cont)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"CONT","sources":["engram_kv-1 (view)"]}
+{"buffer":"CUDA0","name":"engram_kv-1 (view) (cont) (reshaped)","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"RESHAPE","sources":["engram_kv-1 (view) (cont)"]}
+{"buffer":"CUDA0","name":"l_last-0 (reshaped)","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"RESHAPE","sources":["l_last-0"]}
+{"buffer":"CUDA0","name":"engram_out-1","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"ADD","sources":["l_last-0","node_145"]}
+{"buffer":"CUDA0","name":"hc_attn_pre-1","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["engram_out-1","hc_pre-0"]}
+{"buffer":"CUDA0","name":"attn_norm-1","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-1","blk.1.attn_norm.weight"]}
+{"buffer":"CUDA0","name":"qr-1","nb":[4,5120,5120,5120],"ne":[1280,1,1,1],"op":"MUL","sources":["norm-1","blk.1.attn_q_a_norm.weight"]}
+{"buffer":"CUDA0","name":"q-1","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-1","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-1 (view)","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"VIEW","sources":["kv-1"]}
+{"buffer":"CUDA0","name":"q-1 (view)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"VIEW","sources":["q-1"]}
+{"buffer":"CUDA0","name":"q-1 (view) (permuted)","nb":[4,131072,2048,131072],"ne":[512,1,64,1],"op":"PERMUTE","sources":["q-1 (view)"]}
+{"buffer":"CUDA0","name":"attn_derope-1","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE_BACK","sources":["attn_raw-1 (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"attn_derope-1 (reshaped)","nb":[4,16384,131072,131072],"ne":[4096,8,1,1],"op":"RESHAPE","sources":["attn_derope-1"]}
+{"buffer":"CUDA0","name":"attn_derope-1 (reshaped) (permuted)","nb":[4,131072,16384,131072],"ne":[4096,1,8,1],"op":"PERMUTE","sources":["attn_derope-1 (reshaped)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-1","nb":[4,4096,4096,32768],"ne":[1024,1,8,1],"op":"MUL_MAT","sources":["blk.1.attn_output_a.weight","attn_derope-1 (reshaped) (permuted)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-1 (permuted)","nb":[4,4096,4096,32768],"ne":[1024,8,1,1],"op":"PERMUTE","sources":["attn_wo_a-1"]}
+{"buffer":"CUDA0","name":"attn_wo_a-1 (permuted) (cont)","nb":[4,32768,32768,32768],"ne":[8192,1,1,1],"op":"CONT","sources":["attn_wo_a-1 (permuted)"]}
+{"buffer":"CUDA0","name":"attn_out-1","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.1.attn_output_b.weight","attn_wo_a-1 (permuted) (cont)"]}
+{"buffer":"CUDA0","name":"engram_out-1 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["engram_out-1"]}
+{"buffer":"CUDA0","name":"hc_attn_post-1","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["attn_out-1","engram_out-1","hc_post-1","hc_comb-1"]}
+{"buffer":"CUDA0","name":"hc_attn_post-1 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["hc_attn_post-1"]}
+{"buffer":"CUDA0","name":"hc_ffn_pre-1","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["hc_attn_post-1","hc_pre-1"]}
+{"buffer":"CUDA0","name":"ffn_norm-1","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-1","blk.1.ffn_norm.weight"]}
+{"buffer":"CUDA0","name":"ffn_moe_logits-1","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"MUL_MAT","sources":["blk.1.ffn_gate_inp.weight","ffn_norm-1"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-1","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"SQRT","sources":["node_221"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-1 (reshaped)","nb":[4,4,1536,1536],"ne":[1,384,1,1],"op":"RESHAPE","sources":["ffn_moe_probs-1"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-1","nb":[4,4,24,24],"ne":[1,6,1,1],"op":"GET_ROWS","sources":["ffn_moe_probs-1 (reshaped)","ffn_moe_topk-1"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-1 (reshaped)","nb":[4,24,24,24],"ne":[6,1,1,1],"op":"RESHAPE","sources":["ffn_moe_weights-1"]}
+{"buffer":"CUDA0","name":"ffn_norm-1 (reshaped)","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"RESHAPE","sources":["ffn_norm-1"]}
+{"buffer":"CUDA0","name":"ffn_moe_out-1","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["node_249","ffn_moe_weighted-1 (view)"]}
+{"buffer":"CUDA0","name":"ffn_shexp-1","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.1.ffn_down_shexp.weight","ffn_swiglu_limited-1"]}
+{"buffer":"CUDA0","name":"ffn_out-1","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["ffn_moe_out-1","ffn_shexp-1"]}
+{"buffer":"CUDA0","name":"l_last-1","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["ffn_out-1","hc_attn_post-1","hc_post-1","hc_comb-1"]}
+{"buffer":"CUDA0","name":"hc_attn_pre-2","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["l_last-1","hc_pre-1"]}
+{"buffer":"CUDA0","name":"attn_norm-2","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-2","blk.2.attn_norm.weight"]}
+{"buffer":"CUDA0","name":"qr-2","nb":[4,5120,5120,5120],"ne":[1280,1,1,1],"op":"MUL","sources":["norm-2","blk.2.attn_q_a_norm.weight"]}
+{"buffer":"CUDA0","name":"q-2","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-2","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-2 (view)","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"VIEW","sources":["kv-2"]}
+{"buffer":"CUDA0","name":"q-2 (view)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"VIEW","sources":["q-2"]}
+{"buffer":"CUDA0","name":"q-2 (view) (permuted)","nb":[4,131072,2048,131072],"ne":[512,1,64,1],"op":"PERMUTE","sources":["q-2 (view)"]}
+{"buffer":"CUDA0","name":"attn_out_raw-2","nb":[4,131072,131072,131072],"ne":[32768,1,1,1],"op":"RESHAPE","sources":["node_365"]}
+{"buffer":"CUDA0","name":"attn_out_raw-2 (reshaped)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"RESHAPE","sources":["attn_out_raw-2"]}
+{"buffer":"CUDA0","name":"attn_derope-2","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE_BACK","sources":["attn_out_raw-2 (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"attn_derope-2 (reshaped)","nb":[4,16384,131072,131072],"ne":[4096,8,1,1],"op":"RESHAPE","sources":["attn_derope-2"]}
+{"buffer":"CUDA0","name":"attn_derope-2 (reshaped) (permuted)","nb":[4,131072,16384,131072],"ne":[4096,1,8,1],"op":"PERMUTE","sources":["attn_derope-2 (reshaped)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-2","nb":[4,4096,4096,32768],"ne":[1024,1,8,1],"op":"MUL_MAT","sources":["blk.2.attn_output_a.weight","attn_derope-2 (reshaped) (permuted)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-2 (permuted)","nb":[4,4096,4096,32768],"ne":[1024,8,1,1],"op":"PERMUTE","sources":["attn_wo_a-2"]}
+{"buffer":"CUDA0","name":"attn_wo_a-2 (permuted) (cont)","nb":[4,32768,32768,32768],"ne":[8192,1,1,1],"op":"CONT","sources":["attn_wo_a-2 (permuted)"]}
+{"buffer":"CUDA0","name":"attn_out-2","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.2.attn_output_b.weight","attn_wo_a-2 (permuted) (cont)"]}
+{"buffer":"CUDA0","name":"l_last-1 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["l_last-1"]}
+{"buffer":"CUDA0","name":"hc_attn_post-2","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["attn_out-2","l_last-1","hc_post-2","hc_comb-2"]}
+{"buffer":"CUDA0","name":"hc_attn_post-2 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["hc_attn_post-2"]}
+{"buffer":"CUDA0","name":"hc_ffn_pre-2","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["hc_attn_post-2","hc_pre-2"]}
+{"buffer":"CUDA0","name":"ffn_norm-2","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-2","blk.2.ffn_norm.weight"]}
+{"buffer":"CUDA0","name":"ffn_moe_logits-2","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"MUL_MAT","sources":["blk.2.ffn_gate_inp.weight","ffn_norm-2"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-2","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"SQRT","sources":["node_409"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-2 (reshaped)","nb":[4,4,1536,1536],"ne":[1,384,1,1],"op":"RESHAPE","sources":["ffn_moe_probs-2"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-2","nb":[4,4,24,24],"ne":[1,6,1,1],"op":"GET_ROWS","sources":["ffn_moe_probs-2 (reshaped)","ffn_moe_topk-2"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-2 (reshaped)","nb":[4,24,24,24],"ne":[6,1,1,1],"op":"RESHAPE","sources":["ffn_moe_weights-2"]}
+{"buffer":"CUDA0","name":"ffn_norm-2 (reshaped)","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"RESHAPE","sources":["ffn_norm-2"]}
+{"buffer":"CUDA0","name":"ffn_moe_out-2","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["node_437","ffn_moe_weighted-2 (view)"]}
+{"buffer":"CUDA0","name":"ffn_shexp-2","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.2.ffn_down_shexp.weight","ffn_swiglu_limited-2"]}
+{"buffer":"CUDA0","name":"ffn_out-2","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["ffn_moe_out-2","ffn_shexp-2"]}
+{"buffer":"CUDA0","name":"l_last-2","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["ffn_out-2","hc_attn_post-2","hc_post-2","hc_comb-2"]}
+{"buffer":"CUDA0","name":"hc_attn_pre-3","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["l_last-2","hc_pre-2"]}
+{"buffer":"CUDA0","name":"attn_norm-3","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-3","blk.3.attn_norm.weight"]}
+{"buffer":"CUDA0","name":"qr-3","nb":[4,5120,5120,5120],"ne":[1280,1,1,1],"op":"MUL","sources":["norm-3","blk.3.attn_q_a_norm.weight"]}
+{"buffer":"CUDA0","name":"q-3","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-3","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-3 (view)","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"VIEW","sources":["kv-3"]}
+{"buffer":"CUDA0","name":"q-3 (view)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"VIEW","sources":["q-3"]}
+{"buffer":"CUDA0","name":"q-3 (view) (permuted)","nb":[4,131072,2048,131072],"ne":[512,1,64,1],"op":"PERMUTE","sources":["q-3 (view)"]}
+{"buffer":"CUDA0","name":"attn_out_raw-3","nb":[4,131072,131072,131072],"ne":[32768,1,1,1],"op":"RESHAPE","sources":["node_479"]}
+{"buffer":"CUDA0","name":"attn_out_raw-3 (reshaped)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"RESHAPE","sources":["attn_out_raw-3"]}
+{"buffer":"CUDA0","name":"attn_derope-3","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE_BACK","sources":["attn_out_raw-3 (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"attn_derope-3 (reshaped)","nb":[4,16384,131072,131072],"ne":[4096,8,1,1],"op":"RESHAPE","sources":["attn_derope-3"]}
+{"buffer":"CUDA0","name":"attn_derope-3 (reshaped) (permuted)","nb":[4,131072,16384,131072],"ne":[4096,1,8,1],"op":"PERMUTE","sources":["attn_derope-3 (reshaped)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-3","nb":[4,4096,4096,32768],"ne":[1024,1,8,1],"op":"MUL_MAT","sources":["blk.3.attn_output_a.weight","attn_derope-3 (reshaped) (permuted)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-3 (permuted)","nb":[4,4096,4096,32768],"ne":[1024,8,1,1],"op":"PERMUTE","sources":["attn_wo_a-3"]}
+{"buffer":"CUDA0","name":"attn_wo_a-3 (permuted) (cont)","nb":[4,32768,32768,32768],"ne":[8192,1,1,1],"op":"CONT","sources":["attn_wo_a-3 (permuted)"]}
+{"buffer":"CUDA0","name":"attn_out-3","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.3.attn_output_b.weight","attn_wo_a-3 (permuted) (cont)"]}
+{"buffer":"CUDA0","name":"l_last-2 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["l_last-2"]}
+{"buffer":"CUDA0","name":"hc_attn_post-3","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["attn_out-3","l_last-2","hc_post-3","hc_comb-3"]}
+{"buffer":"CUDA0","name":"hc_attn_post-3 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["hc_attn_post-3"]}
+{"buffer":"CUDA0","name":"hc_ffn_pre-3","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["hc_attn_post-3","hc_pre-3"]}
+{"buffer":"CUDA0","name":"ffn_norm-3","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-3","blk.3.ffn_norm.weight"]}
+{"buffer":"CUDA0","name":"ffn_moe_logits-3","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"MUL_MAT","sources":["blk.3.ffn_gate_inp.weight","ffn_norm-3"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-3","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"SQRT","sources":["node_523"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-3 (reshaped)","nb":[4,4,1536,1536],"ne":[1,384,1,1],"op":"RESHAPE","sources":["ffn_moe_probs-3"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-3","nb":[4,4,24,24],"ne":[1,6,1,1],"op":"GET_ROWS","sources":["ffn_moe_probs-3 (reshaped)","ffn_moe_topk-3"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-3 (reshaped)","nb":[4,24,24,24],"ne":[6,1,1,1],"op":"RESHAPE","sources":["ffn_moe_weights-3"]}
+{"buffer":"CUDA0","name":"ffn_norm-3 (reshaped)","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"RESHAPE","sources":["ffn_norm-3"]}
+{"buffer":"CUDA0","name":"ffn_moe_out-3","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["node_551","ffn_moe_weighted-3 (view)"]}
+{"buffer":"CUDA0","name":"ffn_shexp-3","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.3.ffn_down_shexp.weight","ffn_swiglu_limited-3"]}
+{"buffer":"CUDA0","name":"ffn_out-3","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["ffn_moe_out-3","ffn_shexp-3"]}
+{"buffer":"CUDA0","name":"l_last-3","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["ffn_out-3","hc_attn_post-3","hc_post-3","hc_comb-3"]}
+{"buffer":"CUDA0","name":"hc_attn_pre-4","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["l_last-3","hc_pre-3"]}
+{"buffer":"CUDA0","name":"attn_norm-4","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-4","blk.4.attn_norm.weight"]}
+{"buffer":"CUDA0","name":"qr-4","nb":[4,5120,5120,5120],"ne":[1280,1,1,1],"op":"MUL","sources":["norm-4","blk.4.attn_q_a_norm.weight"]}
+{"buffer":"CUDA0","name":"q-4","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-4","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-4 (view)","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"VIEW","sources":["kv-4"]}
+{"buffer":"CUDA0","name":"q-4 (view)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"VIEW","sources":["q-4"]}
+{"buffer":"CUDA0","name":"q-4 (view) (permuted)","nb":[4,131072,2048,131072],"ne":[512,1,64,1],"op":"PERMUTE","sources":["q-4 (view)"]}
+{"buffer":"CUDA0","name":"attn_out_raw-4","nb":[4,131072,131072,131072],"ne":[32768,1,1,1],"op":"RESHAPE","sources":["node_593"]}
+{"buffer":"CUDA0","name":"attn_out_raw-4 (reshaped)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"RESHAPE","sources":["attn_out_raw-4"]}
+{"buffer":"CUDA0","name":"attn_derope-4","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE_BACK","sources":["attn_out_raw-4 (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"attn_derope-4 (reshaped)","nb":[4,16384,131072,131072],"ne":[4096,8,1,1],"op":"RESHAPE","sources":["attn_derope-4"]}
+{"buffer":"CUDA0","name":"attn_derope-4 (reshaped) (permuted)","nb":[4,131072,16384,131072],"ne":[4096,1,8,1],"op":"PERMUTE","sources":["attn_derope-4 (reshaped)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-4","nb":[4,4096,4096,32768],"ne":[1024,1,8,1],"op":"MUL_MAT","sources":["blk.4.attn_output_a.weight","attn_derope-4 (reshaped) (permuted)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-4 (permuted)","nb":[4,4096,4096,32768],"ne":[1024,8,1,1],"op":"PERMUTE","sources":["attn_wo_a-4"]}
+{"buffer":"CUDA0","name":"attn_wo_a-4 (permuted) (cont)","nb":[4,32768,32768,32768],"ne":[8192,1,1,1],"op":"CONT","sources":["attn_wo_a-4 (permuted)"]}
+{"buffer":"CUDA0","name":"attn_out-4","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.4.attn_output_b.weight","attn_wo_a-4 (permuted) (cont)"]}
+{"buffer":"CUDA0","name":"l_last-3 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["l_last-3"]}
+{"buffer":"CUDA0","name":"hc_attn_post-4","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["attn_out-4","l_last-3","hc_post-4","hc_comb-4"]}
+{"buffer":"CUDA0","name":"hc_attn_post-4 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["hc_attn_post-4"]}
+{"buffer":"CUDA0","name":"hc_ffn_pre-4","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["hc_attn_post-4","hc_pre-4"]}
+{"buffer":"CUDA0","name":"ffn_norm-4","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-4","blk.4.ffn_norm.weight"]}
+{"buffer":"CUDA0","name":"ffn_moe_logits-4","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"MUL_MAT","sources":["blk.4.ffn_gate_inp.weight","ffn_norm-4"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-4","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"SQRT","sources":["node_637"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-4 (reshaped)","nb":[4,4,1536,1536],"ne":[1,384,1,1],"op":"RESHAPE","sources":["ffn_moe_probs-4"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-4","nb":[4,4,24,24],"ne":[1,6,1,1],"op":"GET_ROWS","sources":["ffn_moe_probs-4 (reshaped)","ffn_moe_topk-4"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-4 (reshaped)","nb":[4,24,24,24],"ne":[6,1,1,1],"op":"RESHAPE","sources":["ffn_moe_weights-4"]}
+{"buffer":"CUDA0","name":"ffn_norm-4 (reshaped)","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"RESHAPE","sources":["ffn_norm-4"]}
+{"buffer":"CUDA0","name":"ffn_moe_out-4","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["node_665","ffn_moe_weighted-4 (view)"]}
+{"buffer":"CUDA0","name":"ffn_shexp-4","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.4.ffn_down_shexp.weight","ffn_swiglu_limited-4"]}
+{"buffer":"CUDA0","name":"ffn_out-4","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["ffn_moe_out-4","ffn_shexp-4"]}
+{"buffer":"CUDA0","name":"l_last-4","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["ffn_out-4","hc_attn_post-4","hc_post-4","hc_comb-4"]}
+{"buffer":"CUDA0","name":"hc_attn_pre-5","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["l_last-4","hc_pre-4"]}
+{"buffer":"CUDA0","name":"attn_norm-5","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-5","blk.5.attn_norm.weight"]}
+{"buffer":"CUDA0","name":"qr-5","nb":[4,5120,5120,5120],"ne":[1280,1,1,1],"op":"MUL","sources":["norm-5","blk.5.attn_q_a_norm.weight"]}
+{"buffer":"CUDA0","name":"q-5","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-5","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-5 (view)","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"VIEW","sources":["kv-5"]}
+{"buffer":"CUDA0","name":"q-5 (view)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"VIEW","sources":["q-5"]}
+{"buffer":"CUDA0","name":"q-5 (view) (permuted)","nb":[4,131072,2048,131072],"ne":[512,1,64,1],"op":"PERMUTE","sources":["q-5 (view)"]}
+{"buffer":"CUDA0","name":"attn_out_raw-5","nb":[4,131072,131072,131072],"ne":[32768,1,1,1],"op":"RESHAPE","sources":["node_707"]}
+{"buffer":"CUDA0","name":"attn_out_raw-5 (reshaped)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"RESHAPE","sources":["attn_out_raw-5"]}
+{"buffer":"CUDA0","name":"attn_derope-5","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE_BACK","sources":["attn_out_raw-5 (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"attn_derope-5 (reshaped)","nb":[4,16384,131072,131072],"ne":[4096,8,1,1],"op":"RESHAPE","sources":["attn_derope-5"]}
+{"buffer":"CUDA0","name":"attn_derope-5 (reshaped) (permuted)","nb":[4,131072,16384,131072],"ne":[4096,1,8,1],"op":"PERMUTE","sources":["attn_derope-5 (reshaped)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-5","nb":[4,4096,4096,32768],"ne":[1024,1,8,1],"op":"MUL_MAT","sources":["blk.5.attn_output_a.weight","attn_derope-5 (reshaped) (permuted)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-5 (permuted)","nb":[4,4096,4096,32768],"ne":[1024,8,1,1],"op":"PERMUTE","sources":["attn_wo_a-5"]}
+{"buffer":"CUDA0","name":"attn_wo_a-5 (permuted) (cont)","nb":[4,32768,32768,32768],"ne":[8192,1,1,1],"op":"CONT","sources":["attn_wo_a-5 (permuted)"]}
+{"buffer":"CUDA0","name":"attn_out-5","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.5.attn_output_b.weight","attn_wo_a-5 (permuted) (cont)"]}
+{"buffer":"CUDA0","name":"l_last-4 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["l_last-4"]}
+{"buffer":"CUDA0","name":"hc_attn_post-5","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["attn_out-5","l_last-4","hc_post-5","hc_comb-5"]}
+{"buffer":"CUDA0","name":"hc_attn_post-5 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["hc_attn_post-5"]}
+{"buffer":"CUDA0","name":"hc_ffn_pre-5","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["hc_attn_post-5","hc_pre-5"]}
+{"buffer":"CUDA0","name":"ffn_norm-5","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-5","blk.5.ffn_norm.weight"]}
+{"buffer":"CUDA0","name":"ffn_moe_logits-5","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"MUL_MAT","sources":["blk.5.ffn_gate_inp.weight","ffn_norm-5"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-5","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"SQRT","sources":["node_751"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-5 (reshaped)","nb":[4,4,1536,1536],"ne":[1,384,1,1],"op":"RESHAPE","sources":["ffn_moe_probs-5"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-5","nb":[4,4,24,24],"ne":[1,6,1,1],"op":"GET_ROWS","sources":["ffn_moe_probs-5 (reshaped)","ffn_moe_topk-5"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-5 (reshaped)","nb":[4,24,24,24],"ne":[6,1,1,1],"op":"RESHAPE","sources":["ffn_moe_weights-5"]}
+{"buffer":"CUDA0","name":"ffn_norm-5 (reshaped)","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"RESHAPE","sources":["ffn_norm-5"]}
+{"buffer":"CUDA0","name":"ffn_moe_out-5","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["node_779","ffn_moe_weighted-5 (view)"]}
+{"buffer":"CUDA0","name":"ffn_shexp-5","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.5.ffn_down_shexp.weight","ffn_swiglu_limited-5"]}
+{"buffer":"CUDA0","name":"ffn_out-5","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["ffn_moe_out-5","ffn_shexp-5"]}
+{"buffer":"CUDA0","name":"l_last-5","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["ffn_out-5","hc_attn_post-5","hc_post-5","hc_comb-5"]}
+{"buffer":"CUDA0","name":"hc_attn_pre-6","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["l_last-5","hc_pre-5"]}
+{"buffer":"CUDA0","name":"attn_norm-6","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-6","blk.6.attn_norm.weight"]}
+{"buffer":"CUDA0","name":"qr-6","nb":[4,5120,5120,5120],"ne":[1280,1,1,1],"op":"MUL","sources":["norm-6","blk.6.attn_q_a_norm.weight"]}
+{"buffer":"CUDA0","name":"q-6","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-6","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-6 (view)","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"VIEW","sources":["kv-6"]}
+{"buffer":"CUDA0","name":"q-6 (view)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"VIEW","sources":["q-6"]}
+{"buffer":"CUDA0","name":"q-6 (view) (permuted)","nb":[4,131072,2048,131072],"ne":[512,1,64,1],"op":"PERMUTE","sources":["q-6 (view)"]}
+{"buffer":"CUDA0","name":"attn_out_raw-6","nb":[4,131072,131072,131072],"ne":[32768,1,1,1],"op":"RESHAPE","sources":["node_821"]}
+{"buffer":"CUDA0","name":"attn_out_raw-6 (reshaped)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"RESHAPE","sources":["attn_out_raw-6"]}
+{"buffer":"CUDA0","name":"attn_derope-6","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE_BACK","sources":["attn_out_raw-6 (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"attn_derope-6 (reshaped)","nb":[4,16384,131072,131072],"ne":[4096,8,1,1],"op":"RESHAPE","sources":["attn_derope-6"]}
+{"buffer":"CUDA0","name":"attn_derope-6 (reshaped) (permuted)","nb":[4,131072,16384,131072],"ne":[4096,1,8,1],"op":"PERMUTE","sources":["attn_derope-6 (reshaped)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-6","nb":[4,4096,4096,32768],"ne":[1024,1,8,1],"op":"MUL_MAT","sources":["blk.6.attn_output_a.weight","attn_derope-6 (reshaped) (permuted)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-6 (permuted)","nb":[4,4096,4096,32768],"ne":[1024,8,1,1],"op":"PERMUTE","sources":["attn_wo_a-6"]}
+{"buffer":"CUDA0","name":"attn_wo_a-6 (permuted) (cont)","nb":[4,32768,32768,32768],"ne":[8192,1,1,1],"op":"CONT","sources":["attn_wo_a-6 (permuted)"]}
+{"buffer":"CUDA0","name":"attn_out-6","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.6.attn_output_b.weight","attn_wo_a-6 (permuted) (cont)"]}
+{"buffer":"CUDA0","name":"l_last-5 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["l_last-5"]}
+{"buffer":"CUDA0","name":"hc_attn_post-6","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["attn_out-6","l_last-5","hc_post-6","hc_comb-6"]}
+{"buffer":"CUDA0","name":"hc_attn_post-6 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["hc_attn_post-6"]}
+{"buffer":"CUDA0","name":"hc_ffn_pre-6","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["hc_attn_post-6","hc_pre-6"]}
+{"buffer":"CUDA0","name":"ffn_norm-6","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-6","blk.6.ffn_norm.weight"]}
+{"buffer":"CUDA0","name":"ffn_moe_logits-6","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"MUL_MAT","sources":["blk.6.ffn_gate_inp.weight","ffn_norm-6"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-6","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"SQRT","sources":["node_865"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-6 (reshaped)","nb":[4,4,1536,1536],"ne":[1,384,1,1],"op":"RESHAPE","sources":["ffn_moe_probs-6"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-6","nb":[4,4,24,24],"ne":[1,6,1,1],"op":"GET_ROWS","sources":["ffn_moe_probs-6 (reshaped)","ffn_moe_topk-6"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-6 (reshaped)","nb":[4,24,24,24],"ne":[6,1,1,1],"op":"RESHAPE","sources":["ffn_moe_weights-6"]}
+{"buffer":"CUDA0","name":"ffn_norm-6 (reshaped)","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"RESHAPE","sources":["ffn_norm-6"]}
+{"buffer":"CUDA0","name":"ffn_moe_out-6","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["node_893","ffn_moe_weighted-6 (view)"]}
+{"buffer":"CUDA0","name":"ffn_shexp-6","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.6.ffn_down_shexp.weight","ffn_swiglu_limited-6"]}
+{"buffer":"CUDA0","name":"ffn_out-6","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["ffn_moe_out-6","ffn_shexp-6"]}
+{"buffer":"CUDA0","name":"l_last-6","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["ffn_out-6","hc_attn_post-6","hc_post-6","hc_comb-6"]}
+{"buffer":"CUDA0","name":"hc_attn_pre-7","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["l_last-6","hc_pre-6"]}
+{"buffer":"CUDA0","name":"attn_norm-7","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-7","blk.7.attn_norm.weight"]}
+{"buffer":"CUDA0","name":"qr-7","nb":[4,5120,5120,5120],"ne":[1280,1,1,1],"op":"MUL","sources":["norm-7","blk.7.attn_q_a_norm.weight"]}
+{"buffer":"CUDA0","name":"q-7","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-7","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-7 (view)","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"VIEW","sources":["kv-7"]}
+{"buffer":"CUDA0","name":"q-7 (view)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"VIEW","sources":["q-7"]}
+{"buffer":"CUDA0","name":"q-7 (view) (permuted)","nb":[4,131072,2048,131072],"ne":[512,1,64,1],"op":"PERMUTE","sources":["q-7 (view)"]}
+{"buffer":"CUDA0","name":"attn_out_raw-7","nb":[4,131072,131072,131072],"ne":[32768,1,1,1],"op":"RESHAPE","sources":["node_935"]}
+{"buffer":"CUDA0","name":"attn_out_raw-7 (reshaped)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"RESHAPE","sources":["attn_out_raw-7"]}
+{"buffer":"CUDA0","name":"attn_derope-7","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE_BACK","sources":["attn_out_raw-7 (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"attn_derope-7 (reshaped)","nb":[4,16384,131072,131072],"ne":[4096,8,1,1],"op":"RESHAPE","sources":["attn_derope-7"]}
+{"buffer":"CUDA0","name":"attn_derope-7 (reshaped) (permuted)","nb":[4,131072,16384,131072],"ne":[4096,1,8,1],"op":"PERMUTE","sources":["attn_derope-7 (reshaped)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-7","nb":[4,4096,4096,32768],"ne":[1024,1,8,1],"op":"MUL_MAT","sources":["blk.7.attn_output_a.weight","attn_derope-7 (reshaped) (permuted)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-7 (permuted)","nb":[4,4096,4096,32768],"ne":[1024,8,1,1],"op":"PERMUTE","sources":["attn_wo_a-7"]}
+{"buffer":"CUDA0","name":"attn_wo_a-7 (permuted) (cont)","nb":[4,32768,32768,32768],"ne":[8192,1,1,1],"op":"CONT","sources":["attn_wo_a-7 (permuted)"]}
+{"buffer":"CUDA0","name":"attn_out-7","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.7.attn_output_b.weight","attn_wo_a-7 (permuted) (cont)"]}
+{"buffer":"CUDA0","name":"l_last-6 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["l_last-6"]}
+{"buffer":"CUDA0","name":"hc_attn_post-7","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["attn_out-7","l_last-6","hc_post-7","hc_comb-7"]}
+{"buffer":"CUDA0","name":"hc_attn_post-7 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["hc_attn_post-7"]}
+{"buffer":"CUDA0","name":"hc_ffn_pre-7","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["hc_attn_post-7","hc_pre-7"]}
+{"buffer":"CUDA0","name":"ffn_norm-7","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-7","blk.7.ffn_norm.weight"]}
+{"buffer":"CUDA0","name":"ffn_moe_logits-7","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"MUL_MAT","sources":["blk.7.ffn_gate_inp.weight","ffn_norm-7"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-7","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"SQRT","sources":["node_979"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-7 (reshaped)","nb":[4,4,1536,1536],"ne":[1,384,1,1],"op":"RESHAPE","sources":["ffn_moe_probs-7"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-7","nb":[4,4,24,24],"ne":[1,6,1,1],"op":"GET_ROWS","sources":["ffn_moe_probs-7 (reshaped)","ffn_moe_topk-7"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-7 (reshaped)","nb":[4,24,24,24],"ne":[6,1,1,1],"op":"RESHAPE","sources":["ffn_moe_weights-7"]}
+{"buffer":"CUDA0","name":"ffn_norm-7 (reshaped)","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"RESHAPE","sources":["ffn_norm-7"]}
+{"buffer":"CUDA0","name":"ffn_moe_out-7","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["node_1007","ffn_moe_weighted-7 (view)"]}
+{"buffer":"CUDA0","name":"ffn_shexp-7","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.7.ffn_down_shexp.weight","ffn_swiglu_limited-7"]}
+{"buffer":"CUDA0","name":"ffn_out-7","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["ffn_moe_out-7","ffn_shexp-7"]}
+{"buffer":"CUDA0","name":"l_last-7","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["ffn_out-7","hc_attn_post-7","hc_post-7","hc_comb-7"]}
+{"buffer":"CUDA0","name":"hc_attn_pre-8","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["l_last-7","hc_pre-7"]}
+{"buffer":"CUDA0","name":"attn_norm-8","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-8","blk.8.attn_norm.weight"]}
+{"buffer":"CUDA0","name":"qr-8","nb":[4,5120,5120,5120],"ne":[1280,1,1,1],"op":"MUL","sources":["norm-8","blk.8.attn_q_a_norm.weight"]}
+{"buffer":"CUDA0","name":"q-8","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-8","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-8 (view)","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"VIEW","sources":["kv-8"]}
+{"buffer":"CUDA0","name":"q-8 (view)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"VIEW","sources":["q-8"]}
+{"buffer":"CUDA0","name":"q-8 (view) (permuted)","nb":[4,131072,2048,131072],"ne":[512,1,64,1],"op":"PERMUTE","sources":["q-8 (view)"]}
+{"buffer":"CUDA0","name":"attn_out_raw-8","nb":[4,131072,131072,131072],"ne":[32768,1,1,1],"op":"RESHAPE","sources":["node_1123"]}
+{"buffer":"CUDA0","name":"attn_out_raw-8 (reshaped)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"RESHAPE","sources":["attn_out_raw-8"]}
+{"buffer":"CUDA0","name":"attn_derope-8","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE_BACK","sources":["attn_out_raw-8 (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"attn_derope-8 (reshaped)","nb":[4,16384,131072,131072],"ne":[4096,8,1,1],"op":"RESHAPE","sources":["attn_derope-8"]}
+{"buffer":"CUDA0","name":"attn_derope-8 (reshaped) (permuted)","nb":[4,131072,16384,131072],"ne":[4096,1,8,1],"op":"PERMUTE","sources":["attn_derope-8 (reshaped)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-8","nb":[4,4096,4096,32768],"ne":[1024,1,8,1],"op":"MUL_MAT","sources":["blk.8.attn_output_a.weight","attn_derope-8 (reshaped) (permuted)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-8 (permuted)","nb":[4,4096,4096,32768],"ne":[1024,8,1,1],"op":"PERMUTE","sources":["attn_wo_a-8"]}
+{"buffer":"CUDA0","name":"attn_wo_a-8 (permuted) (cont)","nb":[4,32768,32768,32768],"ne":[8192,1,1,1],"op":"CONT","sources":["attn_wo_a-8 (permuted)"]}
+{"buffer":"CUDA0","name":"attn_out-8","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.8.attn_output_b.weight","attn_wo_a-8 (permuted) (cont)"]}
+{"buffer":"CUDA0","name":"l_last-7 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["l_last-7"]}
+{"buffer":"CUDA0","name":"hc_attn_post-8","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["attn_out-8","l_last-7","hc_post-8","hc_comb-8"]}
+{"buffer":"CUDA0","name":"hc_attn_post-8 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["hc_attn_post-8"]}
+{"buffer":"CUDA0","name":"hc_ffn_pre-8","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["hc_attn_post-8","hc_pre-8"]}
+{"buffer":"CUDA0","name":"ffn_norm-8","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-8","blk.8.ffn_norm.weight"]}
+{"buffer":"CUDA0","name":"ffn_moe_logits-8","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"MUL_MAT","sources":["blk.8.ffn_gate_inp.weight","ffn_norm-8"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-8","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"SQRT","sources":["node_1167"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-8 (reshaped)","nb":[4,4,1536,1536],"ne":[1,384,1,1],"op":"RESHAPE","sources":["ffn_moe_probs-8"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-8","nb":[4,4,24,24],"ne":[1,6,1,1],"op":"GET_ROWS","sources":["ffn_moe_probs-8 (reshaped)","ffn_moe_topk-8"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-8 (reshaped)","nb":[4,24,24,24],"ne":[6,1,1,1],"op":"RESHAPE","sources":["ffn_moe_weights-8"]}
+{"buffer":"CUDA0","name":"ffn_norm-8 (reshaped)","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"RESHAPE","sources":["ffn_norm-8"]}
+{"buffer":"CUDA0","name":"ffn_moe_out-8","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["node_1195","ffn_moe_weighted-8 (view)"]}
+{"buffer":"CUDA0","name":"ffn_shexp-8","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.8.ffn_down_shexp.weight","ffn_swiglu_limited-8"]}
+{"buffer":"CUDA0","name":"ffn_out-8","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["ffn_moe_out-8","ffn_shexp-8"]}
+{"buffer":"CUDA0","name":"l_last-8","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["ffn_out-8","hc_attn_post-8","hc_post-8","hc_comb-8"]}
+{"buffer":"CUDA0","name":"hc_attn_pre-9","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["l_last-8","hc_pre-8"]}
+{"buffer":"CUDA0","name":"attn_norm-9","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-9","blk.9.attn_norm.weight"]}
+{"buffer":"CUDA0","name":"qr-9","nb":[4,5120,5120,5120],"ne":[1280,1,1,1],"op":"MUL","sources":["norm-9","blk.9.attn_q_a_norm.weight"]}
+{"buffer":"CUDA0","name":"q-9","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-9","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-9 (view)","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"VIEW","sources":["kv-9"]}
+{"buffer":"CUDA0","name":"q-9 (view)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"VIEW","sources":["q-9"]}
+{"buffer":"CUDA0","name":"q-9 (view) (permuted)","nb":[4,131072,2048,131072],"ne":[512,1,64,1],"op":"PERMUTE","sources":["q-9 (view)"]}
+{"buffer":"CUDA0","name":"attn_out_raw-9","nb":[4,131072,131072,131072],"ne":[32768,1,1,1],"op":"RESHAPE","sources":["node_1237"]}
+{"buffer":"CUDA0","name":"attn_out_raw-9 (reshaped)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"RESHAPE","sources":["attn_out_raw-9"]}
+{"buffer":"CUDA0","name":"attn_derope-9","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE_BACK","sources":["attn_out_raw-9 (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"attn_derope-9 (reshaped)","nb":[4,16384,131072,131072],"ne":[4096,8,1,1],"op":"RESHAPE","sources":["attn_derope-9"]}
+{"buffer":"CUDA0","name":"attn_derope-9 (reshaped) (permuted)","nb":[4,131072,16384,131072],"ne":[4096,1,8,1],"op":"PERMUTE","sources":["attn_derope-9 (reshaped)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-9","nb":[4,4096,4096,32768],"ne":[1024,1,8,1],"op":"MUL_MAT","sources":["blk.9.attn_output_a.weight","attn_derope-9 (reshaped) (permuted)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-9 (permuted)","nb":[4,4096,4096,32768],"ne":[1024,8,1,1],"op":"PERMUTE","sources":["attn_wo_a-9"]}
+{"buffer":"CUDA0","name":"attn_wo_a-9 (permuted) (cont)","nb":[4,32768,32768,32768],"ne":[8192,1,1,1],"op":"CONT","sources":["attn_wo_a-9 (permuted)"]}
+{"buffer":"CUDA0","name":"attn_out-9","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.9.attn_output_b.weight","attn_wo_a-9 (permuted) (cont)"]}
+{"buffer":"CUDA0","name":"l_last-8 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["l_last-8"]}
+{"buffer":"CUDA0","name":"hc_attn_post-9","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["attn_out-9","l_last-8","hc_post-9","hc_comb-9"]}
+{"buffer":"CUDA0","name":"hc_attn_post-9 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["hc_attn_post-9"]}
+{"buffer":"CUDA0","name":"hc_ffn_pre-9","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["hc_attn_post-9","hc_pre-9"]}
+{"buffer":"CUDA0","name":"ffn_norm-9","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-9","blk.9.ffn_norm.weight"]}
+{"buffer":"CUDA0","name":"ffn_moe_logits-9","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"MUL_MAT","sources":["blk.9.ffn_gate_inp.weight","ffn_norm-9"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-9","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"SQRT","sources":["node_1281"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-9 (reshaped)","nb":[4,4,1536,1536],"ne":[1,384,1,1],"op":"RESHAPE","sources":["ffn_moe_probs-9"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-9","nb":[4,4,24,24],"ne":[1,6,1,1],"op":"GET_ROWS","sources":["ffn_moe_probs-9 (reshaped)","ffn_moe_topk-9"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-9 (reshaped)","nb":[4,24,24,24],"ne":[6,1,1,1],"op":"RESHAPE","sources":["ffn_moe_weights-9"]}
+{"buffer":"CUDA0","name":"ffn_norm-9 (reshaped)","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"RESHAPE","sources":["ffn_norm-9"]}
+{"buffer":"CUDA0","name":"ffn_moe_out-9","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["node_1309","ffn_moe_weighted-9 (view)"]}
+{"buffer":"CUDA0","name":"ffn_shexp-9","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.9.ffn_down_shexp.weight","ffn_swiglu_limited-9"]}
+{"buffer":"CUDA0","name":"ffn_out-9","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["ffn_moe_out-9","ffn_shexp-9"]}
+{"buffer":"CUDA0","name":"l_last-9","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["ffn_out-9","hc_attn_post-9","hc_post-9","hc_comb-9"]}
+{"buffer":"CUDA0","name":"hc_attn_pre-10","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["l_last-9","hc_pre-9"]}
+{"buffer":"CUDA0","name":"attn_norm-10","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-10","blk.10.attn_norm.weight"]}
+{"buffer":"CUDA0","name":"qr-10","nb":[4,5120,5120,5120],"ne":[1280,1,1,1],"op":"MUL","sources":["norm-10","blk.10.attn_q_a_norm.weight"]}
+{"buffer":"CUDA0","name":"q-10","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-10","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-10 (view)","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"VIEW","sources":["kv-10"]}
+{"buffer":"CUDA0","name":"q-10 (view)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"VIEW","sources":["q-10"]}
+{"buffer":"CUDA0","name":"q-10 (view) (permuted)","nb":[4,131072,2048,131072],"ne":[512,1,64,1],"op":"PERMUTE","sources":["q-10 (view)"]}
+{"buffer":"CUDA0","name":"attn_out_raw-10","nb":[4,131072,131072,131072],"ne":[32768,1,1,1],"op":"RESHAPE","sources":["node_1351"]}
+{"buffer":"CUDA0","name":"attn_out_raw-10 (reshaped)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"RESHAPE","sources":["attn_out_raw-10"]}
+{"buffer":"CUDA0","name":"attn_derope-10","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE_BACK","sources":["attn_out_raw-10 (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"attn_derope-10 (reshaped)","nb":[4,16384,131072,131072],"ne":[4096,8,1,1],"op":"RESHAPE","sources":["attn_derope-10"]}
+{"buffer":"CUDA0","name":"attn_derope-10 (reshaped) (permuted)","nb":[4,131072,16384,131072],"ne":[4096,1,8,1],"op":"PERMUTE","sources":["attn_derope-10 (reshaped)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-10","nb":[4,4096,4096,32768],"ne":[1024,1,8,1],"op":"MUL_MAT","sources":["blk.10.attn_output_a.weight","attn_derope-10 (reshaped) (permuted)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-10 (permuted)","nb":[4,4096,4096,32768],"ne":[1024,8,1,1],"op":"PERMUTE","sources":["attn_wo_a-10"]}
+{"buffer":"CUDA0","name":"attn_wo_a-10 (permuted) (cont)","nb":[4,32768,32768,32768],"ne":[8192,1,1,1],"op":"CONT","sources":["attn_wo_a-10 (permuted)"]}
+{"buffer":"CUDA0","name":"attn_out-10","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.10.attn_output_b.weight","attn_wo_a-10 (permuted) (cont)"]}
+{"buffer":"CUDA0","name":"l_last-9 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["l_last-9"]}
+{"buffer":"CUDA0","name":"hc_attn_post-10","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["attn_out-10","l_last-9","hc_post-10","hc_comb-10"]}
+{"buffer":"CUDA0","name":"hc_attn_post-10 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["hc_attn_post-10"]}
+{"buffer":"CUDA0","name":"hc_ffn_pre-10","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["hc_attn_post-10","hc_pre-10"]}
+{"buffer":"CUDA0","name":"ffn_norm-10","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-10","blk.10.ffn_norm.weight"]}
+{"buffer":"CUDA0","name":"ffn_moe_logits-10","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"MUL_MAT","sources":["blk.10.ffn_gate_inp.weight","ffn_norm-10"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-10","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"SQRT","sources":["node_1395"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-10 (reshaped)","nb":[4,4,1536,1536],"ne":[1,384,1,1],"op":"RESHAPE","sources":["ffn_moe_probs-10"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-10","nb":[4,4,24,24],"ne":[1,6,1,1],"op":"GET_ROWS","sources":["ffn_moe_probs-10 (reshaped)","ffn_moe_topk-10"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-10 (reshaped)","nb":[4,24,24,24],"ne":[6,1,1,1],"op":"RESHAPE","sources":["ffn_moe_weights-10"]}
+{"buffer":"CUDA0","name":"ffn_norm-10 (reshaped)","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"RESHAPE","sources":["ffn_norm-10"]}
+{"buffer":"CUDA0","name":"ffn_moe_out-10","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["node_1423","ffn_moe_weighted-10 (view)"]}
+{"buffer":"CUDA0","name":"ffn_shexp-10","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.10.ffn_down_shexp.weight","ffn_swiglu_limited-10"]}
+{"buffer":"CUDA0","name":"ffn_out-10","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["ffn_moe_out-10","ffn_shexp-10"]}
+{"buffer":"CUDA0","name":"l_last-10","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["ffn_out-10","hc_attn_post-10","hc_post-10","hc_comb-10"]}
+{"buffer":"CUDA0","name":"hc_attn_pre-11","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["l_last-10","hc_pre-10"]}
+{"buffer":"CUDA0","name":"attn_norm-11","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-11","blk.11.attn_norm.weight"]}
+{"buffer":"CUDA0","name":"qr-11","nb":[4,5120,5120,5120],"ne":[1280,1,1,1],"op":"MUL","sources":["norm-11","blk.11.attn_q_a_norm.weight"]}
+{"buffer":"CUDA0","name":"q-11","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-11","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-11 (view)","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"VIEW","sources":["kv-11"]}
+{"buffer":"CUDA0","name":"q-11 (view)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"VIEW","sources":["q-11"]}
+{"buffer":"CUDA0","name":"q-11 (view) (permuted)","nb":[4,131072,2048,131072],"ne":[512,1,64,1],"op":"PERMUTE","sources":["q-11 (view)"]}
+{"buffer":"CUDA0","name":"attn_out_raw-11","nb":[4,131072,131072,131072],"ne":[32768,1,1,1],"op":"RESHAPE","sources":["node_1465"]}
+{"buffer":"CUDA0","name":"attn_out_raw-11 (reshaped)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"RESHAPE","sources":["attn_out_raw-11"]}
+{"buffer":"CUDA0","name":"attn_derope-11","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE_BACK","sources":["attn_out_raw-11 (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"attn_derope-11 (reshaped)","nb":[4,16384,131072,131072],"ne":[4096,8,1,1],"op":"RESHAPE","sources":["attn_derope-11"]}
+{"buffer":"CUDA0","name":"attn_derope-11 (reshaped) (permuted)","nb":[4,131072,16384,131072],"ne":[4096,1,8,1],"op":"PERMUTE","sources":["attn_derope-11 (reshaped)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-11","nb":[4,4096,4096,32768],"ne":[1024,1,8,1],"op":"MUL_MAT","sources":["blk.11.attn_output_a.weight","attn_derope-11 (reshaped) (permuted)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-11 (permuted)","nb":[4,4096,4096,32768],"ne":[1024,8,1,1],"op":"PERMUTE","sources":["attn_wo_a-11"]}
+{"buffer":"CUDA0","name":"attn_wo_a-11 (permuted) (cont)","nb":[4,32768,32768,32768],"ne":[8192,1,1,1],"op":"CONT","sources":["attn_wo_a-11 (permuted)"]}
+{"buffer":"CUDA0","name":"attn_out-11","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.11.attn_output_b.weight","attn_wo_a-11 (permuted) (cont)"]}
+{"buffer":"CUDA0","name":"l_last-10 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["l_last-10"]}
+{"buffer":"CUDA0","name":"hc_attn_post-11","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["attn_out-11","l_last-10","hc_post-11","hc_comb-11"]}
+{"buffer":"CUDA0","name":"hc_attn_post-11 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["hc_attn_post-11"]}
+{"buffer":"CUDA0","name":"hc_ffn_pre-11","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["hc_attn_post-11","hc_pre-11"]}
+{"buffer":"CUDA0","name":"ffn_norm-11","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-11","blk.11.ffn_norm.weight"]}
+{"buffer":"CUDA0","name":"ffn_moe_logits-11","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"MUL_MAT","sources":["blk.11.ffn_gate_inp.weight","ffn_norm-11"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-11","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"SQRT","sources":["node_1509"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-11 (reshaped)","nb":[4,4,1536,1536],"ne":[1,384,1,1],"op":"RESHAPE","sources":["ffn_moe_probs-11"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-11","nb":[4,4,24,24],"ne":[1,6,1,1],"op":"GET_ROWS","sources":["ffn_moe_probs-11 (reshaped)","ffn_moe_topk-11"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-11 (reshaped)","nb":[4,24,24,24],"ne":[6,1,1,1],"op":"RESHAPE","sources":["ffn_moe_weights-11"]}
+{"buffer":"CUDA0","name":"ffn_norm-11 (reshaped)","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"RESHAPE","sources":["ffn_norm-11"]}
+{"buffer":"CUDA0","name":"ffn_moe_out-11","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["node_1537","ffn_moe_weighted-11 (view)"]}
+{"buffer":"CUDA0","name":"ffn_shexp-11","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.11.ffn_down_shexp.weight","ffn_swiglu_limited-11"]}
+{"buffer":"CUDA0","name":"ffn_out-11","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["ffn_moe_out-11","ffn_shexp-11"]}
+{"buffer":"CUDA0","name":"l_last-11","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["ffn_out-11","hc_attn_post-11","hc_post-11","hc_comb-11"]}
+{"buffer":"CUDA0","name":"hc_attn_pre-12","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["l_last-11","hc_pre-11"]}
+{"buffer":"CUDA0","name":"attn_norm-12","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-12","blk.12.attn_norm.weight"]}
+{"buffer":"CUDA0","name":"qr-12","nb":[4,5120,5120,5120],"ne":[1280,1,1,1],"op":"MUL","sources":["norm-12","blk.12.attn_q_a_norm.weight"]}
+{"buffer":"CUDA0","name":"q-12","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-12","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-12 (view)","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"VIEW","sources":["kv-12"]}
+{"buffer":"CUDA0","name":"q-12 (view)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"VIEW","sources":["q-12"]}
+{"buffer":"CUDA0","name":"q-12 (view) (permuted)","nb":[4,131072,2048,131072],"ne":[512,1,64,1],"op":"PERMUTE","sources":["q-12 (view)"]}
+{"buffer":"CUDA0","name":"attn_out_raw-12","nb":[4,131072,131072,131072],"ne":[32768,1,1,1],"op":"RESHAPE","sources":["node_1579"]}
+{"buffer":"CUDA0","name":"attn_out_raw-12 (reshaped)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"RESHAPE","sources":["attn_out_raw-12"]}
+{"buffer":"CUDA0","name":"attn_derope-12","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE_BACK","sources":["attn_out_raw-12 (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"attn_derope-12 (reshaped)","nb":[4,16384,131072,131072],"ne":[4096,8,1,1],"op":"RESHAPE","sources":["attn_derope-12"]}
+{"buffer":"CUDA0","name":"attn_derope-12 (reshaped) (permuted)","nb":[4,131072,16384,131072],"ne":[4096,1,8,1],"op":"PERMUTE","sources":["attn_derope-12 (reshaped)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-12","nb":[4,4096,4096,32768],"ne":[1024,1,8,1],"op":"MUL_MAT","sources":["blk.12.attn_output_a.weight","attn_derope-12 (reshaped) (permuted)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-12 (permuted)","nb":[4,4096,4096,32768],"ne":[1024,8,1,1],"op":"PERMUTE","sources":["attn_wo_a-12"]}
+{"buffer":"CUDA0","name":"attn_wo_a-12 (permuted) (cont)","nb":[4,32768,32768,32768],"ne":[8192,1,1,1],"op":"CONT","sources":["attn_wo_a-12 (permuted)"]}
+{"buffer":"CUDA0","name":"attn_out-12","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.12.attn_output_b.weight","attn_wo_a-12 (permuted) (cont)"]}
+{"buffer":"CUDA0","name":"l_last-11 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["l_last-11"]}
+{"buffer":"CUDA0","name":"hc_attn_post-12","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["attn_out-12","l_last-11","hc_post-12","hc_comb-12"]}
+{"buffer":"CUDA0","name":"hc_attn_post-12 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["hc_attn_post-12"]}
+{"buffer":"CUDA0","name":"hc_ffn_pre-12","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["hc_attn_post-12","hc_pre-12"]}
+{"buffer":"CUDA0","name":"ffn_norm-12","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-12","blk.12.ffn_norm.weight"]}
+{"buffer":"CUDA0","name":"ffn_moe_logits-12","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"MUL_MAT","sources":["blk.12.ffn_gate_inp.weight","ffn_norm-12"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-12","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"SQRT","sources":["node_1623"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-12 (reshaped)","nb":[4,4,1536,1536],"ne":[1,384,1,1],"op":"RESHAPE","sources":["ffn_moe_probs-12"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-12","nb":[4,4,24,24],"ne":[1,6,1,1],"op":"GET_ROWS","sources":["ffn_moe_probs-12 (reshaped)","ffn_moe_topk-12"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-12 (reshaped)","nb":[4,24,24,24],"ne":[6,1,1,1],"op":"RESHAPE","sources":["ffn_moe_weights-12"]}
+{"buffer":"CUDA0","name":"ffn_norm-12 (reshaped)","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"RESHAPE","sources":["ffn_norm-12"]}
+{"buffer":"CUDA0","name":"ffn_moe_out-12","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["node_1651","ffn_moe_weighted-12 (view)"]}
+{"buffer":"CUDA0","name":"ffn_shexp-12","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.12.ffn_down_shexp.weight","ffn_swiglu_limited-12"]}
+{"buffer":"CUDA0","name":"ffn_out-12","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["ffn_moe_out-12","ffn_shexp-12"]}
+{"buffer":"CUDA0","name":"l_last-12","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["ffn_out-12","hc_attn_post-12","hc_post-12","hc_comb-12"]}
+{"buffer":"CUDA0","name":"hc_attn_pre-13","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["l_last-12","hc_pre-12"]}
+{"buffer":"CUDA0","name":"attn_norm-13","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-13","blk.13.attn_norm.weight"]}
+{"buffer":"CUDA0","name":"qr-13","nb":[4,5120,5120,5120],"ne":[1280,1,1,1],"op":"MUL","sources":["norm-13","blk.13.attn_q_a_norm.weight"]}
+{"buffer":"CUDA0","name":"q-13","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-13","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-13 (view)","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"VIEW","sources":["kv-13"]}
+{"buffer":"CUDA0","name":"q-13 (view)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"VIEW","sources":["q-13"]}
+{"buffer":"CUDA0","name":"q-13 (view) (permuted)","nb":[4,131072,2048,131072],"ne":[512,1,64,1],"op":"PERMUTE","sources":["q-13 (view)"]}
+{"buffer":"CUDA0","name":"attn_out_raw-13","nb":[4,131072,131072,131072],"ne":[32768,1,1,1],"op":"RESHAPE","sources":["node_1693"]}
+{"buffer":"CUDA0","name":"attn_out_raw-13 (reshaped)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"RESHAPE","sources":["attn_out_raw-13"]}
+{"buffer":"CUDA0","name":"attn_derope-13","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE_BACK","sources":["attn_out_raw-13 (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"attn_derope-13 (reshaped)","nb":[4,16384,131072,131072],"ne":[4096,8,1,1],"op":"RESHAPE","sources":["attn_derope-13"]}
+{"buffer":"CUDA0","name":"attn_derope-13 (reshaped) (permuted)","nb":[4,131072,16384,131072],"ne":[4096,1,8,1],"op":"PERMUTE","sources":["attn_derope-13 (reshaped)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-13","nb":[4,4096,4096,32768],"ne":[1024,1,8,1],"op":"MUL_MAT","sources":["blk.13.attn_output_a.weight","attn_derope-13 (reshaped) (permuted)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-13 (permuted)","nb":[4,4096,4096,32768],"ne":[1024,8,1,1],"op":"PERMUTE","sources":["attn_wo_a-13"]}
+{"buffer":"CUDA0","name":"attn_wo_a-13 (permuted) (cont)","nb":[4,32768,32768,32768],"ne":[8192,1,1,1],"op":"CONT","sources":["attn_wo_a-13 (permuted)"]}
+{"buffer":"CUDA0","name":"attn_out-13","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.13.attn_output_b.weight","attn_wo_a-13 (permuted) (cont)"]}
+{"buffer":"CUDA0","name":"l_last-12 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["l_last-12"]}
+{"buffer":"CUDA0","name":"hc_attn_post-13","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["attn_out-13","l_last-12","hc_post-13","hc_comb-13"]}
+{"buffer":"CUDA0","name":"hc_attn_post-13 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["hc_attn_post-13"]}
+{"buffer":"CUDA0","name":"hc_ffn_pre-13","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["hc_attn_post-13","hc_pre-13"]}
+{"buffer":"CUDA0","name":"ffn_norm-13","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-13","blk.13.ffn_norm.weight"]}
+{"buffer":"CUDA0","name":"ffn_moe_logits-13","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"MUL_MAT","sources":["blk.13.ffn_gate_inp.weight","ffn_norm-13"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-13","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"SQRT","sources":["node_1737"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-13 (reshaped)","nb":[4,4,1536,1536],"ne":[1,384,1,1],"op":"RESHAPE","sources":["ffn_moe_probs-13"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-13","nb":[4,4,24,24],"ne":[1,6,1,1],"op":"GET_ROWS","sources":["ffn_moe_probs-13 (reshaped)","ffn_moe_topk-13"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-13 (reshaped)","nb":[4,24,24,24],"ne":[6,1,1,1],"op":"RESHAPE","sources":["ffn_moe_weights-13"]}
+{"buffer":"CUDA0","name":"ffn_norm-13 (reshaped)","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"RESHAPE","sources":["ffn_norm-13"]}
+{"buffer":"CUDA0","name":"ffn_moe_out-13","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["node_1765","ffn_moe_weighted-13 (view)"]}
+{"buffer":"CUDA0","name":"ffn_shexp-13","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.13.ffn_down_shexp.weight","ffn_swiglu_limited-13"]}
+{"buffer":"CUDA0","name":"ffn_out-13","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["ffn_moe_out-13","ffn_shexp-13"]}
+{"buffer":"CUDA0","name":"l_last-13","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["ffn_out-13","hc_attn_post-13","hc_post-13","hc_comb-13"]}
+{"buffer":"CUDA_Host","name":"engram_embd-14","nb":[4,24576,24576,24576],"ne":[6144,1,1,1],"op":"RESHAPE","sources":["node_1775"]}
+{"buffer":"CUDA0","name":"engram_kv-14","nb":[4,102400,102400,102400],"ne":[25600,1,1,1],"op":"MUL_MAT","sources":["blk.14.engram_wkv.weight","CUDA0#engram_embd-14#0"]}
+{"buffer":"CUDA0","name":"engram_kv-14 (view)","nb":[4,102400,102400,102400],"ne":[5120,1,1,1],"op":"VIEW","sources":["engram_kv-14"]}
+{"buffer":"CUDA0","name":"engram_kv-14 (view) (cont)","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"CONT","sources":["engram_kv-14 (view)"]}
+{"buffer":"CUDA0","name":"engram_kv-14 (view) (cont) (reshaped)","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"RESHAPE","sources":["engram_kv-14 (view) (cont)"]}
+{"buffer":"CUDA0","name":"engram_kv-14 (view)","nb":[4,102400,102400,102400],"ne":[20480,1,1,1],"op":"VIEW","sources":["engram_kv-14"]}
+{"buffer":"CUDA0","name":"engram_kv-14 (view) (cont)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"CONT","sources":["engram_kv-14 (view)"]}
+{"buffer":"CUDA0","name":"engram_kv-14 (view) (cont) (reshaped)","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"RESHAPE","sources":["engram_kv-14 (view) (cont)"]}
+{"buffer":"CUDA0","name":"l_last-13 (reshaped)","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"RESHAPE","sources":["l_last-13"]}
+{"buffer":"CUDA0","name":"engram_out-14","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"ADD","sources":["l_last-13","node_1811"]}
+{"buffer":"CUDA0","name":"hc_attn_pre-14","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["engram_out-14","hc_pre-13"]}
+{"buffer":"CUDA0","name":"attn_norm-14","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-14","blk.14.attn_norm.weight"]}
+{"buffer":"CUDA0","name":"qr-14","nb":[4,5120,5120,5120],"ne":[1280,1,1,1],"op":"MUL","sources":["norm-14","blk.14.attn_q_a_norm.weight"]}
+{"buffer":"CUDA0","name":"q-14","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-14","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-14 (view)","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"VIEW","sources":["kv-14"]}
+{"buffer":"CUDA0","name":"q-14 (view)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"VIEW","sources":["q-14"]}
+{"buffer":"CUDA0","name":"q-14 (view) (permuted)","nb":[4,131072,2048,131072],"ne":[512,1,64,1],"op":"PERMUTE","sources":["q-14 (view)"]}
+{"buffer":"CUDA0","name":"attn_out_raw-14","nb":[4,131072,131072,131072],"ne":[32768,1,1,1],"op":"RESHAPE","sources":["node_1919"]}
+{"buffer":"CUDA0","name":"attn_out_raw-14 (reshaped)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"RESHAPE","sources":["attn_out_raw-14"]}
+{"buffer":"CUDA0","name":"attn_derope-14","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE_BACK","sources":["attn_out_raw-14 (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"attn_derope-14 (reshaped)","nb":[4,16384,131072,131072],"ne":[4096,8,1,1],"op":"RESHAPE","sources":["attn_derope-14"]}
+{"buffer":"CUDA0","name":"attn_derope-14 (reshaped) (permuted)","nb":[4,131072,16384,131072],"ne":[4096,1,8,1],"op":"PERMUTE","sources":["attn_derope-14 (reshaped)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-14","nb":[4,4096,4096,32768],"ne":[1024,1,8,1],"op":"MUL_MAT","sources":["blk.14.attn_output_a.weight","attn_derope-14 (reshaped) (permuted)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-14 (permuted)","nb":[4,4096,4096,32768],"ne":[1024,8,1,1],"op":"PERMUTE","sources":["attn_wo_a-14"]}
+{"buffer":"CUDA0","name":"attn_wo_a-14 (permuted) (cont)","nb":[4,32768,32768,32768],"ne":[8192,1,1,1],"op":"CONT","sources":["attn_wo_a-14 (permuted)"]}
+{"buffer":"CUDA0","name":"attn_out-14","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.14.attn_output_b.weight","attn_wo_a-14 (permuted) (cont)"]}
+{"buffer":"CUDA0","name":"engram_out-14 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["engram_out-14"]}
+{"buffer":"CUDA0","name":"hc_attn_post-14","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["attn_out-14","engram_out-14","hc_post-14","hc_comb-14"]}
+{"buffer":"CUDA0","name":"hc_attn_post-14 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["hc_attn_post-14"]}
+{"buffer":"CUDA0","name":"hc_ffn_pre-14","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["hc_attn_post-14","hc_pre-14"]}
+{"buffer":"CUDA0","name":"ffn_norm-14","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-14","blk.14.ffn_norm.weight"]}
+{"buffer":"CUDA0","name":"ffn_moe_logits-14","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"MUL_MAT","sources":["blk.14.ffn_gate_inp.weight","ffn_norm-14"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-14","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"SQRT","sources":["node_1963"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-14 (reshaped)","nb":[4,4,1536,1536],"ne":[1,384,1,1],"op":"RESHAPE","sources":["ffn_moe_probs-14"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-14","nb":[4,4,24,24],"ne":[1,6,1,1],"op":"GET_ROWS","sources":["ffn_moe_probs-14 (reshaped)","ffn_moe_topk-14"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-14 (reshaped)","nb":[4,24,24,24],"ne":[6,1,1,1],"op":"RESHAPE","sources":["ffn_moe_weights-14"]}
+{"buffer":"CUDA0","name":"ffn_norm-14 (reshaped)","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"RESHAPE","sources":["ffn_norm-14"]}
+{"buffer":"CUDA0","name":"ffn_moe_out-14","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["node_1991","ffn_moe_weighted-14 (view)"]}
+{"buffer":"CUDA0","name":"ffn_shexp-14","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.14.ffn_down_shexp.weight","ffn_swiglu_limited-14"]}
+{"buffer":"CUDA0","name":"ffn_out-14","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["ffn_moe_out-14","ffn_shexp-14"]}
+{"buffer":"CUDA0","name":"l_last-14","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["ffn_out-14","hc_attn_post-14","hc_post-14","hc_comb-14"]}
+{"buffer":"CUDA0","name":"hc_attn_pre-15","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["l_last-14","hc_pre-14"]}
+{"buffer":"CUDA0","name":"attn_norm-15","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-15","blk.15.attn_norm.weight"]}
+{"buffer":"CUDA0","name":"qr-15","nb":[4,5120,5120,5120],"ne":[1280,1,1,1],"op":"MUL","sources":["norm-15","blk.15.attn_q_a_norm.weight"]}
+{"buffer":"CUDA0","name":"q-15","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-15","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-15 (view)","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"VIEW","sources":["kv-15"]}
+{"buffer":"CUDA0","name":"q-15 (view)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"VIEW","sources":["q-15"]}
+{"buffer":"CUDA0","name":"q-15 (view) (permuted)","nb":[4,131072,2048,131072],"ne":[512,1,64,1],"op":"PERMUTE","sources":["q-15 (view)"]}
+{"buffer":"CUDA0","name":"attn_out_raw-15","nb":[4,131072,131072,131072],"ne":[32768,1,1,1],"op":"RESHAPE","sources":["node_2033"]}
+{"buffer":"CUDA0","name":"attn_out_raw-15 (reshaped)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"RESHAPE","sources":["attn_out_raw-15"]}
+{"buffer":"CUDA0","name":"attn_derope-15","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE_BACK","sources":["attn_out_raw-15 (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"attn_derope-15 (reshaped)","nb":[4,16384,131072,131072],"ne":[4096,8,1,1],"op":"RESHAPE","sources":["attn_derope-15"]}
+{"buffer":"CUDA0","name":"attn_derope-15 (reshaped) (permuted)","nb":[4,131072,16384,131072],"ne":[4096,1,8,1],"op":"PERMUTE","sources":["attn_derope-15 (reshaped)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-15","nb":[4,4096,4096,32768],"ne":[1024,1,8,1],"op":"MUL_MAT","sources":["blk.15.attn_output_a.weight","attn_derope-15 (reshaped) (permuted)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-15 (permuted)","nb":[4,4096,4096,32768],"ne":[1024,8,1,1],"op":"PERMUTE","sources":["attn_wo_a-15"]}
+{"buffer":"CUDA0","name":"attn_wo_a-15 (permuted) (cont)","nb":[4,32768,32768,32768],"ne":[8192,1,1,1],"op":"CONT","sources":["attn_wo_a-15 (permuted)"]}
+{"buffer":"CUDA0","name":"attn_out-15","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.15.attn_output_b.weight","attn_wo_a-15 (permuted) (cont)"]}
+{"buffer":"CUDA0","name":"l_last-14 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["l_last-14"]}
+{"buffer":"CUDA0","name":"hc_attn_post-15","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["attn_out-15","l_last-14","hc_post-15","hc_comb-15"]}
+{"buffer":"CUDA0","name":"hc_attn_post-15 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["hc_attn_post-15"]}
+{"buffer":"CUDA0","name":"hc_ffn_pre-15","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["hc_attn_post-15","hc_pre-15"]}
+{"buffer":"CUDA0","name":"ffn_norm-15","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-15","blk.15.ffn_norm.weight"]}
+{"buffer":"CUDA0","name":"ffn_moe_logits-15","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"MUL_MAT","sources":["blk.15.ffn_gate_inp.weight","ffn_norm-15"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-15","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"SQRT","sources":["node_2077"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-15 (reshaped)","nb":[4,4,1536,1536],"ne":[1,384,1,1],"op":"RESHAPE","sources":["ffn_moe_probs-15"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-15","nb":[4,4,24,24],"ne":[1,6,1,1],"op":"GET_ROWS","sources":["ffn_moe_probs-15 (reshaped)","ffn_moe_topk-15"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-15 (reshaped)","nb":[4,24,24,24],"ne":[6,1,1,1],"op":"RESHAPE","sources":["ffn_moe_weights-15"]}
+{"buffer":"CUDA0","name":"ffn_norm-15 (reshaped)","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"RESHAPE","sources":["ffn_norm-15"]}
+{"buffer":"CUDA0","name":"ffn_moe_out-15","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["node_2105","ffn_moe_weighted-15 (view)"]}
+{"buffer":"CUDA0","name":"ffn_shexp-15","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.15.ffn_down_shexp.weight","ffn_swiglu_limited-15"]}
+{"buffer":"CUDA0","name":"ffn_out-15","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["ffn_moe_out-15","ffn_shexp-15"]}
+{"buffer":"CUDA0","name":"l_last-15","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["ffn_out-15","hc_attn_post-15","hc_post-15","hc_comb-15"]}
+{"buffer":"CUDA0","name":"hc_attn_pre-16","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["l_last-15","hc_pre-15"]}
+{"buffer":"CUDA0","name":"attn_norm-16","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-16","blk.16.attn_norm.weight"]}
+{"buffer":"CUDA0","name":"qr-16","nb":[4,5120,5120,5120],"ne":[1280,1,1,1],"op":"MUL","sources":["norm-16","blk.16.attn_q_a_norm.weight"]}
+{"buffer":"CUDA0","name":"q-16","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-16","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-16 (view)","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"VIEW","sources":["kv-16"]}
+{"buffer":"CUDA0","name":"q-16 (view)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"VIEW","sources":["q-16"]}
+{"buffer":"CUDA0","name":"q-16 (view) (permuted)","nb":[4,131072,2048,131072],"ne":[512,1,64,1],"op":"PERMUTE","sources":["q-16 (view)"]}
+{"buffer":"CUDA0","name":"attn_out_raw-16","nb":[4,131072,131072,131072],"ne":[32768,1,1,1],"op":"RESHAPE","sources":["node_2147"]}
+{"buffer":"CUDA0","name":"attn_out_raw-16 (reshaped)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"RESHAPE","sources":["attn_out_raw-16"]}
+{"buffer":"CUDA0","name":"attn_derope-16","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE_BACK","sources":["attn_out_raw-16 (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"attn_derope-16 (reshaped)","nb":[4,16384,131072,131072],"ne":[4096,8,1,1],"op":"RESHAPE","sources":["attn_derope-16"]}
+{"buffer":"CUDA0","name":"attn_derope-16 (reshaped) (permuted)","nb":[4,131072,16384,131072],"ne":[4096,1,8,1],"op":"PERMUTE","sources":["attn_derope-16 (reshaped)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-16","nb":[4,4096,4096,32768],"ne":[1024,1,8,1],"op":"MUL_MAT","sources":["blk.16.attn_output_a.weight","attn_derope-16 (reshaped) (permuted)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-16 (permuted)","nb":[4,4096,4096,32768],"ne":[1024,8,1,1],"op":"PERMUTE","sources":["attn_wo_a-16"]}
+{"buffer":"CUDA0","name":"attn_wo_a-16 (permuted) (cont)","nb":[4,32768,32768,32768],"ne":[8192,1,1,1],"op":"CONT","sources":["attn_wo_a-16 (permuted)"]}
+{"buffer":"CUDA0","name":"attn_out-16","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.16.attn_output_b.weight","attn_wo_a-16 (permuted) (cont)"]}
+{"buffer":"CUDA0","name":"l_last-15 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["l_last-15"]}
+{"buffer":"CUDA0","name":"hc_attn_post-16","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["attn_out-16","l_last-15","hc_post-16","hc_comb-16"]}
+{"buffer":"CUDA0","name":"hc_attn_post-16 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["hc_attn_post-16"]}
+{"buffer":"CUDA0","name":"hc_ffn_pre-16","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["hc_attn_post-16","hc_pre-16"]}
+{"buffer":"CUDA0","name":"ffn_norm-16","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-16","blk.16.ffn_norm.weight"]}
+{"buffer":"CUDA0","name":"ffn_moe_logits-16","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"MUL_MAT","sources":["blk.16.ffn_gate_inp.weight","ffn_norm-16"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-16","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"SQRT","sources":["node_2191"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-16 (reshaped)","nb":[4,4,1536,1536],"ne":[1,384,1,1],"op":"RESHAPE","sources":["ffn_moe_probs-16"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-16","nb":[4,4,24,24],"ne":[1,6,1,1],"op":"GET_ROWS","sources":["ffn_moe_probs-16 (reshaped)","ffn_moe_topk-16"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-16 (reshaped)","nb":[4,24,24,24],"ne":[6,1,1,1],"op":"RESHAPE","sources":["ffn_moe_weights-16"]}
+{"buffer":"CUDA0","name":"ffn_norm-16 (reshaped)","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"RESHAPE","sources":["ffn_norm-16"]}
+{"buffer":"CUDA0","name":"ffn_moe_out-16","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["node_2219","ffn_moe_weighted-16 (view)"]}
+{"buffer":"CUDA0","name":"ffn_shexp-16","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.16.ffn_down_shexp.weight","ffn_swiglu_limited-16"]}
+{"buffer":"CUDA0","name":"ffn_out-16","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["ffn_moe_out-16","ffn_shexp-16"]}
+{"buffer":"CUDA0","name":"l_last-16","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["ffn_out-16","hc_attn_post-16","hc_post-16","hc_comb-16"]}
+{"buffer":"CUDA0","name":"hc_attn_pre-17","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["l_last-16","hc_pre-16"]}
+{"buffer":"CUDA0","name":"attn_norm-17","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-17","blk.17.attn_norm.weight"]}
+{"buffer":"CUDA0","name":"qr-17","nb":[4,5120,5120,5120],"ne":[1280,1,1,1],"op":"MUL","sources":["norm-17","blk.17.attn_q_a_norm.weight"]}
+{"buffer":"CUDA0","name":"q-17","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-17","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-17 (view)","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"VIEW","sources":["kv-17"]}
+{"buffer":"CUDA0","name":"q-17 (view)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"VIEW","sources":["q-17"]}
+{"buffer":"CUDA0","name":"q-17 (view) (permuted)","nb":[4,131072,2048,131072],"ne":[512,1,64,1],"op":"PERMUTE","sources":["q-17 (view)"]}
+{"buffer":"CUDA0","name":"attn_out_raw-17","nb":[4,131072,131072,131072],"ne":[32768,1,1,1],"op":"RESHAPE","sources":["node_2261"]}
+{"buffer":"CUDA0","name":"attn_out_raw-17 (reshaped)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"RESHAPE","sources":["attn_out_raw-17"]}
+{"buffer":"CUDA0","name":"attn_derope-17","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE_BACK","sources":["attn_out_raw-17 (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"attn_derope-17 (reshaped)","nb":[4,16384,131072,131072],"ne":[4096,8,1,1],"op":"RESHAPE","sources":["attn_derope-17"]}
+{"buffer":"CUDA0","name":"attn_derope-17 (reshaped) (permuted)","nb":[4,131072,16384,131072],"ne":[4096,1,8,1],"op":"PERMUTE","sources":["attn_derope-17 (reshaped)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-17","nb":[4,4096,4096,32768],"ne":[1024,1,8,1],"op":"MUL_MAT","sources":["blk.17.attn_output_a.weight","attn_derope-17 (reshaped) (permuted)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-17 (permuted)","nb":[4,4096,4096,32768],"ne":[1024,8,1,1],"op":"PERMUTE","sources":["attn_wo_a-17"]}
+{"buffer":"CUDA0","name":"attn_wo_a-17 (permuted) (cont)","nb":[4,32768,32768,32768],"ne":[8192,1,1,1],"op":"CONT","sources":["attn_wo_a-17 (permuted)"]}
+{"buffer":"CUDA0","name":"attn_out-17","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.17.attn_output_b.weight","attn_wo_a-17 (permuted) (cont)"]}
+{"buffer":"CUDA0","name":"l_last-16 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["l_last-16"]}
+{"buffer":"CUDA0","name":"hc_attn_post-17","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["attn_out-17","l_last-16","hc_post-17","hc_comb-17"]}
+{"buffer":"CUDA0","name":"hc_attn_post-17 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["hc_attn_post-17"]}
+{"buffer":"CUDA0","name":"hc_ffn_pre-17","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["hc_attn_post-17","hc_pre-17"]}
+{"buffer":"CUDA0","name":"ffn_norm-17","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-17","blk.17.ffn_norm.weight"]}
+{"buffer":"CUDA0","name":"ffn_moe_logits-17","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"MUL_MAT","sources":["blk.17.ffn_gate_inp.weight","ffn_norm-17"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-17","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"SQRT","sources":["node_2305"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-17 (reshaped)","nb":[4,4,1536,1536],"ne":[1,384,1,1],"op":"RESHAPE","sources":["ffn_moe_probs-17"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-17","nb":[4,4,24,24],"ne":[1,6,1,1],"op":"GET_ROWS","sources":["ffn_moe_probs-17 (reshaped)","ffn_moe_topk-17"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-17 (reshaped)","nb":[4,24,24,24],"ne":[6,1,1,1],"op":"RESHAPE","sources":["ffn_moe_weights-17"]}
+{"buffer":"CUDA0","name":"ffn_norm-17 (reshaped)","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"RESHAPE","sources":["ffn_norm-17"]}
+{"buffer":"CUDA0","name":"ffn_moe_out-17","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["node_2333","ffn_moe_weighted-17 (view)"]}
+{"buffer":"CUDA0","name":"ffn_shexp-17","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.17.ffn_down_shexp.weight","ffn_swiglu_limited-17"]}
+{"buffer":"CUDA0","name":"ffn_out-17","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["ffn_moe_out-17","ffn_shexp-17"]}
+{"buffer":"CUDA0","name":"l_last-17","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["ffn_out-17","hc_attn_post-17","hc_post-17","hc_comb-17"]}
+{"buffer":"CUDA0","name":"hc_attn_pre-18","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["l_last-17","hc_pre-17"]}
+{"buffer":"CUDA0","name":"attn_norm-18","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-18","blk.18.attn_norm.weight"]}
+{"buffer":"CUDA0","name":"qr-18","nb":[4,5120,5120,5120],"ne":[1280,1,1,1],"op":"MUL","sources":["norm-18","blk.18.attn_q_a_norm.weight"]}
+{"buffer":"CUDA0","name":"q-18","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-18","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-18 (view)","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"VIEW","sources":["kv-18"]}
+{"buffer":"CUDA0","name":"q-18 (view)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"VIEW","sources":["q-18"]}
+{"buffer":"CUDA0","name":"q-18 (view) (permuted)","nb":[4,131072,2048,131072],"ne":[512,1,64,1],"op":"PERMUTE","sources":["q-18 (view)"]}
+{"buffer":"CUDA0","name":"attn_out_raw-18","nb":[4,131072,131072,131072],"ne":[32768,1,1,1],"op":"RESHAPE","sources":["node_2375"]}
+{"buffer":"CUDA0","name":"attn_out_raw-18 (reshaped)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"RESHAPE","sources":["attn_out_raw-18"]}
+{"buffer":"CUDA0","name":"attn_derope-18","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE_BACK","sources":["attn_out_raw-18 (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"attn_derope-18 (reshaped)","nb":[4,16384,131072,131072],"ne":[4096,8,1,1],"op":"RESHAPE","sources":["attn_derope-18"]}
+{"buffer":"CUDA0","name":"attn_derope-18 (reshaped) (permuted)","nb":[4,131072,16384,131072],"ne":[4096,1,8,1],"op":"PERMUTE","sources":["attn_derope-18 (reshaped)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-18","nb":[4,4096,4096,32768],"ne":[1024,1,8,1],"op":"MUL_MAT","sources":["blk.18.attn_output_a.weight","attn_derope-18 (reshaped) (permuted)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-18 (permuted)","nb":[4,4096,4096,32768],"ne":[1024,8,1,1],"op":"PERMUTE","sources":["attn_wo_a-18"]}
+{"buffer":"CUDA0","name":"attn_wo_a-18 (permuted) (cont)","nb":[4,32768,32768,32768],"ne":[8192,1,1,1],"op":"CONT","sources":["attn_wo_a-18 (permuted)"]}
+{"buffer":"CUDA0","name":"attn_out-18","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.18.attn_output_b.weight","attn_wo_a-18 (permuted) (cont)"]}
+{"buffer":"CUDA0","name":"l_last-17 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["l_last-17"]}
+{"buffer":"CUDA0","name":"hc_attn_post-18","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["attn_out-18","l_last-17","hc_post-18","hc_comb-18"]}
+{"buffer":"CUDA0","name":"hc_attn_post-18 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["hc_attn_post-18"]}
+{"buffer":"CUDA0","name":"hc_ffn_pre-18","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["hc_attn_post-18","hc_pre-18"]}
+{"buffer":"CUDA0","name":"ffn_norm-18","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-18","blk.18.ffn_norm.weight"]}
+{"buffer":"CUDA0","name":"ffn_moe_logits-18","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"MUL_MAT","sources":["blk.18.ffn_gate_inp.weight","ffn_norm-18"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-18","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"SQRT","sources":["node_2419"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-18 (reshaped)","nb":[4,4,1536,1536],"ne":[1,384,1,1],"op":"RESHAPE","sources":["ffn_moe_probs-18"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-18","nb":[4,4,24,24],"ne":[1,6,1,1],"op":"GET_ROWS","sources":["ffn_moe_probs-18 (reshaped)","ffn_moe_topk-18"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-18 (reshaped)","nb":[4,24,24,24],"ne":[6,1,1,1],"op":"RESHAPE","sources":["ffn_moe_weights-18"]}
+{"buffer":"CUDA0","name":"ffn_norm-18 (reshaped)","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"RESHAPE","sources":["ffn_norm-18"]}
+{"buffer":"CUDA0","name":"ffn_moe_out-18","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["node_2447","ffn_moe_weighted-18 (view)"]}
+{"buffer":"CUDA0","name":"ffn_shexp-18","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.18.ffn_down_shexp.weight","ffn_swiglu_limited-18"]}
+{"buffer":"CUDA0","name":"ffn_out-18","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["ffn_moe_out-18","ffn_shexp-18"]}
+{"buffer":"CUDA0","name":"l_last-18","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["ffn_out-18","hc_attn_post-18","hc_post-18","hc_comb-18"]}
+{"buffer":"CUDA0","name":"hc_attn_pre-19","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["l_last-18","hc_pre-18"]}
+{"buffer":"CUDA0","name":"attn_norm-19","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-19","blk.19.attn_norm.weight"]}
+{"buffer":"CUDA0","name":"qr-19","nb":[4,5120,5120,5120],"ne":[1280,1,1,1],"op":"MUL","sources":["norm-19","blk.19.attn_q_a_norm.weight"]}
+{"buffer":"CUDA0","name":"q-19","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-19","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-19 (view)","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"VIEW","sources":["kv-19"]}
+{"buffer":"CUDA0","name":"q-19 (view)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"VIEW","sources":["q-19"]}
+{"buffer":"CUDA0","name":"q-19 (view) (permuted)","nb":[4,131072,2048,131072],"ne":[512,1,64,1],"op":"PERMUTE","sources":["q-19 (view)"]}
+{"buffer":"CUDA0","name":"attn_out_raw-19","nb":[4,131072,131072,131072],"ne":[32768,1,1,1],"op":"RESHAPE","sources":["node_2489"]}
+{"buffer":"CUDA0","name":"attn_out_raw-19 (reshaped)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"RESHAPE","sources":["attn_out_raw-19"]}
+{"buffer":"CUDA0","name":"attn_derope-19","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE_BACK","sources":["attn_out_raw-19 (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"attn_derope-19 (reshaped)","nb":[4,16384,131072,131072],"ne":[4096,8,1,1],"op":"RESHAPE","sources":["attn_derope-19"]}
+{"buffer":"CUDA0","name":"attn_derope-19 (reshaped) (permuted)","nb":[4,131072,16384,131072],"ne":[4096,1,8,1],"op":"PERMUTE","sources":["attn_derope-19 (reshaped)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-19","nb":[4,4096,4096,32768],"ne":[1024,1,8,1],"op":"MUL_MAT","sources":["blk.19.attn_output_a.weight","attn_derope-19 (reshaped) (permuted)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-19 (permuted)","nb":[4,4096,4096,32768],"ne":[1024,8,1,1],"op":"PERMUTE","sources":["attn_wo_a-19"]}
+{"buffer":"CUDA0","name":"attn_wo_a-19 (permuted) (cont)","nb":[4,32768,32768,32768],"ne":[8192,1,1,1],"op":"CONT","sources":["attn_wo_a-19 (permuted)"]}
+{"buffer":"CUDA0","name":"attn_out-19","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.19.attn_output_b.weight","attn_wo_a-19 (permuted) (cont)"]}
+{"buffer":"CUDA0","name":"l_last-18 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["l_last-18"]}
+{"buffer":"CUDA0","name":"hc_attn_post-19","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["attn_out-19","l_last-18","hc_post-19","hc_comb-19"]}
+{"buffer":"CUDA0","name":"hc_attn_post-19 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["hc_attn_post-19"]}
+{"buffer":"CUDA0","name":"hc_ffn_pre-19","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["hc_attn_post-19","hc_pre-19"]}
+{"buffer":"CUDA0","name":"ffn_norm-19","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-19","blk.19.ffn_norm.weight"]}
+{"buffer":"CUDA0","name":"ffn_moe_logits-19","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"MUL_MAT","sources":["blk.19.ffn_gate_inp.weight","ffn_norm-19"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-19","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"SQRT","sources":["node_2533"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-19 (reshaped)","nb":[4,4,1536,1536],"ne":[1,384,1,1],"op":"RESHAPE","sources":["ffn_moe_probs-19"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-19","nb":[4,4,24,24],"ne":[1,6,1,1],"op":"GET_ROWS","sources":["ffn_moe_probs-19 (reshaped)","ffn_moe_topk-19"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-19 (reshaped)","nb":[4,24,24,24],"ne":[6,1,1,1],"op":"RESHAPE","sources":["ffn_moe_weights-19"]}
+{"buffer":"CUDA0","name":"ffn_norm-19 (reshaped)","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"RESHAPE","sources":["ffn_norm-19"]}
+{"buffer":"CUDA0","name":"ffn_moe_out-19","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["node_2561","ffn_moe_weighted-19 (view)"]}
+{"buffer":"CUDA0","name":"ffn_shexp-19","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.19.ffn_down_shexp.weight","ffn_swiglu_limited-19"]}
+{"buffer":"CUDA0","name":"ffn_out-19","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["ffn_moe_out-19","ffn_shexp-19"]}
+{"buffer":"CUDA0","name":"l_last-19","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["ffn_out-19","hc_attn_post-19","hc_post-19","hc_comb-19"]}
+{"buffer":"CUDA0","name":"hc_attn_pre-20","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["l_last-19","hc_pre-19"]}
+{"buffer":"CUDA0","name":"attn_norm-20","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-20","blk.20.attn_norm.weight"]}
+{"buffer":"CUDA0","name":"qr-20","nb":[4,5120,5120,5120],"ne":[1280,1,1,1],"op":"MUL","sources":["norm-20","blk.20.attn_q_a_norm.weight"]}
+{"buffer":"CUDA0","name":"q-20","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-20","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-20 (view)","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"VIEW","sources":["kv-20"]}
+{"buffer":"CUDA0","name":"q-20 (view)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"VIEW","sources":["q-20"]}
+{"buffer":"CUDA0","name":"q-20 (view) (permuted)","nb":[4,131072,2048,131072],"ne":[512,1,64,1],"op":"PERMUTE","sources":["q-20 (view)"]}
+{"buffer":"CUDA0","name":"attn_out_raw-20","nb":[4,131072,131072,131072],"ne":[32768,1,1,1],"op":"RESHAPE","sources":["node_2676"]}
+{"buffer":"CUDA0","name":"attn_out_raw-20 (reshaped)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"RESHAPE","sources":["attn_out_raw-20"]}
+{"buffer":"CUDA0","name":"attn_derope-20","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE_BACK","sources":["attn_out_raw-20 (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"attn_derope-20 (reshaped)","nb":[4,16384,131072,131072],"ne":[4096,8,1,1],"op":"RESHAPE","sources":["attn_derope-20"]}
+{"buffer":"CUDA0","name":"attn_derope-20 (reshaped) (permuted)","nb":[4,131072,16384,131072],"ne":[4096,1,8,1],"op":"PERMUTE","sources":["attn_derope-20 (reshaped)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-20","nb":[4,4096,4096,32768],"ne":[1024,1,8,1],"op":"MUL_MAT","sources":["blk.20.attn_output_a.weight","attn_derope-20 (reshaped) (permuted)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-20 (permuted)","nb":[4,4096,4096,32768],"ne":[1024,8,1,1],"op":"PERMUTE","sources":["attn_wo_a-20"]}
+{"buffer":"CUDA0","name":"attn_wo_a-20 (permuted) (cont)","nb":[4,32768,32768,32768],"ne":[8192,1,1,1],"op":"CONT","sources":["attn_wo_a-20 (permuted)"]}
+{"buffer":"CUDA0","name":"attn_out-20","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.20.attn_output_b.weight","attn_wo_a-20 (permuted) (cont)"]}
+{"buffer":"CUDA0","name":"l_last-19 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["l_last-19"]}
+{"buffer":"CUDA0","name":"hc_attn_post-20","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["attn_out-20","l_last-19","hc_post-20","hc_comb-20"]}
+{"buffer":"CUDA0","name":"hc_attn_post-20 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["hc_attn_post-20"]}
+{"buffer":"CUDA0","name":"hc_ffn_pre-20","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["hc_attn_post-20","hc_pre-20"]}
+{"buffer":"CUDA0","name":"ffn_norm-20","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-20","blk.20.ffn_norm.weight"]}
+{"buffer":"CUDA0","name":"ffn_moe_logits-20","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"MUL_MAT","sources":["blk.20.ffn_gate_inp.weight","ffn_norm-20"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-20","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"SQRT","sources":["node_2720"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-20 (reshaped)","nb":[4,4,1536,1536],"ne":[1,384,1,1],"op":"RESHAPE","sources":["ffn_moe_probs-20"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-20","nb":[4,4,24,24],"ne":[1,6,1,1],"op":"GET_ROWS","sources":["ffn_moe_probs-20 (reshaped)","ffn_moe_topk-20"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-20 (reshaped)","nb":[4,24,24,24],"ne":[6,1,1,1],"op":"RESHAPE","sources":["ffn_moe_weights-20"]}
+{"buffer":"CUDA0","name":"ffn_norm-20 (reshaped)","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"RESHAPE","sources":["ffn_norm-20"]}
+{"buffer":"CUDA0","name":"ffn_moe_out-20","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["node_2748","ffn_moe_weighted-20 (view)"]}
+{"buffer":"CUDA0","name":"ffn_shexp-20","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.20.ffn_down_shexp.weight","ffn_swiglu_limited-20"]}
+{"buffer":"CUDA0","name":"ffn_out-20","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["ffn_moe_out-20","ffn_shexp-20"]}
+{"buffer":"CUDA0","name":"l_last-20","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["ffn_out-20","hc_attn_post-20","hc_post-20","hc_comb-20"]}
+{"buffer":"CUDA0","name":"hc_attn_pre-21","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["l_last-20","hc_pre-20"]}
+{"buffer":"CUDA0","name":"attn_norm-21","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-21","blk.21.attn_norm.weight"]}
+{"buffer":"CUDA0","name":"qr-21","nb":[4,5120,5120,5120],"ne":[1280,1,1,1],"op":"MUL","sources":["norm-21","blk.21.attn_q_a_norm.weight"]}
+{"buffer":"CUDA0","name":"q-21","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-21","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-21 (view)","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"VIEW","sources":["kv-21"]}
+{"buffer":"CUDA0","name":"q-21 (view)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"VIEW","sources":["q-21"]}
+{"buffer":"CUDA0","name":"q-21 (view) (permuted)","nb":[4,131072,2048,131072],"ne":[512,1,64,1],"op":"PERMUTE","sources":["q-21 (view)"]}
+{"buffer":"CUDA0","name":"attn_out_raw-21","nb":[4,131072,131072,131072],"ne":[32768,1,1,1],"op":"RESHAPE","sources":["node_2790"]}
+{"buffer":"CUDA0","name":"attn_out_raw-21 (reshaped)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"RESHAPE","sources":["attn_out_raw-21"]}
+{"buffer":"CUDA0","name":"attn_derope-21","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE_BACK","sources":["attn_out_raw-21 (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"attn_derope-21 (reshaped)","nb":[4,16384,131072,131072],"ne":[4096,8,1,1],"op":"RESHAPE","sources":["attn_derope-21"]}
+{"buffer":"CUDA0","name":"attn_derope-21 (reshaped) (permuted)","nb":[4,131072,16384,131072],"ne":[4096,1,8,1],"op":"PERMUTE","sources":["attn_derope-21 (reshaped)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-21","nb":[4,4096,4096,32768],"ne":[1024,1,8,1],"op":"MUL_MAT","sources":["blk.21.attn_output_a.weight","attn_derope-21 (reshaped) (permuted)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-21 (permuted)","nb":[4,4096,4096,32768],"ne":[1024,8,1,1],"op":"PERMUTE","sources":["attn_wo_a-21"]}
+{"buffer":"CUDA0","name":"attn_wo_a-21 (permuted) (cont)","nb":[4,32768,32768,32768],"ne":[8192,1,1,1],"op":"CONT","sources":["attn_wo_a-21 (permuted)"]}
+{"buffer":"CUDA0","name":"attn_out-21","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.21.attn_output_b.weight","attn_wo_a-21 (permuted) (cont)"]}
+{"buffer":"CUDA0","name":"l_last-20 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["l_last-20"]}
+{"buffer":"CUDA0","name":"hc_attn_post-21","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["attn_out-21","l_last-20","hc_post-21","hc_comb-21"]}
+{"buffer":"CUDA0","name":"hc_attn_post-21 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["hc_attn_post-21"]}
+{"buffer":"CUDA0","name":"hc_ffn_pre-21","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["hc_attn_post-21","hc_pre-21"]}
+{"buffer":"CUDA0","name":"ffn_norm-21","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-21","blk.21.ffn_norm.weight"]}
+{"buffer":"CUDA0","name":"ffn_moe_logits-21","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"MUL_MAT","sources":["blk.21.ffn_gate_inp.weight","ffn_norm-21"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-21","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"SQRT","sources":["node_2834"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-21 (reshaped)","nb":[4,4,1536,1536],"ne":[1,384,1,1],"op":"RESHAPE","sources":["ffn_moe_probs-21"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-21","nb":[4,4,24,24],"ne":[1,6,1,1],"op":"GET_ROWS","sources":["ffn_moe_probs-21 (reshaped)","ffn_moe_topk-21"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-21 (reshaped)","nb":[4,24,24,24],"ne":[6,1,1,1],"op":"RESHAPE","sources":["ffn_moe_weights-21"]}
+{"buffer":"CUDA0","name":"ffn_norm-21 (reshaped)","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"RESHAPE","sources":["ffn_norm-21"]}
+{"buffer":"CUDA0","name":"ffn_moe_out-21","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["node_2862","ffn_moe_weighted-21 (view)"]}
+{"buffer":"CUDA0","name":"ffn_shexp-21","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.21.ffn_down_shexp.weight","ffn_swiglu_limited-21"]}
+{"buffer":"CUDA0","name":"ffn_out-21","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["ffn_moe_out-21","ffn_shexp-21"]}
+{"buffer":"CUDA0","name":"l_last-21","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["ffn_out-21","hc_attn_post-21","hc_post-21","hc_comb-21"]}
+{"buffer":"CUDA0","name":"hc_attn_pre-22","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["l_last-21","hc_pre-21"]}
+{"buffer":"CUDA0","name":"attn_norm-22","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-22","blk.22.attn_norm.weight"]}
+{"buffer":"CUDA0","name":"qr-22","nb":[4,5120,5120,5120],"ne":[1280,1,1,1],"op":"MUL","sources":["norm-22","blk.22.attn_q_a_norm.weight"]}
+{"buffer":"CUDA0","name":"q-22","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-22","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-22 (view)","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"VIEW","sources":["kv-22"]}
+{"buffer":"CUDA0","name":"q-22 (view)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"VIEW","sources":["q-22"]}
+{"buffer":"CUDA0","name":"q-22 (view) (permuted)","nb":[4,131072,2048,131072],"ne":[512,1,64,1],"op":"PERMUTE","sources":["q-22 (view)"]}
+{"buffer":"CUDA0","name":"attn_out_raw-22","nb":[4,131072,131072,131072],"ne":[32768,1,1,1],"op":"RESHAPE","sources":["node_2904"]}
+{"buffer":"CUDA0","name":"attn_out_raw-22 (reshaped)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"RESHAPE","sources":["attn_out_raw-22"]}
+{"buffer":"CUDA0","name":"attn_derope-22","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE_BACK","sources":["attn_out_raw-22 (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"attn_derope-22 (reshaped)","nb":[4,16384,131072,131072],"ne":[4096,8,1,1],"op":"RESHAPE","sources":["attn_derope-22"]}
+{"buffer":"CUDA0","name":"attn_derope-22 (reshaped) (permuted)","nb":[4,131072,16384,131072],"ne":[4096,1,8,1],"op":"PERMUTE","sources":["attn_derope-22 (reshaped)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-22","nb":[4,4096,4096,32768],"ne":[1024,1,8,1],"op":"MUL_MAT","sources":["blk.22.attn_output_a.weight","attn_derope-22 (reshaped) (permuted)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-22 (permuted)","nb":[4,4096,4096,32768],"ne":[1024,8,1,1],"op":"PERMUTE","sources":["attn_wo_a-22"]}
+{"buffer":"CUDA0","name":"attn_wo_a-22 (permuted) (cont)","nb":[4,32768,32768,32768],"ne":[8192,1,1,1],"op":"CONT","sources":["attn_wo_a-22 (permuted)"]}
+{"buffer":"CUDA0","name":"attn_out-22","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.22.attn_output_b.weight","attn_wo_a-22 (permuted) (cont)"]}
+{"buffer":"CUDA0","name":"l_last-21 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["l_last-21"]}
+{"buffer":"CUDA0","name":"hc_attn_post-22","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["attn_out-22","l_last-21","hc_post-22","hc_comb-22"]}
+{"buffer":"CUDA0","name":"hc_attn_post-22 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["hc_attn_post-22"]}
+{"buffer":"CUDA0","name":"hc_ffn_pre-22","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["hc_attn_post-22","hc_pre-22"]}
+{"buffer":"CUDA0","name":"ffn_norm-22","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-22","blk.22.ffn_norm.weight"]}
+{"buffer":"CUDA0","name":"ffn_moe_logits-22","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"MUL_MAT","sources":["blk.22.ffn_gate_inp.weight","ffn_norm-22"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-22","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"SQRT","sources":["node_2948"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-22 (reshaped)","nb":[4,4,1536,1536],"ne":[1,384,1,1],"op":"RESHAPE","sources":["ffn_moe_probs-22"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-22","nb":[4,4,24,24],"ne":[1,6,1,1],"op":"GET_ROWS","sources":["ffn_moe_probs-22 (reshaped)","ffn_moe_topk-22"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-22 (reshaped)","nb":[4,24,24,24],"ne":[6,1,1,1],"op":"RESHAPE","sources":["ffn_moe_weights-22"]}
+{"buffer":"CUDA0","name":"ffn_norm-22 (reshaped)","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"RESHAPE","sources":["ffn_norm-22"]}
+{"buffer":"CUDA0","name":"ffn_moe_out-22","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["node_2976","ffn_moe_weighted-22 (view)"]}
+{"buffer":"CUDA0","name":"ffn_shexp-22","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.22.ffn_down_shexp.weight","ffn_swiglu_limited-22"]}
+{"buffer":"CUDA0","name":"ffn_out-22","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["ffn_moe_out-22","ffn_shexp-22"]}
+{"buffer":"CUDA0","name":"l_last-22","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["ffn_out-22","hc_attn_post-22","hc_post-22","hc_comb-22"]}
+{"buffer":"CUDA0","name":"hc_attn_pre-23","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["l_last-22","hc_pre-22"]}
+{"buffer":"CUDA0","name":"attn_norm-23","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-23","blk.23.attn_norm.weight"]}
+{"buffer":"CUDA0","name":"qr-23","nb":[4,5120,5120,5120],"ne":[1280,1,1,1],"op":"MUL","sources":["norm-23","blk.23.attn_q_a_norm.weight"]}
+{"buffer":"CUDA0","name":"q-23","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-23","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-23 (view)","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"VIEW","sources":["kv-23"]}
+{"buffer":"CUDA0","name":"q-23 (view)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"VIEW","sources":["q-23"]}
+{"buffer":"CUDA0","name":"q-23 (view) (permuted)","nb":[4,131072,2048,131072],"ne":[512,1,64,1],"op":"PERMUTE","sources":["q-23 (view)"]}
+{"buffer":"CUDA0","name":"attn_out_raw-23","nb":[4,131072,131072,131072],"ne":[32768,1,1,1],"op":"RESHAPE","sources":["node_3018"]}
+{"buffer":"CUDA0","name":"attn_out_raw-23 (reshaped)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"RESHAPE","sources":["attn_out_raw-23"]}
+{"buffer":"CUDA0","name":"attn_derope-23","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE_BACK","sources":["attn_out_raw-23 (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"attn_derope-23 (reshaped)","nb":[4,16384,131072,131072],"ne":[4096,8,1,1],"op":"RESHAPE","sources":["attn_derope-23"]}
+{"buffer":"CUDA0","name":"attn_derope-23 (reshaped) (permuted)","nb":[4,131072,16384,131072],"ne":[4096,1,8,1],"op":"PERMUTE","sources":["attn_derope-23 (reshaped)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-23","nb":[4,4096,4096,32768],"ne":[1024,1,8,1],"op":"MUL_MAT","sources":["blk.23.attn_output_a.weight","attn_derope-23 (reshaped) (permuted)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-23 (permuted)","nb":[4,4096,4096,32768],"ne":[1024,8,1,1],"op":"PERMUTE","sources":["attn_wo_a-23"]}
+{"buffer":"CUDA0","name":"attn_wo_a-23 (permuted) (cont)","nb":[4,32768,32768,32768],"ne":[8192,1,1,1],"op":"CONT","sources":["attn_wo_a-23 (permuted)"]}
+{"buffer":"CUDA0","name":"attn_out-23","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.23.attn_output_b.weight","attn_wo_a-23 (permuted) (cont)"]}
+{"buffer":"CUDA0","name":"l_last-22 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["l_last-22"]}
+{"buffer":"CUDA0","name":"hc_attn_post-23","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["attn_out-23","l_last-22","hc_post-23","hc_comb-23"]}
+{"buffer":"CUDA0","name":"hc_attn_post-23 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["hc_attn_post-23"]}
+{"buffer":"CUDA0","name":"hc_ffn_pre-23","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["hc_attn_post-23","hc_pre-23"]}
+{"buffer":"CUDA0","name":"ffn_norm-23","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-23","blk.23.ffn_norm.weight"]}
+{"buffer":"CUDA0","name":"ffn_moe_logits-23","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"MUL_MAT","sources":["blk.23.ffn_gate_inp.weight","ffn_norm-23"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-23","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"SQRT","sources":["node_3062"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-23 (reshaped)","nb":[4,4,1536,1536],"ne":[1,384,1,1],"op":"RESHAPE","sources":["ffn_moe_probs-23"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-23","nb":[4,4,24,24],"ne":[1,6,1,1],"op":"GET_ROWS","sources":["ffn_moe_probs-23 (reshaped)","ffn_moe_topk-23"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-23 (reshaped)","nb":[4,24,24,24],"ne":[6,1,1,1],"op":"RESHAPE","sources":["ffn_moe_weights-23"]}
+{"buffer":"CUDA0","name":"ffn_norm-23 (reshaped)","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"RESHAPE","sources":["ffn_norm-23"]}
+{"buffer":"CUDA0","name":"ffn_moe_out-23","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["node_3090","ffn_moe_weighted-23 (view)"]}
+{"buffer":"CUDA0","name":"ffn_shexp-23","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.23.ffn_down_shexp.weight","ffn_swiglu_limited-23"]}
+{"buffer":"CUDA0","name":"ffn_out-23","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["ffn_moe_out-23","ffn_shexp-23"]}
+{"buffer":"CUDA0","name":"l_last-23","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["ffn_out-23","hc_attn_post-23","hc_post-23","hc_comb-23"]}
+{"buffer":"CUDA0","name":"hc_attn_pre-24","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["l_last-23","hc_pre-23"]}
+{"buffer":"CUDA0","name":"attn_norm-24","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-24","blk.24.attn_norm.weight"]}
+{"buffer":"CUDA0","name":"qr-24","nb":[4,5120,5120,5120],"ne":[1280,1,1,1],"op":"MUL","sources":["norm-24","blk.24.attn_q_a_norm.weight"]}
+{"buffer":"CUDA0","name":"q-24","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-24","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-24 (view)","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"VIEW","sources":["kv-24"]}
+{"buffer":"CUDA0","name":"q-24 (view)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"VIEW","sources":["q-24"]}
+{"buffer":"CUDA0","name":"q-24 (view) (permuted)","nb":[4,131072,2048,131072],"ne":[512,1,64,1],"op":"PERMUTE","sources":["q-24 (view)"]}
+{"buffer":"CUDA0","name":"attn_out_raw-24","nb":[4,131072,131072,131072],"ne":[32768,1,1,1],"op":"RESHAPE","sources":["node_3165"]}
+{"buffer":"CUDA0","name":"attn_out_raw-24 (reshaped)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"RESHAPE","sources":["attn_out_raw-24"]}
+{"buffer":"CUDA0","name":"attn_derope-24","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE_BACK","sources":["attn_out_raw-24 (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"attn_derope-24 (reshaped)","nb":[4,16384,131072,131072],"ne":[4096,8,1,1],"op":"RESHAPE","sources":["attn_derope-24"]}
+{"buffer":"CUDA0","name":"attn_derope-24 (reshaped) (permuted)","nb":[4,131072,16384,131072],"ne":[4096,1,8,1],"op":"PERMUTE","sources":["attn_derope-24 (reshaped)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-24","nb":[4,4096,4096,32768],"ne":[1024,1,8,1],"op":"MUL_MAT","sources":["blk.24.attn_output_a.weight","attn_derope-24 (reshaped) (permuted)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-24 (permuted)","nb":[4,4096,4096,32768],"ne":[1024,8,1,1],"op":"PERMUTE","sources":["attn_wo_a-24"]}
+{"buffer":"CUDA0","name":"attn_wo_a-24 (permuted) (cont)","nb":[4,32768,32768,32768],"ne":[8192,1,1,1],"op":"CONT","sources":["attn_wo_a-24 (permuted)"]}
+{"buffer":"CUDA0","name":"attn_out-24","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.24.attn_output_b.weight","attn_wo_a-24 (permuted) (cont)"]}
+{"buffer":"CUDA0","name":"l_last-23 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["l_last-23"]}
+{"buffer":"CUDA0","name":"hc_attn_post-24","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["attn_out-24","l_last-23","hc_post-24","hc_comb-24"]}
+{"buffer":"CUDA0","name":"hc_attn_post-24 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["hc_attn_post-24"]}
+{"buffer":"CUDA0","name":"hc_ffn_pre-24","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["hc_attn_post-24","hc_pre-24"]}
+{"buffer":"CUDA0","name":"ffn_norm-24","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-24","blk.24.ffn_norm.weight"]}
+{"buffer":"CUDA0","name":"ffn_moe_logits-24","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"MUL_MAT","sources":["blk.24.ffn_gate_inp.weight","ffn_norm-24"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-24","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"SQRT","sources":["node_3209"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-24 (reshaped)","nb":[4,4,1536,1536],"ne":[1,384,1,1],"op":"RESHAPE","sources":["ffn_moe_probs-24"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-24","nb":[4,4,24,24],"ne":[1,6,1,1],"op":"GET_ROWS","sources":["ffn_moe_probs-24 (reshaped)","ffn_moe_topk-24"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-24 (reshaped)","nb":[4,24,24,24],"ne":[6,1,1,1],"op":"RESHAPE","sources":["ffn_moe_weights-24"]}
+{"buffer":"CUDA0","name":"ffn_norm-24 (reshaped)","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"RESHAPE","sources":["ffn_norm-24"]}
+{"buffer":"CUDA0","name":"ffn_moe_out-24","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["node_3237","ffn_moe_weighted-24 (view)"]}
+{"buffer":"CUDA0","name":"ffn_shexp-24","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.24.ffn_down_shexp.weight","ffn_swiglu_limited-24"]}
+{"buffer":"CUDA0","name":"ffn_out-24","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["ffn_moe_out-24","ffn_shexp-24"]}
+{"buffer":"CUDA0","name":"l_last-24","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["ffn_out-24","hc_attn_post-24","hc_post-24","hc_comb-24"]}
+{"buffer":"CUDA0","name":"hc_attn_pre-25","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["l_last-24","hc_pre-24"]}
+{"buffer":"CUDA0","name":"attn_norm-25","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-25","blk.25.attn_norm.weight"]}
+{"buffer":"CUDA0","name":"qr-25","nb":[4,5120,5120,5120],"ne":[1280,1,1,1],"op":"MUL","sources":["norm-25","blk.25.attn_q_a_norm.weight"]}
+{"buffer":"CUDA0","name":"q-25","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-25","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-25 (view)","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"VIEW","sources":["kv-25"]}
+{"buffer":"CUDA0","name":"q-25 (view)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"VIEW","sources":["q-25"]}
+{"buffer":"CUDA0","name":"q-25 (view) (permuted)","nb":[4,131072,2048,131072],"ne":[512,1,64,1],"op":"PERMUTE","sources":["q-25 (view)"]}
+{"buffer":"CUDA0","name":"attn_out_raw-25","nb":[4,131072,131072,131072],"ne":[32768,1,1,1],"op":"RESHAPE","sources":["node_3279"]}
+{"buffer":"CUDA0","name":"attn_out_raw-25 (reshaped)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"RESHAPE","sources":["attn_out_raw-25"]}
+{"buffer":"CUDA0","name":"attn_derope-25","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE_BACK","sources":["attn_out_raw-25 (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"attn_derope-25 (reshaped)","nb":[4,16384,131072,131072],"ne":[4096,8,1,1],"op":"RESHAPE","sources":["attn_derope-25"]}
+{"buffer":"CUDA0","name":"attn_derope-25 (reshaped) (permuted)","nb":[4,131072,16384,131072],"ne":[4096,1,8,1],"op":"PERMUTE","sources":["attn_derope-25 (reshaped)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-25","nb":[4,4096,4096,32768],"ne":[1024,1,8,1],"op":"MUL_MAT","sources":["blk.25.attn_output_a.weight","attn_derope-25 (reshaped) (permuted)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-25 (permuted)","nb":[4,4096,4096,32768],"ne":[1024,8,1,1],"op":"PERMUTE","sources":["attn_wo_a-25"]}
+{"buffer":"CUDA0","name":"attn_wo_a-25 (permuted) (cont)","nb":[4,32768,32768,32768],"ne":[8192,1,1,1],"op":"CONT","sources":["attn_wo_a-25 (permuted)"]}
+{"buffer":"CUDA0","name":"attn_out-25","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.25.attn_output_b.weight","attn_wo_a-25 (permuted) (cont)"]}
+{"buffer":"CUDA0","name":"l_last-24 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["l_last-24"]}
+{"buffer":"CUDA0","name":"hc_attn_post-25","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["attn_out-25","l_last-24","hc_post-25","hc_comb-25"]}
+{"buffer":"CUDA0","name":"hc_attn_post-25 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["hc_attn_post-25"]}
+{"buffer":"CUDA0","name":"hc_ffn_pre-25","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["hc_attn_post-25","hc_pre-25"]}
+{"buffer":"CUDA0","name":"ffn_norm-25","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-25","blk.25.ffn_norm.weight"]}
+{"buffer":"CUDA0","name":"ffn_moe_logits-25","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"MUL_MAT","sources":["blk.25.ffn_gate_inp.weight","ffn_norm-25"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-25","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"SQRT","sources":["node_3323"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-25 (reshaped)","nb":[4,4,1536,1536],"ne":[1,384,1,1],"op":"RESHAPE","sources":["ffn_moe_probs-25"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-25","nb":[4,4,24,24],"ne":[1,6,1,1],"op":"GET_ROWS","sources":["ffn_moe_probs-25 (reshaped)","ffn_moe_topk-25"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-25 (reshaped)","nb":[4,24,24,24],"ne":[6,1,1,1],"op":"RESHAPE","sources":["ffn_moe_weights-25"]}
+{"buffer":"CUDA0","name":"ffn_norm-25 (reshaped)","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"RESHAPE","sources":["ffn_norm-25"]}
+{"buffer":"CUDA0","name":"ffn_moe_out-25","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["node_3351","ffn_moe_weighted-25 (view)"]}
+{"buffer":"CUDA0","name":"ffn_shexp-25","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.25.ffn_down_shexp.weight","ffn_swiglu_limited-25"]}
+{"buffer":"CUDA0","name":"ffn_out-25","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["ffn_moe_out-25","ffn_shexp-25"]}
+{"buffer":"CUDA0","name":"l_last-25","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["ffn_out-25","hc_attn_post-25","hc_post-25","hc_comb-25"]}
+{"buffer":"CUDA0","name":"hc_attn_pre-26","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["l_last-25","hc_pre-25"]}
+{"buffer":"CUDA0","name":"attn_norm-26","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-26","blk.26.attn_norm.weight"]}
+{"buffer":"CUDA0","name":"qr-26","nb":[4,5120,5120,5120],"ne":[1280,1,1,1],"op":"MUL","sources":["norm-26","blk.26.attn_q_a_norm.weight"]}
+{"buffer":"CUDA0","name":"q-26","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-26","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-26 (view)","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"VIEW","sources":["kv-26"]}
+{"buffer":"CUDA0","name":"q-26 (view)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"VIEW","sources":["q-26"]}
+{"buffer":"CUDA0","name":"q-26 (view) (permuted)","nb":[4,131072,2048,131072],"ne":[512,1,64,1],"op":"PERMUTE","sources":["q-26 (view)"]}
+{"buffer":"CUDA0","name":"attn_out_raw-26","nb":[4,131072,131072,131072],"ne":[32768,1,1,1],"op":"RESHAPE","sources":["node_3393"]}
+{"buffer":"CUDA0","name":"attn_out_raw-26 (reshaped)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"RESHAPE","sources":["attn_out_raw-26"]}
+{"buffer":"CUDA0","name":"attn_derope-26","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE_BACK","sources":["attn_out_raw-26 (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"attn_derope-26 (reshaped)","nb":[4,16384,131072,131072],"ne":[4096,8,1,1],"op":"RESHAPE","sources":["attn_derope-26"]}
+{"buffer":"CUDA0","name":"attn_derope-26 (reshaped) (permuted)","nb":[4,131072,16384,131072],"ne":[4096,1,8,1],"op":"PERMUTE","sources":["attn_derope-26 (reshaped)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-26","nb":[4,4096,4096,32768],"ne":[1024,1,8,1],"op":"MUL_MAT","sources":["blk.26.attn_output_a.weight","attn_derope-26 (reshaped) (permuted)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-26 (permuted)","nb":[4,4096,4096,32768],"ne":[1024,8,1,1],"op":"PERMUTE","sources":["attn_wo_a-26"]}
+{"buffer":"CUDA0","name":"attn_wo_a-26 (permuted) (cont)","nb":[4,32768,32768,32768],"ne":[8192,1,1,1],"op":"CONT","sources":["attn_wo_a-26 (permuted)"]}
+{"buffer":"CUDA0","name":"attn_out-26","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.26.attn_output_b.weight","attn_wo_a-26 (permuted) (cont)"]}
+{"buffer":"CUDA0","name":"l_last-25 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["l_last-25"]}
+{"buffer":"CUDA0","name":"hc_attn_post-26","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["attn_out-26","l_last-25","hc_post-26","hc_comb-26"]}
+{"buffer":"CUDA0","name":"hc_attn_post-26 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["hc_attn_post-26"]}
+{"buffer":"CUDA0","name":"hc_ffn_pre-26","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["hc_attn_post-26","hc_pre-26"]}
+{"buffer":"CUDA0","name":"ffn_norm-26","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-26","blk.26.ffn_norm.weight"]}
+{"buffer":"CUDA0","name":"ffn_moe_logits-26","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"MUL_MAT","sources":["blk.26.ffn_gate_inp.weight","ffn_norm-26"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-26","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"SQRT","sources":["node_3437"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-26 (reshaped)","nb":[4,4,1536,1536],"ne":[1,384,1,1],"op":"RESHAPE","sources":["ffn_moe_probs-26"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-26","nb":[4,4,24,24],"ne":[1,6,1,1],"op":"GET_ROWS","sources":["ffn_moe_probs-26 (reshaped)","ffn_moe_topk-26"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-26 (reshaped)","nb":[4,24,24,24],"ne":[6,1,1,1],"op":"RESHAPE","sources":["ffn_moe_weights-26"]}
+{"buffer":"CUDA0","name":"ffn_norm-26 (reshaped)","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"RESHAPE","sources":["ffn_norm-26"]}
+{"buffer":"CUDA0","name":"ffn_moe_out-26","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["node_3465","ffn_moe_weighted-26 (view)"]}
+{"buffer":"CUDA0","name":"ffn_shexp-26","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.26.ffn_down_shexp.weight","ffn_swiglu_limited-26"]}
+{"buffer":"CUDA0","name":"ffn_out-26","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["ffn_moe_out-26","ffn_shexp-26"]}
+{"buffer":"CUDA0","name":"l_last-26","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["ffn_out-26","hc_attn_post-26","hc_post-26","hc_comb-26"]}
+{"buffer":"CUDA0","name":"hc_attn_pre-27","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["l_last-26","hc_pre-26"]}
+{"buffer":"CUDA0","name":"attn_norm-27","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-27","blk.27.attn_norm.weight"]}
+{"buffer":"CUDA0","name":"qr-27","nb":[4,5120,5120,5120],"ne":[1280,1,1,1],"op":"MUL","sources":["norm-27","blk.27.attn_q_a_norm.weight"]}
+{"buffer":"CUDA0","name":"q-27","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-27","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-27 (view)","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"VIEW","sources":["kv-27"]}
+{"buffer":"CUDA0","name":"q-27 (view)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"VIEW","sources":["q-27"]}
+{"buffer":"CUDA0","name":"q-27 (view) (permuted)","nb":[4,131072,2048,131072],"ne":[512,1,64,1],"op":"PERMUTE","sources":["q-27 (view)"]}
+{"buffer":"CUDA0","name":"attn_out_raw-27","nb":[4,131072,131072,131072],"ne":[32768,1,1,1],"op":"RESHAPE","sources":["node_3507"]}
+{"buffer":"CUDA0","name":"attn_out_raw-27 (reshaped)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"RESHAPE","sources":["attn_out_raw-27"]}
+{"buffer":"CUDA0","name":"attn_derope-27","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE_BACK","sources":["attn_out_raw-27 (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"attn_derope-27 (reshaped)","nb":[4,16384,131072,131072],"ne":[4096,8,1,1],"op":"RESHAPE","sources":["attn_derope-27"]}
+{"buffer":"CUDA0","name":"attn_derope-27 (reshaped) (permuted)","nb":[4,131072,16384,131072],"ne":[4096,1,8,1],"op":"PERMUTE","sources":["attn_derope-27 (reshaped)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-27","nb":[4,4096,4096,32768],"ne":[1024,1,8,1],"op":"MUL_MAT","sources":["blk.27.attn_output_a.weight","attn_derope-27 (reshaped) (permuted)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-27 (permuted)","nb":[4,4096,4096,32768],"ne":[1024,8,1,1],"op":"PERMUTE","sources":["attn_wo_a-27"]}
+{"buffer":"CUDA0","name":"attn_wo_a-27 (permuted) (cont)","nb":[4,32768,32768,32768],"ne":[8192,1,1,1],"op":"CONT","sources":["attn_wo_a-27 (permuted)"]}
+{"buffer":"CUDA0","name":"attn_out-27","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.27.attn_output_b.weight","attn_wo_a-27 (permuted) (cont)"]}
+{"buffer":"CUDA0","name":"l_last-26 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["l_last-26"]}
+{"buffer":"CUDA0","name":"hc_attn_post-27","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["attn_out-27","l_last-26","hc_post-27","hc_comb-27"]}
+{"buffer":"CUDA0","name":"hc_attn_post-27 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["hc_attn_post-27"]}
+{"buffer":"CUDA0","name":"hc_ffn_pre-27","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["hc_attn_post-27","hc_pre-27"]}
+{"buffer":"CUDA0","name":"ffn_norm-27","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-27","blk.27.ffn_norm.weight"]}
+{"buffer":"CUDA0","name":"ffn_moe_logits-27","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"MUL_MAT","sources":["blk.27.ffn_gate_inp.weight","ffn_norm-27"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-27","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"SQRT","sources":["node_3551"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-27 (reshaped)","nb":[4,4,1536,1536],"ne":[1,384,1,1],"op":"RESHAPE","sources":["ffn_moe_probs-27"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-27","nb":[4,4,24,24],"ne":[1,6,1,1],"op":"GET_ROWS","sources":["ffn_moe_probs-27 (reshaped)","ffn_moe_topk-27"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-27 (reshaped)","nb":[4,24,24,24],"ne":[6,1,1,1],"op":"RESHAPE","sources":["ffn_moe_weights-27"]}
+{"buffer":"CUDA0","name":"ffn_norm-27 (reshaped)","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"RESHAPE","sources":["ffn_norm-27"]}
+{"buffer":"CUDA0","name":"ffn_moe_out-27","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["node_3579","ffn_moe_weighted-27 (view)"]}
+{"buffer":"CUDA0","name":"ffn_shexp-27","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.27.ffn_down_shexp.weight","ffn_swiglu_limited-27"]}
+{"buffer":"CUDA0","name":"ffn_out-27","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["ffn_moe_out-27","ffn_shexp-27"]}
+{"buffer":"CUDA0","name":"l_last-27","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["ffn_out-27","hc_attn_post-27","hc_post-27","hc_comb-27"]}
+{"buffer":"CUDA0","name":"hc_attn_pre-28","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["l_last-27","hc_pre-27"]}
+{"buffer":"CUDA0","name":"attn_norm-28","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-28","blk.28.attn_norm.weight"]}
+{"buffer":"CUDA0","name":"qr-28","nb":[4,5120,5120,5120],"ne":[1280,1,1,1],"op":"MUL","sources":["norm-28","blk.28.attn_q_a_norm.weight"]}
+{"buffer":"CUDA0","name":"q-28","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-28","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-28 (view)","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"VIEW","sources":["kv-28"]}
+{"buffer":"CUDA0","name":"q-28 (view)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"VIEW","sources":["q-28"]}
+{"buffer":"CUDA0","name":"q-28 (view) (permuted)","nb":[4,131072,2048,131072],"ne":[512,1,64,1],"op":"PERMUTE","sources":["q-28 (view)"]}
+{"buffer":"CUDA0","name":"attn_out_raw-28","nb":[4,131072,131072,131072],"ne":[32768,1,1,1],"op":"RESHAPE","sources":["node_3654"]}
+{"buffer":"CUDA0","name":"attn_out_raw-28 (reshaped)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"RESHAPE","sources":["attn_out_raw-28"]}
+{"buffer":"CUDA0","name":"attn_derope-28","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE_BACK","sources":["attn_out_raw-28 (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"attn_derope-28 (reshaped)","nb":[4,16384,131072,131072],"ne":[4096,8,1,1],"op":"RESHAPE","sources":["attn_derope-28"]}
+{"buffer":"CUDA0","name":"attn_derope-28 (reshaped) (permuted)","nb":[4,131072,16384,131072],"ne":[4096,1,8,1],"op":"PERMUTE","sources":["attn_derope-28 (reshaped)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-28","nb":[4,4096,4096,32768],"ne":[1024,1,8,1],"op":"MUL_MAT","sources":["blk.28.attn_output_a.weight","attn_derope-28 (reshaped) (permuted)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-28 (permuted)","nb":[4,4096,4096,32768],"ne":[1024,8,1,1],"op":"PERMUTE","sources":["attn_wo_a-28"]}
+{"buffer":"CUDA0","name":"attn_wo_a-28 (permuted) (cont)","nb":[4,32768,32768,32768],"ne":[8192,1,1,1],"op":"CONT","sources":["attn_wo_a-28 (permuted)"]}
+{"buffer":"CUDA0","name":"attn_out-28","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.28.attn_output_b.weight","attn_wo_a-28 (permuted) (cont)"]}
+{"buffer":"CUDA0","name":"l_last-27 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["l_last-27"]}
+{"buffer":"CUDA0","name":"hc_attn_post-28","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["attn_out-28","l_last-27","hc_post-28","hc_comb-28"]}
+{"buffer":"CUDA0","name":"hc_attn_post-28 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["hc_attn_post-28"]}
+{"buffer":"CUDA0","name":"hc_ffn_pre-28","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["hc_attn_post-28","hc_pre-28"]}
+{"buffer":"CUDA0","name":"ffn_norm-28","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-28","blk.28.ffn_norm.weight"]}
+{"buffer":"CUDA0","name":"ffn_moe_logits-28","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"MUL_MAT","sources":["blk.28.ffn_gate_inp.weight","ffn_norm-28"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-28","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"SQRT","sources":["node_3698"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-28 (reshaped)","nb":[4,4,1536,1536],"ne":[1,384,1,1],"op":"RESHAPE","sources":["ffn_moe_probs-28"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-28","nb":[4,4,24,24],"ne":[1,6,1,1],"op":"GET_ROWS","sources":["ffn_moe_probs-28 (reshaped)","ffn_moe_topk-28"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-28 (reshaped)","nb":[4,24,24,24],"ne":[6,1,1,1],"op":"RESHAPE","sources":["ffn_moe_weights-28"]}
+{"buffer":"CUDA0","name":"ffn_norm-28 (reshaped)","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"RESHAPE","sources":["ffn_norm-28"]}
+{"buffer":"CUDA0","name":"ffn_moe_out-28","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["node_3726","ffn_moe_weighted-28 (view)"]}
+{"buffer":"CUDA0","name":"ffn_shexp-28","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.28.ffn_down_shexp.weight","ffn_swiglu_limited-28"]}
+{"buffer":"CUDA0","name":"ffn_out-28","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["ffn_moe_out-28","ffn_shexp-28"]}
+{"buffer":"CUDA0","name":"l_last-28","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["ffn_out-28","hc_attn_post-28","hc_post-28","hc_comb-28"]}
+{"buffer":"CUDA0","name":"hc_attn_pre-29","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["l_last-28","hc_pre-28"]}
+{"buffer":"CUDA0","name":"attn_norm-29","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-29","blk.29.attn_norm.weight"]}
+{"buffer":"CUDA0","name":"qr-29","nb":[4,5120,5120,5120],"ne":[1280,1,1,1],"op":"MUL","sources":["norm-29","blk.29.attn_q_a_norm.weight"]}
+{"buffer":"CUDA0","name":"q-29","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-29","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-29 (view)","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"VIEW","sources":["kv-29"]}
+{"buffer":"CUDA0","name":"q-29 (view)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"VIEW","sources":["q-29"]}
+{"buffer":"CUDA0","name":"q-29 (view) (permuted)","nb":[4,131072,2048,131072],"ne":[512,1,64,1],"op":"PERMUTE","sources":["q-29 (view)"]}
+{"buffer":"CUDA0","name":"attn_out_raw-29","nb":[4,131072,131072,131072],"ne":[32768,1,1,1],"op":"RESHAPE","sources":["node_3768"]}
+{"buffer":"CUDA0","name":"attn_out_raw-29 (reshaped)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"RESHAPE","sources":["attn_out_raw-29"]}
+{"buffer":"CUDA0","name":"attn_derope-29","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE_BACK","sources":["attn_out_raw-29 (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"attn_derope-29 (reshaped)","nb":[4,16384,131072,131072],"ne":[4096,8,1,1],"op":"RESHAPE","sources":["attn_derope-29"]}
+{"buffer":"CUDA0","name":"attn_derope-29 (reshaped) (permuted)","nb":[4,131072,16384,131072],"ne":[4096,1,8,1],"op":"PERMUTE","sources":["attn_derope-29 (reshaped)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-29","nb":[4,4096,4096,32768],"ne":[1024,1,8,1],"op":"MUL_MAT","sources":["blk.29.attn_output_a.weight","attn_derope-29 (reshaped) (permuted)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-29 (permuted)","nb":[4,4096,4096,32768],"ne":[1024,8,1,1],"op":"PERMUTE","sources":["attn_wo_a-29"]}
+{"buffer":"CUDA0","name":"attn_wo_a-29 (permuted) (cont)","nb":[4,32768,32768,32768],"ne":[8192,1,1,1],"op":"CONT","sources":["attn_wo_a-29 (permuted)"]}
+{"buffer":"CUDA0","name":"attn_out-29","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.29.attn_output_b.weight","attn_wo_a-29 (permuted) (cont)"]}
+{"buffer":"CUDA0","name":"l_last-28 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["l_last-28"]}
+{"buffer":"CUDA0","name":"hc_attn_post-29","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["attn_out-29","l_last-28","hc_post-29","hc_comb-29"]}
+{"buffer":"CUDA0","name":"hc_attn_post-29 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["hc_attn_post-29"]}
+{"buffer":"CUDA0","name":"hc_ffn_pre-29","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["hc_attn_post-29","hc_pre-29"]}
+{"buffer":"CUDA0","name":"ffn_norm-29","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-29","blk.29.ffn_norm.weight"]}
+{"buffer":"CUDA0","name":"ffn_moe_logits-29","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"MUL_MAT","sources":["blk.29.ffn_gate_inp.weight","ffn_norm-29"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-29","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"SQRT","sources":["node_3812"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-29 (reshaped)","nb":[4,4,1536,1536],"ne":[1,384,1,1],"op":"RESHAPE","sources":["ffn_moe_probs-29"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-29","nb":[4,4,24,24],"ne":[1,6,1,1],"op":"GET_ROWS","sources":["ffn_moe_probs-29 (reshaped)","ffn_moe_topk-29"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-29 (reshaped)","nb":[4,24,24,24],"ne":[6,1,1,1],"op":"RESHAPE","sources":["ffn_moe_weights-29"]}
+{"buffer":"CUDA0","name":"ffn_norm-29 (reshaped)","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"RESHAPE","sources":["ffn_norm-29"]}
+{"buffer":"CUDA0","name":"ffn_moe_out-29","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["node_3840","ffn_moe_weighted-29 (view)"]}
+{"buffer":"CUDA0","name":"ffn_shexp-29","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.29.ffn_down_shexp.weight","ffn_swiglu_limited-29"]}
+{"buffer":"CUDA0","name":"ffn_out-29","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["ffn_moe_out-29","ffn_shexp-29"]}
+{"buffer":"CUDA0","name":"l_last-29","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["ffn_out-29","hc_attn_post-29","hc_post-29","hc_comb-29"]}
+{"buffer":"CUDA0","name":"hc_attn_pre-30","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["l_last-29","hc_pre-29"]}
+{"buffer":"CUDA0","name":"attn_norm-30","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-30","blk.30.attn_norm.weight"]}
+{"buffer":"CUDA0","name":"qr-30","nb":[4,5120,5120,5120],"ne":[1280,1,1,1],"op":"MUL","sources":["norm-30","blk.30.attn_q_a_norm.weight"]}
+{"buffer":"CUDA0","name":"q-30","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-30","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-30 (view)","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"VIEW","sources":["kv-30"]}
+{"buffer":"CUDA0","name":"q-30 (view)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"VIEW","sources":["q-30"]}
+{"buffer":"CUDA0","name":"q-30 (view) (permuted)","nb":[4,131072,2048,131072],"ne":[512,1,64,1],"op":"PERMUTE","sources":["q-30 (view)"]}
+{"buffer":"CUDA0","name":"attn_out_raw-30","nb":[4,131072,131072,131072],"ne":[32768,1,1,1],"op":"RESHAPE","sources":["node_3882"]}
+{"buffer":"CUDA0","name":"attn_out_raw-30 (reshaped)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"RESHAPE","sources":["attn_out_raw-30"]}
+{"buffer":"CUDA0","name":"attn_derope-30","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE_BACK","sources":["attn_out_raw-30 (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"attn_derope-30 (reshaped)","nb":[4,16384,131072,131072],"ne":[4096,8,1,1],"op":"RESHAPE","sources":["attn_derope-30"]}
+{"buffer":"CUDA0","name":"attn_derope-30 (reshaped) (permuted)","nb":[4,131072,16384,131072],"ne":[4096,1,8,1],"op":"PERMUTE","sources":["attn_derope-30 (reshaped)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-30","nb":[4,4096,4096,32768],"ne":[1024,1,8,1],"op":"MUL_MAT","sources":["blk.30.attn_output_a.weight","attn_derope-30 (reshaped) (permuted)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-30 (permuted)","nb":[4,4096,4096,32768],"ne":[1024,8,1,1],"op":"PERMUTE","sources":["attn_wo_a-30"]}
+{"buffer":"CUDA0","name":"attn_wo_a-30 (permuted) (cont)","nb":[4,32768,32768,32768],"ne":[8192,1,1,1],"op":"CONT","sources":["attn_wo_a-30 (permuted)"]}
+{"buffer":"CUDA0","name":"attn_out-30","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.30.attn_output_b.weight","attn_wo_a-30 (permuted) (cont)"]}
+{"buffer":"CUDA0","name":"l_last-29 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["l_last-29"]}
+{"buffer":"CUDA0","name":"hc_attn_post-30","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["attn_out-30","l_last-29","hc_post-30","hc_comb-30"]}
+{"buffer":"CUDA0","name":"hc_attn_post-30 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["hc_attn_post-30"]}
+{"buffer":"CUDA0","name":"hc_ffn_pre-30","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["hc_attn_post-30","hc_pre-30"]}
+{"buffer":"CUDA0","name":"ffn_norm-30","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-30","blk.30.ffn_norm.weight"]}
+{"buffer":"CUDA0","name":"ffn_moe_logits-30","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"MUL_MAT","sources":["blk.30.ffn_gate_inp.weight","ffn_norm-30"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-30","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"SQRT","sources":["node_3926"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-30 (reshaped)","nb":[4,4,1536,1536],"ne":[1,384,1,1],"op":"RESHAPE","sources":["ffn_moe_probs-30"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-30","nb":[4,4,24,24],"ne":[1,6,1,1],"op":"GET_ROWS","sources":["ffn_moe_probs-30 (reshaped)","ffn_moe_topk-30"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-30 (reshaped)","nb":[4,24,24,24],"ne":[6,1,1,1],"op":"RESHAPE","sources":["ffn_moe_weights-30"]}
+{"buffer":"CUDA0","name":"ffn_norm-30 (reshaped)","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"RESHAPE","sources":["ffn_norm-30"]}
+{"buffer":"CUDA0","name":"ffn_moe_out-30","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["node_3954","ffn_moe_weighted-30 (view)"]}
+{"buffer":"CUDA0","name":"ffn_shexp-30","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.30.ffn_down_shexp.weight","ffn_swiglu_limited-30"]}
+{"buffer":"CUDA0","name":"ffn_out-30","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["ffn_moe_out-30","ffn_shexp-30"]}
+{"buffer":"CUDA0","name":"l_last-30","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["ffn_out-30","hc_attn_post-30","hc_post-30","hc_comb-30"]}
+{"buffer":"CUDA0","name":"hc_attn_pre-31","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["l_last-30","hc_pre-30"]}
+{"buffer":"CUDA0","name":"attn_norm-31","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-31","blk.31.attn_norm.weight"]}
+{"buffer":"CUDA0","name":"qr-31","nb":[4,5120,5120,5120],"ne":[1280,1,1,1],"op":"MUL","sources":["norm-31","blk.31.attn_q_a_norm.weight"]}
+{"buffer":"CUDA0","name":"q-31","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-31","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-31 (view)","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"VIEW","sources":["kv-31"]}
+{"buffer":"CUDA0","name":"q-31 (view)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"VIEW","sources":["q-31"]}
+{"buffer":"CUDA0","name":"q-31 (view) (permuted)","nb":[4,131072,2048,131072],"ne":[512,1,64,1],"op":"PERMUTE","sources":["q-31 (view)"]}
+{"buffer":"CUDA0","name":"attn_out_raw-31","nb":[4,131072,131072,131072],"ne":[32768,1,1,1],"op":"RESHAPE","sources":["node_3996"]}
+{"buffer":"CUDA0","name":"attn_out_raw-31 (reshaped)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"RESHAPE","sources":["attn_out_raw-31"]}
+{"buffer":"CUDA0","name":"attn_derope-31","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE_BACK","sources":["attn_out_raw-31 (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"attn_derope-31 (reshaped)","nb":[4,16384,131072,131072],"ne":[4096,8,1,1],"op":"RESHAPE","sources":["attn_derope-31"]}
+{"buffer":"CUDA0","name":"attn_derope-31 (reshaped) (permuted)","nb":[4,131072,16384,131072],"ne":[4096,1,8,1],"op":"PERMUTE","sources":["attn_derope-31 (reshaped)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-31","nb":[4,4096,4096,32768],"ne":[1024,1,8,1],"op":"MUL_MAT","sources":["blk.31.attn_output_a.weight","attn_derope-31 (reshaped) (permuted)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-31 (permuted)","nb":[4,4096,4096,32768],"ne":[1024,8,1,1],"op":"PERMUTE","sources":["attn_wo_a-31"]}
+{"buffer":"CUDA0","name":"attn_wo_a-31 (permuted) (cont)","nb":[4,32768,32768,32768],"ne":[8192,1,1,1],"op":"CONT","sources":["attn_wo_a-31 (permuted)"]}
+{"buffer":"CUDA0","name":"attn_out-31","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.31.attn_output_b.weight","attn_wo_a-31 (permuted) (cont)"]}
+{"buffer":"CUDA0","name":"l_last-30 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["l_last-30"]}
+{"buffer":"CUDA0","name":"hc_attn_post-31","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["attn_out-31","l_last-30","hc_post-31","hc_comb-31"]}
+{"buffer":"CUDA0","name":"hc_attn_post-31 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["hc_attn_post-31"]}
+{"buffer":"CUDA0","name":"hc_ffn_pre-31","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["hc_attn_post-31","hc_pre-31"]}
+{"buffer":"CUDA0","name":"ffn_norm-31","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-31","blk.31.ffn_norm.weight"]}
+{"buffer":"CUDA0","name":"ffn_moe_logits-31","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"MUL_MAT","sources":["blk.31.ffn_gate_inp.weight","ffn_norm-31"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-31","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"SQRT","sources":["node_4040"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-31 (reshaped)","nb":[4,4,1536,1536],"ne":[1,384,1,1],"op":"RESHAPE","sources":["ffn_moe_probs-31"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-31","nb":[4,4,24,24],"ne":[1,6,1,1],"op":"GET_ROWS","sources":["ffn_moe_probs-31 (reshaped)","ffn_moe_topk-31"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-31 (reshaped)","nb":[4,24,24,24],"ne":[6,1,1,1],"op":"RESHAPE","sources":["ffn_moe_weights-31"]}
+{"buffer":"CUDA0","name":"ffn_norm-31 (reshaped)","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"RESHAPE","sources":["ffn_norm-31"]}
+{"buffer":"CUDA0","name":"ffn_moe_out-31","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["node_4068","ffn_moe_weighted-31 (view)"]}
+{"buffer":"CUDA0","name":"ffn_shexp-31","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.31.ffn_down_shexp.weight","ffn_swiglu_limited-31"]}
+{"buffer":"CUDA0","name":"ffn_out-31","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["ffn_moe_out-31","ffn_shexp-31"]}
+{"buffer":"CUDA0","name":"l_last-31","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["ffn_out-31","hc_attn_post-31","hc_post-31","hc_comb-31"]}
+{"buffer":"CUDA0","name":"hc_attn_pre-32","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["l_last-31","hc_pre-31"]}
+{"buffer":"CUDA0","name":"attn_norm-32","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-32","blk.32.attn_norm.weight"]}
+{"buffer":"CUDA0","name":"qr-32","nb":[4,5120,5120,5120],"ne":[1280,1,1,1],"op":"MUL","sources":["norm-32","blk.32.attn_q_a_norm.weight"]}
+{"buffer":"CUDA0","name":"q-32","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-32","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-32 (view)","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"VIEW","sources":["kv-32"]}
+{"buffer":"CUDA0","name":"q-32 (view)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"VIEW","sources":["q-32"]}
+{"buffer":"CUDA0","name":"q-32 (view) (permuted)","nb":[4,131072,2048,131072],"ne":[512,1,64,1],"op":"PERMUTE","sources":["q-32 (view)"]}
+{"buffer":"CUDA0","name":"attn_out_raw-32","nb":[4,131072,131072,131072],"ne":[32768,1,1,1],"op":"RESHAPE","sources":["node_4143"]}
+{"buffer":"CUDA0","name":"attn_out_raw-32 (reshaped)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"RESHAPE","sources":["attn_out_raw-32"]}
+{"buffer":"CUDA0","name":"attn_derope-32","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE_BACK","sources":["attn_out_raw-32 (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"attn_derope-32 (reshaped)","nb":[4,16384,131072,131072],"ne":[4096,8,1,1],"op":"RESHAPE","sources":["attn_derope-32"]}
+{"buffer":"CUDA0","name":"attn_derope-32 (reshaped) (permuted)","nb":[4,131072,16384,131072],"ne":[4096,1,8,1],"op":"PERMUTE","sources":["attn_derope-32 (reshaped)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-32","nb":[4,4096,4096,32768],"ne":[1024,1,8,1],"op":"MUL_MAT","sources":["blk.32.attn_output_a.weight","attn_derope-32 (reshaped) (permuted)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-32 (permuted)","nb":[4,4096,4096,32768],"ne":[1024,8,1,1],"op":"PERMUTE","sources":["attn_wo_a-32"]}
+{"buffer":"CUDA0","name":"attn_wo_a-32 (permuted) (cont)","nb":[4,32768,32768,32768],"ne":[8192,1,1,1],"op":"CONT","sources":["attn_wo_a-32 (permuted)"]}
+{"buffer":"CUDA0","name":"attn_out-32","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.32.attn_output_b.weight","attn_wo_a-32 (permuted) (cont)"]}
+{"buffer":"CUDA0","name":"l_last-31 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["l_last-31"]}
+{"buffer":"CUDA0","name":"hc_attn_post-32","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["attn_out-32","l_last-31","hc_post-32","hc_comb-32"]}
+{"buffer":"CUDA0","name":"hc_attn_post-32 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["hc_attn_post-32"]}
+{"buffer":"CUDA0","name":"hc_ffn_pre-32","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["hc_attn_post-32","hc_pre-32"]}
+{"buffer":"CUDA0","name":"ffn_norm-32","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-32","blk.32.ffn_norm.weight"]}
+{"buffer":"CUDA0","name":"ffn_moe_logits-32","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"MUL_MAT","sources":["blk.32.ffn_gate_inp.weight","ffn_norm-32"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-32","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"SQRT","sources":["node_4187"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-32 (reshaped)","nb":[4,4,1536,1536],"ne":[1,384,1,1],"op":"RESHAPE","sources":["ffn_moe_probs-32"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-32","nb":[4,4,24,24],"ne":[1,6,1,1],"op":"GET_ROWS","sources":["ffn_moe_probs-32 (reshaped)","ffn_moe_topk-32"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-32 (reshaped)","nb":[4,24,24,24],"ne":[6,1,1,1],"op":"RESHAPE","sources":["ffn_moe_weights-32"]}
+{"buffer":"CUDA0","name":"ffn_norm-32 (reshaped)","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"RESHAPE","sources":["ffn_norm-32"]}
+{"buffer":"CUDA0","name":"ffn_moe_out-32","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["node_4215","ffn_moe_weighted-32 (view)"]}
+{"buffer":"CUDA0","name":"ffn_shexp-32","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.32.ffn_down_shexp.weight","ffn_swiglu_limited-32"]}
+{"buffer":"CUDA0","name":"ffn_out-32","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["ffn_moe_out-32","ffn_shexp-32"]}
+{"buffer":"CUDA0","name":"l_last-32","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["ffn_out-32","hc_attn_post-32","hc_post-32","hc_comb-32"]}
+{"buffer":"CUDA0","name":"hc_attn_pre-33","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["l_last-32","hc_pre-32"]}
+{"buffer":"CUDA0","name":"attn_norm-33","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-33","blk.33.attn_norm.weight"]}
+{"buffer":"CUDA0","name":"qr-33","nb":[4,5120,5120,5120],"ne":[1280,1,1,1],"op":"MUL","sources":["norm-33","blk.33.attn_q_a_norm.weight"]}
+{"buffer":"CUDA0","name":"q-33","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-33","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-33 (view)","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"VIEW","sources":["kv-33"]}
+{"buffer":"CUDA0","name":"q-33 (view)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"VIEW","sources":["q-33"]}
+{"buffer":"CUDA0","name":"q-33 (view) (permuted)","nb":[4,131072,2048,131072],"ne":[512,1,64,1],"op":"PERMUTE","sources":["q-33 (view)"]}
+{"buffer":"CUDA0","name":"attn_out_raw-33","nb":[4,131072,131072,131072],"ne":[32768,1,1,1],"op":"RESHAPE","sources":["node_4257"]}
+{"buffer":"CUDA0","name":"attn_out_raw-33 (reshaped)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"RESHAPE","sources":["attn_out_raw-33"]}
+{"buffer":"CUDA0","name":"attn_derope-33","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE_BACK","sources":["attn_out_raw-33 (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"attn_derope-33 (reshaped)","nb":[4,16384,131072,131072],"ne":[4096,8,1,1],"op":"RESHAPE","sources":["attn_derope-33"]}
+{"buffer":"CUDA0","name":"attn_derope-33 (reshaped) (permuted)","nb":[4,131072,16384,131072],"ne":[4096,1,8,1],"op":"PERMUTE","sources":["attn_derope-33 (reshaped)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-33","nb":[4,4096,4096,32768],"ne":[1024,1,8,1],"op":"MUL_MAT","sources":["blk.33.attn_output_a.weight","attn_derope-33 (reshaped) (permuted)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-33 (permuted)","nb":[4,4096,4096,32768],"ne":[1024,8,1,1],"op":"PERMUTE","sources":["attn_wo_a-33"]}
+{"buffer":"CUDA0","name":"attn_wo_a-33 (permuted) (cont)","nb":[4,32768,32768,32768],"ne":[8192,1,1,1],"op":"CONT","sources":["attn_wo_a-33 (permuted)"]}
+{"buffer":"CUDA0","name":"attn_out-33","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.33.attn_output_b.weight","attn_wo_a-33 (permuted) (cont)"]}
+{"buffer":"CUDA0","name":"l_last-32 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["l_last-32"]}
+{"buffer":"CUDA0","name":"hc_attn_post-33","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["attn_out-33","l_last-32","hc_post-33","hc_comb-33"]}
+{"buffer":"CUDA0","name":"hc_attn_post-33 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["hc_attn_post-33"]}
+{"buffer":"CUDA0","name":"hc_ffn_pre-33","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["hc_attn_post-33","hc_pre-33"]}
+{"buffer":"CUDA0","name":"ffn_norm-33","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-33","blk.33.ffn_norm.weight"]}
+{"buffer":"CUDA0","name":"ffn_moe_logits-33","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"MUL_MAT","sources":["blk.33.ffn_gate_inp.weight","ffn_norm-33"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-33","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"SQRT","sources":["node_4301"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-33 (reshaped)","nb":[4,4,1536,1536],"ne":[1,384,1,1],"op":"RESHAPE","sources":["ffn_moe_probs-33"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-33","nb":[4,4,24,24],"ne":[1,6,1,1],"op":"GET_ROWS","sources":["ffn_moe_probs-33 (reshaped)","ffn_moe_topk-33"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-33 (reshaped)","nb":[4,24,24,24],"ne":[6,1,1,1],"op":"RESHAPE","sources":["ffn_moe_weights-33"]}
+{"buffer":"CUDA0","name":"ffn_norm-33 (reshaped)","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"RESHAPE","sources":["ffn_norm-33"]}
+{"buffer":"CUDA0","name":"ffn_moe_out-33","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["node_4329","ffn_moe_weighted-33 (view)"]}
+{"buffer":"CUDA0","name":"ffn_shexp-33","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.33.ffn_down_shexp.weight","ffn_swiglu_limited-33"]}
+{"buffer":"CUDA0","name":"ffn_out-33","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["ffn_moe_out-33","ffn_shexp-33"]}
+{"buffer":"CUDA0","name":"l_last-33","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["ffn_out-33","hc_attn_post-33","hc_post-33","hc_comb-33"]}
+{"buffer":"CUDA0","name":"hc_attn_pre-34","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["l_last-33","hc_pre-33"]}
+{"buffer":"CUDA0","name":"attn_norm-34","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-34","blk.34.attn_norm.weight"]}
+{"buffer":"CUDA0","name":"qr-34","nb":[4,5120,5120,5120],"ne":[1280,1,1,1],"op":"MUL","sources":["norm-34","blk.34.attn_q_a_norm.weight"]}
+{"buffer":"CUDA0","name":"q-34","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-34","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-34 (view)","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"VIEW","sources":["kv-34"]}
+{"buffer":"CUDA0","name":"q-34 (view)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"VIEW","sources":["q-34"]}
+{"buffer":"CUDA0","name":"q-34 (view) (permuted)","nb":[4,131072,2048,131072],"ne":[512,1,64,1],"op":"PERMUTE","sources":["q-34 (view)"]}
+{"buffer":"CUDA0","name":"attn_out_raw-34","nb":[4,131072,131072,131072],"ne":[32768,1,1,1],"op":"RESHAPE","sources":["node_4371"]}
+{"buffer":"CUDA0","name":"attn_out_raw-34 (reshaped)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"RESHAPE","sources":["attn_out_raw-34"]}
+{"buffer":"CUDA0","name":"attn_derope-34","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE_BACK","sources":["attn_out_raw-34 (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"attn_derope-34 (reshaped)","nb":[4,16384,131072,131072],"ne":[4096,8,1,1],"op":"RESHAPE","sources":["attn_derope-34"]}
+{"buffer":"CUDA0","name":"attn_derope-34 (reshaped) (permuted)","nb":[4,131072,16384,131072],"ne":[4096,1,8,1],"op":"PERMUTE","sources":["attn_derope-34 (reshaped)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-34","nb":[4,4096,4096,32768],"ne":[1024,1,8,1],"op":"MUL_MAT","sources":["blk.34.attn_output_a.weight","attn_derope-34 (reshaped) (permuted)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-34 (permuted)","nb":[4,4096,4096,32768],"ne":[1024,8,1,1],"op":"PERMUTE","sources":["attn_wo_a-34"]}
+{"buffer":"CUDA0","name":"attn_wo_a-34 (permuted) (cont)","nb":[4,32768,32768,32768],"ne":[8192,1,1,1],"op":"CONT","sources":["attn_wo_a-34 (permuted)"]}
+{"buffer":"CUDA0","name":"attn_out-34","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.34.attn_output_b.weight","attn_wo_a-34 (permuted) (cont)"]}
+{"buffer":"CUDA0","name":"l_last-33 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["l_last-33"]}
+{"buffer":"CUDA0","name":"hc_attn_post-34","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["attn_out-34","l_last-33","hc_post-34","hc_comb-34"]}
+{"buffer":"CUDA0","name":"hc_attn_post-34 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["hc_attn_post-34"]}
+{"buffer":"CUDA0","name":"hc_ffn_pre-34","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["hc_attn_post-34","hc_pre-34"]}
+{"buffer":"CUDA0","name":"ffn_norm-34","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-34","blk.34.ffn_norm.weight"]}
+{"buffer":"CUDA0","name":"ffn_moe_logits-34","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"MUL_MAT","sources":["blk.34.ffn_gate_inp.weight","ffn_norm-34"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-34","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"SQRT","sources":["node_4415"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-34 (reshaped)","nb":[4,4,1536,1536],"ne":[1,384,1,1],"op":"RESHAPE","sources":["ffn_moe_probs-34"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-34","nb":[4,4,24,24],"ne":[1,6,1,1],"op":"GET_ROWS","sources":["ffn_moe_probs-34 (reshaped)","ffn_moe_topk-34"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-34 (reshaped)","nb":[4,24,24,24],"ne":[6,1,1,1],"op":"RESHAPE","sources":["ffn_moe_weights-34"]}
+{"buffer":"CUDA0","name":"ffn_norm-34 (reshaped)","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"RESHAPE","sources":["ffn_norm-34"]}
+{"buffer":"CUDA0","name":"ffn_moe_out-34","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["node_4443","ffn_moe_weighted-34 (view)"]}
+{"buffer":"CUDA0","name":"ffn_shexp-34","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.34.ffn_down_shexp.weight","ffn_swiglu_limited-34"]}
+{"buffer":"CUDA0","name":"ffn_out-34","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["ffn_moe_out-34","ffn_shexp-34"]}
+{"buffer":"CUDA0","name":"l_last-34","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["ffn_out-34","hc_attn_post-34","hc_post-34","hc_comb-34"]}
+{"buffer":"CUDA0","name":"hc_attn_pre-35","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["l_last-34","hc_pre-34"]}
+{"buffer":"CUDA0","name":"attn_norm-35","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-35","blk.35.attn_norm.weight"]}
+{"buffer":"CUDA0","name":"qr-35","nb":[4,5120,5120,5120],"ne":[1280,1,1,1],"op":"MUL","sources":["norm-35","blk.35.attn_q_a_norm.weight"]}
+{"buffer":"CUDA0","name":"q-35","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-35","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-35 (view)","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"VIEW","sources":["kv-35"]}
+{"buffer":"CUDA0","name":"q-35 (view)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"VIEW","sources":["q-35"]}
+{"buffer":"CUDA0","name":"q-35 (view) (permuted)","nb":[4,131072,2048,131072],"ne":[512,1,64,1],"op":"PERMUTE","sources":["q-35 (view)"]}
+{"buffer":"CUDA0","name":"attn_out_raw-35","nb":[4,131072,131072,131072],"ne":[32768,1,1,1],"op":"RESHAPE","sources":["node_4485"]}
+{"buffer":"CUDA0","name":"attn_out_raw-35 (reshaped)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"RESHAPE","sources":["attn_out_raw-35"]}
+{"buffer":"CUDA0","name":"attn_derope-35","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE_BACK","sources":["attn_out_raw-35 (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"attn_derope-35 (reshaped)","nb":[4,16384,131072,131072],"ne":[4096,8,1,1],"op":"RESHAPE","sources":["attn_derope-35"]}
+{"buffer":"CUDA0","name":"attn_derope-35 (reshaped) (permuted)","nb":[4,131072,16384,131072],"ne":[4096,1,8,1],"op":"PERMUTE","sources":["attn_derope-35 (reshaped)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-35","nb":[4,4096,4096,32768],"ne":[1024,1,8,1],"op":"MUL_MAT","sources":["blk.35.attn_output_a.weight","attn_derope-35 (reshaped) (permuted)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-35 (permuted)","nb":[4,4096,4096,32768],"ne":[1024,8,1,1],"op":"PERMUTE","sources":["attn_wo_a-35"]}
+{"buffer":"CUDA0","name":"attn_wo_a-35 (permuted) (cont)","nb":[4,32768,32768,32768],"ne":[8192,1,1,1],"op":"CONT","sources":["attn_wo_a-35 (permuted)"]}
+{"buffer":"CUDA0","name":"attn_out-35","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.35.attn_output_b.weight","attn_wo_a-35 (permuted) (cont)"]}
+{"buffer":"CUDA0","name":"l_last-34 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["l_last-34"]}
+{"buffer":"CUDA0","name":"hc_attn_post-35","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["attn_out-35","l_last-34","hc_post-35","hc_comb-35"]}
+{"buffer":"CUDA0","name":"hc_attn_post-35 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["hc_attn_post-35"]}
+{"buffer":"CUDA0","name":"hc_ffn_pre-35","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["hc_attn_post-35","hc_pre-35"]}
+{"buffer":"CUDA0","name":"ffn_norm-35","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-35","blk.35.ffn_norm.weight"]}
+{"buffer":"CUDA0","name":"ffn_moe_logits-35","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"MUL_MAT","sources":["blk.35.ffn_gate_inp.weight","ffn_norm-35"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-35","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"SQRT","sources":["node_4529"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-35 (reshaped)","nb":[4,4,1536,1536],"ne":[1,384,1,1],"op":"RESHAPE","sources":["ffn_moe_probs-35"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-35","nb":[4,4,24,24],"ne":[1,6,1,1],"op":"GET_ROWS","sources":["ffn_moe_probs-35 (reshaped)","ffn_moe_topk-35"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-35 (reshaped)","nb":[4,24,24,24],"ne":[6,1,1,1],"op":"RESHAPE","sources":["ffn_moe_weights-35"]}
+{"buffer":"CUDA0","name":"ffn_norm-35 (reshaped)","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"RESHAPE","sources":["ffn_norm-35"]}
+{"buffer":"CUDA0","name":"ffn_moe_out-35","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["node_4557","ffn_moe_weighted-35 (view)"]}
+{"buffer":"CUDA0","name":"ffn_shexp-35","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.35.ffn_down_shexp.weight","ffn_swiglu_limited-35"]}
+{"buffer":"CUDA0","name":"ffn_out-35","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["ffn_moe_out-35","ffn_shexp-35"]}
+{"buffer":"CUDA0","name":"l_last-35","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["ffn_out-35","hc_attn_post-35","hc_post-35","hc_comb-35"]}
+{"buffer":"CUDA0","name":"hc_attn_pre-36","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["l_last-35","hc_pre-35"]}
+{"buffer":"CUDA0","name":"attn_norm-36","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-36","blk.36.attn_norm.weight"]}
+{"buffer":"CUDA0","name":"qr-36","nb":[4,5120,5120,5120],"ne":[1280,1,1,1],"op":"MUL","sources":["norm-36","blk.36.attn_q_a_norm.weight"]}
+{"buffer":"CUDA0","name":"q-36","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-36","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-36 (view)","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"VIEW","sources":["kv-36"]}
+{"buffer":"CUDA0","name":"q-36 (view)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"VIEW","sources":["q-36"]}
+{"buffer":"CUDA0","name":"q-36 (view) (permuted)","nb":[4,131072,2048,131072],"ne":[512,1,64,1],"op":"PERMUTE","sources":["q-36 (view)"]}
+{"buffer":"CUDA0","name":"attn_out_raw-36","nb":[4,131072,131072,131072],"ne":[32768,1,1,1],"op":"RESHAPE","sources":["node_4632"]}
+{"buffer":"CUDA0","name":"attn_out_raw-36 (reshaped)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"RESHAPE","sources":["attn_out_raw-36"]}
+{"buffer":"CUDA0","name":"attn_derope-36","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE_BACK","sources":["attn_out_raw-36 (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"attn_derope-36 (reshaped)","nb":[4,16384,131072,131072],"ne":[4096,8,1,1],"op":"RESHAPE","sources":["attn_derope-36"]}
+{"buffer":"CUDA0","name":"attn_derope-36 (reshaped) (permuted)","nb":[4,131072,16384,131072],"ne":[4096,1,8,1],"op":"PERMUTE","sources":["attn_derope-36 (reshaped)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-36","nb":[4,4096,4096,32768],"ne":[1024,1,8,1],"op":"MUL_MAT","sources":["blk.36.attn_output_a.weight","attn_derope-36 (reshaped) (permuted)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-36 (permuted)","nb":[4,4096,4096,32768],"ne":[1024,8,1,1],"op":"PERMUTE","sources":["attn_wo_a-36"]}
+{"buffer":"CUDA0","name":"attn_wo_a-36 (permuted) (cont)","nb":[4,32768,32768,32768],"ne":[8192,1,1,1],"op":"CONT","sources":["attn_wo_a-36 (permuted)"]}
+{"buffer":"CUDA0","name":"attn_out-36","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.36.attn_output_b.weight","attn_wo_a-36 (permuted) (cont)"]}
+{"buffer":"CUDA0","name":"l_last-35 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["l_last-35"]}
+{"buffer":"CUDA0","name":"hc_attn_post-36","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["attn_out-36","l_last-35","hc_post-36","hc_comb-36"]}
+{"buffer":"CUDA0","name":"hc_attn_post-36 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["hc_attn_post-36"]}
+{"buffer":"CUDA0","name":"hc_ffn_pre-36","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["hc_attn_post-36","hc_pre-36"]}
+{"buffer":"CUDA0","name":"ffn_norm-36","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-36","blk.36.ffn_norm.weight"]}
+{"buffer":"CUDA0","name":"ffn_moe_logits-36","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"MUL_MAT","sources":["blk.36.ffn_gate_inp.weight","ffn_norm-36"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-36","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"SQRT","sources":["node_4676"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-36 (reshaped)","nb":[4,4,1536,1536],"ne":[1,384,1,1],"op":"RESHAPE","sources":["ffn_moe_probs-36"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-36","nb":[4,4,24,24],"ne":[1,6,1,1],"op":"GET_ROWS","sources":["ffn_moe_probs-36 (reshaped)","ffn_moe_topk-36"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-36 (reshaped)","nb":[4,24,24,24],"ne":[6,1,1,1],"op":"RESHAPE","sources":["ffn_moe_weights-36"]}
+{"buffer":"CUDA0","name":"ffn_norm-36 (reshaped)","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"RESHAPE","sources":["ffn_norm-36"]}
+{"buffer":"CUDA0","name":"ffn_moe_out-36","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["node_4704","ffn_moe_weighted-36 (view)"]}
+{"buffer":"CUDA0","name":"ffn_shexp-36","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.36.ffn_down_shexp.weight","ffn_swiglu_limited-36"]}
+{"buffer":"CUDA0","name":"ffn_out-36","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["ffn_moe_out-36","ffn_shexp-36"]}
+{"buffer":"CUDA0","name":"l_last-36","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["ffn_out-36","hc_attn_post-36","hc_post-36","hc_comb-36"]}
+{"buffer":"CUDA0","name":"hc_attn_pre-37","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["l_last-36","hc_pre-36"]}
+{"buffer":"CUDA0","name":"attn_norm-37","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-37","blk.37.attn_norm.weight"]}
+{"buffer":"CUDA0","name":"qr-37","nb":[4,5120,5120,5120],"ne":[1280,1,1,1],"op":"MUL","sources":["norm-37","blk.37.attn_q_a_norm.weight"]}
+{"buffer":"CUDA0","name":"q-37","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-37","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-37 (view)","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"VIEW","sources":["kv-37"]}
+{"buffer":"CUDA0","name":"q-37 (view)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"VIEW","sources":["q-37"]}
+{"buffer":"CUDA0","name":"q-37 (view) (permuted)","nb":[4,131072,2048,131072],"ne":[512,1,64,1],"op":"PERMUTE","sources":["q-37 (view)"]}
+{"buffer":"CUDA0","name":"attn_out_raw-37","nb":[4,131072,131072,131072],"ne":[32768,1,1,1],"op":"RESHAPE","sources":["node_4746"]}
+{"buffer":"CUDA0","name":"attn_out_raw-37 (reshaped)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"RESHAPE","sources":["attn_out_raw-37"]}
+{"buffer":"CUDA0","name":"attn_derope-37","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE_BACK","sources":["attn_out_raw-37 (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"attn_derope-37 (reshaped)","nb":[4,16384,131072,131072],"ne":[4096,8,1,1],"op":"RESHAPE","sources":["attn_derope-37"]}
+{"buffer":"CUDA0","name":"attn_derope-37 (reshaped) (permuted)","nb":[4,131072,16384,131072],"ne":[4096,1,8,1],"op":"PERMUTE","sources":["attn_derope-37 (reshaped)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-37","nb":[4,4096,4096,32768],"ne":[1024,1,8,1],"op":"MUL_MAT","sources":["blk.37.attn_output_a.weight","attn_derope-37 (reshaped) (permuted)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-37 (permuted)","nb":[4,4096,4096,32768],"ne":[1024,8,1,1],"op":"PERMUTE","sources":["attn_wo_a-37"]}
+{"buffer":"CUDA0","name":"attn_wo_a-37 (permuted) (cont)","nb":[4,32768,32768,32768],"ne":[8192,1,1,1],"op":"CONT","sources":["attn_wo_a-37 (permuted)"]}
+{"buffer":"CUDA0","name":"attn_out-37","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.37.attn_output_b.weight","attn_wo_a-37 (permuted) (cont)"]}
+{"buffer":"CUDA0","name":"l_last-36 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["l_last-36"]}
+{"buffer":"CUDA0","name":"hc_attn_post-37","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["attn_out-37","l_last-36","hc_post-37","hc_comb-37"]}
+{"buffer":"CUDA0","name":"hc_attn_post-37 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["hc_attn_post-37"]}
+{"buffer":"CUDA0","name":"hc_ffn_pre-37","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["hc_attn_post-37","hc_pre-37"]}
+{"buffer":"CUDA0","name":"ffn_norm-37","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-37","blk.37.ffn_norm.weight"]}
+{"buffer":"CUDA0","name":"ffn_moe_logits-37","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"MUL_MAT","sources":["blk.37.ffn_gate_inp.weight","ffn_norm-37"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-37","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"SQRT","sources":["node_4790"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-37 (reshaped)","nb":[4,4,1536,1536],"ne":[1,384,1,1],"op":"RESHAPE","sources":["ffn_moe_probs-37"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-37","nb":[4,4,24,24],"ne":[1,6,1,1],"op":"GET_ROWS","sources":["ffn_moe_probs-37 (reshaped)","ffn_moe_topk-37"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-37 (reshaped)","nb":[4,24,24,24],"ne":[6,1,1,1],"op":"RESHAPE","sources":["ffn_moe_weights-37"]}
+{"buffer":"CUDA0","name":"ffn_norm-37 (reshaped)","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"RESHAPE","sources":["ffn_norm-37"]}
+{"buffer":"CUDA0","name":"ffn_moe_out-37","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["node_4818","ffn_moe_weighted-37 (view)"]}
+{"buffer":"CUDA0","name":"ffn_shexp-37","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.37.ffn_down_shexp.weight","ffn_swiglu_limited-37"]}
+{"buffer":"CUDA0","name":"ffn_out-37","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["ffn_moe_out-37","ffn_shexp-37"]}
+{"buffer":"CUDA0","name":"l_last-37","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["ffn_out-37","hc_attn_post-37","hc_post-37","hc_comb-37"]}
+{"buffer":"CUDA0","name":"hc_attn_pre-38","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["l_last-37","hc_pre-37"]}
+{"buffer":"CUDA0","name":"attn_norm-38","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-38","blk.38.attn_norm.weight"]}
+{"buffer":"CUDA0","name":"qr-38","nb":[4,5120,5120,5120],"ne":[1280,1,1,1],"op":"MUL","sources":["norm-38","blk.38.attn_q_a_norm.weight"]}
+{"buffer":"CUDA0","name":"q-38","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-38","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-38 (view)","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"VIEW","sources":["kv-38"]}
+{"buffer":"CUDA0","name":"q-38 (view)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"VIEW","sources":["q-38"]}
+{"buffer":"CUDA0","name":"q-38 (view) (permuted)","nb":[4,131072,2048,131072],"ne":[512,1,64,1],"op":"PERMUTE","sources":["q-38 (view)"]}
+{"buffer":"CUDA0","name":"attn_out_raw-38","nb":[4,131072,131072,131072],"ne":[32768,1,1,1],"op":"RESHAPE","sources":["node_4860"]}
+{"buffer":"CUDA0","name":"attn_out_raw-38 (reshaped)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"RESHAPE","sources":["attn_out_raw-38"]}
+{"buffer":"CUDA0","name":"attn_derope-38","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE_BACK","sources":["attn_out_raw-38 (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"attn_derope-38 (reshaped)","nb":[4,16384,131072,131072],"ne":[4096,8,1,1],"op":"RESHAPE","sources":["attn_derope-38"]}
+{"buffer":"CUDA0","name":"attn_derope-38 (reshaped) (permuted)","nb":[4,131072,16384,131072],"ne":[4096,1,8,1],"op":"PERMUTE","sources":["attn_derope-38 (reshaped)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-38","nb":[4,4096,4096,32768],"ne":[1024,1,8,1],"op":"MUL_MAT","sources":["blk.38.attn_output_a.weight","attn_derope-38 (reshaped) (permuted)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-38 (permuted)","nb":[4,4096,4096,32768],"ne":[1024,8,1,1],"op":"PERMUTE","sources":["attn_wo_a-38"]}
+{"buffer":"CUDA0","name":"attn_wo_a-38 (permuted) (cont)","nb":[4,32768,32768,32768],"ne":[8192,1,1,1],"op":"CONT","sources":["attn_wo_a-38 (permuted)"]}
+{"buffer":"CUDA0","name":"attn_out-38","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.38.attn_output_b.weight","attn_wo_a-38 (permuted) (cont)"]}
+{"buffer":"CUDA0","name":"l_last-37 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["l_last-37"]}
+{"buffer":"CUDA0","name":"hc_attn_post-38","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["attn_out-38","l_last-37","hc_post-38","hc_comb-38"]}
+{"buffer":"CUDA0","name":"hc_attn_post-38 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["hc_attn_post-38"]}
+{"buffer":"CUDA0","name":"hc_ffn_pre-38","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["hc_attn_post-38","hc_pre-38"]}
+{"buffer":"CUDA0","name":"ffn_norm-38","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-38","blk.38.ffn_norm.weight"]}
+{"buffer":"CUDA0","name":"ffn_moe_logits-38","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"MUL_MAT","sources":["blk.38.ffn_gate_inp.weight","ffn_norm-38"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-38","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"SQRT","sources":["node_4904"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-38 (reshaped)","nb":[4,4,1536,1536],"ne":[1,384,1,1],"op":"RESHAPE","sources":["ffn_moe_probs-38"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-38","nb":[4,4,24,24],"ne":[1,6,1,1],"op":"GET_ROWS","sources":["ffn_moe_probs-38 (reshaped)","ffn_moe_topk-38"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-38 (reshaped)","nb":[4,24,24,24],"ne":[6,1,1,1],"op":"RESHAPE","sources":["ffn_moe_weights-38"]}
+{"buffer":"CUDA0","name":"ffn_norm-38 (reshaped)","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"RESHAPE","sources":["ffn_norm-38"]}
+{"buffer":"CUDA0","name":"ffn_moe_out-38","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["node_4932","ffn_moe_weighted-38 (view)"]}
+{"buffer":"CUDA0","name":"ffn_shexp-38","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.38.ffn_down_shexp.weight","ffn_swiglu_limited-38"]}
+{"buffer":"CUDA0","name":"ffn_out-38","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["ffn_moe_out-38","ffn_shexp-38"]}
+{"buffer":"CUDA0","name":"l_last-38","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["ffn_out-38","hc_attn_post-38","hc_post-38","hc_comb-38"]}
+{"buffer":"CUDA0","name":"hc_attn_pre-39","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["l_last-38","hc_pre-38"]}
+{"buffer":"CUDA0","name":"attn_norm-39","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-39","blk.39.attn_norm.weight"]}
+{"buffer":"CUDA0","name":"qr-39","nb":[4,5120,5120,5120],"ne":[1280,1,1,1],"op":"MUL","sources":["norm-39","blk.39.attn_q_a_norm.weight"]}
+{"buffer":"CUDA0","name":"q-39","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-39","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"ROPE","sources":[" (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"kv-39 (view)","nb":[4,2048,2048,2048],"ne":[512,1,1,1],"op":"VIEW","sources":["kv-39"]}
+{"buffer":"CUDA0","name":"q-39 (view)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"VIEW","sources":["q-39"]}
+{"buffer":"CUDA0","name":"q-39 (view) (permuted)","nb":[4,131072,2048,131072],"ne":[512,1,64,1],"op":"PERMUTE","sources":["q-39 (view)"]}
+{"buffer":"CUDA0","name":"attn_out_raw-39","nb":[4,131072,131072,131072],"ne":[32768,1,1,1],"op":"RESHAPE","sources":["node_4974"]}
+{"buffer":"CUDA0","name":"attn_out_raw-39 (reshaped)","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"RESHAPE","sources":["attn_out_raw-39"]}
+{"buffer":"CUDA0","name":"attn_derope-39","nb":[4,2048,131072,131072],"ne":[512,64,1,1],"op":"ROPE_BACK","sources":["attn_out_raw-39 (reshaped)","CUDA0#leaf_10#0"]}
+{"buffer":"CUDA0","name":"attn_derope-39 (reshaped)","nb":[4,16384,131072,131072],"ne":[4096,8,1,1],"op":"RESHAPE","sources":["attn_derope-39"]}
+{"buffer":"CUDA0","name":"attn_derope-39 (reshaped) (permuted)","nb":[4,131072,16384,131072],"ne":[4096,1,8,1],"op":"PERMUTE","sources":["attn_derope-39 (reshaped)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-39","nb":[4,4096,4096,32768],"ne":[1024,1,8,1],"op":"MUL_MAT","sources":["blk.39.attn_output_a.weight","attn_derope-39 (reshaped) (permuted)"]}
+{"buffer":"CUDA0","name":"attn_wo_a-39 (permuted)","nb":[4,4096,4096,32768],"ne":[1024,8,1,1],"op":"PERMUTE","sources":["attn_wo_a-39"]}
+{"buffer":"CUDA0","name":"attn_wo_a-39 (permuted) (cont)","nb":[4,32768,32768,32768],"ne":[8192,1,1,1],"op":"CONT","sources":["attn_wo_a-39 (permuted)"]}
+{"buffer":"CUDA0","name":"attn_out-39","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.39.attn_output_b.weight","attn_wo_a-39 (permuted) (cont)"]}
+{"buffer":"CUDA0","name":"l_last-38 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["l_last-38"]}
+{"buffer":"CUDA0","name":"hc_attn_post-39","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["attn_out-39","l_last-38","hc_post-39","hc_comb-39"]}
+{"buffer":"CUDA0","name":"hc_attn_post-39 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["hc_attn_post-39"]}
+{"buffer":"CUDA0","name":"hc_ffn_pre-39","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"DSV4_HC_PRE","sources":["hc_attn_post-39","hc_pre-39"]}
+{"buffer":"CUDA0","name":"ffn_norm-39","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm-39","blk.39.ffn_norm.weight"]}
+{"buffer":"CUDA0","name":"ffn_moe_logits-39","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"MUL_MAT","sources":["blk.39.ffn_gate_inp.weight","ffn_norm-39"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-39","nb":[4,1536,1536,1536],"ne":[384,1,1,1],"op":"SQRT","sources":["node_5018"]}
+{"buffer":"CUDA0","name":"ffn_moe_probs-39 (reshaped)","nb":[4,4,1536,1536],"ne":[1,384,1,1],"op":"RESHAPE","sources":["ffn_moe_probs-39"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-39","nb":[4,4,24,24],"ne":[1,6,1,1],"op":"GET_ROWS","sources":["ffn_moe_probs-39 (reshaped)","ffn_moe_topk-39"]}
+{"buffer":"CUDA0","name":"ffn_moe_weights-39 (reshaped)","nb":[4,24,24,24],"ne":[6,1,1,1],"op":"RESHAPE","sources":["ffn_moe_weights-39"]}
+{"buffer":"CUDA0","name":"ffn_norm-39 (reshaped)","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"RESHAPE","sources":["ffn_norm-39"]}
+{"buffer":"CUDA0","name":"ffn_moe_out-39","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["node_5046","ffn_moe_weighted-39 (view)"]}
+{"buffer":"CUDA0","name":"ffn_shexp-39","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL_MAT","sources":["blk.39.ffn_down_shexp.weight","ffn_swiglu_limited-39"]}
+{"buffer":"CUDA0","name":"ffn_out-39","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["ffn_moe_out-39","ffn_shexp-39"]}
+{"buffer":"CUDA0","name":"l_last-39","nb":[4,20480,81920,81920],"ne":[5120,4,1,1],"op":"DSV4_HC_POST","sources":["ffn_out-39","hc_attn_post-39","hc_post-39","hc_comb-39"]}
+{"buffer":"CUDA0","name":"l_last-39 (reshaped)","nb":[4,81920,81920,81920],"ne":[20480,1,1,1],"op":"RESHAPE","sources":["l_last-39"]}
+{"buffer":"CUDA0","name":"hc_out","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"ADD","sources":["node_5075","node_5078"]}
+{"buffer":"CUDA0","name":"result_norm","nb":[4,20480,20480,20480],"ne":[5120,1,1,1],"op":"MUL","sources":["norm","output_norm.weight"]}
+{"buffer":"CUDA0","name":"result_output","nb":[4,517120,517120,517120],"ne":[129280,1,1,1],"op":"MUL_MAT","sources":["output.weight","result_norm"]}

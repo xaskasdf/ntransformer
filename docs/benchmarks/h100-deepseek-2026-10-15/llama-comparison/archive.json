@@ -1,0 +1,7 @@
+{
+  "name": "llama-comparison.tar.gz",
+  "bytes": 106391436,
+  "sha256": "307cc4054b4db8c40b169de8e8969320ad861137cc198bfd47d5f14d98826225",
+  "payload_files": 208,
+  "persistent": "/lambda/nfs/btiny/ntransformer-training/deepseek-llama-comparison-20261015"
+}

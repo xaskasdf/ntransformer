@@ -1,0 +1,10 @@
+{
+  "release_pass": true,
+  "asan_ubsan_pass": true,
+  "source_sha256": "639dccae830118b54a100bbd2a3ad49867e23b6481fdf2fcc7acefbb0b2bfdac",
+  "header_sha256": "13d9f761c2bdeb62b8248da69a30083170af80d6aaaa6eaf023c5f0ecd47dd90",
+  "directed_layout_cases": 4,
+  "double_precision_cases": 36,
+  "existing_direct_pool_cases": 84,
+  "scope": "CPU HC producer/consumer and independent Sinkhorn oracle; no GPU work"
+}

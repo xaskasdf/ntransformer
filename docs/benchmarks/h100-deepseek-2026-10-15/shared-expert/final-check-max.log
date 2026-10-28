@@ -1,0 +1,10 @@
+ds41-gpu: expert cache on NVIDIA H100 80GB HBM3: 120 slots x 17.00 MiB = 2.0 GiB
+activation max_abs=1.52587891e-05 rel_l2=6.50736861e-10 ref_max=4233.12549 changed=983/8192
+shared FFN max_abs=0.00390625 rel_l2=1.62829047e-08 ref_max=44207.2891 changed=260/8192
+activation max_abs=7.62939453e-06 rel_l2=5.00197832e-10 ref_max=3220.22925 changed=1018/8192
+shared FFN max_abs=0.00390625 rel_l2=1.45923099e-08 ref_max=47974.7148 changed=228/8192
+activation max_abs=4.76837158e-07 rel_l2=3.83245958e-09 ref_max=3.52318811 changed=1093/8192
+shared FFN max_abs=3.05175781e-05 rel_l2=4.84220831e-08 ref_max=294.874847 changed=2274/8192
+activation max_abs=2.38418579e-07 rel_l2=1.325696e-09 ref_max=3.52318811 changed=446/8192
+shared FFN max_abs=1.52587891e-05 rel_l2=1.74214648e-08 ref_max=311.236633 changed=355/8192
+PASS shared GPU: exact Q8 reductions, bounded activation error, integrated outputs, residency, bounds

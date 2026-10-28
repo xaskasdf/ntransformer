@@ -1,0 +1,31 @@
+{
+  "command": [
+    "/usr/bin/time",
+    "-v",
+    "-o",
+    "/home/ubuntu/ntransformer-h100/ds41-moe-pipeline-20261015/combined-p32-resources.txt",
+    "/home/ubuntu/ntransformer-h100/ds41-moe-pipeline-20261015/bench",
+    "/home/ubuntu/ntransformer-h100/models/deepseek-v41-flash-q8/DeepSeek-V4.1-Flash-Q8_0-00001-of-00010.gguf",
+    "/home/ubuntu/ntransformer-h100/ds41-moe-pipeline-20261015/corpus.txt",
+    "32",
+    "64",
+    "3",
+    "/home/ubuntu/ntransformer-h100/ds41-moe-pipeline-20261015/combined-p32",
+    "combined-p32"
+  ],
+  "returncode": 0,
+  "utc_start": "2026-10-15T22:28:45.313089+00:00",
+  "wall_seconds": 39.13433834799798,
+  "process_group": 819289,
+  "environment": {
+    "CUDA_VISIBLE_DEVICES": "1",
+    "LD_LIBRARY_PATH": "/home/ubuntu/ntransformer-h100/env/targets/x86_64-linux/lib:/home/ubuntu/ntransformer-h100/env/lib",
+    "DS41_GPU": "1",
+    "DS41_GPU_ATTN": "1",
+    "DS41_PROFILE": "1",
+    "DS41_VRAM_GB": "62",
+    "DS41_BENCH_ALL_LOGITS": "1",
+    "DS41_MXFP4_COOPERATIVE": "1",
+    "DS41_MXFP4_REGISTER_LUT": "1"
+  }
+}

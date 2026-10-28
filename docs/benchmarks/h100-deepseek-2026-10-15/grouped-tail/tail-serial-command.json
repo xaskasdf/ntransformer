@@ -1,0 +1,27 @@
+{
+  "command": [
+    "/home/ubuntu/ntransformer-h100/ds41-tail-20261015/build/test_ds41_backbone",
+    "tail",
+    "/home/ubuntu/ntransformer-h100/ds41-tail-20261015/tail-serial.bin"
+  ],
+  "returncode": 0,
+  "seconds": 5.921470727014821,
+  "environment": {
+    "CUDA_VISIBLE_DEVICES": "1",
+    "DS41_GPU": "1",
+    "DS41_GPU_ATTN": "1",
+    "DS41_VRAM_GB": "62",
+    "DS41_PROFILE": "1",
+    "DS41_GPU_TIMING": "1",
+    "LD_LIBRARY_PATH": "/home/ubuntu/ntransformer-h100/env/targets/x86_64-linux/lib:/home/ubuntu/ntransformer-h100/env/lib",
+    "DS41_GROUPED_TAIL": "0"
+  },
+  "resources": {
+    "ru_utime": 0.016283999999998855,
+    "ru_stime": 5.877783000000001,
+    "ru_majflt": 0,
+    "ru_minflt": 8238,
+    "ru_nvcsw": 124,
+    "ru_nivcsw": 13
+  }
+}

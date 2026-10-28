@@ -1,0 +1,30 @@
+{
+  "command": [
+    "/home/ubuntu/ntransformer-h100/env/bin/x86_64-conda-linux-gnu-g++",
+    "-std=c++20",
+    "-O3",
+    "-march=native",
+    "-I/home/ubuntu/ntransformer-h100/llama-bench-20261015/source/include",
+    "-I/home/ubuntu/ntransformer-h100/llama-bench-20261015/source/ggml/include",
+    "-I/home/ubuntu/ntransformer-h100/llama-bench-20261015/source/vendor",
+    "/home/ubuntu/ntransformer-h100/llama-bench-20261015/benchmark_llama_ds41.cpp",
+    "-L/home/ubuntu/ntransformer-h100/llama-bench-20261015/build/bin",
+    "-lllama",
+    "-lggml",
+    "-lggml-base",
+    "-lggml-cpu",
+    "-L/home/ubuntu/ntransformer-h100/env/targets/x86_64-linux/lib/stubs",
+    "-lcuda",
+    "-lpthread",
+    "-o",
+    "/home/ubuntu/ntransformer-h100/llama-bench-20261015/benchmark_llama_ds41"
+  ],
+  "returncode": 0,
+  "utc_start": "2026-10-15T18:33:57.981600+00:00",
+  "wall_seconds": 6.2723408750025555,
+  "process_group": 3077076,
+  "environment": {
+    "CUDA_VISIBLE_DEVICES": "1",
+    "LD_LIBRARY_PATH": "/home/ubuntu/ntransformer-h100/llama-bench-20261015/build/bin:/home/ubuntu/ntransformer-h100/env/targets/x86_64-linux/lib:/home/ubuntu/ntransformer-h100/env/lib:/home/ubuntu/brandon-mini/.venv/lib/python3.12/site-packages/nvidia/cu13/lib"
+  }
+}

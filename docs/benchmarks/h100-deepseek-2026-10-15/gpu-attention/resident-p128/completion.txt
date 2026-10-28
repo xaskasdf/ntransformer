@@ -1,0 +1,3 @@
+ every expert resident on the accelerator can be wasteful when only a fraction of them are active at any moment. Offloading some experts to system memory can reduce accelerator memory pressure, but it introduces transfer latency that can affect token generation.
+
+This article examines how expert placement affects the latency of token generation in a mixture-of-mi NVIDIA GPUs

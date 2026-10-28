@@ -1,0 +1,553 @@
+{
+  "cases": [
+    {
+      "label": "p32-d64",
+      "setup": {
+        "context_init_seconds": 0.058886296,
+        "cpu_moe_layers": 31,
+        "decode_steps": 64,
+        "device": "CUDA0",
+        "eos_id": 1,
+        "gpu_moe_layers": 9,
+        "kind": "setup",
+        "kv_requested": "f32",
+        "log_level": "info",
+        "model_load_seconds": 17.823269495,
+        "n_batch": 512,
+        "n_ctx": 1024,
+        "n_ubatch": 512,
+        "prompt_tokens": 32,
+        "setup_wall_seconds": 18.005563108,
+        "system_info": "CUDA : ARCHS = 900 | USE_GRAPHS = 1 | FA_QUANTS = q4_0-q4_0,q8_0-q8_0,f16-f16,bf16-bf16 | CPU : SSE3 = 1 | SSSE3 = 1 | AVX = 1 | AVX_VNNI = 1 | AVX2 = 1 | F16C = 1 | FMA = 1 | BMI2 = 1 | AVX512 = 1 | AVX512_VBMI = 1 | AVX512_VNNI = 1 | AVX512_BF16 = 1 | LLAMAFILE = 1 | OPENMP = 1 | REPACK = 1 | ",
+        "threads": 52,
+        "vocab": 129280
+      },
+      "cold": {
+        "prefill": {
+          "seconds": 3.913609284,
+          "tokens_per_second": 8.176595484589003
+        },
+        "decode": {
+          "seconds": 2.287713902999999,
+          "tokens_per_second": 27.975526098815703
+        }
+      },
+      "reused": {
+        "prefill": {
+          "mean_seconds": 3.832978778333333,
+          "min_seconds": 3.762063079,
+          "max_seconds": 3.938343979,
+          "tokens_per_second": 8.348598270589521,
+          "ttft_mean_seconds": 3.833152051
+        },
+        "decode": {
+          "mean_seconds": 2.223384165,
+          "min_seconds": 2.205058853,
+          "max_seconds": 2.257726531,
+          "tokens_per_second": 28.78494909133258,
+          "p50_token_ms": 34.071909,
+          "p95_token_ms": 38.270491050000004
+        }
+      },
+      "max_rss_kib": 292362668,
+      "command_wall_seconds": 46.39067538702511,
+      "model_buffer_log": [
+        "load_tensors:   CPU_Mapped model buffer size = 41310.00 MiB",
+        "load_tensors:   CPU_Mapped model buffer size = 41310.00 MiB",
+        "load_tensors:   CPU_Mapped model buffer size = 41310.00 MiB",
+        "load_tensors:   CPU_Mapped model buffer size = 41310.00 MiB",
+        "load_tensors:   CPU_Mapped model buffer size = 41310.00 MiB",
+        "load_tensors:   CPU_Mapped model buffer size =  6885.00 MiB",
+        "load_tensors:   CPU_Mapped model buffer size =  9633.28 MiB",
+        "load_tensors:        CUDA0 model buffer size = 70495.05 MiB",
+        "load_tensors:   CPU_Mapped model buffer size = 99610.97 MiB",
+        "load_tensors:   CPU_Mapped model buffer size = 99613.70 MiB"
+      ],
+      "kv_buffer_log": [
+        "llama_kv_cache:      CUDA0 KV buffer size =    80.00 MiB",
+        "llama_kv_cache:      CUDA0 KV buffer size =     8.00 MiB",
+        "llama_kv_cache:      CUDA0 KV buffer size =     2.00 MiB"
+      ],
+      "repeat_bitwise_equal": true,
+      "repeat_top1_equal": true,
+      "repeat_max_abs": 0.0,
+      "repeat_relative_l2": 0.0,
+      "greedy_agreement_by_round": [
+        52,
+        52,
+        52,
+        52
+      ],
+      "final_logits_vs_ntransformer": {
+        "max_abs": 6.93753719329834,
+        "relative_l2": 0.32787456169006557,
+        "cosine": 0.9598102371810047,
+        "reference_top8": [
+          270,
+          5671,
+          890,
+          126664,
+          3077,
+          6069,
+          716,
+          20368
+        ],
+        "llama_top8": [
+          270,
+          5671,
+          890,
+          126664,
+          3077,
+          6069,
+          260,
+          20368
+        ],
+        "reference_sha256": "f240718d58bff55e42d82c34ed1f11a529a1784d19ef0736198deb9796758fbe",
+        "llama_sha256": "d0f13c41c3848152e6c9390ea0655042ac8269e63ceee43a8631a9d82134be4f"
+      },
+      "ntransformer_reused": {
+        "prefill": {
+          "tokens_per_second": 6.066628914043361,
+          "mean_seconds": 5.274758099333333,
+          "min_seconds": 5.2662811,
+          "max_seconds": 5.279116822,
+          "mean_token_ms": 164.8360077604167,
+          "p50_token_ms": 158.760096,
+          "p95_token_ms": 238.43531875000002,
+          "max_token_ms": 252.088891,
+          "cache_hit_fraction": 0.8255208333333334,
+          "mean_upload_bytes": 25192857600,
+          "mean_evictions": 4020,
+          "phases_mean_seconds": {
+            "moe": 2.759495034,
+            "attention": 1.4090816723333333,
+            "engram": 0.09046333166666666,
+            "hc": 0.4312477573333333,
+            "other": 0.5844496153333333,
+            "qkv": 0.4293471443333333,
+            "rope": 0,
+            "compression": 0.09541535966666667,
+            "attention_loop": 0.40464532633333333,
+            "attention_tail": 0.4766913403333333,
+            "router": 0.421248831,
+            "routed": 2.336020566,
+            "shared_cpu": 0
+          }
+        },
+        "decode": {
+          "tokens_per_second": 6.229402499696078,
+          "mean_seconds": 10.273858528666667,
+          "min_seconds": 10.270157736,
+          "max_seconds": 10.280720285,
+          "mean_token_ms": 160.52903951041665,
+          "p50_token_ms": 161.6571395,
+          "p95_token_ms": 172.9597417,
+          "max_token_ms": 185.371212,
+          "cache_hit_fraction": 0.879296875,
+          "mean_upload_bytes": 34856386560,
+          "mean_evictions": 5562,
+          "phases_mean_seconds": {
+            "moe": 5.036296002666667,
+            "attention": 2.9464676553333335,
+            "engram": 0.181343595,
+            "hc": 0.8734583563333334,
+            "other": 1.2249718776666667,
+            "qkv": 0.8621184553333333,
+            "rope": 0,
+            "compression": 0.20993059333333333,
+            "attention_loop": 0.912881332,
+            "attention_tail": 0.955348687,
+            "router": 0.8490763866666666,
+            "routed": 4.182925045666667,
+            "shared_cpu": 0
+          }
+        }
+      },
+      "llama_over_ntransformer_throughput": {
+        "prefill": 1.3761511358085106,
+        "decode": 4.62082022998786
+      }
+    },
+    {
+      "label": "p128-d64",
+      "setup": {
+        "context_init_seconds": 0.06016448,
+        "cpu_moe_layers": 31,
+        "decode_steps": 64,
+        "device": "CUDA0",
+        "eos_id": 1,
+        "gpu_moe_layers": 9,
+        "kind": "setup",
+        "kv_requested": "f32",
+        "log_level": "info",
+        "model_load_seconds": 17.827636449,
+        "n_batch": 512,
+        "n_ctx": 1024,
+        "n_ubatch": 512,
+        "prompt_tokens": 128,
+        "setup_wall_seconds": 18.01337443,
+        "system_info": "CUDA : ARCHS = 900 | USE_GRAPHS = 1 | FA_QUANTS = q4_0-q4_0,q8_0-q8_0,f16-f16,bf16-bf16 | CPU : SSE3 = 1 | SSSE3 = 1 | AVX = 1 | AVX_VNNI = 1 | AVX2 = 1 | F16C = 1 | FMA = 1 | BMI2 = 1 | AVX512 = 1 | AVX512_VBMI = 1 | AVX512_VNNI = 1 | AVX512_BF16 = 1 | LLAMAFILE = 1 | OPENMP = 1 | REPACK = 1 | ",
+        "threads": 52,
+        "vocab": 129280
+      },
+      "cold": {
+        "prefill": {
+          "seconds": 7.225260592,
+          "tokens_per_second": 17.71562400693547
+        },
+        "decode": {
+          "seconds": 2.2593322720000013,
+          "tokens_per_second": 28.32695340705511
+        }
+      },
+      "reused": {
+        "prefill": {
+          "mean_seconds": 7.063100705,
+          "min_seconds": 7.046492695,
+          "max_seconds": 7.092394881,
+          "tokens_per_second": 18.122352398202143,
+          "ttft_mean_seconds": 7.063274027666667
+        },
+        "decode": {
+          "mean_seconds": 2.2137999643333326,
+          "min_seconds": 2.2134256849999994,
+          "max_seconds": 2.214117030999999,
+          "tokens_per_second": 28.909567725678897,
+          "p50_token_ms": 34.137894,
+          "p95_token_ms": 35.34344815
+        }
+      },
+      "max_rss_kib": 292362696,
+      "command_wall_seconds": 59.353082826011814,
+      "model_buffer_log": [
+        "load_tensors:   CPU_Mapped model buffer size = 41310.00 MiB",
+        "load_tensors:   CPU_Mapped model buffer size = 41310.00 MiB",
+        "load_tensors:   CPU_Mapped model buffer size = 41310.00 MiB",
+        "load_tensors:   CPU_Mapped model buffer size = 41310.00 MiB",
+        "load_tensors:   CPU_Mapped model buffer size = 41310.00 MiB",
+        "load_tensors:   CPU_Mapped model buffer size =  6885.00 MiB",
+        "load_tensors:   CPU_Mapped model buffer size =  9633.28 MiB",
+        "load_tensors:        CUDA0 model buffer size = 70495.05 MiB",
+        "load_tensors:   CPU_Mapped model buffer size = 99610.97 MiB",
+        "load_tensors:   CPU_Mapped model buffer size = 99613.70 MiB"
+      ],
+      "kv_buffer_log": [
+        "llama_kv_cache:      CUDA0 KV buffer size =    80.00 MiB",
+        "llama_kv_cache:      CUDA0 KV buffer size =     8.00 MiB",
+        "llama_kv_cache:      CUDA0 KV buffer size =     2.00 MiB"
+      ],
+      "repeat_bitwise_equal": true,
+      "repeat_top1_equal": true,
+      "repeat_max_abs": 0.0,
+      "repeat_relative_l2": 0.0,
+      "greedy_agreement_by_round": [
+        41,
+        41,
+        41,
+        41
+      ],
+      "final_logits_vs_ntransformer": {
+        "max_abs": 10.233688354492188,
+        "relative_l2": 0.7028812639507844,
+        "cosine": 0.7127021823741014,
+        "reference_top8": [
+          8095,
+          3865,
+          349,
+          50,
+          46,
+          4437,
+          71728,
+          55
+        ],
+        "llama_top8": [
+          8095,
+          12876,
+          2645,
+          4437,
+          45331,
+          3865,
+          437,
+          5336
+        ],
+        "reference_sha256": "b3622dcb83a9fb0da25e392ed6078e426232007e910119ee1e931d8fa13f4473",
+        "llama_sha256": "50f46f1edbfde43ad658449dee0f6478a46104203ec47dae93fa9d3eef8b4187"
+      },
+      "ntransformer_reused": {
+        "prefill": {
+          "tokens_per_second": 6.162350172395157,
+          "mean_seconds": 20.771296083333333,
+          "min_seconds": 20.728628348,
+          "max_seconds": 20.796247142,
+          "mean_token_ms": 162.27556580729166,
+          "p50_token_ms": 160.43528400000002,
+          "p95_token_ms": 177.62829244999998,
+          "max_token_ms": 250.69639500000002,
+          "cache_hit_fraction": 0.86552734375,
+          "mean_upload_bytes": 77665443840,
+          "mean_evictions": 12393,
+          "phases_mean_seconds": {
+            "moe": 10.366801127333334,
+            "attention": 5.910759603333333,
+            "engram": 0.36587889766666665,
+            "hc": 1.748296506,
+            "other": 2.3794732963333334,
+            "qkv": 1.7242979973333334,
+            "rope": 0,
+            "compression": 0.40770428,
+            "attention_loop": 1.8578901736666666,
+            "attention_tail": 1.9081848143333333,
+            "router": 1.703491127,
+            "routed": 8.654693134,
+            "shared_cpu": 0
+          }
+        },
+        "decode": {
+          "tokens_per_second": 6.1780401467609884,
+          "mean_seconds": 10.359272274,
+          "min_seconds": 10.333726628,
+          "max_seconds": 10.373089829,
+          "mean_token_ms": 161.86362928125,
+          "p50_token_ms": 158.8867615,
+          "p95_token_ms": 187.83372325,
+          "max_token_ms": 200.25611300000003,
+          "cache_hit_fraction": 0.9001302083333333,
+          "mean_upload_bytes": 28840181760,
+          "mean_evictions": 4602,
+          "phases_mean_seconds": {
+            "moe": 4.796686829,
+            "attention": 3.2300948473333335,
+            "engram": 0.187285187,
+            "hc": 0.8847078573333333,
+            "other": 1.2491041613333334,
+            "qkv": 0.8655478216666667,
+            "rope": 0,
+            "compression": 0.218545862,
+            "attention_loop": 1.17920161,
+            "attention_tail": 0.959921036,
+            "router": 0.8636663936666666,
+            "routed": 3.928303515,
+            "shared_cpu": 0
+          }
+        }
+      },
+      "llama_over_ntransformer_throughput": {
+        "prefill": 2.9408183389809577,
+        "decode": 4.679407553030479
+      }
+    },
+    {
+      "label": "p512-d64",
+      "setup": {
+        "context_init_seconds": 0.058930776,
+        "cpu_moe_layers": 31,
+        "decode_steps": 64,
+        "device": "CUDA0",
+        "eos_id": 1,
+        "gpu_moe_layers": 9,
+        "kind": "setup",
+        "kv_requested": "f32",
+        "log_level": "info",
+        "model_load_seconds": 17.826900975,
+        "n_batch": 512,
+        "n_ctx": 1024,
+        "n_ubatch": 512,
+        "prompt_tokens": 512,
+        "setup_wall_seconds": 18.009239129,
+        "system_info": "CUDA : ARCHS = 900 | USE_GRAPHS = 1 | FA_QUANTS = q4_0-q4_0,q8_0-q8_0,f16-f16,bf16-bf16 | CPU : SSE3 = 1 | SSSE3 = 1 | AVX = 1 | AVX_VNNI = 1 | AVX2 = 1 | F16C = 1 | FMA = 1 | BMI2 = 1 | AVX512 = 1 | AVX512_VBMI = 1 | AVX512_VNNI = 1 | AVX512_BF16 = 1 | LLAMAFILE = 1 | OPENMP = 1 | REPACK = 1 | ",
+        "threads": 52,
+        "vocab": 129280
+      },
+      "cold": {
+        "prefill": {
+          "seconds": 11.256454077,
+          "tokens_per_second": 45.4850165511851
+        },
+        "decode": {
+          "seconds": 2.3170887870000003,
+          "tokens_per_second": 27.620866476533507
+        }
+      },
+      "reused": {
+        "prefill": {
+          "mean_seconds": 11.079759116666667,
+          "min_seconds": 11.066516177,
+          "max_seconds": 11.101656553,
+          "tokens_per_second": 46.21039091272542,
+          "ttft_mean_seconds": 11.079932434333333
+        },
+        "decode": {
+          "mean_seconds": 2.300417750333333,
+          "min_seconds": 2.2807818149999997,
+          "max_seconds": 2.3339088760000006,
+          "tokens_per_second": 27.821033806023415,
+          "p50_token_ms": 34.945374,
+          "p95_token_ms": 42.78006625
+        }
+      },
+      "max_rss_kib": 292362668,
+      "command_wall_seconds": 75.77684679100639,
+      "model_buffer_log": [
+        "load_tensors:   CPU_Mapped model buffer size = 41310.00 MiB",
+        "load_tensors:   CPU_Mapped model buffer size = 41310.00 MiB",
+        "load_tensors:   CPU_Mapped model buffer size = 41310.00 MiB",
+        "load_tensors:   CPU_Mapped model buffer size = 41310.00 MiB",
+        "load_tensors:   CPU_Mapped model buffer size = 41310.00 MiB",
+        "load_tensors:   CPU_Mapped model buffer size =  6885.00 MiB",
+        "load_tensors:   CPU_Mapped model buffer size =  9633.28 MiB",
+        "load_tensors:        CUDA0 model buffer size = 70495.05 MiB",
+        "load_tensors:   CPU_Mapped model buffer size = 99610.97 MiB",
+        "load_tensors:   CPU_Mapped model buffer size = 99613.70 MiB"
+      ],
+      "kv_buffer_log": [
+        "llama_kv_cache:      CUDA0 KV buffer size =    80.00 MiB",
+        "llama_kv_cache:      CUDA0 KV buffer size =     8.00 MiB",
+        "llama_kv_cache:      CUDA0 KV buffer size =     2.00 MiB"
+      ],
+      "repeat_bitwise_equal": true,
+      "repeat_top1_equal": true,
+      "repeat_max_abs": 0.0,
+      "repeat_relative_l2": 0.0,
+      "greedy_agreement_by_round": [
+        43,
+        43,
+        43,
+        43
+      ],
+      "final_logits_vs_ntransformer": {
+        "max_abs": 6.473899841308594,
+        "relative_l2": 0.27106076993218975,
+        "cosine": 0.9765659147745971,
+        "reference_top8": [
+          710,
+          8739,
+          1750,
+          14319,
+          3859,
+          270,
+          1119,
+          1009
+        ],
+        "llama_top8": [
+          710,
+          1750,
+          8739,
+          270,
+          1119,
+          3859,
+          1009,
+          14319
+        ],
+        "reference_sha256": "f002f0b4367be3319332694a472e66ff9c74f0eaf97f7774350611c61c25dd8f",
+        "llama_sha256": "e8c7fa5a67ffb12c1c08806dfafa9be38340b0f180cb1a13c87e9a9edd0f4a42"
+      },
+      "ntransformer_reused": {
+        "prefill": {
+          "tokens_per_second": 6.051647114561427,
+          "mean_seconds": 84.60506541566667,
+          "min_seconds": 84.552919352,
+          "max_seconds": 84.671022682,
+          "mean_token_ms": 165.24405143164063,
+          "p50_token_ms": 163.615497,
+          "p95_token_ms": 181.965914,
+          "max_token_ms": 265.194945,
+          "cache_hit_fraction": 0.8909261067708333,
+          "mean_upload_bytes": 251984977920,
+          "mean_evictions": 40209,
+          "phases_mean_seconds": {
+            "moe": 39.326380344,
+            "attention": 26.966148717666666,
+            "engram": 1.4922307623333333,
+            "hc": 7.084068089333333,
+            "other": 9.735812861,
+            "qkv": 6.911149613666667,
+            "rope": 0,
+            "compression": 1.8066029806666668,
+            "attention_loop": 10.505915451333333,
+            "attention_tail": 7.687685228666666,
+            "router": 6.892947522333333,
+            "routed": 32.395326440333335,
+            "shared_cpu": 0
+          }
+        },
+        "decode": {
+          "tokens_per_second": 5.363781683064939,
+          "mean_seconds": 11.931880114,
+          "min_seconds": 11.923708609,
+          "max_seconds": 11.943757018,
+          "mean_token_ms": 186.43562678125,
+          "p50_token_ms": 186.22728049999998,
+          "p95_token_ms": 211.1398351,
+          "max_token_ms": 273.617863,
+          "cache_hit_fraction": 0.8245442708333334,
+          "mean_upload_bytes": 50667724800,
+          "mean_evictions": 8085,
+          "phases_mean_seconds": {
+            "moe": 5.662206581333333,
+            "attention": 3.9057376016666665,
+            "engram": 0.186940834,
+            "hc": 0.892883838,
+            "other": 1.2727566883333332,
+            "qkv": 0.865244476,
+            "rope": 0,
+            "compression": 0.252091495,
+            "attention_loop": 1.8098152313333333,
+            "attention_tail": 0.9710184546666667,
+            "router": 0.8719275316666667,
+            "routed": 4.785184101,
+            "shared_cpu": 0
+          }
+        }
+      },
+      "llama_over_ntransformer_throughput": {
+        "prefill": 7.636002238388014,
+        "decode": 5.186831875328321
+      }
+    }
+  ],
+  "selection": {
+    "threads": 52,
+    "cpu_moe_layers": 31,
+    "gpu_moe_layers": 9,
+    "n_ubatch": 512,
+    "pilot_decode_seconds": {
+      "26": 0.376066489,
+      "52": 0.281115061
+    }
+  },
+  "telemetry": {
+    "0": {
+      "samples": 217,
+      "max_memory_mib": 1.0,
+      "mean_utilization_pct": 0.0,
+      "mean_power_w": 71.58465437788018
+    },
+    "1": {
+      "samples": 217,
+      "max_memory_mib": 73827.0,
+      "mean_utilization_pct": 19.870967741935484,
+      "mean_power_w": 131.79649769585254
+    }
+  },
+  "compute_process_observations": 72,
+  "serial_prefill_control": {
+    "greedy_agreement_by_round": [
+      44,
+      44
+    ],
+    "versus_ntransformer": {
+      "max_abs": 10.957723617553711,
+      "relative_l2": 0.66639471049541
+    },
+    "versus_native_prefill": {
+      "max_abs": 4.096120834350586,
+      "relative_l2": 0.3188772614136511
+    },
+    "warm_seconds": {
+      "prefill": 4.312435474,
+      "decode": 2.202862269
+    }
+  },
+  "equal_prompt_and_consumed_continuation_ids": true,
+  "observed_foreign_gpu_processes": 0
+}

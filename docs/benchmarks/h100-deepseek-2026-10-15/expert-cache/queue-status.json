@@ -1,0 +1,13 @@
+{
+  "state": "complete",
+  "pid": 1839897,
+  "utc": "2026-10-16T01:25:23.580256+00:00",
+  "archive": {
+    "sha256": "94ca7b39678a4fdc98a86a13aec3ebd15008dc2a1cd1c47c2f51d1ab741402bb",
+    "bytes": 293512103,
+    "payload_files": 335
+  },
+  "persist": "/lambda/nfs/btiny/ntransformer-training/deepseek-cache-20261015",
+  "checked_at_utc": "2026-10-16T01:26:43.339226+00:00",
+  "local_collection": "complete"
+}

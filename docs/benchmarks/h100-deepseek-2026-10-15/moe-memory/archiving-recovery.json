@@ -1,0 +1,13 @@
+{
+  "previous_archive": {
+    "sha256": "f969284c04a79e1748cd7477dca78a47e27fdb07e696af5e142b3ba872c1830a",
+    "bytes": 441885948,
+    "payload_files": 735
+  },
+  "files_changed_during_first_seal": [
+    "RESULTS.md",
+    "analysis.log",
+    "seal.py"
+  ],
+  "resolution": "Rebuilt the archive after analysis exited; sealing now verifies immutable payload hashes before publishing."
+}

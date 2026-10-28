@@ -1,0 +1,22 @@
+{
+  "command": [
+    "/home/ubuntu/ntransformer-h100/ds41-moe-pipeline-20261015/build/test_ds41_mxfp4",
+    "unaligned",
+    "/home/ubuntu/ntransformer-h100/ds41-moe-pipeline-20261015/test_ds41_mxfp4-unaligned-cooperative.f32"
+  ],
+  "returncode": 0,
+  "utc_start": "2026-10-15T22:24:19.045376+00:00",
+  "wall_seconds": 0.3142881980165839,
+  "process_group": 602408,
+  "environment": {
+    "CUDA_VISIBLE_DEVICES": "1",
+    "LD_LIBRARY_PATH": "/home/ubuntu/ntransformer-h100/env/targets/x86_64-linux/lib:/home/ubuntu/ntransformer-h100/env/lib",
+    "DS41_GPU": "1",
+    "DS41_GPU_ATTN": "1",
+    "DS41_PROFILE": "1",
+    "DS41_VRAM_GB": "2",
+    "DS41_BENCH_ALL_LOGITS": "1",
+    "DS41_MOE_TRACE": "1",
+    "DS41_MXFP4_COOPERATIVE": "1"
+  }
+}

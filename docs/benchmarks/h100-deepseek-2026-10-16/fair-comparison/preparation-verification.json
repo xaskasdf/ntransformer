@@ -1,0 +1,6 @@
+{
+  "archive_verified_locally": true,
+  "archive_sha256": "33c39ae86273ba27944370312242bf267867c63345a6c20d99a0037d764b348c",
+  "frozen_payloads_verified": 239,
+  "scope": "Runnable preparation and CPU validation; full GPU comparison restarts after archived log-decoding failure"
+}

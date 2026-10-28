@@ -1,0 +1,10 @@
+{
+  "exact_hc_reference": true,
+  "logits_sha256": "9344741b188f013520899f7776856a8b64127d2f49e45aa7db370b53a42f3c5b",
+  "prediction_positions": 65,
+  "logits_per_position": 129280,
+  "exact_repeats": 5,
+  "gpu_coverage": true,
+  "fallback_calls": 0,
+  "staging_reuse_waits": 0
+}

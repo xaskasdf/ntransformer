@@ -1,0 +1,11 @@
+configure 0 0.21
+build-candidate 0 10.93
+compile-candidate 0 1.57
+gpu-tests 0 1.52
+synthetic-small-0 0 0.21
+synthetic-small-1 0 0.21
+synthetic-real-0 0 0.51
+synthetic-real-1 0 0.51
+synthetic-max-0 0 1.02
+synthetic-max-1 0 1.02
+tiny-prefill 0 1.97

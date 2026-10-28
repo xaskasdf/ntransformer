@@ -1,0 +1,44 @@
+UpdateCTestConfiguration  from :/home/ubuntu/ntransformer-h100/ds41-shared-20261015/build/DartConfiguration.tcl
+Parse Config file:/home/ubuntu/ntransformer-h100/ds41-shared-20261015/build/DartConfiguration.tcl
+Test project /home/ubuntu/ntransformer-h100/ds41-shared-20261015/build
+Constructing a list of tests
+Done constructing a list of tests
+Updating test list for fixtures
+Added 0 tests to meet fixture requirements
+Checking test dependency graph...
+Checking test dependency graph end
+test 14
+    Start 14: test_ds41_shared
+
+14: Test command: /home/ubuntu/ntransformer-h100/ds41-shared-20261015/build/test_ds41_shared
+14: Working Directory: /home/ubuntu/ntransformer-h100/ds41-shared-20261015/build
+14: Environment variables: 
+14:  DS41_VRAM_GB=2
+14: Test timeout computed to be: 1500
+14: ds41-gpu: expert cache on NVIDIA H100 80GB HBM3: 657930 slots x 0.00 MiB = 2.0 GiB
+14: activation max_abs=0 rel_l2=0 ref_max=33.1932716 changed=0/64
+14: shared FFN max_abs=0 rel_l2=0 ref_max=50.2961655 changed=0/96
+14: activation max_abs=0 rel_l2=0 ref_max=28.2340717 changed=0/64
+14: shared FFN max_abs=0 rel_l2=0 ref_max=41.3113022 changed=0/96
+14: activation max_abs=0 rel_l2=0 ref_max=3.52318811 changed=0/64
+14: shared FFN max_abs=0 rel_l2=0 ref_max=11.8470812 changed=0/96
+14: activation max_abs=0 rel_l2=0 ref_max=3.52318811 changed=0/64
+14: shared FFN max_abs=0 rel_l2=0 ref_max=21.0597725 changed=0/96
+14: PASS shared GPU: exact Q8 reductions, bounded activation error, integrated outputs, residency, bounds
+1/2 Test #14: test_ds41_shared .................   Passed    5.51 sec
+test 15
+    Start 15: test_ds41_shared_disabled
+
+15: Test command: /home/ubuntu/ntransformer-h100/env/bin/cmake "-E" "env" "DS41_GPU=0" "/home/ubuntu/ntransformer-h100/ds41-shared-20261015/build/test_ds41_shared" "disabled"
+15: Working Directory: /home/ubuntu/ntransformer-h100/ds41-shared-20261015/build
+15: Test timeout computed to be: 1500
+15: PASS disabled shared GPU
+2/2 Test #15: test_ds41_shared_disabled ........   Passed    0.01 sec
+
+The following tests passed:
+	test_ds41_shared
+	test_ds41_shared_disabled
+
+100% tests passed out of 2
+
+Total Test time (real) =   5.51 sec

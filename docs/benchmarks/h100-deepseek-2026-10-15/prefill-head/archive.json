@@ -1,0 +1,7 @@
+{
+  "sha256": "36995994d04c9e4804ac4ab840817e82bc775f724fa8674b4e426c4f835ed39d",
+  "archive": "prefill-head.tar.gz",
+  "files": 40,
+  "bytes": 2258038,
+  "persistent": "/lambda/nfs/btiny/ntransformer-training/deepseek-prefill-20261015"
+}

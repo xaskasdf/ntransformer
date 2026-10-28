@@ -1,0 +1,5 @@
+compile-hc-test 0 1.866
+test-hc-fixed 0 0.064
+compile-hc-forward 0 5.166
+archive-hc 0 0.016
+compile-hc-bench 0 2.364

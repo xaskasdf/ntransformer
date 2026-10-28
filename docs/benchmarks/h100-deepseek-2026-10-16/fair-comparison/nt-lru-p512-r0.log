@@ -1,0 +1,34 @@
+GGUF v3: 18 tensors, 68 metadata entries
+Loaded 10 split shards, 1046 tensors total
+Tokenizer: 129280 tokens, 127741 merges, BOS=0, EOS=1, pre=joyai-llm, encoding=GPT2-BPE(merges)
+ds41-gpu: lm head resident (1.23 GiB)
+ds41-gpu: cache device=0 policy=lru protected=0%
+ds41-gpu: expert cache on NVIDIA H100 80GB HBM3: 10622 slots x 5.98 MiB = 62.0 GiB
+ds41-gpu: cache device=1 policy=lru protected=0%
+ds41-gpu: expert cache on NVIDIA H100 80GB HBM3: 10622 slots x 5.98 MiB = 62.0 GiB
+ds41-gpu: peer expert mode=execute; owner=expert_id%2, devices 0/1, direct P2P enabled
+BENCH round=0 phase=prefill tokens=512 seconds=32.756480
+ds41-gpu: expert cache: 173991 lookups, 162492 hits (93.4%), 877 evictions
+BENCH round=0 phase=decode tokens=64 seconds=3.666510
+ds41-gpu: expert cache: 195312 lookups, 183453 hits (93.9%), 1237 evictions
+PASS round=0 finite, repeat exact, EOS index=-1
+BENCH round=1 phase=prefill tokens=512 seconds=26.615872
+ds41-gpu: expert cache: 369303 lookups, 352968 hits (95.6%), 5713 evictions
+BENCH round=1 phase=decode tokens=64 seconds=3.603110
+ds41-gpu: expert cache: 390624 lookups, 373929 hits (95.7%), 6073 evictions
+PASS round=1 finite, repeat exact, EOS index=-1
+BENCH round=2 phase=prefill tokens=512 seconds=26.605446
+ds41-gpu: expert cache: 564615 lookups, 543444 hits (96.3%), 10549 evictions
+BENCH round=2 phase=decode tokens=64 seconds=3.604947
+ds41-gpu: expert cache: 585936 lookups, 564405 hits (96.3%), 10909 evictions
+PASS round=2 finite, repeat exact, EOS index=-1
+BENCH round=3 phase=prefill tokens=512 seconds=26.591541
+ds41-gpu: expert cache: 759927 lookups, 733920 hits (96.6%), 15385 evictions
+BENCH round=3 phase=decode tokens=64 seconds=3.605605
+ds41-gpu: expert cache: 781248 lookups, 754881 hits (96.6%), 15745 evictions
+PASS round=3 finite, repeat exact, EOS index=-1
+BENCH round=4 phase=prefill tokens=512 seconds=26.588200
+ds41-gpu: expert cache: 955239 lookups, 924396 hits (96.8%), 20221 evictions
+BENCH round=4 phase=decode tokens=64 seconds=3.602740
+ds41-gpu: expert cache: 976560 lookups, 945357 hits (96.8%), 20581 evictions
+PASS round=4 finite, repeat exact, EOS index=-1

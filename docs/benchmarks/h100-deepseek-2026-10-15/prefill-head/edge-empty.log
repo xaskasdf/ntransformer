@@ -1,0 +1,11 @@
+
+GGUF v3: 166 tensors, 50 metadata entries
+Loading DeepSeek-V4.1 model: /home/ubuntu/tiny-deepseek41.gguf
+GGUF v3: 166 tensors, 50 metadata entries
+deepseek41: 6 layers, hidden 256, heads 4, head_dim 128, experts 2/4, engram layers 1, hc 4
+Tokenizer: 320 tokens, 0 merges, BOS=1, EOS=2, pre=default, encoding=SentencePiece
+prompt: 1 tokens
+[prefill] tokens=1 heads=1 mode=last seconds=0.037903763
+[prof] moe=0.01s attn=0.01s engram=0.00s hc=0.00s other=0.01s forwards=1[prof-attn] qkv=0.01s rope=0.00s comp=0.00s loop=0.00s tail=0.00s
+
+generated 0 tokens

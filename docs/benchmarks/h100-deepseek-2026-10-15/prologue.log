@@ -1,0 +1,10 @@
+PASS query latent max_abs=5.96046448e-07
+PASS query + RoPE max_abs=5.36441803e-07
+PASS KV + RoPE max_abs=5.06639481e-07
+PASS query latent max_abs=6.55651093e-07
+PASS query + RoPE max_abs=7.15255737e-07
+PASS KV + RoPE max_abs=5.96046448e-07
+PASS query latent max_abs=3.57627869e-07
+PASS query + RoPE max_abs=7.74860382e-07
+PASS KV + RoPE max_abs=3.57627869e-07
+PASS prologue (fresh backbone, no expert cache)

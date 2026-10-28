@@ -1,0 +1,29 @@
+{
+  "command": [
+    "/home/ubuntu/ntransformer-h100/env/bin/cmake",
+    "--build",
+    "/home/ubuntu/ntransformer-h100/ds41-attention-20261015/build",
+    "-j8",
+    "--target",
+    "ntransformer",
+    "test_ds41_attention",
+    "test_ds41_router",
+    "test_ds41_backbone",
+    "test_ds41_shared",
+    "test_ds41_moe_overlap",
+    "test_ds41_prefill",
+    "test_ds41_hc"
+  ],
+  "returncode": 0,
+  "utc_start": "2026-10-15T21:40:58.954908+00:00",
+  "wall_seconds": 22.343976183008635,
+  "process_group": 373157,
+  "environment": {
+    "CUDA_VISIBLE_DEVICES": "1",
+    "LD_LIBRARY_PATH": "/home/ubuntu/ntransformer-h100/env/targets/x86_64-linux/lib:/home/ubuntu/ntransformer-h100/env/lib",
+    "DS41_GPU": "1",
+    "DS41_GPU_ATTN": "1",
+    "DS41_PROFILE": "1",
+    "DS41_VRAM_GB": "62"
+  }
+}

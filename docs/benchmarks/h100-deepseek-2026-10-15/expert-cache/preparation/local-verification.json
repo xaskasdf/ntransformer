@@ -1,0 +1,6 @@
+{
+  "archive_sha256": "76ea2c800daa6c963bfbb7e5c72ae6f1ad8882116c8e4f02b4004d98d4a89c4f",
+  "payload_files_verified": 177,
+  "source_matches_workspace": true,
+  "scope": "Compilation, CPU correctness/sanitizers and replay self-tests; GPU tests and inference benchmarks pending"
+}

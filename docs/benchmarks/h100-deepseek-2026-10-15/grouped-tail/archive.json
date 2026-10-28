@@ -1,0 +1,7 @@
+{
+  "sha256": "b84675ef72277ff8d388242d71b455bc13a42f98061799ec1d001c7a29b1269e",
+  "archive": "grouped-tail.tar.gz",
+  "files": 83,
+  "bytes": 21832342,
+  "persistent": "/lambda/nfs/btiny/ntransformer-training/deepseek-tail-20261015"
+}

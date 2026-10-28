@@ -1,0 +1,27 @@
+{
+  "version": "13.1.115",
+  "file": {
+    "comment_text": "",
+    "core-metadata": {
+      "sha256": "7890a14ae588c0fdb29120e3b88d3ef2b66050a923e13c8feec54e7583056cba"
+    },
+    "digests": {
+      "blake2b_256": "6957ac6c9c041331cd60df934806007f83407bf616135ab3b3677f396c3cf8e5",
+      "md5": "abc75d52e87d7643effd940975ab1718",
+      "sha256": "2c76d91807cf76fc0e4b08ad71c4dff0e8e9f678fc8dbbbc43ec55125a70b553"
+    },
+    "downloads": -1,
+    "filename": "nvidia_cuda_cupti-13.1.115-py3-none-manylinux_2_25_x86_64.whl",
+    "has_sig": false,
+    "md5_digest": "abc75d52e87d7643effd940975ab1718",
+    "packagetype": "bdist_wheel",
+    "python_version": "py3",
+    "requires_python": ">=3",
+    "size": 11372238,
+    "upload_time": "2026-01-13T22:32:49",
+    "upload_time_iso_8601": "2026-01-13T22:32:49.132058Z",
+    "url": "https://files.pythonhosted.org/packages/69/57/ac6c9c041331cd60df934806007f83407bf616135ab3b3677f396c3cf8e5/nvidia_cuda_cupti-13.1.115-py3-none-manylinux_2_25_x86_64.whl",
+    "yanked": false,
+    "yanked_reason": null
+  }
+}

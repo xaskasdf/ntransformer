@@ -1,0 +1,4 @@
+{
+  "compute_apps": "",
+  "log_filter_final_logits_bitwise_equal_to_initial": true
+}

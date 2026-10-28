@@ -1,0 +1,5 @@
+{
+  "original_exit": 1,
+  "original_diagnostic": "FAIL HC Sinkhorn producer/consumer transposes destination and source\n",
+  "corrected_exit": 0
+}

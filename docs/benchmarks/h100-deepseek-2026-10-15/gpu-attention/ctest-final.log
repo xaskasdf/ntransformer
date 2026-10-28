@@ -1,0 +1,292 @@
+UpdateCTestConfiguration  from :/home/ubuntu/ntransformer-h100/ds41-attention-20261015/build/DartConfiguration.tcl
+Parse Config file:/home/ubuntu/ntransformer-h100/ds41-attention-20261015/build/DartConfiguration.tcl
+Test project /home/ubuntu/ntransformer-h100/ds41-attention-20261015/build
+Constructing a list of tests
+Done constructing a list of tests
+Updating test list for fixtures
+Added 0 tests to meet fixture requirements
+Checking test dependency graph...
+Checking test dependency graph end
+test 4
+      Start  4: test_ds41_attention
+
+4: Test command: /home/ubuntu/ntransformer-h100/ds41-attention-20261015/build/test_ds41_attention
+4: Working Directory: /home/ubuntu/ntransformer-h100/ds41-attention-20261015/build
+4: Test timeout computed to be: 1500
+4: PASS resident attention: steps=852 values=3301312 max_abs=2.98023224e-08; ring wrap, compressed sharing/growth/order, duplicate keys, sinks, reset, isolated owners, recovery and bounds
+ 1/20 Test  #4: test_ds41_attention .......................   Passed    3.26 sec
+test 5
+      Start  5: test_ds41_attention_disabled
+
+5: Test command: /home/ubuntu/ntransformer-h100/env/bin/cmake "-E" "env" "DS41_GPU=0" "/home/ubuntu/ntransformer-h100/ds41-attention-20261015/build/test_ds41_attention" "disabled"
+5: Working Directory: /home/ubuntu/ntransformer-h100/ds41-attention-20261015/build
+5: Test timeout computed to be: 1500
+5: PASS disabled resident attention
+ 2/20 Test  #5: test_ds41_attention_disabled ..............   Passed    0.01 sec
+test 6
+      Start  6: test_ds41_router
+
+6: Test command: /home/ubuntu/ntransformer-h100/ds41-attention-20261015/build/test_ds41_router
+6: Working Directory: /home/ubuntu/ntransformer-h100/ds41-attention-20261015/build
+6: Test timeout computed to be: 1500
+6: PASS router/HC: 72 exact F32/BF16 projections, AVX2/scalar order, tails, buffer growth and bounds
+ 3/20 Test  #6: test_ds41_router ..........................   Passed    0.41 sec
+test 7
+      Start  7: test_ds41_router_disabled
+
+7: Test command: /home/ubuntu/ntransformer-h100/env/bin/cmake "-E" "env" "DS41_GPU=0" "/home/ubuntu/ntransformer-h100/ds41-attention-20261015/build/test_ds41_router" "disabled"
+7: Working Directory: /home/ubuntu/ntransformer-h100/ds41-attention-20261015/build
+7: Test timeout computed to be: 1500
+7: PASS disabled router
+ 4/20 Test  #7: test_ds41_router_disabled .................   Passed    0.01 sec
+test 8
+      Start  8: test_ds41_backbone_prologue
+
+8: Test command: /home/ubuntu/ntransformer-h100/ds41-attention-20261015/build/test_ds41_backbone "prologue"
+8: Working Directory: /home/ubuntu/ntransformer-h100/ds41-attention-20261015/build
+8: Test timeout computed to be: 1500
+8: PASS query latent max_abs=5.96046448e-07
+8: PASS query + RoPE max_abs=4.76837158e-07
+8: PASS KV + RoPE max_abs=5.06639481e-07
+8: PASS query latent max_abs=6.55651093e-07
+8: PASS query + RoPE max_abs=7.74860382e-07
+8: PASS KV + RoPE max_abs=5.96046448e-07
+8: PASS query latent max_abs=3.57627869e-07
+8: PASS query + RoPE max_abs=7.15255737e-07
+8: PASS KV + RoPE max_abs=3.57627869e-07
+8: PASS prologue (fresh backbone, no expert cache)
+ 5/20 Test  #8: test_ds41_backbone_prologue ...............   Passed    0.28 sec
+test 9
+      Start  9: test_ds41_backbone_tail
+
+9: Test command: /home/ubuntu/ntransformer-h100/ds41-attention-20261015/build/test_ds41_backbone "tail"
+9: Working Directory: /home/ubuntu/ntransformer-h100/ds41-attention-20261015/build
+9: Test timeout computed to be: 1500
+9: PASS grouped output max_abs=2.38418579e-07
+9: PASS grouped output max_abs=1.75088644e-07
+9: PASS grouped output max_abs=1.07288361e-06
+9: PASS grouped output max_abs=2.68220901e-07
+9: PASS grouped output max_abs=3.91155481e-07
+9: PASS grouped output max_abs=1.1920929e-06
+9: PASS grouped output max_abs=5.96046448e-08
+9: PASS grouped output max_abs=1.1920929e-07
+9: PASS grouped output max_abs=2.38418579e-07
+9: PASS grouped output max_abs=8.77305865e-07
+9: PASS grouped output max_abs=3.57627869e-07
+9: PASS grouped output max_abs=4.29153442e-06
+9: PASS tail (fresh backbone, no expert cache)
+ 6/20 Test  #9: test_ds41_backbone_tail ...................   Passed    0.29 sec
+test 10
+      Start 10: test_ds41_backbone_compressor
+
+10: Test command: /home/ubuntu/ntransformer-h100/ds41-attention-20261015/build/test_ds41_backbone "compressor"
+10: Working Directory: /home/ubuntu/ntransformer-h100/ds41-attention-20261015/build
+10: Test timeout computed to be: 1500
+10: PASS compressor KV max_abs=1.1920929e-07
+10: PASS compressor gate max_abs=1.1920929e-07
+10: PASS compressor ungated max_abs=1.1920929e-07
+10: PASS compressor KV max_abs=8.94069672e-08
+10: PASS compressor gate max_abs=8.94069672e-08
+10: PASS compressor ungated max_abs=8.94069672e-08
+10: PASS compressor KV max_abs=4.76837158e-07
+10: PASS compressor gate max_abs=4.76837158e-07
+10: PASS compressor ungated max_abs=4.76837158e-07
+10: PASS compressor (fresh backbone, no expert cache)
+ 7/20 Test #10: test_ds41_backbone_compressor .............   Passed    0.29 sec
+test 11
+      Start 11: test_ds41_backbone_indexer
+
+11: Test command: /home/ubuntu/ntransformer-h100/ds41-attention-20261015/build/test_ds41_backbone "indexer"
+11: Working Directory: /home/ubuntu/ntransformer-h100/ds41-attention-20261015/build
+11: Test timeout computed to be: 1500
+11: PASS indexer Q8 max_abs=3.91155481e-08
+11: PASS indexer BF16 max_abs=7.4505806e-08
+11: PASS indexer Q8 max_abs=2.5331974e-07
+11: PASS indexer BF16 max_abs=1.1920929e-07
+11: PASS indexer Q8 max_abs=6.70552254e-08
+11: PASS indexer BF16 max_abs=8.94069672e-08
+11: PASS indexer Q8 max_abs=2.08616257e-07
+11: PASS indexer BF16 max_abs=3.87430191e-07
+11: PASS indexer Q8 max_abs=1.1920929e-07
+11: PASS indexer BF16 max_abs=1.1920929e-07
+11: PASS indexer Q8 max_abs=1.31130219e-06
+11: PASS indexer BF16 max_abs=1.43051147e-06
+11: PASS indexer (fresh backbone, no expert cache)
+ 8/20 Test #11: test_ds41_backbone_indexer ................   Passed    0.29 sec
+test 12
+      Start 12: test_ds41_backbone_tail_serial
+
+12: Test command: /home/ubuntu/ntransformer-h100/env/bin/cmake "-E" "env" "DS41_GROUPED_TAIL=0" "/home/ubuntu/ntransformer-h100/ds41-attention-20261015/build/test_ds41_backbone" "tail"
+12: Working Directory: /home/ubuntu/ntransformer-h100/ds41-attention-20261015/build
+12: Test timeout computed to be: 1500
+12: PASS grouped output max_abs=2.38418579e-07
+12: PASS grouped output max_abs=1.75088644e-07
+12: PASS grouped output max_abs=1.07288361e-06
+12: PASS grouped output max_abs=2.68220901e-07
+12: PASS grouped output max_abs=3.91155481e-07
+12: PASS grouped output max_abs=1.1920929e-06
+12: PASS grouped output max_abs=5.96046448e-08
+12: PASS grouped output max_abs=1.1920929e-07
+12: PASS grouped output max_abs=2.38418579e-07
+12: PASS grouped output max_abs=8.77305865e-07
+12: PASS grouped output max_abs=3.57627869e-07
+12: PASS grouped output max_abs=4.29153442e-06
+12: PASS tail (fresh backbone, no expert cache)
+ 9/20 Test #12: test_ds41_backbone_tail_serial ............   Passed    0.30 sec
+test 13
+      Start 13: test_ds41_backbone_prologue_serial
+
+13: Test command: /home/ubuntu/ntransformer-h100/env/bin/cmake "-E" "env" "DS41_QKV_READBACK_BATCH=0" "/home/ubuntu/ntransformer-h100/ds41-attention-20261015/build/test_ds41_backbone" "prologue"
+13: Working Directory: /home/ubuntu/ntransformer-h100/ds41-attention-20261015/build
+13: Test timeout computed to be: 1500
+13: PASS query latent max_abs=5.96046448e-07
+13: PASS query + RoPE max_abs=4.76837158e-07
+13: PASS KV + RoPE max_abs=5.06639481e-07
+13: PASS query latent max_abs=6.55651093e-07
+13: PASS query + RoPE max_abs=7.74860382e-07
+13: PASS KV + RoPE max_abs=5.96046448e-07
+13: PASS query latent max_abs=3.57627869e-07
+13: PASS query + RoPE max_abs=7.15255737e-07
+13: PASS KV + RoPE max_abs=3.57627869e-07
+13: PASS prologue (fresh backbone, no expert cache)
+10/20 Test #13: test_ds41_backbone_prologue_serial ........   Passed    0.30 sec
+test 14
+      Start 14: test_ds41_prefill
+
+14: Test command: /home/ubuntu/ntransformer-h100/ds41-attention-20261015/build/test_ds41_prefill
+14: Working Directory: /home/ubuntu/ntransformer-h100/ds41-attention-20261015/build
+14: Test timeout computed to be: 1500
+14: GGUF v3: 166 tensors, 50 metadata entries
+14: MODEL layers=6 vocab=320 prompt=18 window=16 topk=4 gpu_head=0
+14: PASS schedule=last prompt=18 continuation=4 exact=1 reset=1
+14: PASS schedule=mixed prompt=18 continuation=4 exact=1 reset=1
+14: PASS DS41 prefill state and logits
+11/20 Test #14: test_ds41_prefill .........................   Passed    2.09 sec
+test 15
+      Start 15: test_ds41_moe_overlap
+
+15: Test command: /home/ubuntu/ntransformer-h100/ds41-attention-20261015/build/test_ds41_moe_overlap
+15: Working Directory: /home/ubuntu/ntransformer-h100/ds41-attention-20261015/build
+15: Environment variables: 
+15:  DS41_VRAM_GB=1
+15: Test timeout computed to be: 1500
+15: ds41-gpu: expert cache on NVIDIA H100 80GB HBM3: 61680 slots x 0.02 MiB = 1.0 GiB
+15: coverage: 20 calls, 20 batched, 80 launches, 0 traced, 0 aborted
+15: PASS scoped overlap: bitwise outputs, callback ownership, exception recovery, bounds
+12/20 Test #15: test_ds41_moe_overlap .....................   Passed    0.29 sec
+test 16
+      Start 16: test_ds41_moe_overlap_disabled
+
+16: Test command: /home/ubuntu/ntransformer-h100/env/bin/cmake "-E" "env" "DS41_GPU=0" "/home/ubuntu/ntransformer-h100/ds41-attention-20261015/build/test_ds41_moe_overlap" "disabled"
+16: Working Directory: /home/ubuntu/ntransformer-h100/ds41-attention-20261015/build
+16: Test timeout computed to be: 1500
+16: PASS disabled GPU leaves callback and output untouched
+13/20 Test #16: test_ds41_moe_overlap_disabled ............   Passed    0.01 sec
+test 17
+      Start 17: test_ds41_moe_overlap_serial
+
+17: Test command: /home/ubuntu/ntransformer-h100/env/bin/cmake "-E" "env" "DS41_MOE_BATCH=0" "DS41_MOE_TRACE=1" "DS41_VRAM_GB=1" "/home/ubuntu/ntransformer-h100/ds41-attention-20261015/build/test_ds41_moe_overlap"
+17: Working Directory: /home/ubuntu/ntransformer-h100/ds41-attention-20261015/build
+17: Test timeout computed to be: 1500
+17: ds41-gpu: expert cache on NVIDIA H100 80GB HBM3: 61680 slots x 0.02 MiB = 1.0 GiB
+17: coverage: 20 calls, 0 batched, 510 launches, 20 traced, 1 aborted
+17: PASS scoped overlap: bitwise outputs, callback ownership, exception recovery, bounds
+14/20 Test #17: test_ds41_moe_overlap_serial ..............   Passed    0.31 sec
+test 18
+      Start 18: test_ds41_moe_overlap_trace
+
+18: Test command: /home/ubuntu/ntransformer-h100/env/bin/cmake "-E" "env" "DS41_MOE_BATCH=1" "DS41_MOE_TRACE=1" "DS41_VRAM_GB=1" "/home/ubuntu/ntransformer-h100/ds41-attention-20261015/build/test_ds41_moe_overlap"
+18: Working Directory: /home/ubuntu/ntransformer-h100/ds41-attention-20261015/build
+18: Test timeout computed to be: 1500
+18: ds41-gpu: expert cache on NVIDIA H100 80GB HBM3: 61680 slots x 0.02 MiB = 1.0 GiB
+18: coverage: 20 calls, 20 batched, 80 launches, 20 traced, 1 aborted
+18: PASS scoped overlap: bitwise outputs, callback ownership, exception recovery, bounds
+15/20 Test #18: test_ds41_moe_overlap_trace ...............   Passed    0.30 sec
+test 19
+      Start 19: test_ds41_moe_overlap_flow_experimental
+
+19: Test command: /home/ubuntu/ntransformer-h100/env/bin/cmake "-E" "env" "DS41_STAGING_POOL=1" "DS41_MXFP4_REGISTER_LUT=1" "DS41_VRAM_GB=1" "/home/ubuntu/ntransformer-h100/ds41-attention-20261015/build/test_ds41_moe_overlap"
+19: Working Directory: /home/ubuntu/ntransformer-h100/ds41-attention-20261015/build
+19: Test timeout computed to be: 1500
+19: ds41-gpu: expert cache on NVIDIA H100 80GB HBM3: 61680 slots x 0.02 MiB = 1.0 GiB
+19: coverage: 20 calls, 20 batched, 80 launches, 0 traced, 0 aborted
+19: PASS scoped overlap: bitwise outputs, callback ownership, exception recovery, bounds
+16/20 Test #19: test_ds41_moe_overlap_flow_experimental ...   Passed    0.30 sec
+test 20
+      Start 20: test_ds41_shared
+
+20: Test command: /home/ubuntu/ntransformer-h100/ds41-attention-20261015/build/test_ds41_shared
+20: Working Directory: /home/ubuntu/ntransformer-h100/ds41-attention-20261015/build
+20: Environment variables: 
+20:  DS41_VRAM_GB=2
+20: Test timeout computed to be: 1500
+20: ds41-gpu: expert cache on NVIDIA H100 80GB HBM3: 657930 slots x 0.00 MiB = 2.0 GiB
+20: activation max_abs=0 rel_l2=0 ref_max=33.1932716 changed=0/64
+20: shared FFN max_abs=0 rel_l2=0 ref_max=50.2961655 changed=0/96
+20: activation max_abs=0 rel_l2=0 ref_max=28.2340717 changed=0/64
+20: shared FFN max_abs=0 rel_l2=0 ref_max=41.3113022 changed=0/96
+20: activation max_abs=0 rel_l2=0 ref_max=3.52318811 changed=0/64
+20: shared FFN max_abs=0 rel_l2=0 ref_max=11.8470812 changed=0/96
+20: activation max_abs=0 rel_l2=0 ref_max=3.52318811 changed=0/64
+20: shared FFN max_abs=0 rel_l2=0 ref_max=21.0597725 changed=0/96
+20: PASS shared GPU: exact Q8 reductions, bounded activation error, integrated outputs, residency, bounds
+17/20 Test #20: test_ds41_shared ..........................   Passed    0.30 sec
+test 21
+      Start 21: test_ds41_shared_late
+
+21: Test command: /home/ubuntu/ntransformer-h100/env/bin/cmake "-E" "env" "DS41_SHARED_EARLY=0" "DS41_VRAM_GB=2" "/home/ubuntu/ntransformer-h100/ds41-attention-20261015/build/test_ds41_shared"
+21: Working Directory: /home/ubuntu/ntransformer-h100/ds41-attention-20261015/build
+21: Test timeout computed to be: 1500
+21: ds41-gpu: expert cache on NVIDIA H100 80GB HBM3: 657930 slots x 0.00 MiB = 2.0 GiB
+21: activation max_abs=0 rel_l2=0 ref_max=33.1932716 changed=0/64
+21: shared FFN max_abs=0 rel_l2=0 ref_max=50.2961655 changed=0/96
+21: activation max_abs=0 rel_l2=0 ref_max=28.2340717 changed=0/64
+21: shared FFN max_abs=0 rel_l2=0 ref_max=41.3113022 changed=0/96
+21: activation max_abs=0 rel_l2=0 ref_max=3.52318811 changed=0/64
+21: shared FFN max_abs=0 rel_l2=0 ref_max=11.8470812 changed=0/96
+21: activation max_abs=0 rel_l2=0 ref_max=3.52318811 changed=0/64
+21: shared FFN max_abs=0 rel_l2=0 ref_max=21.0597725 changed=0/96
+21: PASS shared GPU: exact Q8 reductions, bounded activation error, integrated outputs, residency, bounds
+18/20 Test #21: test_ds41_shared_late .....................   Passed    0.30 sec
+test 22
+      Start 22: test_ds41_shared_disabled
+
+22: Test command: /home/ubuntu/ntransformer-h100/env/bin/cmake "-E" "env" "DS41_GPU=0" "/home/ubuntu/ntransformer-h100/ds41-attention-20261015/build/test_ds41_shared" "disabled"
+22: Working Directory: /home/ubuntu/ntransformer-h100/ds41-attention-20261015/build
+22: Test timeout computed to be: 1500
+22: PASS disabled shared GPU
+19/20 Test #22: test_ds41_shared_disabled .................   Passed    0.01 sec
+test 28
+      Start 28: test_ds41_hc
+
+28: Test command: /home/ubuntu/ntransformer-h100/ds41-attention-20261015/build/test_ds41_hc
+28: Working Directory: /home/ubuntu/ntransformer-h100/ds41-attention-20261015/build
+28: Test timeout computed to be: 1500
+28: PASS HC direct/pool/scalar bitwise equality and output guards
+20/20 Test #28: test_ds41_hc ..............................   Passed    0.05 sec
+
+The following tests passed:
+	test_ds41_attention
+	test_ds41_attention_disabled
+	test_ds41_router
+	test_ds41_router_disabled
+	test_ds41_backbone_prologue
+	test_ds41_backbone_tail
+	test_ds41_backbone_compressor
+	test_ds41_backbone_indexer
+	test_ds41_backbone_tail_serial
+	test_ds41_backbone_prologue_serial
+	test_ds41_prefill
+	test_ds41_moe_overlap
+	test_ds41_moe_overlap_disabled
+	test_ds41_moe_overlap_serial
+	test_ds41_moe_overlap_trace
+	test_ds41_moe_overlap_flow_experimental
+	test_ds41_shared
+	test_ds41_shared_late
+	test_ds41_shared_disabled
+	test_ds41_hc
+
+100% tests passed out of 20
+
+Total Test time (real) =   9.39 sec

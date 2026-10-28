@@ -1,0 +1,13 @@
+PASS grouped output max_abs=2.38418579e-07
+PASS grouped output max_abs=1.75088644e-07
+PASS grouped output max_abs=1.07288361e-06
+PASS grouped output max_abs=2.68220901e-07
+PASS grouped output max_abs=3.91155481e-07
+PASS grouped output max_abs=1.1920929e-06
+PASS grouped output max_abs=5.96046448e-08
+PASS grouped output max_abs=1.1920929e-07
+PASS grouped output max_abs=2.38418579e-07
+PASS grouped output max_abs=8.77305865e-07
+PASS grouped output max_abs=3.57627869e-07
+PASS grouped output max_abs=4.29153442e-06
+PASS tail (fresh backbone, no expert cache)

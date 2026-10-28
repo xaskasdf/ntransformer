@@ -1,0 +1,10 @@
+PASS compressor KV max_abs=1.1920929e-07
+PASS compressor gate max_abs=1.1920929e-07
+PASS compressor ungated max_abs=1.1920929e-07
+PASS compressor KV max_abs=8.94069672e-08
+PASS compressor gate max_abs=8.94069672e-08
+PASS compressor ungated max_abs=8.94069672e-08
+PASS compressor KV max_abs=4.76837158e-07
+PASS compressor gate max_abs=4.76837158e-07
+PASS compressor ungated max_abs=4.76837158e-07
+PASS compressor (fresh backbone, no expert cache)

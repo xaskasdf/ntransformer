@@ -1,0 +1,18 @@
+{
+  "payload_files_verified": 205,
+  "analysis_reproduced": true,
+  "report_reproduced": true,
+  "matches_local_fixed_hc_reference": true,
+  "numerical_tolerance": 1e-12,
+  "remote_archive_sha256": "3ba97ba29a338b4df7c87cb476c55dfb61eaf6daf1d696ef5a0909564d34102c",
+  "remote_archive_bytes_verified_locally": false,
+  "delivery": "Verified individual payloads; reused identical local HC reference logits",
+  "workspace_matches": {
+    "src/model/ds41/ds41_gpu.cu": true,
+    "src/model/ds41/ds41_gpu.h": true,
+    "src/model/ds41/ds41_forward.cpp": true,
+    "src/model/ds41/ds41_hc.h": true,
+    "tests/test_ds41_backbone.cpp": true,
+    "tools/benchmark_ds41.cpp": true
+  }
+}

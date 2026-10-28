@@ -1,0 +1,12 @@
+{
+  "binary": "c09a30979660766ebf2e85820729bfc38f6153e5616b6092884f2b4cad3ed7e9",
+  "library": "7e40ac671d701b02acda4f6be7c5c0cc06b2b5483f1da4492a574e79c8aadc90",
+  "baseline_library": "eb8fc620320cdc3c6ffe774185e86e79c2b06d9337d8ea190d733bd47bd08e0b",
+  "sources": {
+    "src/model/ds41/ds41_forward.cpp": "60aca2c349b1844cec5653a4c7e22d9b0d5a843b8136ef2635c4722cd6b1dd6d",
+    "src/model/ds41/ds41_hc.h": "13d9f761c2bdeb62b8248da69a30083170af80d6aaaa6eaf023c5f0ecd47dd90",
+    "tests/test_ds41_hc.cpp": "f3c13cde77464303a12c59a79db0aeb98c40eb6e08cb187adc07dc2270b819b8"
+  },
+  "changed_object": "ds41_forward.cpp.o",
+  "gpu_kernels_unchanged": true
+}

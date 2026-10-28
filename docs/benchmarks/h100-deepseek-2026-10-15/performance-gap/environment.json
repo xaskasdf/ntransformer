@@ -1,0 +1,41 @@
+{
+  "base_environment": {
+    "gpu": "index, uuid, name, driver_version, memory.total [MiB]\n0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 580.178.04, 81559 MiB\n1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 580.178.04, 81559 MiB\n",
+    "cpu": "Architecture:                         x86_64\nCPU op-mode(s):                       32-bit, 64-bit\nAddress sizes:                        52 bits physical, 57 bits virtual\nByte Order:                           Little Endian\nCPU(s):                               52\nOn-line CPU(s) list:                  0-51\nVendor ID:                            GenuineIntel\nModel name:                           Intel(R) Xeon(R) Platinum 8480+\nCPU family:                           6\nModel:                                143\nThread(s) per core:                   2\nCore(s) per socket:                   26\nSocket(s):                            1\nStepping:                             8\nBogoMIPS:                             4000.00\nFlags:                                fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon rep_good nopl xtopology cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch cpuid_fault invpcid_single ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx_vnni avx512_bf16 wbnoinvd arat avx512vbmi umip pku ospke waitpkg avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq la57 rdpid bus_lock_detect cldemote movdiri movdir64b fsrm md_clear serialize tsxldtrk avx512_fp16 arch_capabilities\nVirtualization:                       VT-x\nHypervisor vendor:                    KVM\nVirtualization type:                  full\nL1d cache:                            1.6 MiB (52 instances)\nL1i cache:                            1.6 MiB (52 instances)\nL2 cache:                             104 MiB (26 instances)\nL3 cache:                             16 MiB (1 instance)\nNUMA node(s):                         1\nNUMA node0 CPU(s):                    0-51\nVulnerability Gather data sampling:   Not affected\nVulnerability Itlb multihit:          Not affected\nVulnerability L1tf:                   Not affected\nVulnerability Mds:                    Not affected\nVulnerability Meltdown:               Not affected\nVulnerability Mmio stale data:        Unknown: No mitigations\nVulnerability Reg file data sampling: Not affected\nVulnerability Retbleed:               Not affected\nVulnerability Spec rstack overflow:   Not affected\nVulnerability Spec store bypass:      Mitigation; Speculative Store Bypass disabled via prctl and seccomp\nVulnerability Spectre v1:             Mitigation; usercopy/swapgs barriers and __user pointer sanitization\nVulnerability Spectre v2:             Mitigation; Enhanced / Automatic IBRS; IBPB conditional; RSB filling; PBRSB-eIBRS SW sequence; BHI SW loop, KVM SW loop\nVulnerability Srbds:                  Not affected\nVulnerability Tsx async abort:        Mitigation; TSX disabled\n",
+    "memory": "               total        used        free      shared  buff/cache   available\nMem:     475296235520  1297977344 34577694720     5468160 439420563456 469953601536\nSwap:              0           0           0\n",
+    "toolkit": "nvcc: NVIDIA (R) Cuda compiler driver\nCopyright (c) 2005-2025 NVIDIA Corporation\nBuilt on Tue_Dec_16_07:23:41_PM_PST_2025\nCuda compilation tools, release 13.1, V13.1.115\nBuild cuda_13.1.r13.1/compiler.37061995_0\n",
+    "compiler": "x86_64-conda-linux-gnu-g++ (conda-forge gcc 14.4.0-7) 14.4.0\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+    "source_commit": "5210c7c5ed61dddaee6ed476623abf4b63093d16",
+    "binary_sha256": "7b2744963edc74157433c70d62890f1577e27997a00f9c262aba97bbfbb1f91b",
+    "library_sha256": {
+      "libggml-base.so.0.23.0": "166f33f04e8d5c517dc5be2cf5847e9d9df8fb16889f67c77ae7c7f0d670a146",
+      "libggml-cpu.so.0.23.0": "32977b485cc147795df272639bc6ae90d06c67cd60eb3ab2c8f487593be447be",
+      "libggml-cuda.so.0.23.0": "2ea487c9ef67f95df36dcdfb0eb3efdf5f68830cfef3bc12d5287a90277c14f9",
+      "libggml.so.0.23.0": "85cd186a8592bdec446f499ff03e303413d13cb77de3aa56cc017aa105c320ed",
+      "libllama-bench-impl.so": "107bf597a12c95b17e9db31c18de1c67633719d7823b630635ac486316dc69a2",
+      "libllama-common.so.0.4.0": "f859732606991ddaa4c9281c24d14493ff862bd367e8b9cd0091cfb0ff846f8c",
+      "libllama.so.0.4.0": "87b6d63754309dbb3dd910e456a54e2e3ea9b9dd590576a0773c94f1c1739806"
+    },
+    "cublas_sha256": "25cde432108543626df85d887c730bf2cab96803ca16f9654e4abc8d2b45833e",
+    "cublas_library": "/home/ubuntu/brandon-mini/.venv/lib/python3.12/site-packages/nvidia/cu13/lib/libcublas.so.13",
+    "workload_sha256": "2fa75d64bf6577320cffc8ab10e33dd1c3e6624f9d3691efb44fe48e60f42391",
+    "source_sha256": "d00cb25785aa41e89cafb31d7cd2649d2f32325c864789f3ec930dc2bbac810e",
+    "initial_debug_binary_sha256": "44a58b0ba0bf1c20cc38af91188cdd923c049014375f2b90139a3ac0abdd0da8",
+    "log_level": "info"
+  },
+  "source_sha256": {
+    "benchmark_ds41.cpp": "5ec3836835eac02caeb653725b6ea2dfefc50f2658b20e14cd4d8be85a89275a",
+    "nt_dump.cpp": "9d4a3646db6ee22305919e9b7dd50ca9c657243b8b85b4578a431e35055a481c",
+    "trace.cpp": "8c60f1611f62d5334c80da579bf15cc0b69b5ce470b64f88cee1f82e33b6dabb",
+    "llama_dump.cpp": "21a8c70300330c75c8906a5b6d6a49f5a3bda706d5c2c41c3cd440ecf7339c74",
+    "benchmark_llama_ds41.cpp": "1102830657d893e9b627045dfe0a17ac4e3a327bf262881d27263ca881d7568e",
+    "ds41_forward_dump.cpp": "7a19577c1e74880cce4ea0bb931791d3839f41abaad855f9ede1c24246c336f7",
+    "smoke.cpp": "ae5e3cebc9dbe76700b995a34a1a4a4a0d9ee4f6b5f46e736438bcf526bc89fb"
+  },
+  "binaries": {
+    "bench-nt": "7c3b6efc014322067adbdeb0372f9d9a1a230ed06012c5111b9a90f7062fc814",
+    "bench-llama": "3abf09e1b77994d0a4783d2c09e94a4a79db43f681ef41ddee95d88e79e522b9"
+  },
+  "cupti_library": "/home/ubuntu/ntransformer-h100/ds41-gap-20261015/cupti-13.1/nvidia/cu13/lib/libcupti.so.13",
+  "cupti_sha256": "52ab0ec755a486a7eab511405a7deb96c7c965dafa0062aef4bd3730282763e5"
+}

@@ -1,0 +1,5 @@
+ complete, the model generates tokens one at inference step at each step, each token depends on all previous tokens. This dependency chain is what makes inference latency-sensitive and throughput hard to scale.
+
+In practice, inference workloads split into two phases with very different resource profiles:
+
+- Prefill: processes the entire prompt in parallel, building the

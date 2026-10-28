@@ -1,0 +1,88 @@
+{
+  "prefill": {
+    "before": {
+      "samples": 6,
+      "processes": 2,
+      "mean_seconds": 4.386494173,
+      "min_seconds": 4.364281081,
+      "max_seconds": 4.42512675,
+      "tokens_per_second": 3.647559843686586,
+      "phases": {
+        "moe": 1.8606168498333333,
+        "attention": 0.7052789686666666,
+        "engram": 0.06383361333333333,
+        "hc": 0.501866436,
+        "other": 1.2548886115,
+        "qkv": 0.21680416983333334,
+        "compression": 0.045313307166666664,
+        "attention_loop": 0.192190335,
+        "attention_tail": 0.24943838816666666
+      }
+    },
+    "after": {
+      "samples": 6,
+      "processes": 2,
+      "mean_seconds": 3.4803031836666665,
+      "min_seconds": 3.453155079,
+      "max_seconds": 3.54188957,
+      "tokens_per_second": 4.597300624580423,
+      "phases": {
+        "moe": 1.6555328903333333,
+        "attention": 0.704787407,
+        "engram": 0.04396790033333334,
+        "hc": 0.3234780875,
+        "other": 0.7525277805,
+        "qkv": 0.217036076,
+        "compression": 0.04450781816666667,
+        "attention_loop": 0.19187218583333332,
+        "attention_tail": 0.24976587333333333
+      }
+    },
+    "speedup": 1.2603770250782054,
+    "throughput_gain_percent": 26.037702507820537,
+    "latency_reduction_percent": 20.65866164626804
+  },
+  "decode": {
+    "before": {
+      "samples": 6,
+      "processes": 2,
+      "mean_seconds": 1.1175323173333334,
+      "min_seconds": 1.101809234,
+      "max_seconds": 1.170369538,
+      "tokens_per_second": 3.579314833189647,
+      "phases": {
+        "moe": 0.4683802306666667,
+        "attention": 0.1799798235,
+        "engram": 0.0159879795,
+        "hc": 0.12919458216666665,
+        "other": 0.321938834,
+        "qkv": 0.0542518695,
+        "compression": 0.012177156333333333,
+        "attention_loop": 0.050856566166666665,
+        "attention_tail": 0.06229703
+      }
+    },
+    "after": {
+      "samples": 6,
+      "processes": 2,
+      "mean_seconds": 0.878166711,
+      "min_seconds": 0.86939253,
+      "max_seconds": 0.891806471,
+      "tokens_per_second": 4.554943782194905,
+      "phases": {
+        "moe": 0.41394439783333337,
+        "attention": 0.17963284083333333,
+        "engram": 0.010983817333333333,
+        "hc": 0.0811305,
+        "other": 0.19043040283333335,
+        "qkv": 0.054269204,
+        "compression": 0.012021120666666666,
+        "attention_loop": 0.050471047166666665,
+        "attention_tail": 0.0624635355
+      }
+    },
+    "speedup": 1.2725742200598325,
+    "throughput_gain_percent": 27.257422005983244,
+    "latency_reduction_percent": 21.41912163260834
+  }
+}

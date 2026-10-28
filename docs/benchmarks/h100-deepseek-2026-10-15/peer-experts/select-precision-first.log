@@ -1,0 +1,96 @@
+{
+  "selected": "fp32",
+  "policy": "/home/ubuntu/ntransformer-h100/ds41-peer-20261015/precision-policy.json",
+  "candidates": {
+    "f16": {
+      "eligible": false,
+      "reasons": [
+        "workload 0: max_relative_l2 exceeds 0.01",
+        "workload 0: speed improvement not established",
+        "workload 1: max_relative_l2 exceeds 0.01",
+        "workload 1: speed improvement not established"
+      ],
+      "geometric_speedup": 0.9827892105354985,
+      "workloads": [
+        {
+          "mean_kl": 0.0004255703922708172,
+          "p99_kl": 0.0053007478874414135,
+          "max_kl": 0.008884422435124587,
+          "reference_nll": 2.169372916898479,
+          "candidate_nll": 2.173251004440309,
+          "nll_increase": 0.003878087541829859,
+          "perplexity_ratio": 1.003885617053543,
+          "max_relative_l2": 0.06677333909805916,
+          "argmax_agreement": 0.9846153846153847,
+          "bitwise_equal": false,
+          "speedup": 0.9803134980636543,
+          "conservative_speedup": 0.9801605000120024,
+          "reference_tokens_per_second": 16.352544277225213,
+          "tokens_per_second": 16.03061988264744
+        },
+        {
+          "mean_kl": 0.001169789399452332,
+          "p99_kl": 0.008246128139637232,
+          "max_kl": 0.01464952093560836,
+          "reference_nll": 2.2443040208855547,
+          "candidate_nll": 2.236912545307948,
+          "nll_increase": -0.007391475577606925,
+          "perplexity_ratio": 0.9926357741979825,
+          "max_relative_l2": 0.0578958181499497,
+          "argmax_agreement": 1.0,
+          "bitwise_equal": false,
+          "speedup": 0.9852711752442602,
+          "conservative_speedup": 0.983932160778247,
+          "reference_tokens_per_second": 15.43240092746617,
+          "tokens_per_second": 15.205099798645206
+        }
+      ]
+    },
+    "q8": {
+      "eligible": false,
+      "reasons": [
+        "workload 0: max_relative_l2 exceeds 0.01",
+        "workload 0: speed improvement not established",
+        "workload 1: mean_kl exceeds 0.005",
+        "workload 1: nll_increase exceeds 0.01",
+        "workload 1: max_relative_l2 exceeds 0.01",
+        "workload 1: speed improvement not established"
+      ],
+      "geometric_speedup": 0.984536702974649,
+      "workloads": [
+        {
+          "mean_kl": 0.00477306389489767,
+          "p99_kl": 0.039696033592438604,
+          "max_kl": 0.0667091823405782,
+          "reference_nll": 2.169372916898479,
+          "candidate_nll": 2.1479569566583754,
+          "nll_increase": -0.021415960240103785,
+          "perplexity_ratio": 0.9788117331157614,
+          "max_relative_l2": 0.3198011573840791,
+          "argmax_agreement": 0.9692307692307692,
+          "bitwise_equal": false,
+          "speedup": 0.9829057693397247,
+          "conservative_speedup": 0.9818961567550085,
+          "reference_tokens_per_second": 16.352544277225213,
+          "tokens_per_second": 16.073010113467962
+        },
+        {
+          "mean_kl": 0.005000135434319257,
+          "p99_kl": 0.021195057808811354,
+          "max_kl": 0.026922410359705655,
+          "reference_nll": 2.2443040208855547,
+          "candidate_nll": 2.2548770575881942,
+          "nll_increase": 0.010573036702639392,
+          "perplexity_ratio": 1.0106291287687188,
+          "max_relative_l2": 0.22941844755775923,
+          "argmax_agreement": 1.0,
+          "bitwise_equal": false,
+          "speedup": 0.9861703428145875,
+          "conservative_speedup": 0.9855575927605307,
+          "reference_tokens_per_second": 15.43240092746617,
+          "tokens_per_second": 15.218976113091474
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,55 @@
+[
+  {
+    "name": "single",
+    "command": [
+      "/home/ubuntu/ntransformer-h100/ds41-prefill-20261015/build/ntransformer",
+      "-m",
+      "/home/ubuntu/tiny-deepseek41.gguf",
+      "-n",
+      "0",
+      "--token-ids",
+      "1"
+    ],
+    "returncode": 0,
+    "tokens": 1,
+    "heads": 1,
+    "mode": "last"
+  },
+  {
+    "name": "empty",
+    "command": [
+      "/home/ubuntu/ntransformer-h100/ds41-prefill-20261015/build/ntransformer",
+      "-m",
+      "/home/ubuntu/tiny-deepseek41.gguf",
+      "-n",
+      "0",
+      "--prompt",
+      ""
+    ],
+    "returncode": 0,
+    "tokens": 1,
+    "heads": 1,
+    "mode": "last"
+  },
+  {
+    "name": "stages",
+    "command": [
+      "/home/ubuntu/ntransformer-h100/ds41-prefill-20261015/build/ntransformer",
+      "-m",
+      "/home/ubuntu/tiny-deepseek41.gguf",
+      "-n",
+      "0",
+      "--token-ids",
+      "1,40,77"
+    ],
+    "returncode": 0,
+    "tokens": 3,
+    "heads": 3,
+    "mode": "all"
+  },
+  {
+    "name": "missing fixture",
+    "returncode": 77,
+    "stdout": "SKIP: set DS41_TEST_MODEL to an external deepseek41 GGUF fixture\n"
+  }
+]

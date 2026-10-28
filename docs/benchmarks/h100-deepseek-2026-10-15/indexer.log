@@ -1,0 +1,13 @@
+PASS indexer Q8 max_abs=3.91155481e-08
+PASS indexer BF16 max_abs=7.4505806e-08
+PASS indexer Q8 max_abs=2.5331974e-07
+PASS indexer BF16 max_abs=1.1920929e-07
+PASS indexer Q8 max_abs=6.70552254e-08
+PASS indexer BF16 max_abs=8.94069672e-08
+PASS indexer Q8 max_abs=2.08616257e-07
+PASS indexer BF16 max_abs=3.87430191e-07
+PASS indexer Q8 max_abs=1.1920929e-07
+PASS indexer BF16 max_abs=1.1920929e-07
+PASS indexer Q8 max_abs=1.31130219e-06
+PASS indexer BF16 max_abs=1.43051147e-06
+PASS indexer (fresh backbone, no expert cache)

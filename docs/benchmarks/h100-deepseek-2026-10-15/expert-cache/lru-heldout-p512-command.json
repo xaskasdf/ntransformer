@@ -1,0 +1,37 @@
+{
+  "command": [
+    "/usr/bin/time",
+    "-v",
+    "-o",
+    "/home/ubuntu/ntransformer-h100/ds41-cache-20261015/lru-heldout-p512-resources.txt",
+    "/home/ubuntu/ntransformer-h100/ds41-cache-20261015/bench",
+    "/home/ubuntu/ntransformer-h100/models/deepseek-v41-flash-q8/DeepSeek-V4.1-Flash-Q8_0-00001-of-00010.gguf",
+    "/home/ubuntu/ntransformer-h100/ds41-cache-20261015/corpus-heldout.txt",
+    "512",
+    "64",
+    "3",
+    "/home/ubuntu/ntransformer-h100/ds41-cache-20261015/lru-heldout-p512",
+    "lru-heldout-p512"
+  ],
+  "returncode": 0,
+  "utc_start": "2026-10-16T01:22:43.241402+00:00",
+  "wall_seconds": 129.95073521599988,
+  "process_group": 2095102,
+  "environment": {
+    "CUDA_VISIBLE_DEVICES": "1,0",
+    "LD_LIBRARY_PATH": "/home/ubuntu/ntransformer-h100/env/targets/x86_64-linux/lib:/home/ubuntu/ntransformer-h100/env/lib",
+    "DS41_GPU": "1",
+    "DS41_GPU_ATTN": "1",
+    "DS41_PROFILE": "1",
+    "DS41_Q8_COOPERATIVE": "1",
+    "DS41_PEER_MODE": "execute",
+    "DS41_MXFP4_COMPUTE": "fp32",
+    "DS41_VRAM_GB": "62",
+    "DS41_PEER_VRAM_GB": "62",
+    "DS41_BENCH_ALL_LOGITS": "1",
+    "DS41_BENCH_TEACHER_FORCING": "1",
+    "DS41_CACHE_POLICY": "lru",
+    "DS41_CACHE_PROTECTED_PERCENT": "80",
+    "DS41_CACHE_TRACE": "0"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "command": [
+    "/home/ubuntu/ntransformer-h100/ds41-shared-20261015/build/test_ds41_shared",
+    "real"
+  ],
+  "returncode": 0,
+  "seconds": 0.4642543759837281,
+  "environment": {
+    "CUDA_VISIBLE_DEVICES": "1",
+    "DS41_GPU": "1",
+    "DS41_GPU_ATTN": "1",
+    "DS41_VRAM_GB": "2",
+    "DS41_PROFILE": "1",
+    "DS41_GPU_TIMING": "1",
+    "LD_LIBRARY_PATH": "/home/ubuntu/ntransformer-h100/env/targets/x86_64-linux/lib:/home/ubuntu/ntransformer-h100/env/lib"
+  },
+  "resources": {
+    "ru_utime": 0.1504220000000025,
+    "ru_stime": 0.35907199999999984,
+    "ru_majflt": 1,
+    "ru_minflt": 81920,
+    "ru_nvcsw": 1907,
+    "ru_nivcsw": 3
+  }
+}

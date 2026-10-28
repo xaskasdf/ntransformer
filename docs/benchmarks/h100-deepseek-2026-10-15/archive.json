@@ -1,0 +1,7 @@
+{
+  "archive": "audit.tar.gz",
+  "sha256": "f0177e88a2e58c56e0b5c6137dfda04a840c80ea9e754b0543bb60f48616d83b",
+  "files": 35,
+  "bytes": 374129,
+  "persistent_directory": "/lambda/nfs/btiny/ntransformer-training/deepseek-audit-20261015"
+}

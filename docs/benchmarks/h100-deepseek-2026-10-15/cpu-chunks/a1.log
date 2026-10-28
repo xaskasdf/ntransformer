@@ -1,0 +1,21 @@
+GGUF v3: 18 tensors, 68 metadata entries
+Loaded 10 split shards, 1046 tensors total
+ds41-gpu: lm head resident (1.23 GiB)
+ds41-gpu: expert cache on NVIDIA H100 80GB HBM3: 10622 slots x 5.98 MiB = 62.0 GiB
+{"round":-1,"phase":"prefill","tokens":16,"seconds":7.419588131,"moe":3.981786578,"attention":1.514573413,"engram":0.157403293,"hc":0.508863380,"other":1.256948571,"qkv":0.545846196,"rope":0.000000000,"compression":0.059953035,"attention_loop":0.195278195,"attention_tail":0.711730306}
+ds41-gpu: expert cache: 11520 lookups, 5844 hits (50.7%), 0 evictions
+{"round":-1,"phase":"decode","tokens":4,"seconds":1.320763367,"moe":0.675907078,"attention":0.179647671,"engram":0.016752005,"hc":0.126679295,"other":0.318134266,"qkv":0.054028755,"rope":0.000000000,"compression":0.012322817,"attention_loop":0.050447189,"attention_tail":0.062432490}
+ds41-gpu: expert cache: 14400 lookups, 8007 hits (55.6%), 0 evictions
+{"round":0,"phase":"prefill","tokens":16,"seconds":4.392229860,"moe":1.859215319,"attention":0.709928708,"engram":0.063740852,"hc":0.507387772,"other":1.251946294,"qkv":0.216748668,"rope":0.000000000,"compression":0.047997661,"attention_loop":0.193818174,"attention_tail":0.249861059}
+ds41-gpu: expert cache: 25920 lookups, 19527 hits (75.3%), 0 evictions
+{"round":0,"phase":"decode","tokens":4,"seconds":1.108484749,"moe":0.465265523,"attention":0.179419384,"engram":0.015968993,"hc":0.126576961,"other":0.317576739,"qkv":0.054156701,"rope":0.000000000,"compression":0.012149724,"attention_loop":0.050361753,"attention_tail":0.062364360}
+ds41-gpu: expert cache: 28800 lookups, 22407 hits (77.8%), 0 evictions
+{"round":1,"phase":"prefill","tokens":16,"seconds":4.391103295,"moe":1.858278861,"attention":0.706841702,"engram":0.063788678,"hc":0.509357705,"other":1.252826426,"qkv":0.217066159,"rope":0.000000000,"compression":0.045036094,"attention_loop":0.193039002,"attention_tail":0.250184963}
+ds41-gpu: expert cache: 40320 lookups, 33927 hits (84.1%), 0 evictions
+{"round":1,"phase":"decode","tokens":4,"seconds":1.170369538,"moe":0.486728101,"attention":0.184134437,"engram":0.016081223,"hc":0.145407727,"other":0.336815312,"qkv":0.054580334,"rope":0.000000000,"compression":0.012531419,"attention_loop":0.054260756,"attention_tail":0.062349553}
+ds41-gpu: expert cache: 43200 lookups, 36807 hits (85.2%), 0 evictions
+{"round":2,"phase":"prefill","tokens":16,"seconds":4.425126750,"moe":1.874981620,"attention":0.711070796,"engram":0.064902029,"hc":0.512008591,"other":1.262152834,"qkv":0.218863208,"rope":0.000000000,"compression":0.045457668,"attention_loop":0.194967665,"attention_tail":0.250115897}
+ds41-gpu: expert cache: 54720 lookups, 48327 hits (88.3%), 0 evictions
+{"round":2,"phase":"decode","tokens":4,"seconds":1.116056638,"moe":0.467351585,"attention":0.181282884,"engram":0.016159098,"hc":0.129547925,"other":0.320519456,"qkv":0.054616337,"rope":0.000000000,"compression":0.012279206,"attention_loop":0.051389538,"attention_tail":0.062561312}
+ds41-gpu: expert cache: 57600 lookups, 51207 hits (88.9%), 0 evictions
+PASS warm repeats exact, all logits finite

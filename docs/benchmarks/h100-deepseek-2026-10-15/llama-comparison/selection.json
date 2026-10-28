@@ -1,0 +1,10 @@
+{
+  "threads": 52,
+  "cpu_moe_layers": 31,
+  "gpu_moe_layers": 9,
+  "n_ubatch": 512,
+  "pilot_decode_seconds": {
+    "26": 0.376066489,
+    "52": 0.281115061
+  }
+}

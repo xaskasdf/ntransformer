@@ -1,0 +1,24 @@
+/home/ubuntu/ntransformer-h100/ds41-readback-20261016/source/src/model/ds41/ds41_gpu.cu(525): warning #177-D: function "nt::ds41::<unnamed>::ExpertCache::reset_for_slice" was declared but never referenced
+      void reset_for_slice(size_t slice_bytes, size_t cache_bytes) {
+           ^
+
+Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+
+/home/ubuntu/ntransformer-h100/ds41-readback-20261016/source/src/model/ds41/ds41_gpu.cu(525): warning #177-D: function "nt::ds41::<unnamed>::ExpertCache::reset_for_slice" was declared but never referenced
+      void reset_for_slice(size_t slice_bytes, size_t cache_bytes) {
+           ^
+
+Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+
+/home/ubuntu/ntransformer-h100/ds41-readback-20261016/source/src/model/ds41/ds41_gpu.cu(525): warning #177-D: function "nt::ds41::<unnamed>::ExpertCache::reset_for_slice" was declared but never referenced
+      void reset_for_slice(size_t slice_bytes, size_t cache_bytes) {
+           ^
+
+Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+
+/home/ubuntu/ntransformer-h100/ds41-readback-20261016/source/src/model/ds41/ds41_gpu.cu(525): warning #177-D: function "nt::ds41::<unnamed>::ExpertCache::reset_for_slice" was declared but never referenced
+      void reset_for_slice(size_t slice_bytes, size_t cache_bytes) {
+           ^
+
+Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+

@@ -1,0 +1,54 @@
+GGUF v3: 18 tensors, 68 metadata entries
+Loaded 10 split shards, 1046 tensors total
+ds41-gpu: lm head resident (1.23 GiB)
+ds41-gpu: expert cache on NVIDIA H100 80GB HBM3: 10622 slots x 5.98 MiB = 62.0 GiB
+[gputime] calls=240 resident=0.328s launch=0.012s copy=0.069s
+[gputime] calls=480 resident=0.328s launch=0.023s copy=0.138s
+[gputime] calls=720 resident=0.328s launch=0.034s copy=0.206s
+[gputime] calls=960 resident=0.329s launch=0.045s copy=0.274s
+[gputime] calls=1200 resident=0.329s launch=0.055s copy=0.342s
+[gputime] calls=1440 resident=0.329s launch=0.065s copy=0.411s
+[gputime] calls=1680 resident=0.329s launch=0.075s copy=0.479s
+[gputime] calls=1920 resident=0.329s launch=0.086s copy=0.548s
+[gputime] calls=2160 resident=0.330s launch=0.096s copy=0.616s
+[gputime] calls=2400 resident=0.330s launch=0.106s copy=0.684s
+[gputime] calls=2640 resident=0.330s launch=0.116s copy=0.753s
+[gputime] calls=2880 resident=0.330s launch=0.126s copy=0.821s
+[gputime] calls=3120 resident=0.330s launch=0.136s copy=0.890s
+[gputime] calls=3360 resident=0.330s launch=0.146s copy=0.958s
+[gputime] calls=3600 resident=0.331s launch=0.156s copy=1.026s
+[gputime] calls=3840 resident=0.331s launch=0.166s copy=1.095s
+[gputime] calls=4080 resident=0.331s launch=0.177s copy=1.163s
+[gputime] calls=4320 resident=0.331s launch=0.187s copy=1.231s
+MODEL layers=40 vocab=129280 prompt=16 window=128 topk=512 gpu_head=1
+PASS schedule=last prompt=16 continuation=4 exact=1 reset=1
+PASS schedule=mixed prompt=16 continuation=4 exact=1 reset=1
+{"kind":"prefill","pair":0,"all_logits":true,"tokens":16,"heads":16,"seconds":4.369037520,"exact":true}
+[gputime] calls=4560 resident=0.331s launch=0.197s copy=1.300s
+[gputime] calls=4800 resident=0.331s launch=0.207s copy=1.368s
+[gputime] calls=5040 resident=0.332s launch=0.217s copy=1.436s
+{"kind":"prefill","pair":0,"all_logits":false,"tokens":16,"heads":1,"seconds":4.348289200,"exact":true}
+[gputime] calls=5280 resident=0.332s launch=0.227s copy=1.505s
+[gputime] calls=5520 resident=0.332s launch=0.238s copy=1.573s
+{"kind":"prefill","pair":1,"all_logits":false,"tokens":16,"heads":1,"seconds":4.350923289,"exact":true}
+[gputime] calls=5760 resident=0.332s launch=0.248s copy=1.642s
+[gputime] calls=6000 resident=0.332s launch=0.258s copy=1.711s
+[gputime] calls=6240 resident=0.332s launch=0.269s copy=1.779s
+{"kind":"prefill","pair":1,"all_logits":true,"tokens":16,"heads":16,"seconds":4.368012503,"exact":true}
+[gputime] calls=6480 resident=0.333s launch=0.279s copy=1.847s
+[gputime] calls=6720 resident=0.333s launch=0.289s copy=1.916s
+[gputime] calls=6960 resident=0.333s launch=0.299s copy=1.984s
+{"kind":"prefill","pair":2,"all_logits":true,"tokens":16,"heads":16,"seconds":4.355520319,"exact":true}
+[gputime] calls=7200 resident=0.333s launch=0.309s copy=2.052s
+[gputime] calls=7440 resident=0.333s launch=0.319s copy=2.121s
+{"kind":"prefill","pair":2,"all_logits":false,"tokens":16,"heads":1,"seconds":4.341575048,"exact":true}
+[gputime] calls=7680 resident=0.333s launch=0.329s copy=2.189s
+[gputime] calls=7920 resident=0.334s launch=0.339s copy=2.257s
+[gputime] calls=8160 resident=0.334s launch=0.350s copy=2.325s
+{"kind":"prefill","pair":3,"all_logits":false,"tokens":16,"heads":1,"seconds":4.338334555,"exact":true}
+[gputime] calls=8400 resident=0.334s launch=0.360s copy=2.394s
+[gputime] calls=8640 resident=0.334s launch=0.370s copy=2.462s
+[gputime] calls=8880 resident=0.334s launch=0.380s copy=2.530s
+{"kind":"prefill","pair":3,"all_logits":true,"tokens":16,"heads":16,"seconds":4.360416373,"exact":true}
+ds41-gpu: expert cache: 159840 lookups, 153447 hits (96.0%), 0 evictions
+PASS DS41 prefill state and logits

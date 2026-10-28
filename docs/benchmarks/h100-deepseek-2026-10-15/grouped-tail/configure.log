@@ -1,0 +1,25 @@
+-- The CXX compiler identification is GNU 14.4.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /home/ubuntu/ntransformer-h100/env/bin/x86_64-conda-linux-gnu-g++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- The CUDA compiler identification is NVIDIA 13.1.115 with host compiler GNU 14.4.0
+-- Detecting CUDA compiler ABI info
+-- Detecting CUDA compiler ABI info - done
+-- Check for working CUDA compiler: /home/ubuntu/ntransformer-h100/env/bin/nvcc - skipped
+-- Detecting CUDA compile features
+-- Detecting CUDA compile features - done
+-- Found CUDAToolkit: /home/ubuntu/ntransformer-h100/env/targets/x86_64-linux/include;/home/ubuntu/ntransformer-h100/env/targets/x86_64-linux/include/cccl (found version "13.1.115")
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE
+-- === NTransformer Build Configuration ===
+-- Build type: Release
+-- CUDA architectures: 80;86;89;90
+-- CUDA toolkit: 13.1.115
+-- C++ standard: 20
+-- gpu-nvme-direct: OFF
+-- Configuring done (2.8s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/ubuntu/ntransformer-h100/ds41-tail-20261015/build

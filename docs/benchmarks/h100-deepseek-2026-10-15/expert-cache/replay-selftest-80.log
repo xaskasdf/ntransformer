@@ -1,0 +1,2 @@
+{"file":"/home/ubuntu/ntransformer-h100/ds41-cache-20261015/replay-selftest/first.u64","protected_percent":80,"capacity":4,"slice_bytes":544,"lookups":7,"hits":2,"misses":5,"first_use":5,"recurrent_misses":0,"recorded_misses":5,"hit_mismatches":0,"evictions":1,"promotions":2,"demotions":0}
+{"file":"/home/ubuntu/ntransformer-h100/ds41-cache-20261015/replay-selftest/last.u64","protected_percent":80,"capacity":4,"slice_bytes":544,"lookups":2,"hits":2,"misses":0,"first_use":0,"recurrent_misses":0,"recorded_misses":2,"hit_mismatches":2,"evictions":0,"promotions":0,"demotions":0}

@@ -1,0 +1,13 @@
+{
+  "command": [
+    "cmake",
+    "--build",
+    "/home/ubuntu/ntransformer-h100/llama-bench-20261015/build",
+    "--target",
+    "llama",
+    "llama-bench",
+    "-j",
+    "4"
+  ],
+  "returncode": 0
+}

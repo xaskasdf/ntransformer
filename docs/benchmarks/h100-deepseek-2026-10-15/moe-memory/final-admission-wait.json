@@ -1,0 +1,7 @@
+{
+  "state": "waiting",
+  "pid": 1402496,
+  "utc": "2026-10-15T22:46:05.807476+00:00",
+  "reason": "[Errno 11] Resource temporarily unavailable",
+  "resolution": "Earlier user authorization permits small correctness runs alongside training. Final speed rerun omitted; completed isolated paired measurements retained."
+}

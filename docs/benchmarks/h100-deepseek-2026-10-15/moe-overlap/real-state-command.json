@@ -1,0 +1,27 @@
+{
+  "command": [
+    "/home/ubuntu/ntransformer-h100/ds41-moe-overlap-20261015/build/test_ds41_prefill",
+    "/home/ubuntu/ntransformer-h100/models/deepseek-v41-flash-q8/DeepSeek-V4.1-Flash-Q8_0-00001-of-00010.gguf",
+    "16",
+    "0"
+  ],
+  "returncode": 0,
+  "seconds": 20.200256617972627,
+  "environment": {
+    "CUDA_VISIBLE_DEVICES": "1",
+    "DS41_GPU": "1",
+    "DS41_GPU_ATTN": "1",
+    "DS41_VRAM_GB": "62",
+    "DS41_PROFILE": "1",
+    "DS41_GPU_TIMING": "1",
+    "LD_LIBRARY_PATH": "/home/ubuntu/ntransformer-h100/env/targets/x86_64-linux/lib:/home/ubuntu/ntransformer-h100/env/lib"
+  },
+  "resources": {
+    "ru_utime": 51.83385099999998,
+    "ru_stime": 57.007623999999964,
+    "ru_majflt": 4706,
+    "ru_minflt": 842100,
+    "ru_nvcsw": 3167450,
+    "ru_nivcsw": 265
+  }
+}

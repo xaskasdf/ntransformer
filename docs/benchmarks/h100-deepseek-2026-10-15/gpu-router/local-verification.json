@@ -1,0 +1,17 @@
+{
+  "archive_sha256": "35f635a52ca187b703d422715378ec942b3a0d61cbe7decbe3bcbcaa6daeeda2",
+  "payload_files_verified": 380,
+  "analysis_recomputed": true,
+  "report_reproduced_exactly": true,
+  "local_implementation_matches_measured_source": [
+    "src/model/ds41/ds41_gpu.cu",
+    "src/model/ds41/ds41_gpu.h",
+    "src/model/ds41/ds41_shared.cu",
+    "src/model/ds41/ds41_shared.h",
+    "src/model/ds41/ds41_forward.cpp",
+    "tests/test_ds41_router.cpp",
+    "tests/test_ds41_moe_overlap.cpp",
+    "tests/test_ds41_backbone.cpp",
+    "tests/test_ds41_shared.cpp"
+  ]
+}

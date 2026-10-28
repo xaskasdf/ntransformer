@@ -1,0 +1,17 @@
+{
+  "small": {
+    "bitwise_equal": true,
+    "floats": 2304,
+    "sha256": "67c125e0b156176a9a8eb77a3cf233f06b7829d401914d7ded3c74c6eed41dc8"
+  },
+  "real": {
+    "bitwise_equal": true,
+    "floats": 46080,
+    "sha256": "a5012208c2a31feb342daa3d7fbf40f622f91fe32e00e1c1d9d512873bb02ab7"
+  },
+  "max": {
+    "bitwise_equal": true,
+    "floats": 73728,
+    "sha256": "4b0a34405200daa2e226c723525011d204e0819f848bd4f3dd3aabd3be1e5045"
+  }
+}

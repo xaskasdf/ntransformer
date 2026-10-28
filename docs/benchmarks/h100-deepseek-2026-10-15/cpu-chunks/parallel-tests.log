@@ -1,0 +1,61 @@
+UpdateCTestConfiguration  from :/home/ubuntu/ntransformer-h100/ds41-schedule-20261015/build/DartConfiguration.tcl
+Parse Config file:/home/ubuntu/ntransformer-h100/ds41-schedule-20261015/build/DartConfiguration.tcl
+Test project /home/ubuntu/ntransformer-h100/ds41-schedule-20261015/build
+Constructing a list of tests
+Done constructing a list of tests
+Updating test list for fixtures
+Added 0 tests to meet fixture requirements
+Checking test dependency graph...
+Checking test dependency graph end
+test 9
+    Start  9: test_ds41_parallel_adaptive
+
+9: Test command: /home/ubuntu/ntransformer-h100/env/bin/cmake "-E" "env" "--unset=DS41_CPU_GRAIN" "/home/ubuntu/ntransformer-h100/ds41-schedule-20261015/build/test_ds41_parallel"
+9: Working Directory: /home/ubuntu/ntransformer-h100/ds41-schedule-20261015/build
+9: Test timeout computed to be: 1500
+9: PASS DS41 parallel coverage, nested dispatch, bitwise F32/Q8 rows and slices
+1/5 Test  #9: test_ds41_parallel_adaptive ......   Passed    0.02 sec
+test 10
+    Start 10: test_ds41_parallel_1
+
+10: Test command: /home/ubuntu/ntransformer-h100/env/bin/cmake "-E" "env" "DS41_CPU_GRAIN=1" "/home/ubuntu/ntransformer-h100/ds41-schedule-20261015/build/test_ds41_parallel"
+10: Working Directory: /home/ubuntu/ntransformer-h100/ds41-schedule-20261015/build
+10: Test timeout computed to be: 1500
+10: PASS DS41 parallel coverage, nested dispatch, bitwise F32/Q8 rows and slices
+2/5 Test #10: test_ds41_parallel_1 .............   Passed    0.03 sec
+test 11
+    Start 11: test_ds41_parallel_32
+
+11: Test command: /home/ubuntu/ntransformer-h100/env/bin/cmake "-E" "env" "DS41_CPU_GRAIN=32" "/home/ubuntu/ntransformer-h100/ds41-schedule-20261015/build/test_ds41_parallel"
+11: Working Directory: /home/ubuntu/ntransformer-h100/ds41-schedule-20261015/build
+11: Test timeout computed to be: 1500
+11: PASS DS41 parallel coverage, nested dispatch, bitwise F32/Q8 rows and slices
+3/5 Test #11: test_ds41_parallel_32 ............   Passed    0.02 sec
+test 12
+    Start 12: test_ds41_parallel_1048576
+
+12: Test command: /home/ubuntu/ntransformer-h100/env/bin/cmake "-E" "env" "DS41_CPU_GRAIN=1048576" "/home/ubuntu/ntransformer-h100/ds41-schedule-20261015/build/test_ds41_parallel"
+12: Working Directory: /home/ubuntu/ntransformer-h100/ds41-schedule-20261015/build
+12: Test timeout computed to be: 1500
+12: PASS DS41 parallel coverage, nested dispatch, bitwise F32/Q8 rows and slices
+4/5 Test #12: test_ds41_parallel_1048576 .......   Passed    0.02 sec
+test 13
+    Start 13: test_ds41_parallel_invalid
+
+13: Test command: /home/ubuntu/ntransformer-h100/env/bin/cmake "-E" "env" "DS41_CPU_GRAIN=invalid" "/home/ubuntu/ntransformer-h100/ds41-schedule-20261015/build/test_ds41_parallel"
+13: Working Directory: /home/ubuntu/ntransformer-h100/ds41-schedule-20261015/build
+13: Test timeout computed to be: 1500
+13: ds41-cpu: invalid DS41_CPU_GRAIN; using adaptive chunks
+13: PASS DS41 parallel coverage, nested dispatch, bitwise F32/Q8 rows and slices
+5/5 Test #13: test_ds41_parallel_invalid .......   Passed    0.02 sec
+
+The following tests passed:
+	test_ds41_parallel_adaptive
+	test_ds41_parallel_1
+	test_ds41_parallel_32
+	test_ds41_parallel_1048576
+	test_ds41_parallel_invalid
+
+100% tests passed out of 5
+
+Total Test time (real) =   0.13 sec

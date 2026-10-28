@@ -1,0 +1,68 @@
+[  3%] Building CXX object CMakeFiles/ntransformer_lib.dir/src/core/tensor.cpp.o
+[  7%] Building CXX object CMakeFiles/ntransformer_lib.dir/src/core/allocator.cpp.o
+[ 11%] Building CXX object CMakeFiles/ntransformer_lib.dir/src/model/config.cpp.o
+[ 14%] Building CXX object CMakeFiles/ntransformer_lib.dir/src/model/loader.cpp.o
+[ 18%] Building CXX object CMakeFiles/ntransformer_lib.dir/src/model/norm.cpp.o
+[ 22%] Building CXX object CMakeFiles/ntransformer_lib.dir/src/model/attention.cpp.o
+[ 25%] Building CXX object CMakeFiles/ntransformer_lib.dir/src/model/ffn.cpp.o
+[ 29%] Building CXX object CMakeFiles/ntransformer_lib.dir/src/model/transformer.cpp.o
+[ 33%] Building CXX object CMakeFiles/ntransformer_lib.dir/src/model/ds41/ds41_config.cpp.o
+[ 37%] Building CXX object CMakeFiles/ntransformer_lib.dir/src/model/ds41/ds41_model.cpp.o
+[ 40%] Building CXX object CMakeFiles/ntransformer_lib.dir/src/model/ds41/ds41_forward.cpp.o
+[ 44%] Building CXX object CMakeFiles/ntransformer_lib.dir/src/inference/tokenizer.cpp.o
+[ 48%] Building CXX object CMakeFiles/ntransformer_lib.dir/src/inference/sampler.cpp.o
+[ 51%] Building CXX object CMakeFiles/ntransformer_lib.dir/src/inference/engine.cpp.o
+[ 55%] Building CXX object CMakeFiles/ntransformer_lib.dir/src/utils/profiler.cpp.o
+[ 59%] Building CUDA object CMakeFiles/ntransformer_lib.dir/src/core/device.cu.o
+[ 62%] Building CUDA object CMakeFiles/ntransformer_lib.dir/src/cuda/rmsnorm.cu.o
+[ 66%] Building CUDA object CMakeFiles/ntransformer_lib.dir/src/cuda/rotary.cu.o
+[ 70%] Building CUDA object CMakeFiles/ntransformer_lib.dir/src/cuda/softmax.cu.o
+[ 74%] Building CUDA object CMakeFiles/ntransformer_lib.dir/src/cuda/gemm.cu.o
+[ 77%] Building CUDA object CMakeFiles/ntransformer_lib.dir/src/cuda/attention.cu.o
+[ 81%] Building CUDA object CMakeFiles/ntransformer_lib.dir/src/cuda/elementwise.cu.o
+[ 85%] Building CUDA object CMakeFiles/ntransformer_lib.dir/src/memory/streamer.cu.o
+[ 88%] Building CUDA object CMakeFiles/ntransformer_lib.dir/src/memory/peer_cache.cu.o
+[ 92%] Building CUDA object CMakeFiles/ntransformer_lib.dir/src/model/ds41/ds41_gpu.cu.o
+/home/ubuntu/ntransformer-h100/ds41-moe-overlap-20261015/source/src/model/ds41/ds41_gpu.cu(190): warning #177-D: function "nt::ds41::<unnamed>::ExpertCache::reset_for_slice" was declared but never referenced
+      void reset_for_slice(size_t slice_bytes, size_t cache_bytes) {
+           ^
+
+Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+
+/home/ubuntu/ntransformer-h100/ds41-moe-overlap-20261015/source/src/model/ds41/ds41_gpu.cu(226): warning #177-D: function "nt::ds41::<unnamed>::ExpertCache::slice_bytes" was declared but never referenced
+      size_t slice_bytes() const { return slice_bytes_; }
+             ^
+
+/home/ubuntu/ntransformer-h100/ds41-moe-overlap-20261015/source/src/model/ds41/ds41_gpu.cu(190): warning #177-D: function "nt::ds41::<unnamed>::ExpertCache::reset_for_slice" was declared but never referenced
+      void reset_for_slice(size_t slice_bytes, size_t cache_bytes) {
+           ^
+
+Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+
+/home/ubuntu/ntransformer-h100/ds41-moe-overlap-20261015/source/src/model/ds41/ds41_gpu.cu(226): warning #177-D: function "nt::ds41::<unnamed>::ExpertCache::slice_bytes" was declared but never referenced
+      size_t slice_bytes() const { return slice_bytes_; }
+             ^
+
+/home/ubuntu/ntransformer-h100/ds41-moe-overlap-20261015/source/src/model/ds41/ds41_gpu.cu(190): warning #177-D: function "nt::ds41::<unnamed>::ExpertCache::reset_for_slice" was declared but never referenced
+      void reset_for_slice(size_t slice_bytes, size_t cache_bytes) {
+           ^
+
+Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+
+/home/ubuntu/ntransformer-h100/ds41-moe-overlap-20261015/source/src/model/ds41/ds41_gpu.cu(226): warning #177-D: function "nt::ds41::<unnamed>::ExpertCache::slice_bytes" was declared but never referenced
+      size_t slice_bytes() const { return slice_bytes_; }
+             ^
+
+/home/ubuntu/ntransformer-h100/ds41-moe-overlap-20261015/source/src/model/ds41/ds41_gpu.cu(190): warning #177-D: function "nt::ds41::<unnamed>::ExpertCache::reset_for_slice" was declared but never referenced
+      void reset_for_slice(size_t slice_bytes, size_t cache_bytes) {
+           ^
+
+Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+
+/home/ubuntu/ntransformer-h100/ds41-moe-overlap-20261015/source/src/model/ds41/ds41_gpu.cu(226): warning #177-D: function "nt::ds41::<unnamed>::ExpertCache::slice_bytes" was declared but never referenced
+      size_t slice_bytes() const { return slice_bytes_; }
+             ^
+
+[ 96%] Linking CUDA device code CMakeFiles/ntransformer_lib.dir/cmake_device_link.o
+[100%] Linking CXX static library libntransformer_lib.a
+[100%] Built target ntransformer_lib

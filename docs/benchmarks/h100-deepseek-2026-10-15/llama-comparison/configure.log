@@ -1,0 +1,40 @@
+-- llama.cpp version: 0.4.0-dev
+CMAKE_BUILD_TYPE=Release
+fatal: not a git repository (or any of the parent directories): .git
+fatal: not a git repository (or any of the parent directories): .git
+-- Warning: ccache not found - consider installing it for faster compilation or disable this warning with GGML_CCACHE=OFF
+-- CMAKE_SYSTEM_PROCESSOR: x86_64
+-- GGML_SYSTEM_ARCH: x86
+-- Including CPU backend
+-- x86 detected
+-- Adding CPU backend variant ggml-cpu: -march=native 
+-- CUDA Toolkit found
+-- Using CMAKE_CUDA_ARCHITECTURES=90 CMAKE_CUDA_ARCHITECTURES_NATIVE=90-real
+-- FlashAttention K-V type combinations: f16-f16;q4_0-q4_0;q8_0-q8_0;bf16-bf16
+-- CUDA host compiler is GNU 14.4.0
+-- Including CUDA backend
+-- ggml version: 0.23.0
+-- ggml commit:  unknown
+-- OpenSSL found: 3.6.5
+CMake Warning at common/CMakeLists.txt:33 (message):
+  Git repository not found; to enable automatic generation of build info,
+  make sure Git is installed and the project is a Git repository.
+
+
+-- Generating embedded license file for target: llama-app
+-- Configuring done (0.2s)
+CMake Warning at ggml/src/CMakeLists.txt:394 (add_library):
+  Cannot generate a safe runtime search path for target ggml-cuda because
+  files in some directories may conflict with libraries in implicit
+  directories:
+
+    runtime library [libcudart.so.13] in /home/ubuntu/ntransformer-h100/env/lib may be hidden by files in:
+      /home/ubuntu/brandon-mini/.venv/lib/python3.12/site-packages/nvidia/cu13/lib
+
+  Some of these libraries may not be found correctly.
+Call Stack (most recent call first):
+  ggml/src/ggml-cuda/CMakeLists.txt:118 (ggml_add_backend_library)
+
+
+-- Generating done (0.1s)
+-- Build files have been written to: /home/ubuntu/ntransformer-h100/llama-bench-20261015/build

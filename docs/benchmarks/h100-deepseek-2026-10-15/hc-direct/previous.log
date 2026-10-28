@@ -1,0 +1,19 @@
+GGUF v3: 18 tensors, 68 metadata entries
+Loaded 10 split shards, 1046 tensors total
+ds41-gpu: lm head resident (1.23 GiB)
+ds41-gpu: expert cache on NVIDIA H100 80GB HBM3: 10622 slots x 5.98 MiB = 62.0 GiB
+[gputime] calls=240 resident=0.327s launch=0.012s copy=0.069s
+[gputime] calls=480 resident=0.327s launch=0.024s copy=0.136s
+{"round":-1,"phase":"prefill","tokens":16,"seconds":5.271891187,"moe":2.555242935,"attention":1.513574567,"engram":0.050367714,"hc":0.372708297,"other":0.779987274,"qkv":0.546959663,"rope":0.000000000,"compression":0.059474863,"attention_loop":0.193988757,"attention_tail":0.711244118,"router":0.215316941,"routed":1.611861881,"shared":0.726217116,"gpu_calls":640.000000000,"cpu_calls":0.000000000,"overlapped_calls":640.000000000}
+ds41-gpu: expert cache: 11520 lookups, 5844 hits (50.7%), 0 evictions
+[gputime] calls=720 resident=0.327s launch=0.035s copy=0.204s
+{"round":-1,"phase":"decode","tokens":4,"seconds":0.931622757,"moe":0.451089640,"attention":0.179474402,"engram":0.012420435,"hc":0.089677341,"other":0.195231210,"qkv":0.054384414,"rope":0.000000000,"compression":0.012130168,"attention_loop":0.050168563,"attention_tail":0.062345334,"router":0.045998856,"routed":0.229901536,"shared":0.174763717,"gpu_calls":160.000000000,"cpu_calls":0.000000000,"overlapped_calls":160.000000000}
+ds41-gpu: expert cache: 14400 lookups, 8007 hits (55.6%), 0 evictions
+[gputime] calls=960 resident=0.327s launch=0.046s copy=0.271s
+[gputime] calls=1200 resident=0.327s launch=0.057s copy=0.339s
+[gputime] calls=1440 resident=0.328s launch=0.068s copy=0.406s
+{"round":0,"phase":"prefill","tokens":16,"seconds":2.792495795,"moe":0.969908947,"attention":0.702307484,"engram":0.043612123,"hc":0.324363479,"other":0.752294725,"qkv":0.215663698,"rope":0.000000000,"compression":0.044404491,"attention_loop":0.191966814,"attention_tail":0.248626219,"router":0.183718758,"routed":0.094429620,"shared":0.690123226,"gpu_calls":640.000000000,"cpu_calls":0.000000000,"overlapped_calls":640.000000000}
+ds41-gpu: expert cache: 25920 lookups, 19527 hits (75.3%), 0 evictions
+{"round":0,"phase":"decode","tokens":4,"seconds":0.708882148,"moe":0.242395434,"attention":0.178929848,"engram":0.010887323,"hc":0.081700957,"other":0.190976650,"qkv":0.053981102,"rope":0.000000000,"compression":0.012369029,"attention_loop":0.050023271,"attention_tail":0.062137938,"router":0.045879197,"routed":0.023583134,"shared":0.172511358,"gpu_calls":160.000000000,"cpu_calls":0.000000000,"overlapped_calls":160.000000000}
+ds41-gpu: expert cache: 28800 lookups, 22407 hits (77.8%), 0 evictions
+PASS warm repeats exact, all logits finite

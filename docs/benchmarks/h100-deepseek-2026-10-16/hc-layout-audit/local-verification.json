@@ -1,0 +1,13 @@
+{
+  "payload_files_verified": 105,
+  "analysis_reproduced": true,
+  "numerical_tolerance": 1e-12,
+  "remote_archive_sha256": "a5735e961dd835b6980decb3352636716f25635a21be823df69e0c66d62f8433",
+  "remote_archive_bytes_verified_locally": false,
+  "delivery": "Verified individual payloads; reused identical local control files",
+  "workspace_matches": {
+    "src/model/ds41/ds41_hc.h": true,
+    "src/model/ds41/ds41_forward.cpp": true,
+    "tests/test_ds41_hc.cpp": true
+  }
+}

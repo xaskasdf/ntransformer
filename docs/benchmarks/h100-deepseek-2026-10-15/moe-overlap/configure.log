@@ -1,0 +1,9 @@
+-- === NTransformer Build Configuration ===
+-- Build type: Release
+-- CUDA architectures: 80;86;89;90
+-- CUDA toolkit: 13.1.115
+-- C++ standard: 20
+-- gpu-nvme-direct: OFF
+-- Configuring done (0.1s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/ubuntu/ntransformer-h100/ds41-moe-overlap-20261015/build

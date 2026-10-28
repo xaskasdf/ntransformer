@@ -1,0 +1,84 @@
+UpdateCTestConfiguration  from :/home/ubuntu/ntransformer-h100/ds41-audit-20261015/cmake-build/DartConfiguration.tcl
+Parse Config file:/home/ubuntu/ntransformer-h100/ds41-audit-20261015/cmake-build/DartConfiguration.tcl
+Test project /home/ubuntu/ntransformer-h100/ds41-audit-20261015/cmake-build
+Constructing a list of tests
+Done constructing a list of tests
+Updating test list for fixtures
+Added 0 tests to meet fixture requirements
+Checking test dependency graph...
+Checking test dependency graph end
+test 4
+    Start 4: test_ds41_backbone_prologue
+
+4: Test command: /home/ubuntu/ntransformer-h100/ds41-audit-20261015/cmake-build/test_ds41_backbone "prologue"
+4: Working Directory: /home/ubuntu/ntransformer-h100/ds41-audit-20261015/cmake-build
+4: Test timeout computed to be: 1500
+4: PASS query latent max_abs=5.96046448e-07
+4: PASS query + RoPE max_abs=4.76837158e-07
+4: PASS KV + RoPE max_abs=5.06639481e-07
+4: PASS query latent max_abs=6.55651093e-07
+4: PASS query + RoPE max_abs=7.74860382e-07
+4: PASS KV + RoPE max_abs=5.96046448e-07
+4: PASS query latent max_abs=3.57627869e-07
+4: PASS query + RoPE max_abs=7.15255737e-07
+4: PASS KV + RoPE max_abs=3.57627869e-07
+4: PASS prologue (fresh backbone, no expert cache)
+1/4 Test #4: test_ds41_backbone_prologue ......   Passed    0.25 sec
+test 5
+    Start 5: test_ds41_backbone_tail
+
+5: Test command: /home/ubuntu/ntransformer-h100/ds41-audit-20261015/cmake-build/test_ds41_backbone "tail"
+5: Working Directory: /home/ubuntu/ntransformer-h100/ds41-audit-20261015/cmake-build
+5: Test timeout computed to be: 1500
+5: PASS grouped output max_abs=2.38418579e-07
+5: PASS grouped output max_abs=1.75088644e-07
+5: PASS grouped output max_abs=1.07288361e-06
+5: PASS tail (fresh backbone, no expert cache)
+2/4 Test #5: test_ds41_backbone_tail ..........   Passed    0.27 sec
+test 6
+    Start 6: test_ds41_backbone_compressor
+
+6: Test command: /home/ubuntu/ntransformer-h100/ds41-audit-20261015/cmake-build/test_ds41_backbone "compressor"
+6: Working Directory: /home/ubuntu/ntransformer-h100/ds41-audit-20261015/cmake-build
+6: Test timeout computed to be: 1500
+6: PASS compressor KV max_abs=1.1920929e-07
+6: PASS compressor gate max_abs=1.1920929e-07
+6: PASS compressor ungated max_abs=1.1920929e-07
+6: PASS compressor KV max_abs=8.94069672e-08
+6: PASS compressor gate max_abs=8.94069672e-08
+6: PASS compressor ungated max_abs=8.94069672e-08
+6: PASS compressor KV max_abs=4.76837158e-07
+6: PASS compressor gate max_abs=4.76837158e-07
+6: PASS compressor ungated max_abs=4.76837158e-07
+6: PASS compressor (fresh backbone, no expert cache)
+3/4 Test #6: test_ds41_backbone_compressor ....   Passed    0.22 sec
+test 7
+    Start 7: test_ds41_backbone_indexer
+
+7: Test command: /home/ubuntu/ntransformer-h100/ds41-audit-20261015/cmake-build/test_ds41_backbone "indexer"
+7: Working Directory: /home/ubuntu/ntransformer-h100/ds41-audit-20261015/cmake-build
+7: Test timeout computed to be: 1500
+7: PASS indexer Q8 max_abs=3.91155481e-08
+7: PASS indexer BF16 max_abs=7.4505806e-08
+7: PASS indexer Q8 max_abs=2.5331974e-07
+7: PASS indexer BF16 max_abs=1.1920929e-07
+7: PASS indexer Q8 max_abs=6.70552254e-08
+7: PASS indexer BF16 max_abs=8.94069672e-08
+7: PASS indexer Q8 max_abs=2.08616257e-07
+7: PASS indexer BF16 max_abs=3.87430191e-07
+7: PASS indexer Q8 max_abs=1.1920929e-07
+7: PASS indexer BF16 max_abs=1.1920929e-07
+7: PASS indexer Q8 max_abs=1.31130219e-06
+7: PASS indexer BF16 max_abs=1.43051147e-06
+7: PASS indexer (fresh backbone, no expert cache)
+4/4 Test #7: test_ds41_backbone_indexer .......   Passed    0.26 sec
+
+The following tests passed:
+	test_ds41_backbone_prologue
+	test_ds41_backbone_tail
+	test_ds41_backbone_compressor
+	test_ds41_backbone_indexer
+
+100% tests passed out of 4
+
+Total Test time (real) =   1.01 sec

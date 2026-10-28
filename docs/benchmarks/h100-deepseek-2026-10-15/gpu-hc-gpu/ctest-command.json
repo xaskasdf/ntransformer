@@ -1,0 +1,24 @@
+{
+  "command": [
+    "/home/ubuntu/ntransformer-h100/env/bin/ctest",
+    "--test-dir",
+    "/home/ubuntu/ntransformer-h100/ds41-hc-gpu-20261015/build",
+    "-V",
+    "-R",
+    "test_ds41_(router|shared|backbone|moe_overlap|prefill|hc)"
+  ],
+  "returncode": 0,
+  "utc_start": "2026-10-15T20:43:53.120007+00:00",
+  "wall_seconds": 8.525519098999212,
+  "process_group": 3570685,
+  "environment": {
+    "CUDA_VISIBLE_DEVICES": "1",
+    "LD_LIBRARY_PATH": "/home/ubuntu/ntransformer-h100/env/targets/x86_64-linux/lib:/home/ubuntu/ntransformer-h100/env/lib",
+    "DS41_GPU": "1",
+    "DS41_GPU_ATTN": "1",
+    "DS41_PROFILE": "1",
+    "DS41_VRAM_GB": "62",
+    "DS41_HC_PROJECTION_GPU": "1",
+    "DS41_TEST_MODEL": "/home/ubuntu/tiny-deepseek41.gguf"
+  }
+}

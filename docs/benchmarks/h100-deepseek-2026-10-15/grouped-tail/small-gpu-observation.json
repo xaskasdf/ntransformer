@@ -1,0 +1,7 @@
+{
+  "utc": "2026-10-15T12:32:45.460041+00:00",
+  "free_mib": 81076,
+  "note": "Correctness only, concurrent Brandon work permitted; no throughput measurement",
+  "processes_before": "2412368, /home/ubuntu/brandon-mini/.venv/bin/python, 1156 MiB\n",
+  "processes_after": "2412368, /home/ubuntu/brandon-mini/.venv/bin/python, 1156 MiB\n"
+}

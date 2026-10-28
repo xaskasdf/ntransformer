@@ -1,0 +1,98 @@
+[  3%] Building CUDA object CMakeFiles/ntransformer_ds41_shared.dir/src/model/ds41/ds41_shared.cu.o
+[  6%] Building CUDA object CMakeFiles/ntransformer_ds41_shared.dir/src/model/ds41/ds41_attention.cu.o
+[  6%] Built target ntransformer_ds41_shared
+[  9%] Building CXX object CMakeFiles/ntransformer_lib.dir/src/core/tensor.cpp.o
+[ 16%] Building CXX object CMakeFiles/ntransformer_lib.dir/src/model/config.cpp.o
+[ 16%] Building CXX object CMakeFiles/ntransformer_lib.dir/src/core/allocator.cpp.o
+[ 19%] Building CXX object CMakeFiles/ntransformer_lib.dir/src/model/loader.cpp.o
+[ 22%] Building CXX object CMakeFiles/ntransformer_lib.dir/src/model/norm.cpp.o
+[ 25%] Building CXX object CMakeFiles/ntransformer_lib.dir/src/model/attention.cpp.o
+[ 29%] Building CXX object CMakeFiles/ntransformer_lib.dir/src/model/ffn.cpp.o
+[ 32%] Building CXX object CMakeFiles/ntransformer_lib.dir/src/model/transformer.cpp.o
+[ 35%] Building CXX object CMakeFiles/ntransformer_lib.dir/src/model/ds41/ds41_config.cpp.o
+[ 38%] Building CXX object CMakeFiles/ntransformer_lib.dir/src/model/ds41/ds41_model.cpp.o
+[ 41%] Building CXX object CMakeFiles/ntransformer_lib.dir/src/model/ds41/ds41_forward.cpp.o
+[ 45%] Building CXX object CMakeFiles/ntransformer_lib.dir/src/inference/tokenizer.cpp.o
+[ 48%] Building CXX object CMakeFiles/ntransformer_lib.dir/src/inference/sampler.cpp.o
+[ 51%] Building CXX object CMakeFiles/ntransformer_lib.dir/src/inference/engine.cpp.o
+[ 54%] Building CXX object CMakeFiles/ntransformer_lib.dir/src/utils/profiler.cpp.o
+[ 58%] Building CUDA object CMakeFiles/ntransformer_lib.dir/src/core/device.cu.o
+[ 64%] Building CUDA object CMakeFiles/ntransformer_lib.dir/src/cuda/rmsnorm.cu.o
+[ 64%] Building CUDA object CMakeFiles/ntransformer_lib.dir/src/cuda/rotary.cu.o
+[ 67%] Building CUDA object CMakeFiles/ntransformer_lib.dir/src/cuda/softmax.cu.o
+[ 70%] Building CUDA object CMakeFiles/ntransformer_lib.dir/src/cuda/gemm.cu.o
+[ 74%] Building CUDA object CMakeFiles/ntransformer_lib.dir/src/cuda/attention.cu.o
+[ 77%] Building CUDA object CMakeFiles/ntransformer_lib.dir/src/cuda/elementwise.cu.o
+[ 80%] Building CUDA object CMakeFiles/ntransformer_lib.dir/src/memory/streamer.cu.o
+[ 83%] Building CUDA object CMakeFiles/ntransformer_lib.dir/src/memory/peer_cache.cu.o
+[ 87%] Building CUDA object CMakeFiles/ntransformer_lib.dir/src/model/ds41/ds41_gpu.cu.o
+/home/ubuntu/ntransformer-h100/ds41-peer-20261015/source/src/model/ds41/ds41_gpu.cu(518): warning #177-D: function "nt::ds41::<unnamed>::ExpertCache::reset_for_slice" was declared but never referenced
+      void reset_for_slice(size_t slice_bytes, size_t cache_bytes) {
+           ^
+
+Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+
+/home/ubuntu/ntransformer-h100/ds41-peer-20261015/source/src/model/ds41/ds41_gpu.cu(518): warning #177-D: function "nt::ds41::<unnamed>::ExpertCache::reset_for_slice" was declared but never referenced
+      void reset_for_slice(size_t slice_bytes, size_t cache_bytes) {
+           ^
+
+Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+
+/home/ubuntu/ntransformer-h100/ds41-peer-20261015/source/src/model/ds41/ds41_gpu.cu(518): warning #177-D: function "nt::ds41::<unnamed>::ExpertCache::reset_for_slice" was declared but never referenced
+      void reset_for_slice(size_t slice_bytes, size_t cache_bytes) {
+           ^
+
+Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+
+/home/ubuntu/ntransformer-h100/ds41-peer-20261015/source/src/model/ds41/ds41_gpu.cu(518): warning #177-D: function "nt::ds41::<unnamed>::ExpertCache::reset_for_slice" was declared but never referenced
+      void reset_for_slice(size_t slice_bytes, size_t cache_bytes) {
+           ^
+
+Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+
+[ 90%] Linking CUDA device code CMakeFiles/ntransformer_lib.dir/cmake_device_link.o
+[ 93%] Linking CXX static library libntransformer_lib.a
+[ 93%] Built target ntransformer_lib
+[ 96%] Building CXX object CMakeFiles/ntransformer.dir/src/main.cpp.o
+[100%] Linking CXX executable ntransformer
+[100%] Built target ntransformer
+[  6%] Built target ntransformer_ds41_shared
+[ 93%] Built target ntransformer_lib
+[ 96%] Building CXX object CMakeFiles/test_ds41_mxfp4.dir/tests/test_ds41_mxfp4.cpp.o
+[100%] Linking CXX executable test_ds41_mxfp4
+[100%] Built target test_ds41_mxfp4
+[  6%] Built target ntransformer_ds41_shared
+[ 93%] Built target ntransformer_lib
+[ 96%] Building CXX object CMakeFiles/test_ds41_attention.dir/tests/test_ds41_attention.cpp.o
+[100%] Linking CXX executable test_ds41_attention
+[100%] Built target test_ds41_attention
+[  6%] Built target ntransformer_ds41_shared
+[ 93%] Built target ntransformer_lib
+[ 96%] Building CXX object CMakeFiles/test_ds41_router.dir/tests/test_ds41_router.cpp.o
+[100%] Linking CXX executable test_ds41_router
+[100%] Built target test_ds41_router
+[  6%] Built target ntransformer_ds41_shared
+[ 93%] Built target ntransformer_lib
+[ 96%] Building CXX object CMakeFiles/test_ds41_backbone.dir/tests/test_ds41_backbone.cpp.o
+[100%] Linking CXX executable test_ds41_backbone
+[100%] Built target test_ds41_backbone
+[  6%] Built target ntransformer_ds41_shared
+[ 93%] Built target ntransformer_lib
+[ 96%] Building CXX object CMakeFiles/test_ds41_shared.dir/tests/test_ds41_shared.cpp.o
+[100%] Linking CXX executable test_ds41_shared
+[100%] Built target test_ds41_shared
+[  6%] Built target ntransformer_ds41_shared
+[ 93%] Built target ntransformer_lib
+[ 96%] Building CXX object CMakeFiles/test_ds41_moe_overlap.dir/tests/test_ds41_moe_overlap.cpp.o
+[100%] Linking CXX executable test_ds41_moe_overlap
+[100%] Built target test_ds41_moe_overlap
+[  6%] Built target ntransformer_ds41_shared
+[ 93%] Built target ntransformer_lib
+[ 96%] Building CXX object CMakeFiles/test_ds41_prefill.dir/tests/test_ds41_prefill.cpp.o
+[100%] Linking CXX executable test_ds41_prefill
+[100%] Built target test_ds41_prefill
+[  6%] Built target ntransformer_ds41_shared
+[ 93%] Built target ntransformer_lib
+[ 96%] Building CXX object CMakeFiles/test_ds41_hc.dir/tests/test_ds41_hc.cpp.o
+[100%] Linking CXX executable test_ds41_hc
+[100%] Built target test_ds41_hc

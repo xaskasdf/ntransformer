@@ -1,0 +1,13 @@
+{
+  "command": [
+    "git",
+    "-C",
+    "/home/ubuntu/llama-ds41",
+    "archive",
+    "5210c7c5ed61dddaee6ed476623abf4b63093d16",
+    "--format=tar",
+    "-o",
+    "/home/ubuntu/ntransformer-h100/llama-bench-20261015/llama-source.tar"
+  ],
+  "returncode": 0
+}

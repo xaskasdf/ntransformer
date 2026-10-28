@@ -1,0 +1,7 @@
+{
+  "name": "benchmark-results.tar.gz",
+  "bytes": 2209180,
+  "sha256": "8f96edc77eb6eed94d1e20732b2161308367dd3c2cb2c02b8635aece1bc8a444",
+  "payload_files": 49,
+  "persistent": "/lambda/nfs/btiny/ntransformer-training/deepseek-benchmark-20261015"
+}

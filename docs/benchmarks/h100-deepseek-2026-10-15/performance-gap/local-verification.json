@@ -1,0 +1,7 @@
+{
+  "archive_sha256": "35f48134e14c20a4629f8ab9939159e9ecd4902fa621f0d9c6dc6018522c4f8d",
+  "payload_files_verified": 2331,
+  "analysis_recomputed": true,
+  "report_reproduced_exactly": true,
+  "projection_replay_uses_archived_result_because_weights_are_not_bundled": true
+}

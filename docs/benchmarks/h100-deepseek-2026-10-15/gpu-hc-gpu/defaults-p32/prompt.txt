@@ -1,0 +1,1 @@
+Transformer inference is a sequence of dependent computations. A request begins with a prompt, and the model processes its tokens to construct attention state. Once this preparation is

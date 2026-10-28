@@ -1,0 +1,28 @@
+{
+  "command": [
+    "/home/ubuntu/ntransformer-h100/ds41-moe-batch-20261015/profile-candidate",
+    "/home/ubuntu/ntransformer-h100/models/deepseek-v41-flash-q8/DeepSeek-V4.1-Flash-Q8_0-00001-of-00010.gguf",
+    "16",
+    "1",
+    "/home/ubuntu/ntransformer-h100/ds41-shared-20261015/previous.bin"
+  ],
+  "returncode": 0,
+  "seconds": 14.437301097001182,
+  "environment": {
+    "CUDA_VISIBLE_DEVICES": "1",
+    "DS41_GPU": "1",
+    "DS41_GPU_ATTN": "1",
+    "DS41_VRAM_GB": "62",
+    "DS41_PROFILE": "1",
+    "DS41_GPU_TIMING": "1",
+    "LD_LIBRARY_PATH": "/home/ubuntu/ntransformer-h100/env/targets/x86_64-linux/lib:/home/ubuntu/ntransformer-h100/env/lib"
+  },
+  "resources": {
+    "ru_utime": 32.84927299999998,
+    "ru_stime": 30.726073999999983,
+    "ru_majflt": 4534,
+    "ru_minflt": 836499,
+    "ru_nvcsw": 1336820,
+    "ru_nivcsw": 194
+  }
+}

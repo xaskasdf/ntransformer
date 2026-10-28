@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "hardware": "2x H100 80GB SXM5, CUDA_VISIBLE_DEVICES=1,0, same host and CPU budget",
+  "workloads": ["p32", "p128", "p512", "heldout-p512"],
+  "decode_steps": 64,
+  "warmup_rounds": [0, 1],
+  "measured_rounds": [2, 3, 4],
+  "independent_launches": 2,
+  "main_engines": ["nt-slru", "llama"],
+  "additional_control": "nt-lru on p512 in both launches",
+  "nt": {"cache_gib_per_gpu": 62, "protected_percent": 80, "peer_mode": "execute", "routed_compute": "fp32", "q8_cooperative": true},
+  "llama_pilot": {
+    "workload": "p128 prefix and 16 consumed continuation tokens",
+    "cpu_moe_layers": [20, 22],
+    "threads": [26, 52],
+    "operation_offload": [true, false],
+    "ubatch": 512,
+    "gpu_count": 2,
+    "split_mode": "layer, 1:1, balanced routed-expert residency",
+    "score": "median of warm prefill_seconds + 4 * decode_seconds; rounds 1 and 2",
+    "failure_policy": "Only explicit CUDA OOM marks a pilot infeasible; other failures stop the worker"
+  },
+  "order": "Reverse engine order on the second launch; alternate initial order by workload",
+  "cache_protocol": "Clear sequence/KV state per request; retain each engine's weights/cache; do not flush the global OS file cache",
+  "cold_results": "Diagnostic only: OS cache state is not controlled; record phase page faults and I/O blocks",
+  "quality": "Same 65 target tokens and full vocabulary logits; finite/repeat checks, NLL and KL; no bitwise cross-engine requirement or task-quality certification",
+  "scope": "A bounded native-configuration comparison, not exhaustive tuning or equal VRAM allocation"
+}

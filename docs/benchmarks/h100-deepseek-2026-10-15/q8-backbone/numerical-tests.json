@@ -1,0 +1,42 @@
+[
+  {
+    "case": "fixture-prologue-grouped0-coop0",
+    "sha256": "4e6486939eb48fe505e78b0837d0159f550ed25aa44eb0d60c9d0fa722faaab9",
+    "bitwise_equal": true
+  },
+  {
+    "case": "fixture-prologue-grouped0-coop1",
+    "sha256": "4e6486939eb48fe505e78b0837d0159f550ed25aa44eb0d60c9d0fa722faaab9",
+    "bitwise_equal": true
+  },
+  {
+    "case": "fixture-prologue-grouped1-coop0",
+    "sha256": "4e6486939eb48fe505e78b0837d0159f550ed25aa44eb0d60c9d0fa722faaab9",
+    "bitwise_equal": true
+  },
+  {
+    "case": "fixture-prologue-grouped1-coop1",
+    "sha256": "4e6486939eb48fe505e78b0837d0159f550ed25aa44eb0d60c9d0fa722faaab9",
+    "bitwise_equal": true
+  },
+  {
+    "case": "fixture-tail-grouped0-coop0",
+    "sha256": "2c0ff44c3f3530dde8a7c790ec5c0623210c5619541d60fbf8a13ecd461b99d9",
+    "bitwise_equal": true
+  },
+  {
+    "case": "fixture-tail-grouped0-coop1",
+    "sha256": "2c0ff44c3f3530dde8a7c790ec5c0623210c5619541d60fbf8a13ecd461b99d9",
+    "bitwise_equal": true
+  },
+  {
+    "case": "fixture-tail-grouped1-coop0",
+    "sha256": "2c0ff44c3f3530dde8a7c790ec5c0623210c5619541d60fbf8a13ecd461b99d9",
+    "bitwise_equal": true
+  },
+  {
+    "case": "fixture-tail-grouped1-coop1",
+    "sha256": "2c0ff44c3f3530dde8a7c790ec5c0623210c5619541d60fbf8a13ecd461b99d9",
+    "bitwise_equal": true
+  }
+]

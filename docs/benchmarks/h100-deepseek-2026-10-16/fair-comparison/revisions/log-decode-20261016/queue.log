@@ -1,0 +1,24 @@
+
+Admission-only revision: inactive paused stages accepted after locks and idle-GPU checks.
+pilot-cpu20-t26-offload1 0 55.819
+Traceback (most recent call last):
+  File "/home/ubuntu/ntransformer-h100/ds41-fair-20261016/queue.py", line 31, in <module>
+    try:main()
+        ^^^^^^
+  File "/home/ubuntu/ntransformer-h100/ds41-fair-20261016/queue.py", line 20, in main
+    try:run.main();break
+        ^^^^^^^^^^
+  File "/home/ubuntu/ntransformer-h100/ds41-fair-20261016/run.py", line 96, in main
+    data=llama(label,'pilot',config,2,required=False)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/ntransformer-h100/ds41-fair-20261016/run.py", line 84, in llama
+    return validate(label,workload,'llama')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/ntransformer-h100/ds41-fair-20261016/run.py", line 58, in validate
+    log=(ROOT/(label+'.log')).read_text()
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/pathlib.py", line 1028, in read_text
+    return f.read()
+           ^^^^^^^^
+  File "<frozen codecs>", line 322, in decode
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xef in position 6169: invalid continuation byte

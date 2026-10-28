@@ -1,0 +1,33 @@
+{
+  "archive_sha256": "14e1e1988561905934cc8e13e18cf40c7fb76ca9b7f34d840963d30a88a64895",
+  "archive_verified_locally": false,
+  "initial_archive_verified_locally": "6a832144c7f39436536fe9bdba21d8a24f0d8be6d754aff92fab055a76550f3d",
+  "delivery": "initial verified archive plus SHA256-verified incremental payloads",
+  "payload_files_verified": 374,
+  "updated_payloads": [
+    "analyze-command.json",
+    "analyze.py",
+    "environment.json",
+    "finish.py",
+    "prepare.py",
+    "select-precision-command.json",
+    "select_ds41_precision.py",
+    "selector-tests-command.json",
+    "source/tools/select_ds41_precision.py",
+    "status.json"
+  ],
+  "analysis_recomputed": true,
+  "maximum_analysis_drift": 2.0816681711721685e-16,
+  "report_reproduced_exactly": true,
+  "cuda_ctest_passed": 44,
+  "numerical_cross_process_cases": 27,
+  "selector_unit_tests_passed": 6,
+  "local_implementation_matches_measured_source": [
+    "src/model/ds41/ds41_gpu.cu",
+    "src/model/ds41/ds41_gpu.h",
+    "tests/test_ds41_mxfp4.cpp",
+    "tests/test_ds41_moe_overlap.cpp",
+    "tools/benchmark_ds41.cpp",
+    "CMakeLists.txt"
+  ]
+}

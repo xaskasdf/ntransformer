@@ -1,0 +1,111 @@
+[  1%] Building C object ggml/src/CMakeFiles/ggml-base.dir/ggml.c.o
+[  1%] Building CXX object ggml/src/CMakeFiles/ggml-base.dir/ggml.cpp.o
+[  1%] Building C object ggml/src/CMakeFiles/ggml-base.dir/ggml-alloc.c.o
+[  1%] Building CXX object ggml/src/CMakeFiles/ggml-base.dir/ggml-backend.cpp.o
+[  1%] Building CXX object ggml/src/CMakeFiles/ggml-base.dir/ggml-backend-meta.cpp.o
+[  3%] Building CXX object ggml/src/CMakeFiles/ggml-base.dir/ggml-opt.cpp.o
+[  3%] Building CXX object ggml/src/CMakeFiles/ggml-base.dir/ggml-threading.cpp.o
+[  3%] Building C object ggml/src/CMakeFiles/ggml-base.dir/ggml-quants.c.o
+[  3%] Building CXX object ggml/src/CMakeFiles/ggml-base.dir/gguf.cpp.o
+[  3%] Linking CXX shared library ../../bin/libggml-base.so
+[  3%] Built target ggml-base
+[  3%] Building C object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/ggml-cpu.c.o
+[  4%] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/ggml-cpu.cpp.o
+[  4%] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/repack.cpp.o
+[  6%] Building CUDA object ggml/src/ggml-cuda/CMakeFiles/ggml-cuda.dir/acc.cu.o
+[  6%] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/iqp.cpp.o
+[  6%] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/hbm.cpp.o
+[  6%] Building C object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/quants.c.o
+[  7%] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/traits.cpp.o
+[  7%] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/amx/amx.cpp.o
+[  7%] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/amx/mmq.cpp.o
+/home/ubuntu/brandon-mini/.venv/lib/python3.12/site-packages/nvidia/cu13/include/cuda_fp4.hpp: In function '__nv_fp4_storage_t __nv_cvt_double_to_fp4(double, __nv_fp4_interpretation_t, cudaRoundMode)':
+/home/ubuntu/brandon-mini/.venv/lib/python3.12/site-packages/nvidia/cu13/include/cuda_fp4.hpp:107:1: warning: unused parameter 'fp4_interpretation' [-Wunused-parameter]
+  106 | __nv_cvt_double_to_fp4(const double x,
+      |                                       
+  107 |                        const __nv_fp4_interpretation_t fp4_interpretation,
+      | ^                 
+/home/ubuntu/brandon-mini/.venv/lib/python3.12/site-packages/nvidia/cu13/include/cuda_fp4.hpp: In function '__half_raw __nv_cvt_fp4_to_halfraw(__nv_fp4_storage_t, __nv_fp4_interpretation_t)':
+/home/ubuntu/brandon-mini/.venv/lib/python3.12/site-packages/nvidia/cu13/include/cuda_fp4.hpp:335:1: warning: unused parameter 'fp4_interpretation' [-Wunused-parameter]
+  334 | __nv_cvt_fp4_to_halfraw(const __nv_fp4_storage_t x,
+      |                                                    
+  335 |                         const __nv_fp4_interpretation_t fp4_interpretation) {
+      | ^                 
+[  7%] Building CUDA object ggml/src/ggml-cuda/CMakeFiles/ggml-cuda.dir/add-id.cu.o
+[  7%] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/binary-ops.cpp.o
+[  7%] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/unary-ops.cpp.o
+[  7%] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/vec.cpp.o
+/home/ubuntu/brandon-mini/.venv/lib/python3.12/site-packages/nvidia/cu13/include/cuda_fp4.hpp: In function '__nv_fp4_storage_t __nv_cvt_double_to_fp4(double, __nv_fp4_interpretation_t, cudaRoundMode)':
+/home/ubuntu/brandon-mini/.venv/lib/python3.12/site-packages/nvidia/cu13/include/cuda_fp4.hpp:107:1: warning: unused parameter 'fp4_interpretation' [-Wunused-parameter]
+  106 | __nv_cvt_double_to_fp4(const double x,
+      |                                       
+  107 |                        const __nv_fp4_interpretation_t fp4_interpretation,
+      | ^                 
+/home/ubuntu/brandon-mini/.venv/lib/python3.12/site-packages/nvidia/cu13/include/cuda_fp4.hpp: In function '__half_raw __nv_cvt_fp4_to_halfraw(__nv_fp4_storage_t, __nv_fp4_interpretation_t)':
+/home/ubuntu/brandon-mini/.venv/lib/python3.12/site-packages/nvidia/cu13/include/cuda_fp4.hpp:335:1: warning: unused parameter 'fp4_interpretation' [-Wunused-parameter]
+  334 | __nv_cvt_fp4_to_halfraw(const __nv_fp4_storage_t x,
+      |                                                    
+  335 |                         const __nv_fp4_interpretation_t fp4_interpretation) {
+      | ^                 
+[  7%] Building CUDA object ggml/src/ggml-cuda/CMakeFiles/ggml-cuda.dir/allreduce.cu.o
+[  9%] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/ops.cpp.o
+[  9%] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/llamafile/sgemm.cpp.o
+[  9%] Building C object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/arch/x86/quants.c.o
+[  9%] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/arch/x86/repack.cpp.o
+/home/ubuntu/brandon-mini/.venv/lib/python3.12/site-packages/nvidia/cu13/include/cuda_fp4.hpp: In function '__nv_fp4_storage_t __nv_cvt_double_to_fp4(double, __nv_fp4_interpretation_t, cudaRoundMode)':
+/home/ubuntu/brandon-mini/.venv/lib/python3.12/site-packages/nvidia/cu13/include/cuda_fp4.hpp:107:1: warning: unused parameter 'fp4_interpretation' [-Wunused-parameter]
+  106 | __nv_cvt_double_to_fp4(const double x,
+      |                                       
+  107 |                        const __nv_fp4_interpretation_t fp4_interpretation,
+      | ^                 
+/home/ubuntu/brandon-mini/.venv/lib/python3.12/site-packages/nvidia/cu13/include/cuda_fp4.hpp: In function '__half_raw __nv_cvt_fp4_to_halfraw(__nv_fp4_storage_t, __nv_fp4_interpretation_t)':
+/home/ubuntu/brandon-mini/.venv/lib/python3.12/site-packages/nvidia/cu13/include/cuda_fp4.hpp:335:1: warning: unused parameter 'fp4_interpretation' [-Wunused-parameter]
+  334 | __nv_cvt_fp4_to_halfraw(const __nv_fp4_storage_t x,
+      |                                                    
+  335 |                         const __nv_fp4_interpretation_t fp4_interpretation) {
+      | ^                 
+[  9%] Building CUDA object ggml/src/ggml-cuda/CMakeFiles/ggml-cuda.dir/arange.cu.o
+[  9%] Building CUDA object ggml/src/ggml-cuda/CMakeFiles/ggml-cuda.dir/argmax.cu.o
+[  9%] Building CUDA object ggml/src/ggml-cuda/CMakeFiles/ggml-cuda.dir/argsort.cu.o
+In file included from /home/ubuntu/ntransformer-h100/env/targets/x86_64-linux/include/cccl/cuda/std/__cccl/extended_data_types.h:26,
+                 from /home/ubuntu/ntransformer-h100/env/targets/x86_64-linux/include/cccl/cuda/std/__cccl/builtin.h:27,
+                 from /home/ubuntu/ntransformer-h100/env/targets/x86_64-linux/include/cccl/cuda/std/__cccl/assert.h:26,
+                 from /home/ubuntu/ntransformer-h100/env/targets/x86_64-linux/include/cccl/cuda/__cccl_config:15,
+                 from /home/ubuntu/ntransformer-h100/env/targets/x86_64-linux/include/cccl/cub/config.cuh:36,
+                 from /home/ubuntu/ntransformer-h100/env/targets/x86_64-linux/include/cccl/cub/cub.cuh:37,
+                 from /home/ubuntu/ntransformer-h100/llama-bench-20261015/source/ggml/src/ggml-cuda/argsort.cu:4:
+/home/ubuntu/ntransformer-h100/env/targets/x86_64-linux/include/cccl/cuda/std/__cccl/cuda_toolkit.h:39:6: error: #error "CUDA compiler and CUDA toolkit headers are incompatible, please check your include paths"
+   39 | #    error "CUDA compiler and CUDA toolkit headers are incompatible, please check your include paths"
+      |      ^~~~~
+/home/ubuntu/brandon-mini/.venv/lib/python3.12/site-packages/nvidia/cu13/include/cuda_fp4.hpp: In function '__nv_fp4_storage_t __nv_cvt_double_to_fp4(double, __nv_fp4_interpretation_t, cudaRoundMode)':
+/home/ubuntu/brandon-mini/.venv/lib/python3.12/site-packages/nvidia/cu13/include/cuda_fp4.hpp:107:1: warning: unused parameter 'fp4_interpretation' [-Wunused-parameter]
+  106 | __nv_cvt_double_to_fp4(const double x,
+      |                                       
+  107 |                        const __nv_fp4_interpretation_t fp4_interpretation,
+      | ^                 
+/home/ubuntu/brandon-mini/.venv/lib/python3.12/site-packages/nvidia/cu13/include/cuda_fp4.hpp: In function '__half_raw __nv_cvt_fp4_to_halfraw(__nv_fp4_storage_t, __nv_fp4_interpretation_t)':
+/home/ubuntu/brandon-mini/.venv/lib/python3.12/site-packages/nvidia/cu13/include/cuda_fp4.hpp:335:1: warning: unused parameter 'fp4_interpretation' [-Wunused-parameter]
+  334 | __nv_cvt_fp4_to_halfraw(const __nv_fp4_storage_t x,
+      |                                                    
+  335 |                         const __nv_fp4_interpretation_t fp4_interpretation) {
+      | ^                 
+gmake[3]: *** [ggml/src/ggml-cuda/CMakeFiles/ggml-cuda.dir/build.make:155: ggml/src/ggml-cuda/CMakeFiles/ggml-cuda.dir/argsort.cu.o] Error 1
+gmake[3]: *** Waiting for unfinished jobs....
+/home/ubuntu/brandon-mini/.venv/lib/python3.12/site-packages/nvidia/cu13/include/cuda_fp4.hpp: In function '__nv_fp4_storage_t __nv_cvt_double_to_fp4(double, __nv_fp4_interpretation_t, cudaRoundMode)':
+/home/ubuntu/brandon-mini/.venv/lib/python3.12/site-packages/nvidia/cu13/include/cuda_fp4.hpp:107:1: warning: unused parameter 'fp4_interpretation' [-Wunused-parameter]
+  106 | __nv_cvt_double_to_fp4(const double x,
+      |                                       
+  107 |                        const __nv_fp4_interpretation_t fp4_interpretation,
+      | ^                 
+/home/ubuntu/brandon-mini/.venv/lib/python3.12/site-packages/nvidia/cu13/include/cuda_fp4.hpp: In function '__half_raw __nv_cvt_fp4_to_halfraw(__nv_fp4_storage_t, __nv_fp4_interpretation_t)':
+/home/ubuntu/brandon-mini/.venv/lib/python3.12/site-packages/nvidia/cu13/include/cuda_fp4.hpp:335:1: warning: unused parameter 'fp4_interpretation' [-Wunused-parameter]
+  334 | __nv_cvt_fp4_to_halfraw(const __nv_fp4_storage_t x,
+      |                                                    
+  335 |                         const __nv_fp4_interpretation_t fp4_interpretation) {
+      | ^                 
+gmake[2]: *** [CMakeFiles/Makefile2:961: ggml/src/ggml-cuda/CMakeFiles/ggml-cuda.dir/all] Error 2
+gmake[2]: *** Waiting for unfinished jobs....
+[  9%] Linking CXX shared library ../../bin/libggml-cpu.so
+[  9%] Built target ggml-cpu
+gmake[1]: *** [CMakeFiles/Makefile2:1003: src/CMakeFiles/llama.dir/rule] Error 2
+gmake: *** [Makefile:221: llama] Error 2

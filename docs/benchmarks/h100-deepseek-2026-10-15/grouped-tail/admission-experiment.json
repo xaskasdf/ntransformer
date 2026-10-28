@@ -1,0 +1,489 @@
+{
+  "behavior-v1": {
+    "state": "complete",
+    "pipeline_pid": 54919,
+    "stage": "complete",
+    "command": [
+      "/home/ubuntu/brandon-mini/.venv/bin/python",
+      "scripts/evaluate_mini_instructions.py",
+      "--checkpoint",
+      "/lambda/nfs/btiny/brandon-mini/stages/behavior-v1/sft/best.pt",
+      "--max-new-tokens",
+      "96",
+      "--output",
+      "/lambda/nfs/btiny/brandon-mini/stages/behavior-v1/after-transformations.json",
+      "--cases",
+      "/lambda/nfs/btiny/brandon-mini/distillation/text-v1/requests.jsonl"
+    ],
+    "child_pid": null,
+    "updated_at": "2026-10-13T22:44:10.488241+00:00",
+    "scores": {
+      "original": {
+        "before": 0.0,
+        "after": 0.0,
+        "representable_cases": 60,
+        "before_representable": 0.0,
+        "after_representable": 0.0,
+        "cases": 60
+      },
+      "transformations": {
+        "before": 0.0,
+        "after": 0.43333333333333335,
+        "representable_cases": 94,
+        "before_representable": 0.0,
+        "after_representable": 0.5531914893617021,
+        "cases": 120
+      }
+    }
+  },
+  "context-v2": {
+    "state": "complete",
+    "pipeline_pid": 63513,
+    "stage": "complete",
+    "command": [
+      "/home/ubuntu/brandon-mini/.venv/bin/python",
+      "scripts/evaluate_mini_instructions.py",
+      "--checkpoint",
+      "/lambda/nfs/btiny/brandon-mini/stages/context-v2/sft/best.pt",
+      "--max-new-tokens",
+      "96",
+      "--output",
+      "/lambda/nfs/btiny/brandon-mini/stages/context-v2/after-context.json",
+      "--cases",
+      "/lambda/nfs/btiny/brandon-mini/data/context-v2/generation-test.jsonl"
+    ],
+    "child_pid": null,
+    "updated_at": "2026-10-13T23:58:29.279412+00:00",
+    "scores": {
+      "original": {
+        "before": 0.0,
+        "after": 0.2833333333333333,
+        "representable_cases": 60,
+        "before_representable": 0.0,
+        "after_representable": 0.2833333333333333,
+        "cases": 60
+      },
+      "context": {
+        "before": 0.0,
+        "after": 0.7083333333333334,
+        "representable_cases": 120,
+        "before_representable": 0.0,
+        "after_representable": 0.7083333333333334,
+        "cases": 120
+      }
+    }
+  },
+  "context-v2-supervisor": {
+    "state": "complete",
+    "stage": "complete",
+    "pid": 63001,
+    "updated_at": "2026-10-13T23:58:29.529003+00:00",
+    "results": "/lambda/nfs/btiny/brandon-mini/stages/context-v2/results.json"
+  },
+  "continuation-v1": {
+    "stage": "complete",
+    "state": "complete",
+    "pid": 95550,
+    "updated_at": "2026-10-14T04:02:29.017881+00:00",
+    "selected": "initial"
+  },
+  "mapping-dose-v1": {
+    "stage": "complete",
+    "state": "complete",
+    "pid": 2410684,
+    "updated_at": "2026-10-15T12:35:59.431769+00:00",
+    "mapping_pass": false,
+    "retention_pass": false,
+    "advance_curriculum": false
+  },
+  "mapping-mixture-v1": {
+    "stage": "complete",
+    "state": "complete",
+    "pid": 2365995,
+    "updated_at": "2026-10-15T09:42:50.286425+00:00",
+    "mapping_pass": false,
+    "retention_pass": true,
+    "advance_curriculum": false
+  },
+  "objective-v1": {
+    "state": "complete",
+    "stage": "complete",
+    "pid": 81103,
+    "updated_at": "2026-10-14T01:52:30.565774+00:00",
+    "selected": "grouped",
+    "final": {
+      "initial": {
+        "scores": {
+          "count": {
+            "correct": 11,
+            "total": 117,
+            "accuracy": 0.09401709401709402
+          },
+          "position": {
+            "correct": 9,
+            "total": 104,
+            "accuracy": 0.08653846153846154
+          }
+        },
+        "accuracy": 0.09049773755656108,
+        "by_length": {
+          "range_2_10": {
+            "count": {
+              "correct": 6,
+              "total": 63
+            },
+            "position": {
+              "correct": 6,
+              "total": 54
+            }
+          },
+          "range_11_14": {
+            "count": {
+              "correct": 5,
+              "total": 54
+            },
+            "position": {
+              "correct": 3,
+              "total": 50
+            }
+          }
+        }
+      },
+      "selected": {
+        "scores": {
+          "count": {
+            "correct": 11,
+            "total": 117,
+            "accuracy": 0.09401709401709402
+          },
+          "position": {
+            "correct": 8,
+            "total": 104,
+            "accuracy": 0.07692307692307693
+          }
+        },
+        "accuracy": 0.08597285067873303,
+        "by_length": {
+          "range_2_10": {
+            "count": {
+              "correct": 7,
+              "total": 63
+            },
+            "position": {
+              "correct": 7,
+              "total": 54
+            }
+          },
+          "range_11_14": {
+            "count": {
+              "correct": 4,
+              "total": 54
+            },
+            "position": {
+              "correct": 1,
+              "total": 50
+            }
+          }
+        }
+      }
+    }
+  },
+  "retention-v1": {
+    "state": "complete",
+    "stage": "complete",
+    "pid": 67618,
+    "updated_at": "2026-10-14T00:41:02.862160+00:00",
+    "selected": "replay-kl",
+    "final": {
+      "baseline": {
+        "accuracy": 0.0,
+        "cases": 160,
+        "scores": {
+          "table": {
+            "correct": 0,
+            "total": 20,
+            "accuracy": 0.0
+          },
+          "missing": {
+            "correct": 0,
+            "total": 20,
+            "accuracy": 0.0
+          },
+          "definition": {
+            "correct": 0,
+            "total": 20,
+            "accuracy": 0.0
+          },
+          "threshold": {
+            "correct": 0,
+            "total": 20,
+            "accuracy": 0.0
+          },
+          "assignment": {
+            "correct": 0,
+            "total": 20,
+            "accuracy": 0.0
+          },
+          "position": {
+            "correct": 0,
+            "total": 20,
+            "accuracy": 0.0
+          },
+          "count": {
+            "correct": 0,
+            "total": 20,
+            "accuracy": 0.0
+          },
+          "conversation": {
+            "correct": 0,
+            "total": 20,
+            "accuracy": 0.0
+          }
+        },
+        "report": "final-baseline.json",
+        "checkpoint_sha256": "6413763b4e7630f4aa4d532fe5e05879afb0b9ac8d2a1c015900908a22a5bf8d"
+      },
+      "context": {
+        "accuracy": 0.70625,
+        "cases": 160,
+        "scores": {
+          "table": {
+            "correct": 20,
+            "total": 20,
+            "accuracy": 1.0
+          },
+          "missing": {
+            "correct": 20,
+            "total": 20,
+            "accuracy": 1.0
+          },
+          "definition": {
+            "correct": 20,
+            "total": 20,
+            "accuracy": 1.0
+          },
+          "threshold": {
+            "correct": 8,
+            "total": 20,
+            "accuracy": 0.4
+          },
+          "assignment": {
+            "correct": 20,
+            "total": 20,
+            "accuracy": 1.0
+          },
+          "position": {
+            "correct": 6,
+            "total": 20,
+            "accuracy": 0.3
+          },
+          "count": {
+            "correct": 0,
+            "total": 20,
+            "accuracy": 0.0
+          },
+          "conversation": {
+            "correct": 19,
+            "total": 20,
+            "accuracy": 0.95
+          }
+        },
+        "report": "final-context.json",
+        "checkpoint_sha256": "7e7f7de208aac857ffba72d4ab0ba6c0a0bebffc0075c34670713cad93d55af9"
+      },
+      "selected": {
+        "accuracy": 0.68125,
+        "cases": 160,
+        "scores": {
+          "table": {
+            "correct": 20,
+            "total": 20,
+            "accuracy": 1.0
+          },
+          "missing": {
+            "correct": 20,
+            "total": 20,
+            "accuracy": 1.0
+          },
+          "definition": {
+            "correct": 20,
+            "total": 20,
+            "accuracy": 1.0
+          },
+          "threshold": {
+            "correct": 8,
+            "total": 20,
+            "accuracy": 0.4
+          },
+          "assignment": {
+            "correct": 19,
+            "total": 20,
+            "accuracy": 0.95
+          },
+          "position": {
+            "correct": 5,
+            "total": 20,
+            "accuracy": 0.25
+          },
+          "count": {
+            "correct": 0,
+            "total": 20,
+            "accuracy": 0.0
+          },
+          "conversation": {
+            "correct": 17,
+            "total": 20,
+            "accuracy": 0.85
+          }
+        },
+        "report": "final-selected.json",
+        "checkpoint_sha256": "0f645310bc53ac70fd61463afbc1480ea1698a3dc9e854cf15aa0a3c60da71c5"
+      }
+    }
+  },
+  "robustness-replication-v1": {
+    "stage": "complete",
+    "state": "complete",
+    "pid": 2245508,
+    "updated_at": "2026-10-15T07:51:34.482183+00:00",
+    "replicated": true,
+    "all_retention_pass": true
+  },
+  "robustness-v1": {
+    "stage": "complete",
+    "state": "complete",
+    "pid": 101072,
+    "updated_at": "2026-10-14T05:11:34.756664+00:00",
+    "selected": "new-data",
+    "confirmed": false
+  },
+  "rule-mapping-v1": {
+    "stage": "complete",
+    "state": "complete",
+    "pid": 2321844,
+    "updated_at": "2026-10-15T09:13:43.845155+00:00",
+    "mapping_pass": false,
+    "retention_pass": true,
+    "advance_curriculum": false
+  },
+  "sequence-v1": {
+    "state": "complete",
+    "stage": "complete",
+    "pid": 75321,
+    "updated_at": "2026-10-14T01:09:11.829888+00:00",
+    "selected": "short-best",
+    "final": {
+      "final": {
+        "initial": {
+          "scores": {
+            "count": {
+              "correct": 3,
+              "total": 40,
+              "accuracy": 0.075
+            },
+            "position": {
+              "correct": 7,
+              "total": 40,
+              "accuracy": 0.175
+            }
+          },
+          "exact_match_accuracy": 0.125,
+          "checkpoint_sha256": "0f645310bc53ac70fd61463afbc1480ea1698a3dc9e854cf15aa0a3c60da71c5"
+        },
+        "selected": {
+          "scores": {
+            "count": {
+              "correct": 14,
+              "total": 40,
+              "accuracy": 0.35
+            },
+            "position": {
+              "correct": 16,
+              "total": 40,
+              "accuracy": 0.4
+            }
+          },
+          "exact_match_accuracy": 0.375,
+          "checkpoint_sha256": "9b17ebd5a0c5a4503cc30bc535f39a260c8f11f7a62fd484a738dc3b16e8ea64"
+        }
+      },
+      "extrapolation": {
+        "initial": {
+          "scores": {
+            "count": {
+              "correct": 3,
+              "total": 20,
+              "accuracy": 0.15
+            },
+            "position": {
+              "correct": 1,
+              "total": 20,
+              "accuracy": 0.05
+            }
+          },
+          "exact_match_accuracy": 0.1,
+          "checkpoint_sha256": "0f645310bc53ac70fd61463afbc1480ea1698a3dc9e854cf15aa0a3c60da71c5"
+        },
+        "selected": {
+          "scores": {
+            "count": {
+              "correct": 3,
+              "total": 20,
+              "accuracy": 0.15
+            },
+            "position": {
+              "correct": 3,
+              "total": 20,
+              "accuracy": 0.15
+            }
+          },
+          "exact_match_accuracy": 0.15,
+          "checkpoint_sha256": "9b17ebd5a0c5a4503cc30bc535f39a260c8f11f7a62fd484a738dc3b16e8ea64"
+        }
+      }
+    }
+  },
+  "stage1-v1": {
+    "state": "complete",
+    "pipeline_pid": 27108,
+    "run_dir": "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1",
+    "stage": "complete",
+    "command": [
+      "/home/ubuntu/brandon-mini/.venv/bin/python",
+      "scripts/evaluate_mini_instructions.py",
+      "--checkpoint",
+      "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/sft/best.pt",
+      "--tokenizer",
+      "data/tokenizer_8k.model",
+      "--output",
+      "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/sft/instructions.json"
+    ],
+    "log": "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/sft-diagnostic.log",
+    "updated_at": "2026-10-13T21:28:24.503072+00:00",
+    "child_pid": null,
+    "results": "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/results.json"
+  },
+  "threshold-probes-v1": {
+    "stage": "complete",
+    "state": "complete",
+    "pid": 2291638,
+    "updated_at": "2026-10-15T08:39:09.902770+00:00",
+    "cases_per_model": 1200,
+    "models": 3
+  },
+  "threshold-v1": {
+    "stage": "complete",
+    "state": "complete",
+    "pid": 2259676,
+    "updated_at": "2026-10-15T08:21:29.593278+00:00",
+    "selected": "initial",
+    "confirmed": false
+  },
+  "transfer-v1": {
+    "stage": "complete",
+    "state": "complete",
+    "pid": 89030,
+    "updated_at": "2026-10-14T02:32:26.356832+00:00",
+    "selected": "diverse"
+  }
+}

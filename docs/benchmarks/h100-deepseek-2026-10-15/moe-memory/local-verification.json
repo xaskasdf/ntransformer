@@ -1,0 +1,21 @@
+{
+  "archive_sha256": "8e5db5450c7ec8a8b6be0882dc38726aa9a4627d1b2e7c150107b1075c488782",
+  "payload_files_verified": 737,
+  "analysis_recomputed": true,
+  "analysis_fp64_absolute_tolerance": 5e-15,
+  "analysis_fp64_relative_tolerance": 1e-12,
+  "maximum_analysis_drift": 0.0,
+  "report_reproduced_exactly": true,
+  "final_default_fixtures_match_control_bitwise": true,
+  "isolated_candidate_performance_only": true,
+  "final_ctest_passed": 28,
+  "numerical_cross_process_cases": 18,
+  "local_implementation_matches_measured_source": [
+    "src/model/ds41/ds41_gpu.cu",
+    "src/model/ds41/ds41_gpu.h",
+    "tests/test_ds41_mxfp4.cpp",
+    "tests/test_ds41_moe_overlap.cpp",
+    "tools/benchmark_ds41.cpp",
+    "CMakeLists.txt"
+  ]
+}

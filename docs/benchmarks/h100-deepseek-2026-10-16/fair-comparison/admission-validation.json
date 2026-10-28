@@ -1,0 +1,16 @@
+{
+  "tests_passed": 8,
+  "scope": "CPU-only admission fixtures; no GPU inference",
+  "candidate_sha256": "08c88e71a905fc9b19aa6be62657be86a68da1c74cee30dfa7ae0ab509d0e2ac",
+  "test_sha256": "e55439298041c15b25dcbf7939a449f29f4d1f4a58cec6289fe408a204f09b6f",
+  "coverage": [
+    "paused without PID",
+    "paused dead PID",
+    "paused live PID",
+    "busy GPU",
+    "held lock",
+    "running stage",
+    "complete",
+    "superseded"
+  ]
+}

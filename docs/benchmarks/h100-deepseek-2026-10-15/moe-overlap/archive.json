@@ -1,0 +1,7 @@
+{
+  "sha256": "00e17d48934cea2a9ea8b796f7f77d883f58138c33821d0ace0e5c7ad13efe08",
+  "archive": "moe-overlap.tar.gz",
+  "files": 73,
+  "bytes": 14721779,
+  "persistent": "/lambda/nfs/btiny/ntransformer-training/deepseek-moe-overlap-20261015"
+}

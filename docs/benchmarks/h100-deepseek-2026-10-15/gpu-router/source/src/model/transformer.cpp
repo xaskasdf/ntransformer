@@ -1,0 +1,1155 @@
+#include "transformer.h"
+#include "../core/device.h"
+#include "../cuda/kernels.h"
+#include <cuda_runtime.h>
+#include <cstdio>
+#include <cstring>
+#include <cmath>
+
+namespace nt {
+
+bool Transformer::set_peer_cache(int device, int max_local_layers, int max_peer_layers) {
+    if (device < 0 || max_local_layers < -1 || max_peer_layers < -1) return false;
+    if (!CUDADevice::instance().init()) return false;
+    int count = 0, capable = 0;
+    if (cudaGetDeviceCount(&count) != cudaSuccess || device >= count ||
+        device == CUDADevice::instance().info().device_id) {
+        fprintf(stderr, "Peer cache requires a second visible GPU\n");
+        return false;
+    }
+    if (cudaDeviceCanAccessPeer(&capable, CUDADevice::instance().info().device_id, device) != cudaSuccess || !capable) {
+        fprintf(stderr, "Peer cache requires native CUDA P2P access\n");
+        return false;
+    }
+    streamer_.set_peer_cache(device, max_local_layers, max_peer_layers);
+    return true;
+}
+
+// ============================================================
+// Destructor
+// ============================================================
+Transformer::~Transformer() {
+    if (norm_weights_gpu_) {
+        nt_cuda_free(norm_weights_gpu_);
+        norm_weights_gpu_ = nullptr;
+    }
+    if (prev_hidden_gpu_) {
+        nt_cuda_free(prev_hidden_gpu_);
+        prev_hidden_gpu_ = nullptr;
+    }
+    if (cosine_result_d_) {
+        nt_cuda_free(cosine_result_d_);
+        cosine_result_d_ = nullptr;
+    }
+    if (cosine_result_h_) {
+        cudaFreeHost(cosine_result_h_);
+        cosine_result_h_ = nullptr;
+    }
+    if (verify_logits_) {
+        nt_cuda_free(verify_logits_);
+        verify_logits_ = nullptr;
+    }
+}
+
+void Transformer::set_early_exit(float threshold) {
+    early_exit_threshold_ = threshold;
+    early_exit_min_layer_ = config_.n_layers / 2;
+    if (threshold > 0.0f) {
+        fprintf(stderr, "Early exit: threshold=%.6f, min_layer=%d/%d\n",
+            threshold, early_exit_min_layer_, config_.n_layers);
+    }
+}
+
+void Transformer::set_layer_skip(float threshold) {
+    skip_threshold_ = threshold;
+    skip_layer_.assign(config_.n_layers, false);
+    skip_calibrated_ = false;
+    if (threshold > 0.0f) {
+        fprintf(stderr, "Layer skip: threshold=%.6f (calibrates on first token)\n", threshold);
+    }
+}
+
+// ============================================================
+// Embedding lookup (CPU -> GPU, unchanged from Phase 1)
+// ============================================================
+
+bool Transformer::load(const std::string& gguf_path, int max_context, bool streaming) {
+    if (streamer_.peer_cache_requested()) {
+        if (!delta_model_path_.empty()) {
+            fprintf(stderr, "Native CUDA peer cache does not support delta weights\n");
+            return false;
+        }
+        streaming = true;
+    }
+    fprintf(stderr, "Loading model: %s%s\n", gguf_path.c_str(),
+        streaming ? " [STREAMING MODE]" : "");
+
+    if (!loader_.load(gguf_path)) {
+        return false;
+    }
+
+    config_ = loader_.config();
+
+    // Cap context size
+    if (config_.max_seq_len > max_context) {
+        fprintf(stderr, "Note: Capping context from %d to %d tokens (use --ctx-size to change)\n",
+            config_.max_seq_len, max_context);
+        config_.max_seq_len = max_context;
+    }
+
+    config_.print();
+    loader_.print_info();
+
+    // Initialize CUDA device
+    if (!CUDADevice::instance().init()) {
+        fprintf(stderr, "Failed to initialize CUDA\n");
+        return false;
+    }
+    CUDADevice::instance().print_info();
+
+    streaming_mode_ = streaming;
+
+    // Load embedding table (stays on CPU in both modes)
+    token_embedding_ = loader_.get_tensor("token_embd.weight");
+
+    // Load output weight -> GPU
+    auto* out_info = loader_.tensor_info("output.weight");
+    if (out_info) {
+        Tensor out_w = loader_.get_tensor("output.weight");
+        output_weight_ = out_w.to(Device::CUDA);
+    } else {
+        Tensor out_w = loader_.get_tensor("token_embd.weight");
+        output_weight_ = out_w.to(Device::CUDA);
+    }
+
+    // Load output norm
+    {
+        Tensor norm_w = loader_.get_tensor("output_norm.weight");
+        output_norm_.init(std::move(norm_w), config_.norm_eps);
+    }
+
+    if (streaming_mode_) {
+        load_tiered();
+    } else {
+        // Resident mode: load all layers to GPU
+        layers_.resize(config_.n_layers);
+        for (int i = 0; i < config_.n_layers; i++) {
+            load_layer(i);
+        }
+    }
+
+    // Allocate inference buffers (KV cache, workspace, etc.)
+    allocate_buffers();
+
+    fprintf(stderr, "Model loaded successfully!%s\n",
+        streaming_mode_ ? " (streaming mode)" : "");
+    fprintf(stderr, "Free VRAM: %.1f GB\n",
+        CUDADevice::instance().free_vram() / (1024.0 * 1024 * 1024));
+
+    return true;
+}
+
+// ============================================================
+// Streaming mode: init layers without GPU weights, preload norms
+// ============================================================
+void Transformer::load_streaming() {
+    int n_layers = config_.n_layers;
+    layers_.resize(n_layers);
+
+    // Preload all norm weights into a single GPU buffer
+    // Each norm is hidden_size floats = hidden_size * 4 bytes
+    // Two norms per layer (attn_norm + ffn_norm)
+    size_t norm_floats_per_layer = 2 * config_.hidden_size;
+    size_t total_norm_floats = (size_t)n_layers * norm_floats_per_layer;
+    norm_weights_size_ = total_norm_floats * sizeof(float);
+
+    fprintf(stderr, "Preloading norm weights: %.2f MB for %d layers\n",
+        norm_weights_size_ / (1024.0 * 1024.0), n_layers);
+
+    norm_weights_gpu_ = nt_cuda_malloc(norm_weights_size_);
+    NT_CHECK(norm_weights_gpu_ != nullptr, "Failed to allocate norm weights GPU buffer");
+
+    float* norm_gpu = static_cast<float*>(norm_weights_gpu_);
+
+    for (int i = 0; i < n_layers; i++) {
+        std::string pfx = layer_prefix(i);
+        TransformerLayer& layer = layers_[i];
+
+        // Load attn_norm weight -> GPU norm buffer
+        {
+            Tensor w = loader_.get_tensor(pfx + "attn_norm.weight");
+            NT_CHECK(w.dtype() == DType::F32, "Norm weights must be F32");
+            float* dst = norm_gpu + i * norm_floats_per_layer;
+            nt_cuda_memcpy_h2d(dst, w.data(), config_.hidden_size * sizeof(float));
+            layer.attn_norm.init_streaming(config_.hidden_size, config_.norm_eps);
+            layer.attn_norm.set_weight(dst);
+        }
+
+        // Load ffn_norm weight -> GPU norm buffer
+        {
+            Tensor w = loader_.get_tensor(pfx + "ffn_norm.weight");
+            NT_CHECK(w.dtype() == DType::F32, "Norm weights must be F32");
+            float* dst = norm_gpu + i * norm_floats_per_layer + config_.hidden_size;
+            nt_cuda_memcpy_h2d(dst, w.data(), config_.hidden_size * sizeof(float));
+            layer.ffn_norm.init_streaming(config_.hidden_size, config_.norm_eps);
+            layer.ffn_norm.set_weight(dst);
+        }
+
+        // Init attention and FFN in streaming mode (no GPU weights yet)
+        layer.attention.init_streaming(config_, i);
+        layer.ffn.init_streaming(config_, i);
+
+        if ((i + 1) % 10 == 0 || i == n_layers - 1) {
+            fprintf(stderr, "  Initialized layer %d/%d (streaming)\n", i + 1, n_layers);
+        }
+    }
+
+    // Initialize the layer streamer (allocates double buffers)
+    streamer_.init(loader_, config_);
+
+    fprintf(stderr, "Streaming setup complete. Buffer size: %.1f MB x 2\n",
+        streamer_.buffer_size() / (1024.0 * 1024.0));
+}
+
+// ============================================================
+// Tiered mode: init layers + 3-tier caching, preload VRAM weights
+// ============================================================
+void Transformer::load_tiered() {
+    int n_layers = config_.n_layers;
+    layers_.resize(n_layers);
+
+    // Preload all norm weights into a single GPU buffer (same as load_streaming)
+    size_t norm_floats_per_layer = 2 * config_.hidden_size;
+    size_t total_norm_floats = (size_t)n_layers * norm_floats_per_layer;
+    norm_weights_size_ = total_norm_floats * sizeof(float);
+
+    fprintf(stderr, "Preloading norm weights: %.2f MB for %d layers\n",
+        norm_weights_size_ / (1024.0 * 1024.0), n_layers);
+
+    norm_weights_gpu_ = nt_cuda_malloc(norm_weights_size_);
+    NT_CHECK(norm_weights_gpu_ != nullptr, "Failed to allocate norm weights GPU buffer");
+
+    float* norm_gpu = static_cast<float*>(norm_weights_gpu_);
+
+    for (int i = 0; i < n_layers; i++) {
+        std::string pfx = layer_prefix(i);
+        TransformerLayer& layer = layers_[i];
+
+        // Load attn_norm weight -> GPU norm buffer
+        {
+            Tensor w = loader_.get_tensor(pfx + "attn_norm.weight");
+            NT_CHECK(w.dtype() == DType::F32, "Norm weights must be F32");
+            float* dst = norm_gpu + i * norm_floats_per_layer;
+            nt_cuda_memcpy_h2d(dst, w.data(), config_.hidden_size * sizeof(float));
+            layer.attn_norm.init_streaming(config_.hidden_size, config_.norm_eps);
+            layer.attn_norm.set_weight(dst);
+        }
+
+        // Load ffn_norm weight -> GPU norm buffer
+        {
+            Tensor w = loader_.get_tensor(pfx + "ffn_norm.weight");
+            NT_CHECK(w.dtype() == DType::F32, "Norm weights must be F32");
+            float* dst = norm_gpu + i * norm_floats_per_layer + config_.hidden_size;
+            nt_cuda_memcpy_h2d(dst, w.data(), config_.hidden_size * sizeof(float));
+            layer.ffn_norm.init_streaming(config_.hidden_size, config_.norm_eps);
+            layer.ffn_norm.set_weight(dst);
+        }
+
+        // Init attention and FFN in streaming mode (no GPU weights yet)
+        layer.attention.init_streaming(config_, i);
+        layer.ffn.init_streaming(config_, i);
+
+        if ((i + 1) % 10 == 0 || i == n_layers - 1) {
+            fprintf(stderr, "  Initialized layer %d/%d (tiered)\n", i + 1, n_layers);
+        }
+    }
+
+    // Initialize the layer streamer with tiered caching
+    streamer_.init_tiered(loader_, config_);
+
+    // For tier A layers: set attention/ffn weights to VRAM-resident pointers permanently
+    const auto& tc = streamer_.tier_config();
+    for (int i = 0; i < tc.n_vram; i++) {
+        LayerWeightPtrs wp = streamer_.get_resident_weights(i);
+        layers_[i].attention.set_weights(
+            wp.attn_q, wp.attn_k, wp.attn_v, wp.attn_output,
+            wp.attn_q_dtype, wp.attn_k_dtype, wp.attn_v_dtype, wp.attn_o_dtype);
+        layers_[i].ffn.set_weights(
+            wp.ffn_gate, wp.ffn_up, wp.ffn_down,
+            wp.ffn_gate_dtype, wp.ffn_up_dtype, wp.ffn_down_dtype);
+    }
+
+    // Delta encoding: init from .ntd file if path was set
+    if (!delta_model_path_.empty()) {
+        if (!streamer_.init_delta(delta_model_path_, config_)) {
+            fprintf(stderr, "WARNING: Delta init failed, falling back to normal streaming\n");
+        } else {
+            // Set base weights on all layers' attention/FFN (permanent VRAM pointers)
+            DType base_dt = DType::Q6_K;
+            for (int i = 0; i < config_.n_layers; i++) {
+                layers_[i].attention.set_base_weights(
+                    streamer_.base_weight_ptr(0),  // attn_q
+                    streamer_.base_weight_ptr(1),  // attn_k
+                    streamer_.base_weight_ptr(2),  // attn_v
+                    streamer_.base_weight_ptr(3),  // attn_o
+                    base_dt);
+                layers_[i].ffn.set_base_weights(
+                    streamer_.base_weight_ptr(4),  // ffn_gate
+                    streamer_.base_weight_ptr(5),  // ffn_up
+                    streamer_.base_weight_ptr(6),  // ffn_down
+                    base_dt);
+            }
+            fprintf(stderr, "Delta mode: base weights set on %d layers\n", config_.n_layers);
+        }
+    }
+
+    fprintf(stderr, "Tiered setup complete. Buffer size: %.1f MB x 2\n",
+        streamer_.buffer_size() / (1024.0 * 1024.0));
+}
+
+void Transformer::load_layer(int i) {
+    std::string pfx = layer_prefix(i);
+    TransformerLayer& layer = layers_[i];
+    fprintf(stderr, "  Loading layer %d: ", i); fflush(stderr);
+
+    // Attention norm
+    fprintf(stderr, "norm "); fflush(stderr);
+    {
+        Tensor w = loader_.get_tensor(pfx + "attn_norm.weight");
+        layer.attn_norm.init(std::move(w), config_.norm_eps);
+    }
+
+    // Attention weights
+    fprintf(stderr, "attn "); fflush(stderr);
+    {
+        Tensor wq = loader_.get_tensor(pfx + "attn_q.weight");
+        Tensor wk = loader_.get_tensor(pfx + "attn_k.weight");
+        Tensor wv = loader_.get_tensor(pfx + "attn_v.weight");
+        Tensor wo = loader_.get_tensor(pfx + "attn_output.weight");
+        layer.attention.init(config_, std::move(wq), std::move(wk), std::move(wv), std::move(wo), i);
+    }
+
+    // FFN norm
+    fprintf(stderr, "ffn_norm "); fflush(stderr);
+    {
+        Tensor w = loader_.get_tensor(pfx + "ffn_norm.weight");
+        layer.ffn_norm.init(std::move(w), config_.norm_eps);
+    }
+
+    // FFN weights
+    fprintf(stderr, "ffn "); fflush(stderr);
+    {
+        Tensor gate = loader_.get_tensor(pfx + "ffn_gate.weight");
+        Tensor up   = loader_.get_tensor(pfx + "ffn_up.weight");
+        Tensor down = loader_.get_tensor(pfx + "ffn_down.weight");
+        layer.ffn.init(config_, std::move(gate), std::move(up), std::move(down), i);
+    }
+
+    fprintf(stderr, "  Loaded layer %d/%d (VRAM free: %.1f GB)\n",
+        i + 1, config_.n_layers,
+        CUDADevice::instance().free_vram() / (1024.0 * 1024 * 1024));
+    fflush(stderr);
+}
+
+void Transformer::allocate_buffers() {
+    int max_seq = config_.max_seq_len;
+    int hidden = config_.hidden_size;
+    int n_kv = config_.n_kv_heads;
+    int hd = config_.head_dim;
+    int n_layers = config_.n_layers;
+
+    fprintf(stderr, "Allocating buffers (max_seq=%d, hidden=%d, n_kv=%d, hd=%d)...\n",
+        max_seq, hidden, n_kv, hd);
+
+    // KV cache: [n_layers, max_seq, n_kv_heads, head_dim] for both K and V (F16)
+    size_t kv_layer_size = (size_t)max_seq * n_kv * hd;
+    fprintf(stderr, "  KV cache (F16): %.1f MB total... ",
+        kv_layer_size * sizeof(float16_t) * 2 * n_layers / (1024.0 * 1024));
+    fflush(stderr);
+    k_cache_ = Tensor::zeros({n_layers, max_seq, n_kv, hd}, DType::F16, Device::CUDA);
+    v_cache_ = Tensor::zeros({n_layers, max_seq, n_kv, hd}, DType::F16, Device::CUDA);
+    fprintf(stderr, "OK\n");
+
+    // Hidden state buffers
+    fprintf(stderr, "  Hidden buffers... ");
+    fflush(stderr);
+    hidden_buf_ = Tensor::empty({max_seq, hidden}, DType::F32, Device::CUDA);
+    residual_buf_ = Tensor::empty({max_seq, hidden}, DType::F32, Device::CUDA);
+    fprintf(stderr, "OK\n");
+
+    // Logits buffer
+    fprintf(stderr, "  Logits buffer (%d)... ", config_.vocab_size);
+    fflush(stderr);
+    logits_buf_ = Tensor::empty({config_.vocab_size}, DType::F32, Device::CUDA);
+    logits_ = logits_buf_.data_as<float>();
+    fprintf(stderr, "OK\n");
+
+    // Workspace for attention + FFN
+    size_t attn_ws = (size_t)max_seq * (config_.n_heads + 2 * n_kv + config_.n_heads) * hd;
+    size_t ffn_ws = (size_t)2 * max_seq * config_.intermediate_size;
+    size_t ws_size = std::max(attn_ws, ffn_ws);
+    fprintf(stderr, "  Workspace: %.1f MB (attn=%.1f, ffn=%.1f)... ",
+        ws_size * sizeof(float) / (1024.0 * 1024),
+        attn_ws * sizeof(float) / (1024.0 * 1024),
+        ffn_ws * sizeof(float) / (1024.0 * 1024));
+    fflush(stderr);
+    workspace_ = Tensor::empty({(int64_t)ws_size}, DType::F32, Device::CUDA);
+    fprintf(stderr, "OK\n");
+
+    // Set workspace for all layers
+    for (auto& layer : layers_) {
+        layer.attention.set_workspace(workspace_.data_as<float>());
+        layer.ffn.set_workspace(workspace_.data_as<float>());
+    }
+
+    // Positions buffer
+    positions_gpu_ = Tensor::empty({max_seq}, DType::I32, Device::CUDA);
+
+    // Early exit buffers (small: hidden_size floats + 1 float)
+    prev_hidden_gpu_ = nt_cuda_malloc(hidden * sizeof(float));
+    cosine_result_d_ = nt_cuda_malloc(sizeof(float));
+    cudaMallocHost(&cosine_result_h_, sizeof(float));
+
+    fprintf(stderr, "All buffers allocated. Free VRAM: %.1f GB\n",
+        CUDADevice::instance().free_vram() / (1024.0 * 1024 * 1024));
+}
+
+// Convert FP16 (stored as uint16_t) to float, handling subnormals correctly
+static float fp16_to_fp32(uint16_t h) {
+    uint32_t sign = (h >> 15) & 1;
+    int32_t  exp  = (h >> 10) & 0x1F;
+    uint32_t mant = h & 0x3FF;
+    uint32_t f;
+    if (exp == 0) {
+        if (mant == 0) {
+            f = sign << 31;  // ±zero
+        } else {
+            // Subnormal FP16 → normalize for FP32
+            exp = 1;
+            while (!(mant & 0x400)) { mant <<= 1; exp--; }
+            mant &= 0x3FF;
+            f = (sign << 31) | ((uint32_t)(exp + 127 - 15) << 23) | (mant << 13);
+        }
+    } else if (exp == 31) {
+        f = (sign << 31) | 0x7F800000 | (mant << 13);  // inf/nan
+    } else {
+        f = (sign << 31) | ((uint32_t)(exp + 127 - 15) << 23) | (mant << 13);
+    }
+    float result;
+    memcpy(&result, &f, 4);
+    return result;
+}
+
+void Transformer::embed_tokens(const int* tokens, int seq_len, float* output, void* stream) {
+    // Simple embedding lookup
+    // For quantized embeddings we'd need a dequant kernel; for F16 a conversion kernel
+    // Phase 1: CPU lookup + copy to GPU
+
+    DType emb_dtype = token_embedding_.dtype();
+    int hidden = config_.hidden_size;
+    const void* emb_data = token_embedding_.data();
+
+    if (emb_dtype == DType::F32) {
+        // Direct F32 embedding
+        const float* emb = static_cast<const float*>(emb_data);
+        // Allocate temp CPU buffer
+        std::vector<float> cpu_buf(seq_len * hidden);
+        for (int t = 0; t < seq_len; t++) {
+            memcpy(cpu_buf.data() + t * hidden, emb + tokens[t] * hidden, hidden * sizeof(float));
+        }
+        nt_cuda_memcpy_h2d(output, cpu_buf.data(), seq_len * hidden * sizeof(float));
+    } else if (emb_dtype == DType::F16) {
+        // F16 embedding -> dequant to F32
+        const uint16_t* emb = static_cast<const uint16_t*>(emb_data);
+        std::vector<float> cpu_buf(seq_len * hidden);
+        for (int t = 0; t < seq_len; t++) {
+            const uint16_t* row = emb + tokens[t] * hidden;
+            float* out = cpu_buf.data() + t * hidden;
+            for (int d = 0; d < hidden; d++) {
+                out[d] = fp16_to_fp32(row[d]);
+            }
+        }
+        nt_cuda_memcpy_h2d(output, cpu_buf.data(), seq_len * hidden * sizeof(float));
+    } else if (emb_dtype == DType::Q8_0) {
+        // Q8_0 embedding: 32 weights per block, uint16_t(FP16) scale + 32 int8
+        const uint8_t* raw = static_cast<const uint8_t*>(emb_data);
+        int blocks_per_row = hidden / 32;
+        size_t row_bytes = (size_t)blocks_per_row * sizeof(BlockQ8_0);
+
+        std::vector<float> cpu_buf(seq_len * hidden);
+        for (int t = 0; t < seq_len; t++) {
+            const uint8_t* row_ptr = raw + (size_t)tokens[t] * row_bytes;
+            float* out = cpu_buf.data() + t * hidden;
+
+            for (int b = 0; b < blocks_per_row; b++) {
+                const BlockQ8_0* block = reinterpret_cast<const BlockQ8_0*>(row_ptr + b * sizeof(BlockQ8_0));
+                float d = fp16_to_fp32(block->d);
+
+                int base = b * 32;
+                for (int j = 0; j < 32; j++) {
+                    out[base + j] = d * block->qs[j];
+                }
+            }
+        }
+        nt_cuda_memcpy_h2d(output, cpu_buf.data(), seq_len * hidden * sizeof(float));
+    } else if (emb_dtype == DType::Q4_0) {
+        // Q4_0 embedding: 32 weights per block, uint16_t(FP16) scale + 16 nibble bytes
+        const uint8_t* raw = static_cast<const uint8_t*>(emb_data);
+        int blocks_per_row = hidden / 32;
+        size_t row_bytes = (size_t)blocks_per_row * sizeof(BlockQ4_0);
+
+        std::vector<float> cpu_buf(seq_len * hidden);
+        for (int t = 0; t < seq_len; t++) {
+            const uint8_t* row_ptr = raw + (size_t)tokens[t] * row_bytes;
+            float* out = cpu_buf.data() + t * hidden;
+
+            for (int b = 0; b < blocks_per_row; b++) {
+                const BlockQ4_0* block = reinterpret_cast<const BlockQ4_0*>(row_ptr + b * sizeof(BlockQ4_0));
+                float d = fp16_to_fp32(block->d);
+
+                int base = b * 32;
+                for (int j = 0; j < 16; j++) {
+                    uint8_t byte = block->qs[j];
+                    int8_t lo = (byte & 0x0F) - 8;
+                    int8_t hi = (byte >> 4) - 8;
+                    out[base + j]      = d * lo;
+                    out[base + j + 16] = d * hi;
+                }
+            }
+        }
+        nt_cuda_memcpy_h2d(output, cpu_buf.data(), seq_len * hidden * sizeof(float));
+    } else if (emb_dtype == DType::Q6_K) {
+        // Q6_K embedding: 256 weights per block (GGML interleaved layout)
+        // ql[128] (lower 4 bits), qh[64] (upper 2 bits), scales[16] (int8), d (FP16)
+        // Processed in two 128-weight halves with pointer advancement
+        const uint8_t* raw = static_cast<const uint8_t*>(emb_data);
+        int blocks_per_row = hidden / 256;
+        size_t row_bytes = (size_t)blocks_per_row * sizeof(BlockQ6_K);
+
+        std::vector<float> cpu_buf(seq_len * hidden);
+        for (int t = 0; t < seq_len; t++) {
+            const uint8_t* row_ptr = raw + (size_t)tokens[t] * row_bytes;
+            float* out = cpu_buf.data() + t * hidden;
+
+            for (int b = 0; b < blocks_per_row; b++) {
+                const BlockQ6_K* block = reinterpret_cast<const BlockQ6_K*>(row_ptr + b * sizeof(BlockQ6_K));
+
+                float d = fp16_to_fp32(block->d);
+
+                float* y = out + b * 256;
+                const uint8_t* ql = block->ql;
+                const uint8_t* qh = block->qh;
+                const int8_t*  sc = block->scales;
+
+                // Process two 128-weight halves (GGML interleaved layout)
+                for (int half = 0; half < 2; half++) {
+                    for (int l = 0; l < 32; l++) {
+                        int is = l / 16;
+                        int q1 = (int)((ql[l]      & 0xF) | (((qh[l] >> 0) & 3) << 4)) - 32;
+                        int q2 = (int)((ql[l + 32]  & 0xF) | (((qh[l] >> 2) & 3) << 4)) - 32;
+                        int q3 = (int)((ql[l]       >> 4)  | (((qh[l] >> 4) & 3) << 4)) - 32;
+                        int q4 = (int)((ql[l + 32]  >> 4)  | (((qh[l] >> 6) & 3) << 4)) - 32;
+                        y[l]      = d * (float)sc[is + 0] * q1;
+                        y[l + 32] = d * (float)sc[is + 2] * q2;
+                        y[l + 64] = d * (float)sc[is + 4] * q3;
+                        y[l + 96] = d * (float)sc[is + 6] * q4;
+                    }
+                    y += 128; ql += 64; qh += 32; sc += 8;
+                }
+            }
+        }
+        nt_cuda_memcpy_h2d(output, cpu_buf.data(), seq_len * hidden * sizeof(float));
+    } else if (emb_dtype == DType::Q4_K_M) {
+        // Q4_K_M embedding: 256 weights per super-block (GGML standard layout)
+        // BlockQ4_K: d(FP16), dmin(FP16), scales[12], qs[128]
+        // 4 chunks of 32 qs bytes → 64 weights each
+        // Low nibbles → first 32 weights (even scale), high → next 32 (odd scale)
+        const uint8_t* raw = static_cast<const uint8_t*>(emb_data);
+        int blocks_per_row = hidden / 256;
+        size_t row_bytes = (size_t)blocks_per_row * sizeof(BlockQ4_K);
+
+        std::vector<float> cpu_buf(seq_len * hidden);
+        for (int t = 0; t < seq_len; t++) {
+            const uint8_t* row_ptr = raw + (size_t)tokens[t] * row_bytes;
+            float* out = cpu_buf.data() + t * hidden;
+
+            for (int b = 0; b < blocks_per_row; b++) {
+                const BlockQ4_K* block = reinterpret_cast<const BlockQ4_K*>(row_ptr + b * sizeof(BlockQ4_K));
+
+                float d = fp16_to_fp32(block->d);
+                float dmin = fp16_to_fp32(block->dmin);
+
+                float* y = out + b * 256;
+                const uint8_t* q = block->qs;
+
+                for (int chunk = 0; chunk < 4; chunk++) {
+                    int is_lo = chunk * 2;
+                    int is_hi = chunk * 2 + 1;
+
+                    uint8_t sc_lo, m_lo;
+                    if (is_lo < 4) {
+                        sc_lo = block->scales[is_lo] & 0x3F;
+                        m_lo  = block->scales[is_lo + 4] & 0x3F;
+                    } else {
+                        sc_lo = (block->scales[is_lo + 4] & 0x0F) | ((block->scales[is_lo - 4] >> 6) << 4);
+                        m_lo  = (block->scales[is_lo + 4] >> 4)    | ((block->scales[is_lo]     >> 6) << 4);
+                    }
+
+                    uint8_t sc_hi, m_hi;
+                    if (is_hi < 4) {
+                        sc_hi = block->scales[is_hi] & 0x3F;
+                        m_hi  = block->scales[is_hi + 4] & 0x3F;
+                    } else {
+                        sc_hi = (block->scales[is_hi + 4] & 0x0F) | ((block->scales[is_hi - 4] >> 6) << 4);
+                        m_hi  = (block->scales[is_hi + 4] >> 4)    | ((block->scales[is_hi]     >> 6) << 4);
+                    }
+
+                    float d1 = d * sc_lo, m1 = dmin * m_lo;
+                    float d2 = d * sc_hi, m2 = dmin * m_hi;
+
+                    for (int l = 0; l < 32; l++) {
+                        y[chunk * 64 + l]      = d1 * (q[l] & 0xF) - m1;
+                        y[chunk * 64 + l + 32] = d2 * (q[l] >> 4)  - m2;
+                    }
+                    q += 32;
+                }
+            }
+        }
+        nt_cuda_memcpy_h2d(output, cpu_buf.data(), seq_len * hidden * sizeof(float));
+    } else {
+        fprintf(stderr, "Error: Unsupported embedding dtype: %s\n", dtype_name(emb_dtype));
+        nt_cuda_memset(output, 0, seq_len * hidden * sizeof(float));
+    }
+}
+
+// ============================================================
+// Forward pass: dispatch to resident or streaming
+// ============================================================
+float* Transformer::forward(const int* tokens, int seq_len, int start_pos) {
+    if (streaming_mode_) {
+        return forward_tiered(tokens, seq_len, start_pos);
+    }
+
+    void* stream = CUDADevice::instance().stream(STREAM_COMPUTE);
+    int hidden = config_.hidden_size;
+
+    float* hidden_state = hidden_buf_.data_as<float>();
+    float* residual = residual_buf_.data_as<float>();
+
+    // 1. Token embedding
+    embed_tokens(tokens, seq_len, hidden_state, stream);
+
+    // 2. Upload positions to GPU
+    std::vector<int> positions(seq_len);
+    for (int i = 0; i < seq_len; i++) {
+        positions[i] = start_pos + i;
+    }
+    nt_cuda_memcpy_h2d(positions_gpu_.data(), positions.data(), seq_len * sizeof(int));
+
+    // 3. Process each layer
+    int n_kv = config_.n_kv_heads;
+    int hd = config_.head_dim;
+    int max_seq = config_.max_seq_len;
+    size_t kv_layer_stride = max_seq * n_kv * hd;
+
+    for (int i = 0; i < config_.n_layers; i++) {
+        TransformerLayer& layer = layers_[i];
+        int n = seq_len * hidden;
+
+        // === Attention sub-block with residual connection ===
+        layer.attn_norm.forward(residual, hidden_state, seq_len, stream);
+
+        float16_t* k_cache_layer = k_cache_.data_as<float16_t>() + i * kv_layer_stride;
+        float16_t* v_cache_layer = v_cache_.data_as<float16_t>() + i * kv_layer_stride;
+
+        layer.attention.forward(
+            residual, residual, seq_len, start_pos,
+            k_cache_layer, v_cache_layer,
+            positions_gpu_.data_as<int>(), stream
+        );
+
+        cuda::launch_add_inplace(hidden_state, residual, n, stream);
+
+        // === FFN sub-block with residual connection ===
+        layer.ffn_norm.forward(residual, hidden_state, seq_len, stream);
+
+        layer.ffn.forward(residual, residual, seq_len, stream);
+
+        cuda::launch_add_inplace(hidden_state, residual, n, stream);
+    }
+
+    // 4. Final norm - only the last token matters for next-token prediction
+    float* last_hidden = hidden_state + (seq_len - 1) * hidden;
+    output_norm_.forward(last_hidden, last_hidden, 1, stream);
+
+    // 5. LM head (output projection) - only last token
+    cuda::launch_gemv(
+        logits_, output_weight_.data(), last_hidden,
+        config_.vocab_size, hidden, output_weight_.dtype(), stream
+    );
+
+    CUDADevice::instance().synchronize_stream(STREAM_COMPUTE);
+    return logits_;
+}
+
+// ============================================================
+// Streaming forward pass: double-buffer pipeline
+// ============================================================
+float* Transformer::forward_streaming(const int* tokens, int seq_len, int start_pos) {
+    void* stream = CUDADevice::instance().stream(STREAM_COMPUTE);
+    int hidden = config_.hidden_size;
+    int n_layers = config_.n_layers;
+
+    float* hidden_state = hidden_buf_.data_as<float>();
+    float* residual = residual_buf_.data_as<float>();
+
+    // 1. Token embedding (same as resident mode)
+    embed_tokens(tokens, seq_len, hidden_state, stream);
+
+    // 2. Upload positions to GPU
+    std::vector<int> positions(seq_len);
+    for (int i = 0; i < seq_len; i++) {
+        positions[i] = start_pos + i;
+    }
+    nt_cuda_memcpy_h2d(positions_gpu_.data(), positions.data(), seq_len * sizeof(int));
+
+    // 3. Pipelined double-buffer through all layers
+    //
+    // Three-stage pipeline overlapping on different hardware:
+    //   Worker thread:  CPU memcpy from mmap to staging[slot]
+    //   DMA engine:     async H2D from staging[slot] to gpu[slot]
+    //   GPU SMs:        compute layer using gpu[slot]
+    //
+    // Schedule:
+    //   Worker:  [memcpy L0→stg0][memcpy L1→stg1][memcpy L2→stg0]...
+    //   H2D:    [               ][stg0→gpu0     ][stg1→gpu1     ]...
+    //   Compute:[               ][               ][layer 0       ]...
+
+    int n_kv = config_.n_kv_heads;
+    int hd = config_.head_dim;
+    int max_seq = config_.max_seq_len;
+    size_t kv_layer_stride = (size_t)max_seq * n_kv * hd;
+
+    // Pre-fill: kick worker to fill staging[0] with layer 0
+    streamer_.prefetch_staging(0, 0);
+
+    // Wait for staging ready, then queue H2D for layer 0
+    streamer_.begin_h2d(0, 0);
+
+    // Start worker on layer 1 immediately (overlaps with H2D of layer 0)
+    if (n_layers > 1) {
+        streamer_.prefetch_staging(1, 1);
+    }
+
+    for (int i = 0; i < n_layers; i++) {
+        int slot = i % 2;
+        int next_slot = 1 - slot;
+
+        // Wait for current layer's H2D to complete
+        streamer_.wait_transfer(slot);
+
+        // Issue H2D for layer i+1 (staging should be ready or nearly ready)
+        if (i + 1 < n_layers) {
+            streamer_.begin_h2d(i + 1, next_slot);
+        }
+
+        // Kick worker to prefetch layer i+2 into staging[slot]
+        // (staging[slot] is now free — its H2D read from staging is done
+        //  because we waited on wait_transfer(slot) above, which means
+        //  the DMA engine has finished reading from staging[slot])
+        if (i + 2 < n_layers) {
+            streamer_.prefetch_staging(i + 2, slot);
+        }
+
+        // === Compute layer i (overlaps with H2D for i+1 and memcpy for i+2) ===
+
+        LayerWeightPtrs wp = streamer_.get_weights(slot);
+
+        TransformerLayer& layer = layers_[i];
+        layer.attention.set_weights(
+            wp.attn_q, wp.attn_k, wp.attn_v, wp.attn_output,
+            wp.attn_q_dtype, wp.attn_k_dtype, wp.attn_v_dtype, wp.attn_o_dtype);
+        layer.ffn.set_weights(
+            wp.ffn_gate, wp.ffn_up, wp.ffn_down,
+            wp.ffn_gate_dtype, wp.ffn_up_dtype, wp.ffn_down_dtype);
+
+        int n = seq_len * hidden;
+
+        // === Attention sub-block ===
+        layer.attn_norm.forward(residual, hidden_state, seq_len, stream);
+
+        float16_t* k_cache_layer = k_cache_.data_as<float16_t>() + i * kv_layer_stride;
+        float16_t* v_cache_layer = v_cache_.data_as<float16_t>() + i * kv_layer_stride;
+
+        layer.attention.forward(
+            residual, residual, seq_len, start_pos,
+            k_cache_layer, v_cache_layer,
+            positions_gpu_.data_as<int>(), stream
+        );
+
+        cuda::launch_add_inplace(hidden_state, residual, n, stream);
+
+        // === FFN sub-block ===
+        layer.ffn_norm.forward(residual, hidden_state, seq_len, stream);
+        layer.ffn.forward(residual, residual, seq_len, stream);
+        cuda::launch_add_inplace(hidden_state, residual, n, stream);
+
+        // Signal that compute on this slot is done (safe to overwrite GPU buffer)
+        streamer_.signal_compute_done(slot);
+    }
+
+    // 4. Final norm
+    float* last_hidden = hidden_state + (seq_len - 1) * hidden;
+    output_norm_.forward(last_hidden, last_hidden, 1, stream);
+
+    // 5. LM head
+    cuda::launch_gemv(
+        logits_, output_weight_.data(), last_hidden,
+        config_.vocab_size, hidden, output_weight_.dtype(), stream
+    );
+
+    CUDADevice::instance().synchronize_stream(STREAM_COMPUTE);
+    return logits_;
+}
+
+// ============================================================
+// Tiered forward pass: hybrid VRAM-resident + double-buffer
+// ============================================================
+float* Transformer::forward_tiered(const int* tokens, int seq_len, int start_pos) {
+    void* stream = CUDADevice::instance().stream(STREAM_COMPUTE);
+    int hidden = config_.hidden_size;
+    int n_layers = config_.n_layers;
+
+    float* hidden_state = hidden_buf_.data_as<float>();
+    float* residual = residual_buf_.data_as<float>();
+
+    // 1. Token embedding
+    embed_tokens(tokens, seq_len, hidden_state, stream);
+
+    // 2. Upload positions to GPU
+    std::vector<int> positions(seq_len);
+    for (int i = 0; i < seq_len; i++) {
+        positions[i] = start_pos + i;
+    }
+    nt_cuda_memcpy_h2d(positions_gpu_.data(), positions.data(), seq_len * sizeof(int));
+
+    // 3. KV cache setup
+    int n_kv = config_.n_kv_heads;
+    int hd = config_.head_dim;
+    int max_seq = config_.max_seq_len;
+    size_t kv_layer_stride = max_seq * n_kv * hd;
+
+    const auto& tc = streamer_.tier_config();
+    int first_stream = tc.n_vram;  // first non-VRAM layer
+
+    // Early exit / layer skip state
+    bool check_early_exit = (early_exit_threshold_ > 0.0f && seq_len == 1);
+    bool calibrating = (skip_threshold_ > 0.0f && !skip_calibrated_);
+    bool skipping = (skip_threshold_ > 0.0f && skip_calibrated_);
+    float* prev_hidden = static_cast<float*>(prev_hidden_gpu_);
+    float* cos_result_d = static_cast<float*>(cosine_result_d_);
+    std::vector<float> cos_values;  // for calibration
+    if (calibrating) cos_values.resize(n_layers, 0.0f);
+
+    // Build schedule of non-skipped tier B/C layers
+    std::vector<int> stream_schedule;
+    for (int i = first_stream; i < n_layers; i++) {
+        if (skipping && skip_layer_[i]) continue;
+        stream_schedule.push_back(i);
+    }
+
+    // 4. Kick off pipeline for first scheduled streamed layer
+    if (!stream_schedule.empty()) {
+        streamer_.prefetch_staging(stream_schedule[0], 0);
+        streamer_.begin_h2d(stream_schedule[0], 0);
+        if (stream_schedule.size() > 1) {
+            streamer_.prefetch_staging(stream_schedule[1], 1);
+        }
+    }
+
+    // Pointer to last position's hidden state (for calibration with any seq_len)
+    // Calibration measures cosine similarity on the last token in the batch
+    float* measure_ptr = hidden_state + (seq_len - 1) * hidden;
+
+    // 5a. Process tier A layers (VRAM-resident, always run)
+    for (int i = 0; i < first_stream; i++) {
+        TransformerLayer& layer = layers_[i];
+        int n = seq_len * hidden;
+
+        float16_t* k_cache_layer = k_cache_.data_as<float16_t>() + i * kv_layer_stride;
+        float16_t* v_cache_layer = v_cache_.data_as<float16_t>() + i * kv_layer_stride;
+
+        // Save hidden state for calibration (works with any seq_len, measures last position)
+        bool do_measure_a = calibrating && (i >= n_layers / 4) && start_pos > 0;
+        if (do_measure_a) {
+            cuda::launch_copy(prev_hidden, measure_ptr, hidden, stream);
+        }
+
+        layer.attn_norm.forward(residual, hidden_state, seq_len, stream);
+        layer.attention.forward(
+            residual, residual, seq_len, start_pos,
+            k_cache_layer, v_cache_layer,
+            positions_gpu_.data_as<int>(), stream
+        );
+        cuda::launch_add_inplace(hidden_state, residual, n, stream);
+
+        layer.ffn_norm.forward(residual, hidden_state, seq_len, stream);
+        layer.ffn.forward(residual, residual, seq_len, stream);
+        cuda::launch_add_inplace(hidden_state, residual, n, stream);
+
+        if (do_measure_a) {
+            cuda::launch_cosine_similarity(cos_result_d, prev_hidden,
+                measure_ptr, hidden, stream);
+            cudaMemcpyAsync(cosine_result_h_, cos_result_d, sizeof(float),
+                cudaMemcpyDeviceToHost, static_cast<cudaStream_t>(stream));
+            cudaStreamSynchronize(static_cast<cudaStream_t>(stream));
+            cos_values[i] = *cosine_result_h_;
+        }
+    }
+
+    // 5b. Process tier B/C layers from schedule (double-buffer pipeline)
+    for (size_t si = 0; si < stream_schedule.size(); si++) {
+        int i = stream_schedule[si];
+        int slot = si % 2;
+        int next_slot = 1 - slot;
+
+        TransformerLayer& layer = layers_[i];
+        int n = seq_len * hidden;
+
+        float16_t* k_cache_layer = k_cache_.data_as<float16_t>() + i * kv_layer_stride;
+        float16_t* v_cache_layer = v_cache_.data_as<float16_t>() + i * kv_layer_stride;
+
+        // Save hidden state for calibration/early exit (measure last position)
+        bool do_measure = (calibrating || check_early_exit) &&
+                          (i >= n_layers / 4) && start_pos > 0;
+        if (do_measure) {
+            cuda::launch_copy(prev_hidden, measure_ptr, hidden, stream);
+        }
+
+        // Wait for current layer's H2D to complete
+        streamer_.wait_transfer(slot);
+
+        // Issue H2D for next scheduled layer
+        if (si + 1 < stream_schedule.size()) {
+            streamer_.begin_h2d(stream_schedule[si + 1], next_slot);
+        }
+
+        // Prefetch layer si+2 into staging[slot]
+        if (si + 2 < stream_schedule.size()) {
+            streamer_.prefetch_staging(stream_schedule[si + 2], slot);
+        }
+
+        // Set weights from double-buffer slot
+        if (streamer_.is_delta_mode()) {
+            // Delta mode: set U/V delta pointers (base already set during init)
+            DeltaWeightPtrs dp = streamer_.get_delta_weights(slot);
+            float* temp = streamer_.delta_temp_buf();
+            int rank = streamer_.delta_rank();
+
+            layer.attention.set_delta(
+                dp.attn_q_U, dp.attn_q_V, dp.attn_k_U, dp.attn_k_V,
+                dp.attn_v_U, dp.attn_v_V, dp.attn_o_U, dp.attn_o_V,
+                rank, temp);
+            layer.ffn.set_delta(
+                dp.ffn_gate_U, dp.ffn_gate_V,
+                dp.ffn_up_U, dp.ffn_up_V,
+                dp.ffn_down_U, dp.ffn_down_V,
+                rank, temp);
+        } else {
+            LayerWeightPtrs wp = streamer_.get_weights(slot);
+
+            layer.attention.set_weights(
+                wp.attn_q, wp.attn_k, wp.attn_v, wp.attn_output,
+                wp.attn_q_dtype, wp.attn_k_dtype, wp.attn_v_dtype, wp.attn_o_dtype);
+            layer.ffn.set_weights(
+                wp.ffn_gate, wp.ffn_up, wp.ffn_down,
+                wp.ffn_gate_dtype, wp.ffn_up_dtype, wp.ffn_down_dtype);
+        }
+
+        // Compute
+        layer.attn_norm.forward(residual, hidden_state, seq_len, stream);
+        layer.attention.forward(
+            residual, residual, seq_len, start_pos,
+            k_cache_layer, v_cache_layer,
+            positions_gpu_.data_as<int>(), stream
+        );
+        cuda::launch_add_inplace(hidden_state, residual, n, stream);
+
+        layer.ffn_norm.forward(residual, hidden_state, seq_len, stream);
+        layer.ffn.forward(residual, residual, seq_len, stream);
+        cuda::launch_add_inplace(hidden_state, residual, n, stream);
+
+        // Signal compute done (safe to overwrite GPU buffer)
+        streamer_.signal_compute_done(slot);
+
+        // Measure cosine similarity for calibration / early exit (last position)
+        if (do_measure) {
+            cuda::launch_cosine_similarity(cos_result_d, prev_hidden,
+                measure_ptr, hidden, stream);
+            cudaMemcpyAsync(cosine_result_h_, cos_result_d, sizeof(float),
+                cudaMemcpyDeviceToHost, static_cast<cudaStream_t>(stream));
+            cudaStreamSynchronize(static_cast<cudaStream_t>(stream));
+
+            if (calibrating) cos_values[i] = *cosine_result_h_;
+
+            if (check_early_exit && i >= early_exit_min_layer_ &&
+                *cosine_result_h_ > early_exit_threshold_) {
+                fprintf(stderr, "[early exit at layer %d/%d, cos=%.8f]\n",
+                    i + 1, n_layers, *cosine_result_h_);
+                break;
+            }
+        }
+    }
+
+    // Build skip list after calibration (decode phase: start_pos > 0)
+    if (calibrating && start_pos > 0) {
+        int skip_start = n_layers / 4;
+        int skip_end = 3 * n_layers / 4;
+        int skipped = 0;
+        skip_layer_.assign(n_layers, false);
+        for (int i = skip_start; i < skip_end; i++) {
+            if (cos_values[i] > skip_threshold_) {
+                skip_layer_[i] = true;
+                skipped++;
+            }
+        }
+        skip_calibrated_ = true;
+        if (skipped > 0) {
+            fprintf(stderr, "[layer skip calibrated: %d/%d layers skippable (cos>%.4f)]\n",
+                skipped, n_layers, skip_threshold_);
+        } else {
+            fprintf(stderr, "[layer skip: no layers above threshold %.4f]\n", skip_threshold_);
+        }
+    }
+
+    // 6. Final norm (non-destructive: use residual as scratch to preserve hidden_buf_)
+    float* last_hidden = hidden_state + (seq_len - 1) * hidden;
+    output_norm_.forward(residual, last_hidden, 1, stream);
+
+    // 7. LM head
+    cuda::launch_gemv(
+        logits_, output_weight_.data(), residual,
+        config_.vocab_size, hidden, output_weight_.dtype(), stream
+    );
+
+    CUDADevice::instance().synchronize_stream(STREAM_COMPUTE);
+    return logits_;
+}
+
+// ============================================================
+// Verify forward: logits at all positions (for speculative decoding)
+// ============================================================
+void Transformer::ensure_verify_logits(int seq_len) {
+    if (seq_len <= verify_logits_capacity_) return;
+    if (verify_logits_) nt_cuda_free(verify_logits_);
+    size_t bytes = (size_t)seq_len * config_.vocab_size * sizeof(float);
+    verify_logits_ = static_cast<float*>(nt_cuda_malloc(bytes));
+    verify_logits_capacity_ = seq_len;
+    fprintf(stderr, "Allocated verify logits: %d positions x %d vocab = %.1f MB\n",
+        seq_len, config_.vocab_size, bytes / (1024.0 * 1024.0));
+}
+
+float* Transformer::forward_verify(const int* tokens, int seq_len, int start_pos) {
+    // Run full forward pass (hidden states preserved thanks to non-destructive norm)
+    forward(tokens, seq_len, start_pos);
+
+    ensure_verify_logits(seq_len);
+
+    void* stream = CUDADevice::instance().stream(STREAM_COMPUTE);
+    int hidden = config_.hidden_size;
+    int vocab_size = config_.vocab_size;
+    float* hidden_state = hidden_buf_.data_as<float>();
+    float* residual = residual_buf_.data_as<float>();
+
+    // Compute logits at each position
+    for (int k = 0; k < seq_len; k++) {
+        float* h = hidden_state + k * hidden;
+        output_norm_.forward(residual, h, 1, stream);
+        cuda::launch_gemv(
+            verify_logits_ + k * vocab_size,
+            output_weight_.data(), residual,
+            vocab_size, hidden, output_weight_.dtype(), stream
+        );
+    }
+
+    CUDADevice::instance().synchronize_stream(STREAM_COMPUTE);
+    return verify_logits_;
+}
+
+// ============================================================
+// Draft forward: only VRAM-resident layers + LM head
+// For self-speculative decoding — uses partial model as "draft"
+// ============================================================
+float* Transformer::forward_draft(const int* tokens, int seq_len, int start_pos) {
+    if (streaming_mode_) {
+        return forward_draft_tiered(tokens, seq_len, start_pos);
+    }
+    // Non-streaming: draft == full model (no point, but handle gracefully)
+    return forward(tokens, seq_len, start_pos);
+}
+
+float* Transformer::forward_draft_tiered(const int* tokens, int seq_len, int start_pos) {
+    void* stream = CUDADevice::instance().stream(STREAM_COMPUTE);
+    int hidden = config_.hidden_size;
+
+    float* hidden_state = hidden_buf_.data_as<float>();
+    float* residual = residual_buf_.data_as<float>();
+
+    // 1. Token embedding
+    embed_tokens(tokens, seq_len, hidden_state, stream);
+
+    // 2. Upload positions to GPU
+    std::vector<int> positions(seq_len);
+    for (int i = 0; i < seq_len; i++) {
+        positions[i] = start_pos + i;
+    }
+    nt_cuda_memcpy_h2d(positions_gpu_.data(), positions.data(), seq_len * sizeof(int));
+
+    // 3. KV cache setup
+    int n_kv = config_.n_kv_heads;
+    int hd = config_.head_dim;
+    int max_seq = config_.max_seq_len;
+    size_t kv_layer_stride = max_seq * n_kv * hd;
+
+    const auto& tc = streamer_.tier_config();
+    int n_vram = tc.n_vram;
+
+    // 4. Process ONLY VRAM-resident layers (tier A) — no streaming
+    for (int i = 0; i < n_vram; i++) {
+        TransformerLayer& layer = layers_[i];
+        int n = seq_len * hidden;
+
+        float16_t* k_cache_layer = k_cache_.data_as<float16_t>() + i * kv_layer_stride;
+        float16_t* v_cache_layer = v_cache_.data_as<float16_t>() + i * kv_layer_stride;
+
+        layer.attn_norm.forward(residual, hidden_state, seq_len, stream);
+        layer.attention.forward(
+            residual, residual, seq_len, start_pos,
+            k_cache_layer, v_cache_layer,
+            positions_gpu_.data_as<int>(), stream
+        );
+        cuda::launch_add_inplace(hidden_state, residual, n, stream);
+
+        layer.ffn_norm.forward(residual, hidden_state, seq_len, stream);
+        layer.ffn.forward(residual, residual, seq_len, stream);
+        cuda::launch_add_inplace(hidden_state, residual, n, stream);
+    }
+
+    // 5. Final norm + LM head on partial hidden state
+    float* last_hidden = hidden_state + (seq_len - 1) * hidden;
+    output_norm_.forward(residual, last_hidden, 1, stream);
+
+    cuda::launch_gemv(
+        logits_, output_weight_.data(), residual,
+        config_.vocab_size, hidden, output_weight_.dtype(), stream
+    );
+
+    CUDADevice::instance().synchronize_stream(STREAM_COMPUTE);
+    return logits_;
+}
+
+std::string Transformer::layer_prefix(int i) const {
+    return "blk." + std::to_string(i) + ".";
+}
+
+} // namespace nt

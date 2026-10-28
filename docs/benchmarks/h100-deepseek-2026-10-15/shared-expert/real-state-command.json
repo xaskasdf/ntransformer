@@ -1,0 +1,27 @@
+{
+  "command": [
+    "/home/ubuntu/ntransformer-h100/ds41-shared-20261015/build/test_ds41_prefill",
+    "/home/ubuntu/ntransformer-h100/models/deepseek-v41-flash-q8/DeepSeek-V4.1-Flash-Q8_0-00001-of-00010.gguf",
+    "16",
+    "0"
+  ],
+  "returncode": 0,
+  "seconds": 17.790878961008275,
+  "environment": {
+    "CUDA_VISIBLE_DEVICES": "1",
+    "DS41_GPU": "1",
+    "DS41_GPU_ATTN": "1",
+    "DS41_VRAM_GB": "62",
+    "DS41_PROFILE": "1",
+    "DS41_GPU_TIMING": "1",
+    "LD_LIBRARY_PATH": "/home/ubuntu/ntransformer-h100/env/targets/x86_64-linux/lib:/home/ubuntu/ntransformer-h100/env/lib"
+  },
+  "resources": {
+    "ru_utime": 24.519725000000022,
+    "ru_stime": 24.83293299999997,
+    "ru_majflt": 3810,
+    "ru_minflt": 839261,
+    "ru_nvcsw": 1243105,
+    "ru_nivcsw": 192
+  }
+}

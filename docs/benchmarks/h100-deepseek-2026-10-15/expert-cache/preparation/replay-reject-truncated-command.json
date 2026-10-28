@@ -1,0 +1,25 @@
+{
+  "command": [
+    "/home/ubuntu/ntransformer-h100/ds41-cache-20261015/replay-selftest-bin",
+    "0",
+    "/home/ubuntu/ntransformer-h100/ds41-cache-20261015/replay-selftest/truncated.u64"
+  ],
+  "returncode": 1,
+  "utc_start": "2026-10-16T00:56:44.218023+00:00",
+  "wall_seconds": 0.0013437980087473989,
+  "process_group": 1838220,
+  "environment": {
+    "CUDA_VISIBLE_DEVICES": "1,0",
+    "LD_LIBRARY_PATH": "/home/ubuntu/ntransformer-h100/env/targets/x86_64-linux/lib:/home/ubuntu/ntransformer-h100/env/lib",
+    "DS41_GPU": "1",
+    "DS41_GPU_ATTN": "1",
+    "DS41_PROFILE": "1",
+    "DS41_Q8_COOPERATIVE": "1",
+    "DS41_PEER_MODE": "execute",
+    "DS41_MXFP4_COMPUTE": "fp32",
+    "DS41_VRAM_GB": "62",
+    "DS41_PEER_VRAM_GB": "62",
+    "DS41_BENCH_ALL_LOGITS": "1",
+    "DS41_BENCH_TEACHER_FORCING": "1"
+  }
+}

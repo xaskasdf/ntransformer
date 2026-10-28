@@ -1,0 +1,28 @@
+{
+  "archive_sha256": "bcb056d97a6b541710cbcd3d6e2bae95e3d0f427f0252859cc42f0e772f0ed93",
+  "payload_files_verified": 398,
+  "analysis_recomputed": true,
+  "analysis_fp64_absolute_tolerance": 5e-15,
+  "analysis_fp64_relative_tolerance": 1e-12,
+  "maximum_analysis_drift": 3.696960915927658e-18,
+  "report_reproduced_exactly": true,
+  "final_default_matches_resident_bitwise": true,
+  "final_ctest_passed": 20,
+  "attention_fixture": {
+    "steps": 852,
+    "values": 3301312,
+    "max_abs": 2.98023224e-08
+  },
+  "local_implementation_matches_measured_source": [
+    "src/model/ds41/ds41_gpu.cu",
+    "src/model/ds41/ds41_gpu.h",
+    "src/model/ds41/ds41_attention.cu",
+    "src/model/ds41/ds41_attention.h",
+    "src/model/ds41/ds41_shared.cu",
+    "src/model/ds41/ds41_forward.cpp",
+    "src/model/ds41/ds41_forward.h",
+    "tests/test_ds41_attention.cpp",
+    "tests/test_ds41_backbone.cpp",
+    "CMakeLists.txt"
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "scope": "Timing diagnostics, not paired performance claims. CPU validation overlaps are disclosed; GPU process monitoring does not detect CPU-only competitors.",
+  "cases": [
+    {
+      "case": "nt-hc-p512-command.json",
+      "host_validation_overlaps": [
+        "compile-sanitized-command.json",
+        "run-release-command.json",
+        "run-sanitized-command.json",
+        "compile-release-command.json"
+      ]
+    },
+    {
+      "case": "nt-hc-heldout-p512-command.json",
+      "host_validation_overlaps": []
+    },
+    {
+      "case": "nt-hc-p32-command.json",
+      "host_validation_overlaps": []
+    },
+    {
+      "case": "nt-hc-p128-command.json",
+      "host_validation_overlaps": []
+    }
+  ]
+}

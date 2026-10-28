@@ -1,0 +1,69 @@
+GGUF v3: 18 tensors, 68 metadata entries
+Loaded 10 split shards, 1046 tensors total
+ds41-gpu: lm head resident (1.23 GiB)
+ds41-gpu: expert cache on NVIDIA H100 80GB HBM3: 10622 slots x 5.98 MiB = 62.0 GiB
+{"seed":0,"length":1,"phase":"prefill","argmax":5}
+[gputime] calls=240 resident=0.324s launch=0.009s copy=0.070s
+[gputime] calls=480 resident=0.324s launch=0.017s copy=0.139s
+{"seed":0,"length":16,"phase":"prefill","argmax":223}
+[gputime] calls=720 resident=0.324s launch=0.025s copy=0.208s
+[gputime] calls=960 resident=0.324s launch=0.032s copy=0.277s
+[gputime] calls=1200 resident=0.324s launch=0.040s copy=0.346s
+{"seed":0,"length":32,"phase":"prefill","argmax":262}
+[gputime] calls=1440 resident=0.324s launch=0.047s copy=0.415s
+[gputime] calls=1680 resident=0.325s launch=0.055s copy=0.484s
+[gputime] calls=1920 resident=0.325s launch=0.063s copy=0.554s
+[gputime] calls=2160 resident=0.325s launch=0.070s copy=0.623s
+[gputime] calls=2400 resident=0.325s launch=0.078s copy=0.692s
+{"seed":0,"length":64,"phase":"prefill","argmax":264}
+[gputime] calls=2640 resident=0.325s launch=0.085s copy=0.761s
+[gputime] calls=2880 resident=0.325s launch=0.093s copy=0.830s
+[gputime] calls=3120 resident=0.325s launch=0.101s copy=0.899s
+[gputime] calls=3360 resident=0.326s launch=0.108s copy=0.968s
+[gputime] calls=3600 resident=0.326s launch=0.116s copy=1.037s
+[gputime] calls=3840 resident=0.326s launch=0.124s copy=1.106s
+[gputime] calls=4080 resident=0.326s launch=0.132s copy=1.175s
+[gputime] calls=4320 resident=0.326s launch=0.139s copy=1.244s
+[gputime] calls=4560 resident=0.326s launch=0.147s copy=1.314s
+[gputime] calls=4800 resident=0.327s launch=0.155s copy=1.383s
+[gputime] calls=5040 resident=0.327s launch=0.163s copy=1.452s
+{"seed":0,"length":128,"phase":"prefill","argmax":80}
+{"seed":0,"length":129,"phase":"prefill","argmax":223}
+{"seed":0,"length":130,"phase":"decode","argmax":558}
+{"seed":0,"length":131,"phase":"decode","argmax":223}
+[gputime] calls=5280 resident=0.327s launch=0.171s copy=1.521s
+{"seed":0,"length":132,"phase":"decode","argmax":301}
+{"seed":0,"length":133,"phase":"decode","argmax":223}
+{"seed":1,"length":1,"phase":"prefill","argmax":5}
+[gputime] calls=5520 resident=0.327s launch=0.178s copy=1.590s
+[gputime] calls=5760 resident=0.327s launch=0.186s copy=1.659s
+{"seed":1,"length":16,"phase":"prefill","argmax":7649}
+[gputime] calls=6000 resident=0.327s launch=0.193s copy=1.728s
+[gputime] calls=6240 resident=0.328s launch=0.201s copy=1.797s
+[gputime] calls=6480 resident=0.328s launch=0.208s copy=1.866s
+{"seed":1,"length":32,"phase":"prefill","argmax":2399}
+[gputime] calls=6720 resident=0.328s launch=0.216s copy=1.936s
+[gputime] calls=6960 resident=0.328s launch=0.223s copy=2.005s
+[gputime] calls=7200 resident=0.328s launch=0.231s copy=2.074s
+[gputime] calls=7440 resident=0.328s launch=0.238s copy=2.143s
+[gputime] calls=7680 resident=0.328s launch=0.246s copy=2.212s
+{"seed":1,"length":64,"phase":"prefill","argmax":8406}
+[gputime] calls=7920 resident=0.329s launch=0.253s copy=2.281s
+[gputime] calls=8160 resident=0.329s launch=0.261s copy=2.350s
+[gputime] calls=8400 resident=0.329s launch=0.268s copy=2.420s
+[gputime] calls=8640 resident=0.329s launch=0.276s copy=2.489s
+[gputime] calls=8880 resident=0.329s launch=0.283s copy=2.558s
+[gputime] calls=9120 resident=0.329s launch=0.291s copy=2.627s
+[gputime] calls=9360 resident=0.330s launch=0.299s copy=2.696s
+[gputime] calls=9600 resident=0.330s launch=0.306s copy=2.765s
+[gputime] calls=9840 resident=0.330s launch=0.314s copy=2.834s
+[gputime] calls=10080 resident=0.330s launch=0.321s copy=2.904s
+[gputime] calls=10320 resident=0.330s launch=0.329s copy=2.973s
+{"seed":1,"length":128,"phase":"prefill","argmax":12150}
+{"seed":1,"length":129,"phase":"prefill","argmax":271}
+{"seed":1,"length":130,"phase":"decode","argmax":5}
+[gputime] calls=10560 resident=0.330s launch=0.337s copy=3.042s
+{"seed":1,"length":131,"phase":"decode","argmax":223}
+{"seed":1,"length":132,"phase":"decode","argmax":8783}
+{"seed":1,"length":133,"phase":"decode","argmax":6617}
+PASS 2585600 finite logits, two contexts through window rollover, full GPU coverage

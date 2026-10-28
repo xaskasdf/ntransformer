@@ -1,0 +1,19 @@
+GGUF v3: 18 tensors, 68 metadata entries
+Loaded 10 split shards, 1046 tensors total
+ds41-gpu: lm head resident (1.23 GiB)
+ds41-gpu: expert cache on NVIDIA H100 80GB HBM3: 10622 slots x 5.98 MiB = 62.0 GiB
+[gputime] calls=240 resident=0.322s launch=0.010s copy=0.070s
+[gputime] calls=480 resident=0.322s launch=0.019s copy=0.139s
+[gputime] calls=720 resident=0.322s launch=0.028s copy=0.208s
+[gputime] calls=960 resident=0.322s launch=0.037s copy=0.276s
+[gputime] calls=1200 resident=0.322s launch=0.046s copy=0.345s
+[gputime] calls=1440 resident=0.322s launch=0.054s copy=0.414s
+[gputime] calls=1680 resident=0.323s launch=0.063s copy=0.483s
+[gputime] calls=1920 resident=0.323s launch=0.072s copy=0.551s
+[gputime] calls=2160 resident=0.323s launch=0.080s copy=0.620s
+[gputime] calls=2400 resident=0.323s launch=0.089s copy=0.689s
+ds41-gpu: expert cache: 44640 lookups, 38247 hits (85.7%), 0 evictions
+MODEL layers=40 vocab=129280 prompt=16 window=128 topk=512 gpu_head=1
+PASS schedule=last prompt=16 continuation=4 exact=1 reset=1
+PASS schedule=mixed prompt=16 continuation=4 exact=1 reset=1
+PASS DS41 prefill state and logits

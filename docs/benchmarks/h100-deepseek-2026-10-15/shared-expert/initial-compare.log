@@ -1,0 +1,16 @@
+{
+  "thresholds": {
+    "max_abs": 0.001,
+    "max_rel_l2": 0.0001,
+    "all_greedy_ids_equal": true
+  },
+  "controls_bitwise_exact": true,
+  "gpu_runs_bitwise_repeatable": true,
+  "sha256": {
+    "cpu1": "8c8ea79cda4da03fe1d1bbd8774b17eaf71b1a7602bc0a8952d061a9a37cd470",
+    "gpu1": "5d46d14c9ac7bc5b4089a2bd7fe2424aef514ec09e6c604896f8e2125d1b39c0"
+  }
+}
+benchmark {'reference': 'cpu1', 'candidate': 'gpu1', 'vectors': 5, 'floats': 646400, 'max_abs': 2.86102294921875e-05, 'max_rel_l2': 1.3536716503749761e-06, 'all_top1_equal': True, 'all_top8_order_equal': True}
+benchmark_exp32 {'reference': 'cpu1', 'candidate': 'exp32', 'vectors': 5, 'floats': 646400, 'max_abs': 3.147125244140625e-05, 'max_rel_l2': 1.416770975014096e-06, 'all_top1_equal': True, 'all_top8_order_equal': True}
+contexts {'reference': 'probe-cpu', 'candidate': 'probe-gpu', 'vectors': 20, 'floats': 2585600, 'max_abs': 1.71661376953125e-05, 'max_rel_l2': 9.58111859387529e-07, 'all_top1_equal': True, 'all_top8_order_equal': True}

@@ -1,0 +1,27 @@
+{
+  "command": [
+    "cmake",
+    "-S",
+    "/home/ubuntu/ntransformer-h100/llama-bench-20261015/source",
+    "-B",
+    "/home/ubuntu/ntransformer-h100/llama-bench-20261015/build",
+    "-DCMAKE_BUILD_TYPE=Release",
+    "-DCMAKE_CXX_COMPILER=/home/ubuntu/ntransformer-h100/env/bin/x86_64-conda-linux-gnu-g++",
+    "-DCMAKE_C_COMPILER=/home/ubuntu/ntransformer-h100/env/bin/x86_64-conda-linux-gnu-gcc",
+    "-DCMAKE_CUDA_HOST_COMPILER=/home/ubuntu/ntransformer-h100/env/bin/x86_64-conda-linux-gnu-gcc",
+    "-DCMAKE_CUDA_COMPILER=/home/ubuntu/ntransformer-h100/env/bin/nvcc",
+    "-DCMAKE_CUDA_ARCHITECTURES=90",
+    "-DCUDA_cublas_LIBRARY=/home/ubuntu/brandon-mini/.venv/lib/python3.12/site-packages/nvidia/cu13/lib/libcublas.so.13",
+    "-DCUDA_cublasLt_LIBRARY=/home/ubuntu/brandon-mini/.venv/lib/python3.12/site-packages/nvidia/cu13/lib/libcublasLt.so.13",
+    "-DCMAKE_CUDA_FLAGS=-I/home/ubuntu/ntransformer-h100/llama-bench-20261015/cublas-include",
+    "-DCMAKE_CXX_FLAGS=-I/home/ubuntu/ntransformer-h100/llama-bench-20261015/cublas-include",
+    "-DGGML_CUDA=ON",
+    "-DGGML_CUDA_NCCL=OFF",
+    "-DGGML_NATIVE=ON",
+    "-DLLAMA_CURL=OFF",
+    "-DLLAMA_BUILD_TESTS=OFF",
+    "-DLLAMA_BUILD_EXAMPLES=OFF",
+    "-DLLAMA_BUILD_TOOLS=ON"
+  ],
+  "returncode": 0
+}
