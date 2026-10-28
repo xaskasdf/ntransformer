@@ -1,0 +1,135 @@
+/home/ubuntu/brandon-mini/.venv/lib/python3.12/site-packages/torch/distributed/c10d_logger.py:83: UserWarning: barrier(): using the device under current context. You can specify `device_id` in `init_process_group` to mute this warning.
+  return func(*args, **kwargs)
+[rank0]:[W1013 21:39:52.302676914 ProcessGroupNCCL.cpp:5310] Guessing device ID based on global rank. This can cause a hang if rank to GPU mapping is heterogeneous. You can specify device_id in init_process_group()
+/home/ubuntu/ntransformer-h100/source/scripts/train_brandon_experiment.py:122: FutureWarning: `broadcast_buffers` is deprecated. Use `forward_sync_buffers` instead. IMPORTANT: unlike `broadcast_buffers=False`, `forward_sync_buffers=False` still syncs buffers at init. If you rely on buffers NOT being synced at init (e.g. rank-local buffers), keep using `broadcast_buffers=False` until `init_sync_buffers` is available.
+  distributed = DDP(model, device_ids=[device.index], broadcast_buffers=False) if world > 1 else model
+/home/ubuntu/ntransformer-h100/source/scripts/train_brandon_experiment.py:122: FutureWarning: `broadcast_buffers` is deprecated. Use `forward_sync_buffers` instead. IMPORTANT: unlike `broadcast_buffers=False`, `forward_sync_buffers=False` still syncs buffers at init. If you rely on buffers NOT being synced at init (e.g. rank-local buffers), keep using `broadcast_buffers=False` until `init_sync_buffers` is available.
+  distributed = DDP(model, device_ids=[device.index], broadcast_buffers=False) if world > 1 else model
+{"step": 32778, "loss": 2.225731670856476, "seconds": 0.2281974639990949, "tokens": 65536, "grad_norm": 0.34635233879089355, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 57.3737907409668, "backward_stream_ms": 162.2309112548828, "optimizer_stream_ms": 3.239680051803589, "measured": false}
+/home/ubuntu/brandon-mini/.venv/lib/python3.12/site-packages/torch/distributed/c10d_logger.py:83: UserWarning: barrier(): using the device under current context. You can specify `device_id` in `init_process_group` to mute this warning.
+  return func(*args, **kwargs)
+{"step": 32788, "loss": 2.3131160736083984, "seconds": 0.2280888440000126, "tokens": 65536, "grad_norm": 0.3492245078086853, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 57.34473419189453, "backward_stream_ms": 162.34709930419922, "optimizer_stream_ms": 3.211103916168213, "measured": true}
+{"step": 32798, "loss": 2.217507839202881, "seconds": 0.22829145600007905, "tokens": 65536, "grad_norm": 0.3400675356388092, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 57.07788848876953, "backward_stream_ms": 162.71855926513672, "optimizer_stream_ms": 3.2785279750823975, "measured": true}
+{"step": 32808, "loss": 2.3275761008262634, "seconds": 0.22811519599963503, "tokens": 65536, "grad_norm": 0.34538328647613525, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 57.26937484741211, "backward_stream_ms": 162.32476806640625, "optimizer_stream_ms": 3.2190399169921875, "measured": true}
+{"step": 32818, "loss": 2.2126397490501404, "seconds": 0.22826126200016006, "tokens": 65536, "grad_norm": 0.3418799936771393, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 57.21571159362793, "backward_stream_ms": 162.55484771728516, "optimizer_stream_ms": 3.2183361053466797, "measured": true}
+{"step": 32828, "loss": 2.285339057445526, "seconds": 0.22714572299992142, "tokens": 65536, "grad_norm": 0.33961400389671326, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 57.18668746948242, "backward_stream_ms": 162.14934539794922, "optimizer_stream_ms": 3.23142409324646, "measured": true}
+{"step": 32838, "loss": 2.3046653270721436, "seconds": 0.22807347900015884, "tokens": 65536, "grad_norm": 0.345040887594223, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 57.24918556213379, "backward_stream_ms": 162.6195831298828, "optimizer_stream_ms": 3.2541120052337646, "measured": true}
+{"step": 32848, "loss": 2.2673388719558716, "seconds": 0.22773544799929368, "tokens": 65536, "grad_norm": 0.34128403663635254, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 57.08723258972168, "backward_stream_ms": 162.48963165283203, "optimizer_stream_ms": 3.229248046875, "measured": true}
+{"step": 32858, "loss": 2.209384322166443, "seconds": 0.2276877139993303, "tokens": 65536, "grad_norm": 0.3349599838256836, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 57.28691101074219, "backward_stream_ms": 162.19058990478516, "optimizer_stream_ms": 3.2261760234832764, "measured": true}
+{"step": 32868, "loss": 2.340039312839508, "seconds": 0.22767095400013204, "tokens": 65536, "grad_norm": 0.34121859073638916, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 57.30147361755371, "backward_stream_ms": 162.1453399658203, "optimizer_stream_ms": 3.2577919960021973, "measured": true}
+{
+  "status": "complete",
+  "mode": "peer",
+  "backend": {
+    "native_norms": 61,
+    "native_swiglu": 30,
+    "checkpoint_layers": 30,
+    "peer_activation_storage": true,
+    "gemm_attention_optimizer_ddp": "PyTorch",
+    "higher_order_gradients": false
+  },
+  "steps": 100,
+  "start_step": 32768,
+  "completed_steps": 32868,
+  "physical_world_size": 2,
+  "logical_world_size": 2,
+  "global_tokens_per_step": 65536,
+  "parameters": 107604288,
+  "warmup_steps": 10,
+  "measured_steps": 90,
+  "tokens_per_second": 286946.40102126944,
+  "mean_step_seconds": 0.22839108546666265,
+  "measured_window_seconds": 20.555197691999638,
+  "instrumented_step_mean_seconds": 0.2280852620221089,
+  "timings_rank0": {
+    "initialization_seconds": 5.941083137999158,
+    "initial_validation_seconds": 0.6189830109997274,
+    "training_seconds_including_warmup": 23.033649197999694,
+    "final_validation_seconds": 0.45876638000117964,
+    "checkpoint_and_batch_record_seconds": 1.0606594229993789,
+    "process_seconds_through_checkpoint": 31.119120744999236
+  },
+  "historical_baseline": {
+    "baseline_sha256": "bf58fea89c51f967ebcf59f9b74acb6fadb84f40a2720a679fe154436de43038",
+    "captured_step": 25400,
+    "historical_tokens_per_second": 307985.1565696424,
+    "scope": "Historical context; paired continuation is the causal implementation comparison",
+    "initialization": "Completed pretraining checkpoint, restored AdamW, final LR floor; not a pilot restart"
+  },
+  "initial_validation": {
+    "fineweb_edu": 2.65878763794899,
+    "cosmopedia": 1.6827723383903503,
+    "mean": 2.17077998816967
+  },
+  "final_validation": {
+    "fineweb_edu": 2.658506214618683,
+    "cosmopedia": 1.681656189262867,
+    "mean": 2.170081201940775
+  },
+  "batch_sha256": "b8c0439017c9037042592324992fe409427e4374902197e7829a10c9c4069106",
+  "ranks": [
+    {
+      "rank": 0,
+      "memory": [
+        {
+          "device": 0,
+          "peak_allocated_bytes": 4195423232,
+          "peak_reserved_bytes": 5219811328
+        },
+        {
+          "device": 1,
+          "peak_allocated_bytes": 1132462080,
+          "peak_reserved_bytes": 1132462080
+        }
+      ],
+      "pipeline": {
+        "peer_device": 1,
+        "peer_blocks": 30,
+        "block_bytes": 37748736,
+        "reserved_peer_bytes": 1132462080,
+        "reserved_staging_bytes": 75497472,
+        "d2d_writes": 6000,
+        "d2d_reads": 6000,
+        "transferred_bytes": 452984832000,
+        "lookahead_prefetches": 5800,
+        "microbatches": 200
+      }
+    },
+    {
+      "rank": 1,
+      "memory": [
+        {
+          "device": 0,
+          "peak_allocated_bytes": 1132462080,
+          "peak_reserved_bytes": 1132462080
+        },
+        {
+          "device": 1,
+          "peak_allocated_bytes": 4191368192,
+          "peak_reserved_bytes": 5219811328
+        }
+      ],
+      "pipeline": {
+        "peer_device": 0,
+        "peer_blocks": 30,
+        "block_bytes": 37748736,
+        "reserved_peer_bytes": 1132462080,
+        "reserved_staging_bytes": 75497472,
+        "d2d_writes": 6000,
+        "d2d_reads": 6000,
+        "transferred_bytes": 452984832000,
+        "lookahead_prefetches": 5800,
+        "microbatches": 200
+      }
+    }
+  ],
+  "profiled": false,
+  "torch_version": "2.14.1+cu130",
+  "cuda_version": "13.0",
+  "nccl_version": [
+    2,
+    30,
+    7
+  ],
+  "source_checkpoint": "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/pretrain/last.pt"
+}

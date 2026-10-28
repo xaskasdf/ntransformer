@@ -1,0 +1,32 @@
+{
+  "state": "complete",
+  "supervisor_pid": 44864,
+  "pipeline": "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1",
+  "steps": 100,
+  "reason": "Validation and all bounded comparisons completed",
+  "updated_at": "2026-10-13T21:44:11.727709+00:00",
+  "stage": "complete",
+  "command": [
+    "/home/ubuntu/brandon-mini/.venv/bin/python",
+    "-m",
+    "torch.distributed.run",
+    "--standalone",
+    "--nproc_per_node=1",
+    "/home/ubuntu/ntransformer-h100/source/scripts/train_brandon_experiment.py",
+    "--brandon-root",
+    "/lambda/nfs/btiny/brandon-mini/sources/stage1-v1",
+    "--checkpoint",
+    "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/pretrain/last.pt",
+    "--data-dir",
+    "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/data",
+    "--output",
+    "/home/ubuntu/ntransformer-h100/training/experiment-20261013-r2/profile-single-peer",
+    "--mode",
+    "peer",
+    "--steps",
+    "2",
+    "--warmup-steps",
+    "1",
+    "--profile"
+  ]
+}

@@ -1,0 +1,166 @@
+/home/ubuntu/brandon-mini/.venv/lib/python3.12/site-packages/torch/distributed/c10d_logger.py:83: UserWarning: barrier(): using the device under current context. You can specify `device_id` in `init_process_group` to mute this warning.
+  return func(*args, **kwargs)
+[rank0]:[W1015 07:02:54.991400517 ProcessGroupNCCL.cpp:5310] Guessing device ID based on global rank. This can cause a hang if rank to GPU mapping is heterogeneous. You can specify device_id in init_process_group()
+/home/ubuntu/ntransformer-h100/training/gradient-buckets-20261015-r2/source-snapshot/scripts/train_brandon_experiment.py:205: FutureWarning: `broadcast_buffers` is deprecated. Use `forward_sync_buffers` instead. IMPORTANT: unlike `broadcast_buffers=False`, `forward_sync_buffers=False` still syncs buffers at init. If you rely on buffers NOT being synced at init (e.g. rank-local buffers), keep using `broadcast_buffers=False` until `init_sync_buffers` is available.
+  distributed = (DDP(model, device_ids=[device.index], broadcast_buffers=False,
+/home/ubuntu/ntransformer-h100/training/gradient-buckets-20261015-r2/source-snapshot/scripts/train_brandon_experiment.py:205: FutureWarning: `broadcast_buffers` is deprecated. Use `forward_sync_buffers` instead. IMPORTANT: unlike `broadcast_buffers=False`, `forward_sync_buffers=False` still syncs buffers at init. If you rely on buffers NOT being synced at init (e.g. rank-local buffers), keep using `broadcast_buffers=False` until `init_sync_buffers` is available.
+  distributed = (DDP(model, device_ids=[device.index], broadcast_buffers=False,
+/home/ubuntu/brandon-mini/.venv/lib/python3.12/site-packages/torch/autograd/graph.py:1072: UserWarning: The AccumulateGrad node's stream does not match the stream of the node that produced the incoming gradient. This may incur unnecessary synchronization and break CUDA graph capture if the AccumulateGrad node's stream is the default stream. This mismatch is caused by an AccumulateGrad node created prior to the current iteration being kept alive. This can happen if the autograd graph is still being kept alive by tensors such as the loss, or if you are using DDP, which will stash a reference to the node. To resolve the mismatch, delete all references to the autograd graph or ensure that DDP initialization is performed under the same stream as subsequent forwards. If the mismatch is intentional, you can use torch.autograd.graph.set_warn_on_accumulate_grad_stream_mismatch(False) to suppress this warning. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/input_buffer.cpp:310.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+/home/ubuntu/brandon-mini/.venv/lib/python3.12/site-packages/torch/autograd/graph.py:1072: UserWarning: The AccumulateGrad node's stream does not match the stream of the node that produced the incoming gradient. This may incur unnecessary synchronization and break CUDA graph capture if the AccumulateGrad node's stream is the default stream. This mismatch is caused by an AccumulateGrad node created prior to the current iteration being kept alive. This can happen if the autograd graph is still being kept alive by tensors such as the loss, or if you are using DDP, which will stash a reference to the node. To resolve the mismatch, delete all references to the autograd graph or ensure that DDP initialization is performed under the same stream as subsequent forwards. If the mismatch is intentional, you can use torch.autograd.graph.set_warn_on_accumulate_grad_stream_mismatch(False) to suppress this warning. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/input_buffer.cpp:310.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+{"step": 32778, "loss": 2.225597858428955, "seconds": 0.1642330090107862, "tokens": 65536, "grad_norm": 0.34629306197166443, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 45.22835159301758, "backward_stream_ms": 112.87126159667969, "optimizer_stream_ms": 3.3177919387817383, "measured": false}
+/home/ubuntu/brandon-mini/.venv/lib/python3.12/site-packages/torch/distributed/c10d_logger.py:83: UserWarning: barrier(): using the device under current context. You can specify `device_id` in `init_process_group` to mute this warning.
+  return func(*args, **kwargs)
+{"step": 32788, "loss": 2.3130879998207092, "seconds": 0.16396437300136313, "tokens": 65536, "grad_norm": 0.34933122992515564, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 45.236127853393555, "backward_stream_ms": 112.77033615112305, "optimizer_stream_ms": 3.302623987197876, "measured": true}
+{"step": 32798, "loss": 2.21757048368454, "seconds": 0.16396651699324138, "tokens": 65536, "grad_norm": 0.340090274810791, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 45.25404930114746, "backward_stream_ms": 112.991455078125, "optimizer_stream_ms": 3.2547199726104736, "measured": true}
+{"step": 32808, "loss": 2.32742178440094, "seconds": 0.1643008090031799, "tokens": 65536, "grad_norm": 0.34532350301742554, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 45.22630310058594, "backward_stream_ms": 112.93490982055664, "optimizer_stream_ms": 3.238816022872925, "measured": true}
+{"step": 32818, "loss": 2.212579667568207, "seconds": 0.1640980319934897, "tokens": 65536, "grad_norm": 0.3419564962387085, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 45.27267074584961, "backward_stream_ms": 112.97894668579102, "optimizer_stream_ms": 3.261823892593384, "measured": true}
+{"step": 32828, "loss": 2.2854151129722595, "seconds": 0.16416905701044016, "tokens": 65536, "grad_norm": 0.3396267294883728, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 45.26723289489746, "backward_stream_ms": 112.92255783081055, "optimizer_stream_ms": 3.2752959728240967, "measured": true}
+{"step": 32838, "loss": 2.304517149925232, "seconds": 0.1640739039867185, "tokens": 65536, "grad_norm": 0.34507420659065247, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 45.22883224487305, "backward_stream_ms": 112.9339828491211, "optimizer_stream_ms": 3.268224000930786, "measured": true}
+{"step": 32848, "loss": 2.2673811316490173, "seconds": 0.1641893399937544, "tokens": 65536, "grad_norm": 0.3411269187927246, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 45.24575996398926, "backward_stream_ms": 113.11228561401367, "optimizer_stream_ms": 3.26198410987854, "measured": true}
+{"step": 32858, "loss": 2.2094025015830994, "seconds": 0.1639649640128482, "tokens": 65536, "grad_norm": 0.3349554240703583, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 45.21583938598633, "backward_stream_ms": 112.7867546081543, "optimizer_stream_ms": 3.3253440856933594, "measured": true}
+{"step": 32868, "loss": 2.3401681780815125, "seconds": 0.1640721970179584, "tokens": 65536, "grad_norm": 0.3411414623260498, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 45.2375373840332, "backward_stream_ms": 112.90742492675781, "optimizer_stream_ms": 3.300384044647217, "measured": true}
+{
+  "status": "complete",
+  "mode": "native",
+  "backend": {
+    "native_norms": 61,
+    "norm_mode": "compatible",
+    "norm_reductions": "PyTorch",
+    "native_swiglu": 30,
+    "shared_projection_cast_groups": 60,
+    "direct_gqa_layers": 30,
+    "native_rotary_layers": 30,
+    "loss_mode": "fused",
+    "loss_block_size": 2048,
+    "fused_loss_labels": true,
+    "checkpoint_layers": 0,
+    "peer_activation_storage": false,
+    "gemm_attention_optimizer_ddp": "PyTorch",
+    "higher_order_gradients": false,
+    "deterministic_algorithms": false,
+    "fill_uninitialized_memory": true,
+    "gradient_bucket_views": true,
+    "defer_loss_readbacks": true,
+    "cublas_workspace_config": null,
+    "attention_dispatch": "PyTorch SDPA automatic; constrained by determinism setting",
+    "graph_capture_seconds": 1.0089945919753518,
+    "training_graph": true,
+    "batched_gradient_reduction": false,
+    "bucketed_graph": false,
+    "gradient_reduction": "DDP"
+  },
+  "steps": 100,
+  "start_step": 32768,
+  "completed_steps": 32868,
+  "physical_world_size": 2,
+  "logical_world_size": 2,
+  "global_tokens_per_step": 65536,
+  "parameters": 107604288,
+  "warmup_steps": 10,
+  "measured_steps": 90,
+  "tokens_per_second": 398401.8920376077,
+  "mean_step_seconds": 0.16449721075575022,
+  "measured_window_seconds": 14.80474896801752,
+  "instrumented_step_mean_seconds": 0.16419412586417617,
+  "timings_rank0": {
+    "initialization_seconds": 6.652994711010251,
+    "initial_validation_seconds": 0.44479500499437563,
+    "training_seconds_including_warmup": 16.517626087006647,
+    "final_validation_seconds": 0.39148605198715813,
+    "checkpoint_and_batch_record_seconds": 1.0609621389885433,
+    "process_seconds_through_checkpoint": 25.07371443498414
+  },
+  "historical_baseline": {
+    "baseline_sha256": "bf58fea89c51f967ebcf59f9b74acb6fadb84f40a2720a679fe154436de43038",
+    "captured_step": 25400,
+    "historical_tokens_per_second": 307985.1565696424,
+    "scope": "Historical context; paired continuation is the causal implementation comparison",
+    "initialization": "Completed pretraining checkpoint, restored AdamW, final LR floor; not a pilot restart"
+  },
+  "initial_validation": {
+    "fineweb_edu": 2.6587655395269394,
+    "cosmopedia": 1.6827282086014748,
+    "mean": 2.170746874064207
+  },
+  "final_validation": {
+    "fineweb_edu": 2.658462628722191,
+    "cosmopedia": 1.6816450580954552,
+    "mean": 2.170053843408823
+  },
+  "batch_sha256": "b8c0439017c9037042592324992fe409427e4374902197e7829a10c9c4069106",
+  "ranks": [
+    {
+      "rank": 0,
+      "memory": [
+        {
+          "device": 0,
+          "peak_allocated_bytes": 2720866816,
+          "peak_reserved_bytes": 13186891776
+        },
+        {
+          "device": 1,
+          "peak_allocated_bytes": 0,
+          "peak_reserved_bytes": 0
+        }
+      ],
+      "graph": {
+        "forward_replays": 200,
+        "backward_replays": 200,
+        "input_reserved_bytes": 262144,
+        "input_addresses": [
+          140362009739264,
+          140362009870336
+        ],
+        "parameter_addresses_unchanged": true,
+        "captured": "model forward and backward",
+        "collective_optimizer": "eager",
+        "accumulation_storage": "separate persistent parameter gradients",
+        "live_forward": false
+      },
+      "gradient_buckets": null,
+      "pipeline": null
+    },
+    {
+      "rank": 1,
+      "memory": [
+        {
+          "device": 0,
+          "peak_allocated_bytes": 0,
+          "peak_reserved_bytes": 0
+        },
+        {
+          "device": 1,
+          "peak_allocated_bytes": 2720866816,
+          "peak_reserved_bytes": 13186891776
+        }
+      ],
+      "graph": {
+        "forward_replays": 200,
+        "backward_replays": 200,
+        "input_reserved_bytes": 262144,
+        "input_addresses": [
+          139994655817728,
+          139994655948800
+        ],
+        "parameter_addresses_unchanged": true,
+        "captured": "model forward and backward",
+        "collective_optimizer": "eager",
+        "accumulation_storage": "separate persistent parameter gradients",
+        "live_forward": false
+      },
+      "gradient_buckets": null,
+      "pipeline": null
+    }
+  ],
+  "profiled": false,
+  "torch_version": "2.14.1+cu130",
+  "cuda_version": "13.0",
+  "nccl_version": [
+    2,
+    30,
+    7
+  ],
+  "source_checkpoint": "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/pretrain/last.pt"
+}

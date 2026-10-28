@@ -1,0 +1,95 @@
+{
+  "format": "brandon-mini-packed-v1",
+  "dtype": "<u2",
+  "seed": 20261013,
+  "tokenizer_sha256": "c6808ff86d9b1422aa1ef5d0adb3cde5d993e870a4387fcd2a16a119083caae0",
+  "vocab_size": 8192,
+  "eos_id": 3,
+  "split_rule": "normalized SHA256 modulo 50",
+  "deduplication": "exact normalized documents, global across pretraining sources; no near-duplicate removal",
+  "sources": [
+    {
+      "name": "fineweb_edu",
+      "repo": "HuggingFaceFW/fineweb-edu",
+      "config": "sample-10BT",
+      "revision": "87f09149ef4734204d70ed1d046ddc9ca3f2b8f9",
+      "license": "odc-by",
+      "train_tokens": 1200000000,
+      "validation_tokens": 1000000,
+      "documents": {
+        "train": 1067440,
+        "validation": 845
+      },
+      "dropped": {
+        "duplicate": 4916,
+        "length": 8443,
+        "quota": 21309
+      },
+      "files": {
+        "train": {
+          "path": "fineweb_edu_train.bin",
+          "tokens": 1200000744,
+          "sha256": "a00d1ee4a54b163cf0d8574ac86c09705064457c631afc0a00bbafd7cefecd38"
+        },
+        "validation": {
+          "path": "fineweb_edu_validation.bin",
+          "tokens": 1000035,
+          "sha256": "229a7e823fdb8740ed9faac15e882c1f1684d39029ace7f0813f106411bf5029"
+        }
+      }
+    },
+    {
+      "name": "cosmopedia",
+      "repo": "HuggingFaceTB/smollm-corpus",
+      "config": "cosmopedia-v2",
+      "revision": "3ba9d605774198c5868892d7a8deda78031a781f",
+      "license": "odc-by",
+      "train_tokens": 800000000,
+      "validation_tokens": 1000000,
+      "documents": {
+        "train": 838081,
+        "validation": 1055
+      },
+      "dropped": {
+        "duplicate": 2880,
+        "length": 565,
+        "quota": 16165
+      },
+      "files": {
+        "train": {
+          "path": "cosmopedia_train.bin",
+          "tokens": 800000270,
+          "sha256": "28c8be46071b050b2441cb5304f168fb0c455668f44e0b4caa2ec8519be3906c"
+        },
+        "validation": {
+          "path": "cosmopedia_validation.bin",
+          "tokens": 1000052,
+          "sha256": "27949130177b473ec6d26f071ab8f84b550463bb9fca31c4423a5dbd7041a25c"
+        }
+      }
+    }
+  ],
+  "instructions": {
+    "repo": "HuggingFaceTB/smol-smoltalk",
+    "config": "default",
+    "revision": "f73fe857d519ff6ac5af2ea67c4d3834da7b8bcc",
+    "license": "apache-2.0",
+    "train_examples": 20000,
+    "validation_examples": 500,
+    "max_seq_len": 1024,
+    "files": {
+      "validation": {
+        "path": "instructions_validation.jsonl",
+        "examples": 500,
+        "rejected": 538,
+        "sha256": "b698e460c8c5003afeaa18f52498688dbb41445d4b9edc10f0f3f0e270c5f4fe"
+      },
+      "train": {
+        "path": "instructions_train.jsonl",
+        "examples": 20000,
+        "rejected": 20688,
+        "sha256": "c560a1823c7fddb828dbcc024067be12ed34091e6e4cc43303c4e233888b49c1"
+      }
+    }
+  }
+}

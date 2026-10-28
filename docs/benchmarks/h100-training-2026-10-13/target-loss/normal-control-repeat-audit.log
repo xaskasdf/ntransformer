@@ -1,0 +1,27 @@
+{
+  "status": "passed",
+  "reference": "/home/ubuntu/ntransformer-h100/training/target-loss-20261014/normal-control",
+  "candidate": "/home/ubuntu/ntransformer-h100/training/target-loss-20261014/normal-control-repeat",
+  "paired_throughput_ratio": 1.007513930311922,
+  "historical_throughput_ratio": 1.2273499060174298,
+  "historical_ratio_scope": "Descriptive only: separate initialization and instrumentation",
+  "max_training_loss_delta": 0.00019240379333496094,
+  "final_validation_delta": 4.1604042053222656e-05,
+  "relative_update_difference": 0.020460250849634057,
+  "max_weight_difference": 0.00034030526876449585,
+  "updated_tensors": 273,
+  "total_tensors": 273,
+  "exact": {
+    "model_state_dict": false,
+    "optimizer_states": false,
+    "rng_states": true,
+    "recorded_metrics": false,
+    "validation": false
+  },
+  "require_exact": false,
+  "limits": {
+    "training_loss": 0.03,
+    "validation_loss": 0.02,
+    "relative_update_difference": 0.1
+  }
+}

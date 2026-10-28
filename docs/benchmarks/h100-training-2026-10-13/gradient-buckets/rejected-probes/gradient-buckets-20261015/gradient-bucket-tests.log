@@ -1,0 +1,33 @@
+/home/ubuntu/brandon-mini/.venv/lib/python3.12/site-packages/torch/autograd/graph.py:1072: UserWarning: The AccumulateGrad node's stream does not match the stream of the node that produced the incoming gradient. This may incur unnecessary synchronization and break CUDA graph capture if the AccumulateGrad node's stream is the default stream. This mismatch is caused by an AccumulateGrad node created prior to the current iteration being kept alive. This can happen if the autograd graph is still being kept alive by tensors such as the loss, or if you are using DDP, which will stash a reference to the node. To resolve the mismatch, delete all references to the autograd graph or ensure that DDP initialization is performed under the same stream as subsequent forwards. If the mismatch is intentional, you can use torch.autograd.graph.set_warn_on_accumulate_grad_stream_mismatch(False) to suppress this warning. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/input_buffer.cpp:310.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+Traceback (most recent call last):
+  File "/home/ubuntu/ntransformer-h100/training/gradient-buckets-20261015/source-snapshot/tests/test_training_gradient_buckets.py", line 123, in <module>
+    main()
+  File "/home/ubuntu/ntransformer-h100/training/gradient-buckets-20261015/source-snapshot/tests/test_training_gradient_buckets.py", line 117, in main
+    result=dict(small=compare(args,False),full=compare(args,True),status='passed')
+                      ^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/ntransformer-h100/training/gradient-buckets-20261015/source-snapshot/tests/test_training_gradient_buckets.py", line 99, in compare
+    assert exact_state(optimizer.state_dict(),reference[2])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/ntransformer-h100/training/gradient-buckets-20261015/source-snapshot/scripts/analyze_verified_instructions.py", line 24, in exact_state
+    return left.keys() == right.keys() and all(exact_state(left[k], right[k]) for k in left)
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/ntransformer-h100/training/gradient-buckets-20261015/source-snapshot/scripts/analyze_verified_instructions.py", line 24, in <genexpr>
+    return left.keys() == right.keys() and all(exact_state(left[k], right[k]) for k in left)
+                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/ntransformer-h100/training/gradient-buckets-20261015/source-snapshot/scripts/analyze_verified_instructions.py", line 24, in exact_state
+    return left.keys() == right.keys() and all(exact_state(left[k], right[k]) for k in left)
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/ntransformer-h100/training/gradient-buckets-20261015/source-snapshot/scripts/analyze_verified_instructions.py", line 24, in <genexpr>
+    return left.keys() == right.keys() and all(exact_state(left[k], right[k]) for k in left)
+                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/ntransformer-h100/training/gradient-buckets-20261015/source-snapshot/scripts/analyze_verified_instructions.py", line 24, in exact_state
+    return left.keys() == right.keys() and all(exact_state(left[k], right[k]) for k in left)
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/ntransformer-h100/training/gradient-buckets-20261015/source-snapshot/scripts/analyze_verified_instructions.py", line 24, in <genexpr>
+    return left.keys() == right.keys() and all(exact_state(left[k], right[k]) for k in left)
+                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/ntransformer-h100/training/gradient-buckets-20261015/source-snapshot/scripts/analyze_verified_instructions.py", line 20, in exact_state
+    and torch.equal(left, right))
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Expected all tensors to be on the same device, but got other is on cpu, different from other tensors on cuda:0 (when checking argument in method wrapper_CUDA__equal)

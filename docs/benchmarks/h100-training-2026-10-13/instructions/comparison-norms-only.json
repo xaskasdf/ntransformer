@@ -1,0 +1,16 @@
+{
+  "status": "failed",
+  "candidate": "norms-only",
+  "batch_hashes_match": true,
+  "max_training_loss_delta": 0.002826790782783136,
+  "final_validation_delta": 0.011102350807082884,
+  "relative_update_difference": 0.19257558098217925,
+  "max_weight_difference": 0.000715889036655426,
+  "updated_tensors": 273,
+  "total_tensors": 273,
+  "limits": {
+    "training_loss": 0.03,
+    "validation_loss": 0.02,
+    "relative_update_difference": 0.1
+  }
+}

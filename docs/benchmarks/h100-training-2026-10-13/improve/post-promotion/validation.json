@@ -1,0 +1,17 @@
+{
+  "status": "passed",
+  "cpu_audit_tests": "......\n----------------------------------------------------------------------\nRan 6 tests in 0.002s\n\nOK\n",
+  "compilation": "All promoted Python files passed py_compile",
+  "gpu_compute_processes_at_completion": "",
+  "promoted_sha256": {
+    "python/ntransformer_training/brandon.py": "cc12b6cc73818ef47ddbbc0d8ae4b16add17e53abddf1b1dbc397bd416d21cf8",
+    "scripts/train_brandon_experiment.py": "da213598268159658e3eb004a78f4ab73d5125f93aab3c318f26a91f6aa05f94",
+    "scripts/train_verified_instructions.py": "139c1a1d86e7e53865a6e0ef701ff73601682318d886d755fb914b3bd402e794",
+    "scripts/run_verified_instructions.py": "8b3baaa000a196b1917491a78c5846d1cb13112fd8f994a8f77ff9bb59afc2e7",
+    "scripts/analyze_verified_instructions.py": "f9696ba4d633e3d75f35caa33e3e239a22a3a91c3ab05bd2dd70c41efd52c4e1",
+    "scripts/fetch_training_results.py": "7da7faa664e2b0b62f5fada73a740385836c87a94237b182f1eb9c62bc7c2cfb",
+    "tests/test_training_ops.py": "afb619034f85594e60b0476785e3d34ad6f583ebb390d57ae47f1cb29c8075d1",
+    "tests/test_training_audit.py": "a4e781a17818f4c4f1b25bb471aed8d60cfa293182fc64b412e7f829944e84a5"
+  },
+  "scope": "Defaults/metadata and exact-state gate promoted after explicit compatible-mode runs; measured source remains in source-snapshot, CUDA operator code is unchanged"
+}

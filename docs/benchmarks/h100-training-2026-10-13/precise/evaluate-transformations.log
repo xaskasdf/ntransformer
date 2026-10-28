@@ -1,0 +1,48 @@
+{
+  "suite": "mini-text-transformations-v1",
+  "seed": 20261014,
+  "scoring": "case-sensitive exact match, ignoring outer whitespace only",
+  "limitations": "Held-out inputs and paraphrases in training task families; includes teacher failures. Not unseen-skill evaluation.",
+  "cases_sha256": "621cf5f37ba60f5b003774469b4b09349fef9724ba53e00c0a7ff05a0e8232ff",
+  "checkpoint": "/home/ubuntu/ntransformer-h100/training/instructions-20261013/swiglu-fixed/last.pt",
+  "checkpoint_sha256": "32ac2810e7ff4dd06ae4240dc370fdc6ce69dc1a02ac2bf864436e24ff534cdd",
+  "tokenizer_sha256": "c6808ff86d9b1422aa1ef5d0adb3cde5d993e870a4387fcd2a16a119083caae0",
+  "decoding": {
+    "temperature": 0,
+    "max_new_tokens": 64,
+    "dtype": "torch.bfloat16"
+  },
+  "scores": {
+    "uppercase": {
+      "correct": 3,
+      "total": 20,
+      "accuracy": 0.15
+    },
+    "join": {
+      "correct": 14,
+      "total": 20,
+      "accuracy": 0.7
+    },
+    "replace": {
+      "correct": 0,
+      "total": 20,
+      "accuracy": 0.0
+    },
+    "remove_marker": {
+      "correct": 20,
+      "total": 20,
+      "accuracy": 1.0
+    },
+    "brackets": {
+      "correct": 19,
+      "total": 20,
+      "accuracy": 0.95
+    },
+    "json_record": {
+      "correct": 0,
+      "total": 20,
+      "accuracy": 0.0
+    }
+  },
+  "exact_match_accuracy": 0.4666666666666667
+}

@@ -1,0 +1,19 @@
+{
+  "phase": "sft",
+  "parameters": 107604288,
+  "world_size": 2,
+  "start_step": 0,
+  "completed_steps": 100,
+  "planned_steps": 100,
+  "initial_validation": {
+    "instructions": 2.780423637993809,
+    "mean": 2.780423637993809
+  },
+  "final_validation": {
+    "instructions": 0.30833702532764773,
+    "mean": 0.30833702532764773
+  },
+  "best_validation_loss": 0.30833702532764773,
+  "manifest_sha256": "8ec4eae0df2b56c3039398b4ea9ec940cca5cf3372d6f96cc48c0243ba5a879f",
+  "status": "complete"
+}

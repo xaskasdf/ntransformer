@@ -1,0 +1,27 @@
+{
+  "status": "passed",
+  "reference": "/home/ubuntu/ntransformer-h100/training/shared-casts-20261014-r2/normal-control",
+  "candidate": "/home/ubuntu/ntransformer-h100/training/shared-casts-20261014-r2/normal-shared",
+  "paired_throughput_ratio": 1.0174864297898674,
+  "historical_throughput_ratio": 1.1339537032106293,
+  "historical_ratio_scope": "Descriptive only: separate initialization and instrumentation",
+  "max_training_loss_delta": 0.0002480745315551758,
+  "final_validation_delta": 2.4255365133285522e-05,
+  "relative_update_difference": 0.017394905739220173,
+  "max_weight_difference": 0.0004424154758453369,
+  "updated_tensors": 273,
+  "total_tensors": 273,
+  "exact": {
+    "model_state_dict": false,
+    "optimizer_states": false,
+    "rng_states": true,
+    "recorded_metrics": false,
+    "validation": false
+  },
+  "require_exact": false,
+  "limits": {
+    "training_loss": 0.03,
+    "validation_loss": 0.02,
+    "relative_update_difference": 0.1
+  }
+}

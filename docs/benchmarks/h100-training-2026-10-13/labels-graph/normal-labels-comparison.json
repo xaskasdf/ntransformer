@@ -1,0 +1,27 @@
+{
+  "status": "passed",
+  "reference": "/home/ubuntu/ntransformer-h100/training/labels-graph-20261014/normal-control",
+  "candidate": "/home/ubuntu/ntransformer-h100/training/labels-graph-20261014/normal-labels",
+  "paired_throughput_ratio": 0.9929727230310793,
+  "historical_throughput_ratio": 1.2413295386500744,
+  "historical_ratio_scope": "Descriptive only: separate initialization and instrumentation",
+  "max_training_loss_delta": 0.00024902820587158203,
+  "final_validation_delta": 4.8920512199401855e-05,
+  "relative_update_difference": 0.017141360375647244,
+  "max_weight_difference": 0.00047850795090198517,
+  "updated_tensors": 273,
+  "total_tensors": 273,
+  "exact": {
+    "model_state_dict": false,
+    "optimizer_states": false,
+    "rng_states": true,
+    "recorded_metrics": false,
+    "validation": false
+  },
+  "require_exact": false,
+  "limits": {
+    "training_loss": 0.03,
+    "validation_loss": 0.02,
+    "relative_update_difference": 0.1
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "tokenizer_sha256": "c6808ff86d9b1422aa1ef5d0adb3cde5d993e870a4387fcd2a16a119083caae0",
+  "sources": [],
+  "instructions": {
+    "name": "behavior-curriculum-v1",
+    "files": {
+      "train": {
+        "path": "train.jsonl",
+        "sha256": "99a914dfc293a968321a4045b104898622d190dfd4d50b31b20a722b3fdcc0b7",
+        "examples": 7070
+      },
+      "validation": {
+        "path": "validation.jsonl",
+        "sha256": "ce211b73a5ecaed176acbe287181daf6389f2ab81e48184c9dc32105f9ea128b",
+        "examples": 357
+      }
+    }
+  },
+  "preparation_sha256": "e08132aaa0ca2267a5d147e54ffa4d7ba27132b9b1fac74c8bbf98610bda6f28"
+}

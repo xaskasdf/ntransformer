@@ -1,0 +1,830 @@
+{
+  "status": "complete",
+  "scope": "Isolated real-tensor replay, not full-training throughput",
+  "records": [
+    {
+      "layer": 0,
+      "backend": "SDPBackend.FLASH_ATTENTION",
+      "deterministic": true,
+      "grouped": false,
+      "capture_sha256": "81b1a0b6c1e3dff25d9f2e8c1484b924c05a18fe402e237d003d6ffa6495f0e3",
+      "shape": [
+        [
+          16,
+          9,
+          1024,
+          64
+        ],
+        [
+          16,
+          3,
+          1024,
+          64
+        ],
+        [
+          16,
+          3,
+          1024,
+          64
+        ]
+      ],
+      "self_repeat": {
+        "output": {
+          "equal": true,
+          "mismatches": 0,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "dq": {
+          "equal": true,
+          "mismatches": 0,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "dk": {
+          "equal": true,
+          "mismatches": 0,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "dv": {
+          "equal": true,
+          "mismatches": 0,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        }
+      },
+      "median_forward_backward_ms": 0.6955679953098297,
+      "samples_ms": [
+        0.7273600101470947,
+        0.7018240094184875,
+        0.7000319957733154,
+        0.6991999745368958,
+        0.6923199892044067,
+        0.7003200054168701,
+        0.6944320201873779,
+        0.6945919990539551,
+        0.6938880085945129,
+        0.6957119703292847,
+        0.692736029624939,
+        0.6955839991569519,
+        0.6955519914627075,
+        0.6952319741249084,
+        0.6924800276756287,
+        0.6928640007972717,
+        0.7018240094184875,
+        0.6977599859237671,
+        0.6889600157737732,
+        0.7034559845924377
+      ],
+      "incremental_peak_bytes": 152175616,
+      "operators": {
+        "aten::repeat_interleave": 2,
+        "aten::scaled_dot_product_attention": 1,
+        "aten::_scaled_dot_product_flash_attention": 1,
+        "aten::_flash_attention_forward": 1,
+        "void pytorch_flash::flash_fwd_kernel<Flash_fwd_kernel_traits<64, 128, 128, 4, false, false, cutlass::bfloat16_t, Flash_kernel_traits<64, 128, 128, 4, cutlass::bfloat16_t> >, false, true, false, false, true, true, false, false>(pytorch_flash::Flash_fwd_params)": 1,
+        "aten::_scaled_dot_product_flash_attention_backward": 1,
+        "aten::_flash_attention_backward": 1,
+        "void pytorch_flash::flash_bwd_dot_do_o_kernel<false, Flash_bwd_kernel_traits<64, 128, 128, 8, 4, 4, 4, false, false, cutlass::bfloat16_t, Flash_kernel_traits<64, 128, 128, 8, cutlass::bfloat16_t> > >(pytorch_flash::Flash_bwd_params)": 1,
+        "void pytorch_flash::flash_bwd_dq_dk_dv_loop_seqk_parallel_kernel<Flash_bwd_kernel_traits<64, 128, 128, 8, 4, 4, 4, false, false, cutlass::bfloat16_t, Flash_kernel_traits<64, 128, 128, 8, cutlass::bfloat16_t> >, false, true, false, false, true, true, false>(pytorch_flash::Flash_bwd_params)": 1,
+        "void pytorch_flash::flash_bwd_convert_dq_kernel<Flash_bwd_kernel_traits<64, 128, 128, 8, 4, 4, 4, false, false, cutlass::bfloat16_t, Flash_kernel_traits<64, 128, 128, 8, cutlass::bfloat16_t> > >(pytorch_flash::Flash_bwd_params, int)": 1
+      },
+      "status": "measured"
+    },
+    {
+      "layer": 0,
+      "backend": "SDPBackend.FLASH_ATTENTION",
+      "deterministic": true,
+      "grouped": true,
+      "capture_sha256": "81b1a0b6c1e3dff25d9f2e8c1484b924c05a18fe402e237d003d6ffa6495f0e3",
+      "shape": [
+        [
+          16,
+          9,
+          1024,
+          64
+        ],
+        [
+          16,
+          3,
+          1024,
+          64
+        ],
+        [
+          16,
+          3,
+          1024,
+          64
+        ]
+      ],
+      "self_repeat": {
+        "output": {
+          "equal": true,
+          "mismatches": 0,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "dq": {
+          "equal": true,
+          "mismatches": 0,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "dk": {
+          "equal": true,
+          "mismatches": 0,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "dv": {
+          "equal": true,
+          "mismatches": 0,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        }
+      },
+      "versus_expanded": {
+        "output": {
+          "equal": true,
+          "mismatches": 0,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "dq": {
+          "equal": true,
+          "mismatches": 0,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "dk": {
+          "equal": true,
+          "mismatches": 0,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "dv": {
+          "equal": true,
+          "mismatches": 0,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        }
+      },
+      "median_forward_backward_ms": 0.673088014125824,
+      "samples_ms": [
+        0.6716799736022949,
+        0.6744639873504639,
+        0.6755520105361938,
+        0.6722880005836487,
+        0.6738880276679993,
+        0.6754239797592163,
+        0.6717119812965393,
+        0.6749759912490845,
+        0.6740480065345764,
+        0.6710399985313416,
+        0.6792640089988708,
+        0.6779199838638306,
+        0.6745280027389526,
+        0.6667839884757996,
+        0.671455979347229,
+        0.6788480281829834,
+        0.6693440079689026,
+        0.6720960140228271,
+        0.6667519807815552,
+        0.67084801197052
+      ],
+      "incremental_peak_bytes": 127009792,
+      "operators": {
+        "aten::scaled_dot_product_attention": 1,
+        "aten::_scaled_dot_product_flash_attention": 1,
+        "aten::_flash_attention_forward": 1,
+        "void pytorch_flash::flash_fwd_kernel<Flash_fwd_kernel_traits<64, 128, 128, 4, false, false, cutlass::bfloat16_t, Flash_kernel_traits<64, 128, 128, 4, cutlass::bfloat16_t> >, false, true, false, false, true, true, false, false>(pytorch_flash::Flash_fwd_params)": 1,
+        "aten::_scaled_dot_product_flash_attention_backward": 1,
+        "aten::_flash_attention_backward": 1,
+        "void pytorch_flash::flash_bwd_dot_do_o_kernel<false, Flash_bwd_kernel_traits<64, 128, 128, 8, 4, 4, 4, false, false, cutlass::bfloat16_t, Flash_kernel_traits<64, 128, 128, 8, cutlass::bfloat16_t> > >(pytorch_flash::Flash_bwd_params)": 1,
+        "void pytorch_flash::flash_bwd_dq_dk_dv_loop_seqk_parallel_kernel<Flash_bwd_kernel_traits<64, 128, 128, 8, 4, 4, 4, false, false, cutlass::bfloat16_t, Flash_kernel_traits<64, 128, 128, 8, cutlass::bfloat16_t> >, false, true, false, false, true, true, false>(pytorch_flash::Flash_bwd_params)": 1,
+        "void pytorch_flash::flash_bwd_convert_dq_kernel<Flash_bwd_kernel_traits<64, 128, 128, 8, 4, 4, 4, false, false, cutlass::bfloat16_t, Flash_kernel_traits<64, 128, 128, 8, cutlass::bfloat16_t> > >(pytorch_flash::Flash_bwd_params, int)": 1
+      },
+      "status": "measured"
+    },
+    {
+      "layer": 0,
+      "backend": "SDPBackend.CUDNN_ATTENTION",
+      "deterministic": false,
+      "grouped": false,
+      "capture_sha256": "81b1a0b6c1e3dff25d9f2e8c1484b924c05a18fe402e237d003d6ffa6495f0e3",
+      "shape": [
+        [
+          16,
+          9,
+          1024,
+          64
+        ],
+        [
+          16,
+          3,
+          1024,
+          64
+        ],
+        [
+          16,
+          3,
+          1024,
+          64
+        ]
+      ],
+      "self_repeat": {
+        "output": {
+          "equal": true,
+          "mismatches": 0,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "dq": {
+          "equal": false,
+          "mismatches": 2,
+          "max_abs": 7.105427357601002e-15,
+          "relative_l2": 1.1995422706553484e-11
+        },
+        "dk": {
+          "equal": true,
+          "mismatches": 0,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "dv": {
+          "equal": true,
+          "mismatches": 0,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        }
+      },
+      "median_forward_backward_ms": 0.5182720124721527,
+      "samples_ms": [
+        0.5503039956092834,
+        0.5303679704666138,
+        0.5185920000076294,
+        0.5117759704589844,
+        0.5350080132484436,
+        0.5216320157051086,
+        0.515392005443573,
+        0.5422719717025757,
+        0.5199679732322693,
+        0.5111680030822754,
+        0.5208640098571777,
+        0.5194240212440491,
+        0.5130239725112915,
+        0.5123199820518494,
+        0.5257279872894287,
+        0.5118079781532288,
+        0.5093119740486145,
+        0.5102400183677673,
+        0.5142719745635986,
+        0.517952024936676
+      ],
+      "incremental_peak_bytes": 152176128,
+      "operators": {
+        "aten::repeat_interleave": 2,
+        "aten::scaled_dot_product_attention": 1,
+        "aten::_scaled_dot_product_cudnn_attention": 1,
+        "aten::_cudnn_attention_forward": 1,
+        "cudnn_generated_fort_native_sdpa_sm90_flash_fprop_wgmma_f16_knob_1_64x128x64_4x1x1_cga1x1x1_kernel0_0": 1,
+        "aten::_scaled_dot_product_cudnn_attention_backward": 1,
+        "aten::_cudnn_attention_backward": 1,
+        "void cudnn::fusion::compute_dot_do_o_specialized<true, 64>(void const*, void const*, void*, void*, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, float, void const*, void const*, void const*, void const*, void const*, bool, void const*, void*, void const*, int, int, int, int, int, int, int, int, int, float*, float*, float*)": 1,
+        "cudnn_generated_fort_native_sdpa_sm90_flash_bprop_wgmma_f16_knob_2_64x64x64_1x4x1_cga1x1x1_kernel0_0": 1,
+        "void cudnn::fusion::convert_dq_to_16bits<true>(void const*, void*, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, float const*, float const*, float const*, float*, void const*, void*, void*, bool, bool)": 1
+      },
+      "status": "measured"
+    },
+    {
+      "layer": 0,
+      "backend": "SDPBackend.CUDNN_ATTENTION",
+      "deterministic": false,
+      "grouped": true,
+      "capture_sha256": "81b1a0b6c1e3dff25d9f2e8c1484b924c05a18fe402e237d003d6ffa6495f0e3",
+      "shape": [
+        [
+          16,
+          9,
+          1024,
+          64
+        ],
+        [
+          16,
+          3,
+          1024,
+          64
+        ],
+        [
+          16,
+          3,
+          1024,
+          64
+        ]
+      ],
+      "self_repeat": {
+        "output": {
+          "equal": true,
+          "mismatches": 0,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "dq": {
+          "equal": true,
+          "mismatches": 0,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "dk": {
+          "equal": true,
+          "mismatches": 0,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "dv": {
+          "equal": true,
+          "mismatches": 0,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        }
+      },
+      "versus_expanded": {
+        "output": {
+          "equal": true,
+          "mismatches": 0,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "dq": {
+          "equal": false,
+          "mismatches": 1,
+          "max_abs": 2.220446049250313e-16,
+          "relative_l2": 3.746740579052925e-13
+        },
+        "dk": {
+          "equal": true,
+          "mismatches": 0,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "dv": {
+          "equal": true,
+          "mismatches": 0,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        }
+      },
+      "median_forward_backward_ms": 0.42790400981903076,
+      "samples_ms": [
+        0.4514879882335663,
+        0.43747198581695557,
+        0.43139201402664185,
+        0.42735999822616577,
+        0.42684799432754517,
+        0.4272319972515106,
+        0.42879998683929443,
+        0.42476800084114075,
+        0.4273279905319214,
+        0.4277440011501312,
+        0.43910399079322815,
+        0.4314559996128082,
+        0.42825600504875183,
+        0.42684799432754517,
+        0.42694398760795593,
+        0.4277760088443756,
+        0.42924800515174866,
+        0.42665600776672363,
+        0.4280320107936859,
+        0.43116798996925354
+      ],
+      "incremental_peak_bytes": 127010304,
+      "operators": {
+        "aten::scaled_dot_product_attention": 1,
+        "aten::_scaled_dot_product_cudnn_attention": 1,
+        "aten::_cudnn_attention_forward": 1,
+        "cudnn_generated_fort_native_sdpa_sm90_flash_fprop_wgmma_f16_knob_1_64x128x64_4x1x1_cga1x1x1_kernel0_0": 1,
+        "aten::_scaled_dot_product_cudnn_attention_backward": 1,
+        "aten::_cudnn_attention_backward": 1,
+        "void cudnn::fusion::compute_dot_do_o_specialized<true, 64>(void const*, void const*, void*, void*, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, float, void const*, void const*, void const*, void const*, void const*, bool, void const*, void*, void const*, int, int, int, int, int, int, int, int, int, float*, float*, float*)": 1,
+        "cudnn_generated_fort_native_sdpa_sm90_flash_bprop_wgmma_f16_knob_2_64x64x64_1x4x1_cga1x1x1_kernel0_0": 1,
+        "void cudnn::fusion::convert_dq_to_16bits<true>(void const*, void*, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, float const*, float const*, float const*, float*, void const*, void*, void*, bool, bool)": 1,
+        "void cudnn::fusion::fmha_reduce_head<true>(void const*, void*, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, float const*, float const*, float const*, float*, void*, bool, void*, bool)": 2
+      },
+      "status": "measured"
+    },
+    {
+      "layer": 29,
+      "backend": "SDPBackend.FLASH_ATTENTION",
+      "deterministic": true,
+      "grouped": false,
+      "capture_sha256": "05c3768c758b0078b1fb75a3b3700452a740fbeec8e67ad7a8213783243b2e43",
+      "shape": [
+        [
+          16,
+          9,
+          1024,
+          64
+        ],
+        [
+          16,
+          3,
+          1024,
+          64
+        ],
+        [
+          16,
+          3,
+          1024,
+          64
+        ]
+      ],
+      "self_repeat": {
+        "output": {
+          "equal": true,
+          "mismatches": 0,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "dq": {
+          "equal": true,
+          "mismatches": 0,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "dk": {
+          "equal": true,
+          "mismatches": 0,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "dv": {
+          "equal": true,
+          "mismatches": 0,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        }
+      },
+      "median_forward_backward_ms": 0.7096160054206848,
+      "samples_ms": [
+        0.7485120296478271,
+        0.7426559925079346,
+        0.7097280025482178,
+        0.708191990852356,
+        0.7094720005989075,
+        0.709663987159729,
+        0.7097920179367065,
+        0.7056959867477417,
+        0.7069759964942932,
+        0.7058879733085632,
+        0.7529600262641907,
+        0.7218239903450012,
+        0.7178239822387695,
+        0.7094720005989075,
+        0.7090880274772644,
+        0.7125120162963867,
+        0.7078400254249573,
+        0.7141119837760925,
+        0.7095680236816406,
+        0.7048640251159668
+      ],
+      "incremental_peak_bytes": 152175616,
+      "operators": {
+        "aten::repeat_interleave": 2,
+        "aten::scaled_dot_product_attention": 1,
+        "aten::_scaled_dot_product_flash_attention": 1,
+        "aten::_flash_attention_forward": 1,
+        "void pytorch_flash::flash_fwd_kernel<Flash_fwd_kernel_traits<64, 128, 128, 4, false, false, cutlass::bfloat16_t, Flash_kernel_traits<64, 128, 128, 4, cutlass::bfloat16_t> >, false, true, false, false, true, true, false, false>(pytorch_flash::Flash_fwd_params)": 1,
+        "aten::_scaled_dot_product_flash_attention_backward": 1,
+        "aten::_flash_attention_backward": 1,
+        "void pytorch_flash::flash_bwd_dot_do_o_kernel<false, Flash_bwd_kernel_traits<64, 128, 128, 8, 4, 4, 4, false, false, cutlass::bfloat16_t, Flash_kernel_traits<64, 128, 128, 8, cutlass::bfloat16_t> > >(pytorch_flash::Flash_bwd_params)": 1,
+        "void pytorch_flash::flash_bwd_dq_dk_dv_loop_seqk_parallel_kernel<Flash_bwd_kernel_traits<64, 128, 128, 8, 4, 4, 4, false, false, cutlass::bfloat16_t, Flash_kernel_traits<64, 128, 128, 8, cutlass::bfloat16_t> >, false, true, false, false, true, true, false>(pytorch_flash::Flash_bwd_params)": 1,
+        "void pytorch_flash::flash_bwd_convert_dq_kernel<Flash_bwd_kernel_traits<64, 128, 128, 8, 4, 4, 4, false, false, cutlass::bfloat16_t, Flash_kernel_traits<64, 128, 128, 8, cutlass::bfloat16_t> > >(pytorch_flash::Flash_bwd_params, int)": 1
+      },
+      "status": "measured"
+    },
+    {
+      "layer": 29,
+      "backend": "SDPBackend.FLASH_ATTENTION",
+      "deterministic": true,
+      "grouped": true,
+      "capture_sha256": "05c3768c758b0078b1fb75a3b3700452a740fbeec8e67ad7a8213783243b2e43",
+      "shape": [
+        [
+          16,
+          9,
+          1024,
+          64
+        ],
+        [
+          16,
+          3,
+          1024,
+          64
+        ],
+        [
+          16,
+          3,
+          1024,
+          64
+        ]
+      ],
+      "self_repeat": {
+        "output": {
+          "equal": true,
+          "mismatches": 0,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "dq": {
+          "equal": true,
+          "mismatches": 0,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "dk": {
+          "equal": true,
+          "mismatches": 0,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "dv": {
+          "equal": true,
+          "mismatches": 0,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        }
+      },
+      "versus_expanded": {
+        "output": {
+          "equal": true,
+          "mismatches": 0,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "dq": {
+          "equal": true,
+          "mismatches": 0,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "dk": {
+          "equal": true,
+          "mismatches": 0,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "dv": {
+          "equal": true,
+          "mismatches": 0,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        }
+      },
+      "median_forward_backward_ms": 0.6704640090465546,
+      "samples_ms": [
+        0.6849279999732971,
+        0.6767359972000122,
+        0.669983983039856,
+        0.6783999800682068,
+        0.6683520078659058,
+        0.6678720116615295,
+        0.6729919910430908,
+        0.66566401720047,
+        0.6709120273590088,
+        0.6672639846801758,
+        0.6694719791412354,
+        0.6713280081748962,
+        0.681119978427887,
+        0.6731839776039124,
+        0.6683200001716614,
+        0.6717119812965393,
+        0.6700159907341003,
+        0.669920027256012,
+        0.6709120273590088,
+        0.6685439944267273
+      ],
+      "incremental_peak_bytes": 127009792,
+      "operators": {
+        "aten::scaled_dot_product_attention": 1,
+        "aten::_scaled_dot_product_flash_attention": 1,
+        "aten::_flash_attention_forward": 1,
+        "void pytorch_flash::flash_fwd_kernel<Flash_fwd_kernel_traits<64, 128, 128, 4, false, false, cutlass::bfloat16_t, Flash_kernel_traits<64, 128, 128, 4, cutlass::bfloat16_t> >, false, true, false, false, true, true, false, false>(pytorch_flash::Flash_fwd_params)": 1,
+        "aten::_scaled_dot_product_flash_attention_backward": 1,
+        "aten::_flash_attention_backward": 1,
+        "void pytorch_flash::flash_bwd_dot_do_o_kernel<false, Flash_bwd_kernel_traits<64, 128, 128, 8, 4, 4, 4, false, false, cutlass::bfloat16_t, Flash_kernel_traits<64, 128, 128, 8, cutlass::bfloat16_t> > >(pytorch_flash::Flash_bwd_params)": 1,
+        "void pytorch_flash::flash_bwd_dq_dk_dv_loop_seqk_parallel_kernel<Flash_bwd_kernel_traits<64, 128, 128, 8, 4, 4, 4, false, false, cutlass::bfloat16_t, Flash_kernel_traits<64, 128, 128, 8, cutlass::bfloat16_t> >, false, true, false, false, true, true, false>(pytorch_flash::Flash_bwd_params)": 1,
+        "void pytorch_flash::flash_bwd_convert_dq_kernel<Flash_bwd_kernel_traits<64, 128, 128, 8, 4, 4, 4, false, false, cutlass::bfloat16_t, Flash_kernel_traits<64, 128, 128, 8, cutlass::bfloat16_t> > >(pytorch_flash::Flash_bwd_params, int)": 1
+      },
+      "status": "measured"
+    },
+    {
+      "layer": 29,
+      "backend": "SDPBackend.CUDNN_ATTENTION",
+      "deterministic": false,
+      "grouped": false,
+      "capture_sha256": "05c3768c758b0078b1fb75a3b3700452a740fbeec8e67ad7a8213783243b2e43",
+      "shape": [
+        [
+          16,
+          9,
+          1024,
+          64
+        ],
+        [
+          16,
+          3,
+          1024,
+          64
+        ],
+        [
+          16,
+          3,
+          1024,
+          64
+        ]
+      ],
+      "self_repeat": {
+        "output": {
+          "equal": true,
+          "mismatches": 0,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "dq": {
+          "equal": false,
+          "mismatches": 3,
+          "max_abs": 2.9103830456733704e-11,
+          "relative_l2": 7.883095816690103e-08
+        },
+        "dk": {
+          "equal": true,
+          "mismatches": 0,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "dv": {
+          "equal": true,
+          "mismatches": 0,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        }
+      },
+      "median_forward_backward_ms": 0.5176480114459991,
+      "samples_ms": [
+        0.5574079751968384,
+        0.5386880040168762,
+        0.5335040092468262,
+        0.5207679867744446,
+        0.5178560018539429,
+        0.5150399804115295,
+        0.5189759731292725,
+        0.521727979183197,
+        0.5199999809265137,
+        0.5119040012359619,
+        0.512607991695404,
+        0.5153599977493286,
+        0.5117759704589844,
+        0.5245440006256104,
+        0.5116479992866516,
+        0.5158720016479492,
+        0.5080639719963074,
+        0.51801598072052,
+        0.5080639719963074,
+        0.5174400210380554
+      ],
+      "incremental_peak_bytes": 152176128,
+      "operators": {
+        "aten::repeat_interleave": 2,
+        "aten::scaled_dot_product_attention": 1,
+        "aten::_scaled_dot_product_cudnn_attention": 1,
+        "aten::_cudnn_attention_forward": 1,
+        "cudnn_generated_fort_native_sdpa_sm90_flash_fprop_wgmma_f16_knob_1_64x128x64_4x1x1_cga1x1x1_kernel0_0": 1,
+        "aten::_scaled_dot_product_cudnn_attention_backward": 1,
+        "aten::_cudnn_attention_backward": 1,
+        "void cudnn::fusion::compute_dot_do_o_specialized<true, 64>(void const*, void const*, void*, void*, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, float, void const*, void const*, void const*, void const*, void const*, bool, void const*, void*, void const*, int, int, int, int, int, int, int, int, int, float*, float*, float*)": 1,
+        "cudnn_generated_fort_native_sdpa_sm90_flash_bprop_wgmma_f16_knob_2_64x64x64_1x4x1_cga1x1x1_kernel0_0": 1,
+        "void cudnn::fusion::convert_dq_to_16bits<true>(void const*, void*, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, float const*, float const*, float const*, float*, void const*, void*, void*, bool, bool)": 1
+      },
+      "status": "measured"
+    },
+    {
+      "layer": 29,
+      "backend": "SDPBackend.CUDNN_ATTENTION",
+      "deterministic": false,
+      "grouped": true,
+      "capture_sha256": "05c3768c758b0078b1fb75a3b3700452a740fbeec8e67ad7a8213783243b2e43",
+      "shape": [
+        [
+          16,
+          9,
+          1024,
+          64
+        ],
+        [
+          16,
+          3,
+          1024,
+          64
+        ],
+        [
+          16,
+          3,
+          1024,
+          64
+        ]
+      ],
+      "self_repeat": {
+        "output": {
+          "equal": true,
+          "mismatches": 0,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "dq": {
+          "equal": false,
+          "mismatches": 1,
+          "max_abs": 2.220446049250313e-16,
+          "relative_l2": 4.2527698543804226e-13
+        },
+        "dk": {
+          "equal": true,
+          "mismatches": 0,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "dv": {
+          "equal": true,
+          "mismatches": 0,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        }
+      },
+      "versus_expanded": {
+        "output": {
+          "equal": true,
+          "mismatches": 0,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "dq": {
+          "equal": false,
+          "mismatches": 1,
+          "max_abs": 2.220446049250313e-16,
+          "relative_l2": 4.2527698543804226e-13
+        },
+        "dk": {
+          "equal": true,
+          "mismatches": 0,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "dv": {
+          "equal": true,
+          "mismatches": 0,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        }
+      },
+      "median_forward_backward_ms": 0.42745600640773773,
+      "samples_ms": [
+        0.46511998772621155,
+        0.4428800046443939,
+        0.4349760115146637,
+        0.43142399191856384,
+        0.43331199884414673,
+        0.4261760115623474,
+        0.4278720021247864,
+        0.4214079976081848,
+        0.42559999227523804,
+        0.4270400106906891,
+        0.42684799432754517,
+        0.4270080029964447,
+        0.4262079894542694,
+        0.4291200041770935,
+        0.4270400106906891,
+        0.426144003868103,
+        0.43408000469207764,
+        0.44918400049209595,
+        0.4296639859676361,
+        0.42668798565864563
+      ],
+      "incremental_peak_bytes": 127010304,
+      "operators": {
+        "aten::scaled_dot_product_attention": 1,
+        "aten::_scaled_dot_product_cudnn_attention": 1,
+        "aten::_cudnn_attention_forward": 1,
+        "cudnn_generated_fort_native_sdpa_sm90_flash_fprop_wgmma_f16_knob_1_64x128x64_4x1x1_cga1x1x1_kernel0_0": 1,
+        "aten::_scaled_dot_product_cudnn_attention_backward": 1,
+        "aten::_cudnn_attention_backward": 1,
+        "void cudnn::fusion::compute_dot_do_o_specialized<true, 64>(void const*, void const*, void*, void*, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, float, void const*, void const*, void const*, void const*, void const*, bool, void const*, void*, void const*, int, int, int, int, int, int, int, int, int, float*, float*, float*)": 1,
+        "cudnn_generated_fort_native_sdpa_sm90_flash_bprop_wgmma_f16_knob_2_64x64x64_1x4x1_cga1x1x1_kernel0_0": 1,
+        "void cudnn::fusion::convert_dq_to_16bits<true>(void const*, void*, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, float const*, float const*, float const*, float*, void const*, void*, void*, bool, bool)": 1,
+        "void cudnn::fusion::fmha_reduce_head<true>(void const*, void*, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, float const*, float const*, float const*, float*, void*, bool, void*, bool)": 2
+      },
+      "status": "measured"
+    }
+  ],
+  "torch": "2.14.1+cu130",
+  "cuda": "13.0"
+}

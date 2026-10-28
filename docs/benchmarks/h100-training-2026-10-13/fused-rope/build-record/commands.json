@@ -1,0 +1,27 @@
+[
+  [
+    "cmake",
+    "-S",
+    "/home/ubuntu/ntransformer-h100/source",
+    "-B",
+    "/home/ubuntu/ntransformer-h100/build-training-rope",
+    "-G",
+    "Ninja",
+    "-DNTRANSFORMER_BUILD_NTRPU_SIM=OFF",
+    "-DNTRANSFORMER_BUILD_TRAINING=ON",
+    "-DCMAKE_BUILD_TYPE=Release",
+    "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
+    "-DCMAKE_CXX_COMPILER=/home/ubuntu/ntransformer-h100/env/bin/x86_64-conda-linux-gnu-g++",
+    "-DCMAKE_CUDA_HOST_COMPILER=/home/ubuntu/ntransformer-h100/env/bin/x86_64-conda-linux-gnu-gcc",
+    "-DCMAKE_CUDA_COMPILER=/home/ubuntu/ntransformer-h100/env/bin/nvcc"
+  ],
+  [
+    "cmake",
+    "--build",
+    "/home/ubuntu/ntransformer-h100/build-training-rope",
+    "--target",
+    "ntransformer_training",
+    "-j",
+    "2"
+  ]
+]

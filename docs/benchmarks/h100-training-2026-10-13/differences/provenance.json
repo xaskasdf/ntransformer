@@ -1,0 +1,25 @@
+{
+  "source_sha256": {
+    "/home/ubuntu/ntransformer-h100/source/scripts/probe_training_differences.py": "1d785fb957ed2b8687bf18e99d5f312c10d1400e64120edd4a6821bf21f4564b",
+    "/home/ubuntu/ntransformer-h100/source/scripts/analyze_training_differences.py": "8593a54a956770686927cd6919ab70b8c8c4dcb8d03fc5d75a12c97aca291b73",
+    "/home/ubuntu/ntransformer-h100/source/scripts/compare_training_experiment.py": "fbd7fcadaea374722f84c10a834a8d561c691b7b663df8bd563e6e8b23962030",
+    "/home/ubuntu/ntransformer-h100/source/scripts/train_brandon_experiment.py": "4f60d1445d72ba3f2f506b01dff038a6207773b0af859bd337330a41a60d7343",
+    "/home/ubuntu/ntransformer-h100/source/scripts/analyze_verified_instructions.py": "f9696ba4d633e3d75f35caa33e3e239a22a3a91c3ab05bd2dd70c41efd52c4e1",
+    "/home/ubuntu/ntransformer-h100/source/python/ntransformer_training/measurement.py": "d32f75b827b9f4faf899b7cc54c2a85685857cdc914a4ed2da816b91b735b8ce",
+    "/home/ubuntu/ntransformer-h100/source/python/ntransformer_training/ops.py": "7b2a4c7ee3887287b76bd4680e7df04e8cc6e059ac43f19410870d29850d8eb4",
+    "/home/ubuntu/ntransformer-h100/source/python/ntransformer_training/brandon.py": "cc12b6cc73818ef47ddbbc0d8ae4b16add17e53abddf1b1dbc397bd416d21cf8",
+    "/home/ubuntu/ntransformer-h100/source/python/ntransformer_training/__init__.py": "9bf5eb2e58c85eb90191fa557f56adce0144efbf083c00e0d5bac4aceab53ab2",
+    "/home/ubuntu/ntransformer-h100/source/python/ntransformer_training/pipeline.py": "724eb1bb847bac91453844e030b166eb350ed994b1c9f7deb2c69e9462761de2",
+    "/home/ubuntu/ntransformer-h100/source/src/training/ops.cu": "ee5ab6e3074b1c85397fe5044b0857fde9d96984061a165b72ffac7df4ff2e46",
+    "/home/ubuntu/ntransformer-h100/source/tests/test_training_audit.py": "a4e781a17818f4c4f1b25bb471aed8d60cfa293182fc64b412e7f829944e84a5"
+  },
+  "gpu_processes_at_completion": "",
+  "library_sha256": "b5039135d5c50d4c019ea57046d2ae9595269ea8584cd6fee10f9455f9f450ee",
+  "checkpoint_sha256": {
+    "reference-repeat": "329859ff76107f0426436cb416b4ae0f1dba2a3a8b3661eeb3ad8b8517292e7f",
+    "deterministic-reference": "1a76bd690038a7f59bf4b82e9bbae5f7dac1522ef064ee5367b3e6979a1a7e21",
+    "deterministic-native": "1162f8af026bc6f6056db3af7f93bf8da6e81319ea1812c577023433e2d258d7",
+    "deterministic-checkpoint": "e727193e8a4382c4e9cd3a853cf807fad4a66d7ee119ed06b867644d4ed751a8",
+    "deterministic-peer": "0652e0085d236e1ed354f6a02060629c0b0059c6912b1bb69853b55b8d17436c"
+  }
+}

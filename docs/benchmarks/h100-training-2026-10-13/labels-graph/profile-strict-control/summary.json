@@ -1,0 +1,110 @@
+{
+  "status": "complete",
+  "mode": "native",
+  "backend": {
+    "native_norms": 61,
+    "norm_mode": "compatible",
+    "norm_reductions": "PyTorch",
+    "native_swiglu": 30,
+    "shared_projection_cast_groups": 60,
+    "direct_gqa_layers": 30,
+    "native_rotary_layers": 30,
+    "loss_mode": "fused",
+    "loss_block_size": 2048,
+    "fused_loss_labels": false,
+    "checkpoint_layers": 0,
+    "peer_activation_storage": false,
+    "gemm_attention_optimizer_ddp": "PyTorch",
+    "higher_order_gradients": false,
+    "deterministic_algorithms": true,
+    "fill_uninitialized_memory": false,
+    "gradient_bucket_views": true,
+    "defer_loss_readbacks": true,
+    "cublas_workspace_config": ":4096:8",
+    "attention_dispatch": "PyTorch SDPA automatic; constrained by determinism setting"
+  },
+  "steps": 13,
+  "start_step": 32768,
+  "completed_steps": 32781,
+  "physical_world_size": 2,
+  "logical_world_size": 2,
+  "global_tokens_per_step": 65536,
+  "parameters": 107604288,
+  "warmup_steps": 10,
+  "measured_steps": 3,
+  "tokens_per_second": 160584.72639083382,
+  "mean_step_seconds": 0.4081085509994106,
+  "measured_window_seconds": 1.2243256529982318,
+  "instrumented_step_mean_seconds": 0.22440615166609254,
+  "timings_rank0": {
+    "initialization_seconds": 5.7519625760032795,
+    "initial_validation_seconds": 0.5330819090013392,
+    "training_seconds_including_warmup": 3.271317029000784,
+    "final_validation_seconds": 0.4104223460017238,
+    "checkpoint_and_batch_record_seconds": 1.0758884559982107,
+    "process_seconds_through_checkpoint": 16.93319394900027
+  },
+  "historical_baseline": {
+    "baseline_sha256": "bf58fea89c51f967ebcf59f9b74acb6fadb84f40a2720a679fe154436de43038",
+    "captured_step": 25400,
+    "historical_tokens_per_second": 307985.1565696424,
+    "scope": "Historical context; paired continuation is the causal implementation comparison",
+    "initialization": "Completed pretraining checkpoint, restored AdamW, final LR floor; not a pilot restart"
+  },
+  "initial_validation": {
+    "fineweb_edu": 2.6587175726890564,
+    "cosmopedia": 1.6827719807624817,
+    "mean": 2.170744776725769
+  },
+  "final_validation": {
+    "fineweb_edu": 2.6587067544460297,
+    "cosmopedia": 1.6822004094719887,
+    "mean": 2.170453581959009
+  },
+  "batch_sha256": "849e57dcbfd84f0d8f994ac62b41522aaf4bc289ac75a069bdace7b12cd71633",
+  "ranks": [
+    {
+      "rank": 0,
+      "memory": [
+        {
+          "device": 0,
+          "peak_allocated_bytes": 12362771968,
+          "peak_reserved_bytes": 12803112960
+        },
+        {
+          "device": 1,
+          "peak_allocated_bytes": 0,
+          "peak_reserved_bytes": 0
+        }
+      ],
+      "graph": null,
+      "pipeline": null
+    },
+    {
+      "rank": 1,
+      "memory": [
+        {
+          "device": 0,
+          "peak_allocated_bytes": 0,
+          "peak_reserved_bytes": 0
+        },
+        {
+          "device": 1,
+          "peak_allocated_bytes": 12362771968,
+          "peak_reserved_bytes": 12803112960
+        }
+      ],
+      "graph": null,
+      "pipeline": null
+    }
+  ],
+  "profiled": true,
+  "torch_version": "2.14.1+cu130",
+  "cuda_version": "13.0",
+  "nccl_version": [
+    2,
+    30,
+    7
+  ],
+  "source_checkpoint": "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/pretrain/last.pt"
+}

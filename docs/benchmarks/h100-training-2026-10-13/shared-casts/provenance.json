@@ -1,0 +1,9 @@
+{
+  "library_sha256": "b5039135d5c50d4c019ea57046d2ae9595269ea8584cd6fee10f9455f9f450ee",
+  "source_checkpoint": "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/pretrain/last.pt",
+  "source_checkpoint_sha256": "c2d96fa49ba170246c4be6c017ac84321460379d2295472e5a46708094af7764",
+  "throughput_scope": "100 updates, offsets 10..99; continuous window includes data, audit, communication and logging",
+  "profile_scope": "Separate 13-update runs, active offsets 11 and 12; not throughput benchmarks",
+  "tests_scope": "Full pretraining batch and partially masked pretraining targets; not a new SFT quality evaluation",
+  "initial_prototype": "shared-casts-20261014: trainable-leaf autocast compatibility failed in unit test before any benchmark"
+}

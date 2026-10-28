@@ -1,0 +1,19 @@
+{
+  "status": "passed",
+  "reference": "/home/ubuntu/ntransformer-h100/training/precise-20261013/reference",
+  "candidate": "/home/ubuntu/ntransformer-h100/training/precise-20261013/native",
+  "paired_throughput_ratio": 1.2579871721705511,
+  "historical_throughput_ratio": 1.232330717497991,
+  "historical_ratio_scope": "Descriptive only: separate initialization and instrumentation",
+  "max_training_loss_delta": 0.00021028518676757812,
+  "final_validation_delta": 6.902962923049927e-06,
+  "relative_update_difference": 0.017347927265571623,
+  "max_weight_difference": 0.0003552958369255066,
+  "updated_tensors": 273,
+  "total_tensors": 273,
+  "limits": {
+    "training_loss": 0.03,
+    "validation_loss": 0.02,
+    "relative_update_difference": 0.1
+  }
+}

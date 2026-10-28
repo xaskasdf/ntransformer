@@ -1,0 +1,99 @@
+{"step": 32778, "loss": 2.2255403995513916, "seconds": 0.4390159679987846, "tokens": 65536, "grad_norm": 0.34622031450271606, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 112.53500747680664, "backward_stream_ms": 314.4993591308594, "optimizer_stream_ms": 3.18723201751709, "measured": false}
+{"step": 32788, "loss": 2.312933385372162, "seconds": 0.43894052899850067, "tokens": 65536, "grad_norm": 0.3493072986602783, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 112.56675148010254, "backward_stream_ms": 314.41395568847656, "optimizer_stream_ms": 3.2013440132141113, "measured": true}
+{"step": 32798, "loss": 2.2175933718681335, "seconds": 0.4391397040017182, "tokens": 65536, "grad_norm": 0.3400815427303314, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 112.50223922729492, "backward_stream_ms": 314.4972457885742, "optimizer_stream_ms": 3.342495918273926, "measured": true}
+{"step": 32808, "loss": 2.3274384140968323, "seconds": 0.4390714820001449, "tokens": 65536, "grad_norm": 0.3453884720802307, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 112.54735946655273, "backward_stream_ms": 314.57737731933594, "optimizer_stream_ms": 3.174207925796509, "measured": true}
+{"step": 32818, "loss": 2.2125300765037537, "seconds": 0.43901161400026467, "tokens": 65536, "grad_norm": 0.3419443666934967, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 112.50764846801758, "backward_stream_ms": 314.47289276123047, "optimizer_stream_ms": 3.1606719493865967, "measured": true}
+{"step": 32828, "loss": 2.285291850566864, "seconds": 0.43802105100076005, "tokens": 65536, "grad_norm": 0.339620977640152, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 112.5436782836914, "backward_stream_ms": 314.4216613769531, "optimizer_stream_ms": 3.253119945526123, "measured": true}
+{"step": 32838, "loss": 2.304690957069397, "seconds": 0.4384247649995814, "tokens": 65536, "grad_norm": 0.3451092541217804, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 112.52630233764648, "backward_stream_ms": 314.6596145629883, "optimizer_stream_ms": 3.167072057723999, "measured": true}
+{"step": 32848, "loss": 2.2672781348228455, "seconds": 0.43860477399903175, "tokens": 65536, "grad_norm": 0.34110963344573975, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 112.53103828430176, "backward_stream_ms": 314.57171630859375, "optimizer_stream_ms": 3.197567939758301, "measured": true}
+{"step": 32858, "loss": 2.2093514800071716, "seconds": 0.4383129369998642, "tokens": 65536, "grad_norm": 0.3347938060760498, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 112.54102325439453, "backward_stream_ms": 314.6812210083008, "optimizer_stream_ms": 3.1503360271453857, "measured": true}
+{"step": 32868, "loss": 2.3400527834892273, "seconds": 0.43802763400162803, "tokens": 65536, "grad_norm": 0.34118136763572693, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 112.56636810302734, "backward_stream_ms": 314.4930877685547, "optimizer_stream_ms": 3.1708478927612305, "measured": true}
+{
+  "status": "complete",
+  "mode": "peer",
+  "backend": {
+    "native_norms": 61,
+    "native_swiglu": 30,
+    "checkpoint_layers": 30,
+    "peer_activation_storage": true,
+    "gemm_attention_optimizer_ddp": "PyTorch",
+    "higher_order_gradients": false
+  },
+  "steps": 100,
+  "start_step": 32768,
+  "completed_steps": 32868,
+  "physical_world_size": 1,
+  "logical_world_size": 2,
+  "global_tokens_per_step": 65536,
+  "parameters": 107604288,
+  "warmup_steps": 10,
+  "measured_steps": 90,
+  "tokens_per_second": 149316.78418927512,
+  "mean_step_seconds": 0.4389057824666654,
+  "measured_window_seconds": 39.501520421999885,
+  "instrumented_step_mean_seconds": 0.43865084770018764,
+  "timings_rank0": {
+    "initialization_seconds": 4.680682750000415,
+    "initial_validation_seconds": 1.0860907299993414,
+    "training_seconds_including_warmup": 44.0886070939996,
+    "final_validation_seconds": 0.9024083610001981,
+    "checkpoint_and_batch_record_seconds": 1.0571600380008022,
+    "process_seconds_through_checkpoint": 51.81537914600085
+  },
+  "historical_baseline": {
+    "baseline_sha256": "bf58fea89c51f967ebcf59f9b74acb6fadb84f40a2720a679fe154436de43038",
+    "captured_step": 25400,
+    "historical_tokens_per_second": 307985.1565696424,
+    "scope": "Historical context; paired continuation is the causal implementation comparison",
+    "initialization": "Completed pretraining checkpoint, restored AdamW, final LR floor; not a pilot restart"
+  },
+  "initial_validation": {
+    "fineweb_edu": 2.65878763794899,
+    "cosmopedia": 1.6827723383903503,
+    "mean": 2.17077998816967
+  },
+  "final_validation": {
+    "fineweb_edu": 2.6585333049297333,
+    "cosmopedia": 1.681641809642315,
+    "mean": 2.170087557286024
+  },
+  "batch_sha256": "b8c0439017c9037042592324992fe409427e4374902197e7829a10c9c4069106",
+  "ranks": [
+    {
+      "rank": 0,
+      "memory": [
+        {
+          "device": 0,
+          "peak_allocated_bytes": 3335900672,
+          "peak_reserved_bytes": 4284481536
+        },
+        {
+          "device": 1,
+          "peak_allocated_bytes": 1132462080,
+          "peak_reserved_bytes": 1132462080
+        }
+      ],
+      "pipeline": {
+        "peer_device": 1,
+        "peer_blocks": 30,
+        "block_bytes": 37748736,
+        "reserved_peer_bytes": 1132462080,
+        "reserved_staging_bytes": 75497472,
+        "d2d_writes": 12000,
+        "d2d_reads": 12000,
+        "transferred_bytes": 905969664000,
+        "lookahead_prefetches": 11600,
+        "microbatches": 400
+      }
+    }
+  ],
+  "profiled": false,
+  "torch_version": "2.14.1+cu130",
+  "cuda_version": "13.0",
+  "nccl_version": [
+    2,
+    30,
+    7
+  ],
+  "source_checkpoint": "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/pretrain/last.pt"
+}

@@ -1,0 +1,57 @@
+{
+  "seed": 20261016,
+  "counts": {
+    "train": {
+      "smol_smoltalk_short": 2000,
+      "programmatic_reference": 4703,
+      "verified_teacher": 367
+    },
+    "validation": {
+      "programmatic_reference": 240,
+      "smol_smoltalk_short": 45,
+      "verified_teacher": 72
+    }
+  },
+  "families": {
+    "train": {
+      "conversation": 2000,
+      "join": 757,
+      "replace": 1079,
+      "brackets": 1078,
+      "uppercase": 1076,
+      "remove_marker": 1080
+    },
+    "validation": {
+      "join": 51,
+      "conversation": 45,
+      "brackets": 55,
+      "remove_marker": 69,
+      "uppercase": 69,
+      "replace": 68
+    }
+  },
+  "tokens": {
+    "validation/programmatic_reference/supervised": 2897,
+    "validation/programmatic_reference/total": 21554,
+    "train/verified_teacher/supervised": 4376,
+    "train/verified_teacher/total": 32214,
+    "validation/verified_teacher/supervised": 979,
+    "validation/verified_teacher/total": 6578,
+    "train/programmatic_reference/supervised": 56529,
+    "train/programmatic_reference/total": 413162,
+    "train/smol_smoltalk_short/supervised": 69608,
+    "train/smol_smoltalk_short/total": 361590,
+    "validation/smol_smoltalk_short/supervised": 1731,
+    "validation/smol_smoltalk_short/total": 8589
+  },
+  "rejected": {
+    "programmatic_reference/answer_not_representable": 1357,
+    "verified_teacher/answer_not_representable": 30,
+    "duplicate": 13
+  },
+  "base_manifest_sha256": "00d1669f6a919139d8b0b82c49aa1944e4954f67ab3d2d075cf071f2eed3ec84",
+  "teacher_manifest_sha256": "8ec4eae0df2b56c3039398b4ea9ec940cca5cf3372d6f96cc48c0243ba5a879f",
+  "reserved_requests_sha256": "621cf5f37ba60f5b003774469b4b09349fef9724ba53e00c0a7ff05a0e8232ff",
+  "generator_sha256": "a6a87d3ce286c13e8b8fa7af6cb50c36fb2865944c620a6f42f943c3b1976918",
+  "limitations": "Six repeated task families; programmatic references are not distillation. Validation uses different inputs/paraphrases, not unseen skills."
+}

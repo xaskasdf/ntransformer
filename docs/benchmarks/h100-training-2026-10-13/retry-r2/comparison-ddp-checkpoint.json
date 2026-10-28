@@ -1,0 +1,19 @@
+{
+  "status": "passed",
+  "reference": "/home/ubuntu/ntransformer-h100/training/experiment-20261013-r2/ddp-reference",
+  "candidate": "/home/ubuntu/ntransformer-h100/training/experiment-20261013-r2/ddp-checkpoint",
+  "paired_throughput_ratio": 0.9671293607502743,
+  "historical_throughput_ratio": 0.9491357319407441,
+  "historical_ratio_scope": "Descriptive only: separate initialization and instrumentation",
+  "max_training_loss_delta": 0.00026917457580566406,
+  "final_validation_delta": 2.1647661924362183e-05,
+  "relative_update_difference": 0.017142126509604,
+  "max_weight_difference": 0.0003627389669418335,
+  "updated_tensors": 273,
+  "total_tensors": 273,
+  "limits": {
+    "training_loss": 0.03,
+    "validation_loss": 0.02,
+    "relative_update_difference": 0.1
+  }
+}

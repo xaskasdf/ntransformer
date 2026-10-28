@@ -1,0 +1,117 @@
+/home/ubuntu/brandon-mini/.venv/lib/python3.12/site-packages/torch/distributed/c10d_logger.py:83: UserWarning: barrier(): using the device under current context. You can specify `device_id` in `init_process_group` to mute this warning.
+  return func(*args, **kwargs)
+[rank0]:[W1014 00:44:03.219080090 ProcessGroupNCCL.cpp:5310] Guessing device ID based on global rank. This can cause a hang if rank to GPU mapping is heterogeneous. You can specify device_id in init_process_group()
+/home/ubuntu/ntransformer-h100/training/operational-20261013/source-snapshot/scripts/train_brandon_experiment.py:144: FutureWarning: `broadcast_buffers` is deprecated. Use `forward_sync_buffers` instead. IMPORTANT: unlike `broadcast_buffers=False`, `forward_sync_buffers=False` still syncs buffers at init. If you rely on buffers NOT being synced at init (e.g. rank-local buffers), keep using `broadcast_buffers=False` until `init_sync_buffers` is available.
+  distributed = DDP(model, device_ids=[device.index], broadcast_buffers=False) if world > 1 else model
+/home/ubuntu/ntransformer-h100/training/operational-20261013/source-snapshot/scripts/train_brandon_experiment.py:144: FutureWarning: `broadcast_buffers` is deprecated. Use `forward_sync_buffers` instead. IMPORTANT: unlike `broadcast_buffers=False`, `forward_sync_buffers=False` still syncs buffers at init. If you rely on buffers NOT being synced at init (e.g. rank-local buffers), keep using `broadcast_buffers=False` until `init_sync_buffers` is available.
+  distributed = DDP(model, device_ids=[device.index], broadcast_buffers=False) if world > 1 else model
+{"step": 32778, "loss": 2.2255765795707703, "seconds": 0.2706387660000473, "tokens": 65536, "grad_norm": 0.34622102975845337, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 63.260353088378906, "backward_stream_ms": 199.01830291748047, "optimizer_stream_ms": 3.234976053237915, "measured": false}
+{"step": 32788, "loss": 2.313082754611969, "seconds": 0.2705554110034427, "tokens": 65536, "grad_norm": 0.349180668592453, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 63.23507308959961, "backward_stream_ms": 198.92797088623047, "optimizer_stream_ms": 3.2283198833465576, "measured": true}
+{"step": 32798, "loss": 2.217652440071106, "seconds": 0.2707190809996973, "tokens": 65536, "grad_norm": 0.3401077687740326, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 63.232704162597656, "backward_stream_ms": 199.17091369628906, "optimizer_stream_ms": 3.228384017944336, "measured": true}
+{"step": 32808, "loss": 2.3274725675582886, "seconds": 0.2706953440028883, "tokens": 65536, "grad_norm": 0.34541749954223633, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 63.20547294616699, "backward_stream_ms": 198.96268463134766, "optimizer_stream_ms": 3.2060799598693848, "measured": true}
+{"step": 32818, "loss": 2.2125735878944397, "seconds": 0.270432883000467, "tokens": 65536, "grad_norm": 0.34190115332603455, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 63.19830322265625, "backward_stream_ms": 198.91964721679688, "optimizer_stream_ms": 3.222399950027466, "measured": true}
+{"step": 32828, "loss": 2.285322368144989, "seconds": 0.26986178899824154, "tokens": 65536, "grad_norm": 0.33974409103393555, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 63.228288650512695, "backward_stream_ms": 198.71798706054688, "optimizer_stream_ms": 3.2867519855499268, "measured": true}
+{"step": 32838, "loss": 2.304612457752228, "seconds": 0.27024070000334177, "tokens": 65536, "grad_norm": 0.34507250785827637, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 63.21513748168945, "backward_stream_ms": 198.99484252929688, "optimizer_stream_ms": 3.2042880058288574, "measured": true}
+{"step": 32848, "loss": 2.267346739768982, "seconds": 0.299515644001076, "tokens": 65536, "grad_norm": 0.34126824140548706, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 90.48294448852539, "backward_stream_ms": 198.68218231201172, "optimizer_stream_ms": 4.674528121948242, "measured": true}
+{"step": 32858, "loss": 2.2093746066093445, "seconds": 0.29874583299897495, "tokens": 65536, "grad_norm": 0.33487847447395325, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 89.9994888305664, "backward_stream_ms": 198.55677032470703, "optimizer_stream_ms": 4.67139196395874, "measured": true}
+{"step": 32868, "loss": 2.3401657938957214, "seconds": 0.29900717700002133, "tokens": 65536, "grad_norm": 0.341202050447464, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 90.25356674194336, "backward_stream_ms": 198.61068725585938, "optimizer_stream_ms": 4.6366400718688965, "measured": true}
+{
+  "status": "complete",
+  "mode": "checkpoint",
+  "backend": {
+    "native_norms": 61,
+    "norm_mode": "compatible",
+    "norm_reductions": "PyTorch",
+    "native_swiglu": 30,
+    "checkpoint_layers": 30,
+    "peer_activation_storage": false,
+    "gemm_attention_optimizer_ddp": "PyTorch",
+    "higher_order_gradients": false,
+    "deterministic_algorithms": true,
+    "fill_uninitialized_memory": false,
+    "cublas_workspace_config": ":4096:8",
+    "attention_dispatch": "PyTorch SDPA automatic; constrained by determinism setting"
+  },
+  "steps": 100,
+  "start_step": 32768,
+  "completed_steps": 32868,
+  "physical_world_size": 2,
+  "logical_world_size": 2,
+  "global_tokens_per_step": 65536,
+  "parameters": 107604288,
+  "warmup_steps": 10,
+  "measured_steps": 90,
+  "tokens_per_second": 236025.4023898401,
+  "mean_step_seconds": 0.2776650281555501,
+  "measured_window_seconds": 24.98985253399951,
+  "instrumented_step_mean_seconds": 0.27733307398892876,
+  "timings_rank0": {
+    "initialization_seconds": 5.718187810001837,
+    "initial_validation_seconds": 0.6132531960029155,
+    "training_seconds_including_warmup": 27.801089446998958,
+    "final_validation_seconds": 0.5505902849981794,
+    "checkpoint_and_batch_record_seconds": 1.0806798180019541,
+    "process_seconds_through_checkpoint": 35.77128902200275
+  },
+  "historical_baseline": {
+    "baseline_sha256": "bf58fea89c51f967ebcf59f9b74acb6fadb84f40a2720a679fe154436de43038",
+    "captured_step": 25400,
+    "historical_tokens_per_second": 307985.1565696424,
+    "scope": "Historical context; paired continuation is the causal implementation comparison",
+    "initialization": "Completed pretraining checkpoint, restored AdamW, final LR floor; not a pilot restart"
+  },
+  "initial_validation": {
+    "fineweb_edu": 2.6587175726890564,
+    "cosmopedia": 1.6827719807624817,
+    "mean": 2.170744776725769
+  },
+  "final_validation": {
+    "fineweb_edu": 2.6584929823875427,
+    "cosmopedia": 1.6815914139151573,
+    "mean": 2.17004219815135
+  },
+  "batch_sha256": "b8c0439017c9037042592324992fe409427e4374902197e7829a10c9c4069106",
+  "ranks": [
+    {
+      "rank": 0,
+      "memory": [
+        {
+          "device": 0,
+          "peak_allocated_bytes": 5238025216,
+          "peak_reserved_bytes": 6218055680
+        },
+        {
+          "device": 1,
+          "peak_allocated_bytes": 0,
+          "peak_reserved_bytes": 0
+        }
+      ],
+      "pipeline": null
+    },
+    {
+      "rank": 1,
+      "memory": [
+        {
+          "device": 0,
+          "peak_allocated_bytes": 0,
+          "peak_reserved_bytes": 0
+        },
+        {
+          "device": 1,
+          "peak_allocated_bytes": 5238025216,
+          "peak_reserved_bytes": 6218055680
+        }
+      ],
+      "pipeline": null
+    }
+  ],
+  "profiled": false,
+  "torch_version": "2.14.1+cu130",
+  "cuda_version": "13.0",
+  "nccl_version": [
+    2,
+    30,
+    7
+  ],
+  "source_checkpoint": "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/pretrain/last.pt"
+}

@@ -1,0 +1,434 @@
+{
+  "captured_at_utc": "2026-10-13T20:54:59.101267+00:00",
+  "run_dir": "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1",
+  "status": {
+    "state": "running",
+    "pipeline_pid": 27108,
+    "run_dir": "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1",
+    "stage": "pretrain",
+    "command": [
+      "/home/ubuntu/brandon-mini/.venv/bin/python",
+      "-m",
+      "torch.distributed.run",
+      "--standalone",
+      "--nproc_per_node=2",
+      "scripts/train_mini.py",
+      "--phase",
+      "pretrain",
+      "--config",
+      "/lambda/nfs/btiny/brandon-mini/sources/stage1-v1/configs/model_mini_108m_stage1.yaml",
+      "--data-dir",
+      "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/data",
+      "--output-dir",
+      "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/pretrain",
+      "--init-checkpoint",
+      "/lambda/nfs/btiny/brandon-mini/runs/pilot-pretrain-v1/best.pt"
+    ],
+    "log": "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/pretrain.log",
+    "updated_at": "2026-10-13T19:21:36.681588+00:00",
+    "child_pid": 28048
+  },
+  "parameters": 107604288,
+  "world_size": 2,
+  "config": {
+    "model": {
+      "dim": 576,
+      "n_layers": 30,
+      "n_heads": 9,
+      "n_kv_heads": 3,
+      "vocab_size": 8192,
+      "hidden_dim": 1472,
+      "max_seq_len": 1024,
+      "dropout": 0.0,
+      "weight_tying": true,
+      "norm_eps": "1e-5",
+      "rope_theta": 10000.0,
+      "block_sharing": false,
+      "dense_former": false,
+      "value_residual": false,
+      "n_registers": 0
+    },
+    "tokenizer": {
+      "type": "custom",
+      "vocab_size": 8192,
+      "model_path": "data/tokenizer_8k.model"
+    },
+    "pretrain": {
+      "max_steps": 32768,
+      "warmup_steps": 400,
+      "batch_size": 16,
+      "gradient_accumulation_steps": 2,
+      "optimizer": "adamw",
+      "learning_rate": 0.0003,
+      "muon_learning_rate": 0.02,
+      "min_lr_ratio": 0.1,
+      "decay_fraction": 0.2,
+      "weight_decay": 0.1,
+      "grad_clip": 1.0,
+      "eval_interval": 1000,
+      "eval_batches": 8,
+      "save_interval": 1000,
+      "log_interval": 100,
+      "seed": 20261013
+    },
+    "finetune": {
+      "max_steps": 1200,
+      "warmup_steps": 100,
+      "batch_size": 8,
+      "gradient_accumulation_steps": 2,
+      "optimizer": "adamw",
+      "learning_rate": 5e-05,
+      "muon_learning_rate": 0.001,
+      "min_lr_ratio": 0.1,
+      "decay_fraction": 0.8,
+      "weight_decay": 0.01,
+      "grad_clip": 1.0,
+      "eval_interval": 100,
+      "eval_batches": 8,
+      "save_interval": 100,
+      "log_interval": 20,
+      "seed": 20261013
+    }
+  },
+  "tokens_per_optimizer_step": 65536,
+  "latest_train": {
+    "event": "train",
+    "step": 25400,
+    "loss": 2.428405193686485,
+    "supervised_tokens_per_second": 308014.78143309685,
+    "learning_rate": 0.0003,
+    "grad_norm": 0.34596213698387146,
+    "window_steps": 100,
+    "window_tokens": 6553600,
+    "window_seconds_inferred": 21.27690096399965,
+    "mean_step_ms_in_window": 212.7690096399965
+  },
+  "training_tokens_through_last_log": 1664614400,
+  "planned_training_tokens": 2147483648,
+  "initial_validation": {
+    "event": "validation",
+    "step": 0,
+    "loss": {
+      "fineweb_edu": 4.3078595995903015,
+      "cosmopedia": 3.5625483244657516,
+      "mean": 3.9352039620280266
+    }
+  },
+  "latest_validation": {
+    "event": "validation",
+    "step": 25000,
+    "loss": {
+      "fineweb_edu": 2.788890242576599,
+      "cosmopedia": 1.8305859938263893,
+      "mean": 2.309738118201494
+    }
+  },
+  "timing": {
+    "training_windows": {
+      "windows": 254,
+      "steps": 25400,
+      "tokens": 1664614400,
+      "timed_seconds_inferred": 5433.282613962979,
+      "aggregate_tokens_per_second": 306373.60841899,
+      "window_tps_min": 219348.3738954729,
+      "window_tps_p50": 307929.5349131407,
+      "window_tps_max": 308179.07824796747,
+      "window_tps_cv_percent": 2.5199325426353907,
+      "mean_step_ms_p50": 212.82791213499877,
+      "mean_step_ms_p95": 214.67339066100521,
+      "sampled_grad_norm_min": 0.305936336517334,
+      "sampled_grad_norm_max": 1.9868214130401611
+    },
+    "after_first_1000_steps": {
+      "windows": 244,
+      "steps": 24400,
+      "tokens": 1599078400,
+      "timed_seconds_inferred": 5217.868789797978,
+      "aggregate_tokens_per_second": 306461.9798655213,
+      "window_tps_min": 219348.3738954729,
+      "window_tps_p50": 307934.09856806765,
+      "window_tps_max": 308179.07824796747,
+      "window_tps_cv_percent": 2.555760872853919,
+      "mean_step_ms_p50": 212.82475797500865,
+      "mean_step_ms_p95": 214.1862744039986,
+      "sampled_grad_norm_min": 0.305936336517334,
+      "sampled_grad_norm_max": 1.9868214130401611
+    },
+    "last_1000_steps": {
+      "windows": 10,
+      "steps": 1000,
+      "tokens": 65536000,
+      "timed_seconds_inferred": 212.78947573299956,
+      "aggregate_tokens_per_second": 307985.1565696424,
+      "window_tps_min": 307711.2806111617,
+      "window_tps_p50": 308002.6593912665,
+      "window_tps_max": 308103.3817174671,
+      "window_tps_cv_percent": 0.03172167363296475,
+      "mean_step_ms_p50": 212.7773836150027,
+      "mean_step_ms_p95": 212.8957034300047,
+      "sampled_grad_norm_min": 0.3212411403656006,
+      "sampled_grad_norm_max": 0.34596213698387146
+    },
+    "stage_start_utc": "2026-10-13T19:21:36.681588+00:00",
+    "metrics_cutoff_utc": "2026-10-13T20:54:40.718278+00:00",
+    "wall_seconds_to_last_metric": 5584.03669,
+    "wall_tokens_per_second": 298102.3392953387,
+    "untimed_seconds_estimate": 150.75407603702115
+  },
+  "gpu_observation": {
+    "0": {
+      "name": "NVIDIA H100 80GB HBM3",
+      "samples": 10,
+      "power.draw": {
+        "min": 543.08,
+        "mean": 547.573,
+        "max": 551.27
+      },
+      "power.limit": {
+        "min": 700.0,
+        "mean": 700.0,
+        "max": 700.0
+      },
+      "clocks.current.sm": {
+        "min": 1980.0,
+        "mean": 1980.0,
+        "max": 1980.0
+      },
+      "clocks.current.memory": {
+        "min": 2619.0,
+        "mean": 2619.0,
+        "max": 2619.0
+      },
+      "temperature.gpu": {
+        "min": 51.0,
+        "mean": 51.0,
+        "max": 51.0
+      },
+      "utilization.gpu": {
+        "min": 96.0,
+        "mean": 97.9,
+        "max": 99.0
+      },
+      "utilization.memory": {
+        "min": 69.0,
+        "mean": 70.3,
+        "max": 71.0
+      },
+      "memory.used": {
+        "min": 21321.0,
+        "mean": 21321.0,
+        "max": 21321.0
+      },
+      "memory.total": {
+        "min": 81559.0,
+        "mean": 81559.0,
+        "max": 81559.0
+      }
+    },
+    "1": {
+      "name": "NVIDIA H100 80GB HBM3",
+      "samples": 10,
+      "power.draw": {
+        "min": 564.29,
+        "mean": 566.642,
+        "max": 569.42
+      },
+      "power.limit": {
+        "min": 700.0,
+        "mean": 700.0,
+        "max": 700.0
+      },
+      "clocks.current.sm": {
+        "min": 1980.0,
+        "mean": 1980.0,
+        "max": 1980.0
+      },
+      "clocks.current.memory": {
+        "min": 2619.0,
+        "mean": 2619.0,
+        "max": 2619.0
+      },
+      "temperature.gpu": {
+        "min": 64.0,
+        "mean": 64.9,
+        "max": 65.0
+      },
+      "utilization.gpu": {
+        "min": 96.0,
+        "mean": 97.8,
+        "max": 99.0
+      },
+      "utilization.memory": {
+        "min": 69.0,
+        "mean": 70.3,
+        "max": 71.0
+      },
+      "memory.used": {
+        "min": 21321.0,
+        "mean": 21321.0,
+        "max": 21321.0
+      },
+      "memory.total": {
+        "min": 81559.0,
+        "mean": 81559.0,
+        "max": 81559.0
+      }
+    }
+  },
+  "environment": {
+    "python": "3.12.15",
+    "platform": "Linux-5.15.0-143-generic-x86_64-with-glibc2.35",
+    "packages": {
+      "torch": "2.14.1",
+      "numpy": "2.5.4",
+      "sentencepiece": "0.2.2",
+      "transformers": "5.19.0",
+      "datasets": "5.1.0",
+      "triton": "3.8.0"
+    },
+    "torch_cuda": "13.0",
+    "nccl": [
+      2,
+      30,
+      7
+    ],
+    "driver": "580.178.04"
+  },
+  "data_sources": [
+    {
+      "name": "fineweb_edu",
+      "repo": "HuggingFaceFW/fineweb-edu",
+      "config": "sample-10BT",
+      "revision": "87f09149ef4734204d70ed1d046ddc9ca3f2b8f9",
+      "license": "odc-by",
+      "train_tokens": 1200000000,
+      "validation_tokens": 1000000,
+      "documents": {
+        "train": 1067440,
+        "validation": 845
+      },
+      "dropped": {
+        "duplicate": 4916,
+        "length": 8443,
+        "quota": 21309
+      },
+      "files": {
+        "train": {
+          "path": "fineweb_edu_train.bin",
+          "tokens": 1200000744,
+          "sha256": "a00d1ee4a54b163cf0d8574ac86c09705064457c631afc0a00bbafd7cefecd38"
+        },
+        "validation": {
+          "path": "fineweb_edu_validation.bin",
+          "tokens": 1000035,
+          "sha256": "229a7e823fdb8740ed9faac15e882c1f1684d39029ace7f0813f106411bf5029"
+        }
+      }
+    },
+    {
+      "name": "cosmopedia",
+      "repo": "HuggingFaceTB/smollm-corpus",
+      "config": "cosmopedia-v2",
+      "revision": "3ba9d605774198c5868892d7a8deda78031a781f",
+      "license": "odc-by",
+      "train_tokens": 800000000,
+      "validation_tokens": 1000000,
+      "documents": {
+        "train": 838081,
+        "validation": 1055
+      },
+      "dropped": {
+        "duplicate": 2880,
+        "length": 565,
+        "quota": 16165
+      },
+      "files": {
+        "train": {
+          "path": "cosmopedia_train.bin",
+          "tokens": 800000270,
+          "sha256": "28c8be46071b050b2441cb5304f168fb0c455668f44e0b4caa2ec8519be3906c"
+        },
+        "validation": {
+          "path": "cosmopedia_validation.bin",
+          "tokens": 1000052,
+          "sha256": "27949130177b473ec6d26f071ab8f84b550463bb9fca31c4423a5dbd7041a25c"
+        }
+      }
+    }
+  ],
+  "identity": {
+    "config_sha256": "69bad107b8a29a4d7a356154591d0dc3319c95f7ff511232233f5b4bd494225d",
+    "data_config_sha256": "983b4233799db1de9adaf67ed59aa272bde40d221e6ea6d2ed476cff0c71dd9a",
+    "initial_checkpoint_sha256": "13fb0427ef5e0377883b32899c5acb28d1559162856eee926fb6d9f3a22f650b",
+    "devices": 2,
+    "source_root": "/lambda/nfs/btiny/brandon-mini/sources/stage1-v1"
+  },
+  "captured_file_hashes": {
+    "identity.json": {
+      "sha256": "2c7860fcb3abab45da9d657a3b496967218f78b57400d3739f928497f1019953",
+      "source": "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/identity.json",
+      "source_mtime_utc": "2026-10-13T18:59:08.210715+00:00"
+    },
+    "status.json": {
+      "sha256": "a9a9428066ea2ae77e5c0b0a9240343c8224ac923b72981053dfc8bfbef10fd5",
+      "source": "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/status.json",
+      "source_mtime_utc": "2026-10-13T19:21:36.679114+00:00"
+    },
+    "config.yaml": {
+      "sha256": "4ca7760a7a2bb2c3daef1fd8d5772b4cc0217b1cea0e691980c5c3e82128f3cb",
+      "source": "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/pretrain/config.yaml",
+      "source_mtime_utc": "2026-10-13T19:21:55.289623+00:00"
+    },
+    "data-manifest.json": {
+      "sha256": "00d1669f6a919139d8b0b82c49aa1944e4954f67ab3d2d075cf071f2eed3ec84",
+      "source": "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/data/manifest.json",
+      "source_mtime_utc": "2026-10-13T19:21:36.136374+00:00"
+    },
+    "pretrain-metrics.jsonl": {
+      "sha256": "1c8c2078b1ff784e0476d3b86a24858ce6363947d8b70e1dec5001a60df3ac01",
+      "source": "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/pretrain/metrics.jsonl",
+      "source_mtime_utc": "2026-10-13T20:54:40.718278+00:00"
+    },
+    "source/scripts/train_mini.py": {
+      "sha256": "bc852dfef99ae7a3515767500bd0362c894849ad06ce8f6d67b6241eea6de243",
+      "source": "/lambda/nfs/btiny/brandon-mini/sources/stage1-v1/scripts/train_mini.py",
+      "source_mtime_utc": "2026-10-13T18:34:28+00:00"
+    },
+    "source/src/model.py": {
+      "sha256": "ce3f41f52d7f00e9d46637c7512a5e029acdb383fb80f4f59ea136ae13f3d0b0",
+      "source": "/lambda/nfs/btiny/brandon-mini/sources/stage1-v1/src/model.py",
+      "source_mtime_utc": "2026-10-13T18:25:09+00:00"
+    },
+    "source/src/data/mini.py": {
+      "sha256": "0c9946d86c1ce16f3ee9ba9ad964726349755108bb61d2b955a88b9502d364f1",
+      "source": "/lambda/nfs/btiny/brandon-mini/sources/stage1-v1/src/data/mini.py",
+      "source_mtime_utc": "2026-10-13T18:34:28+00:00"
+    },
+    "source/src/tokenizer.py": {
+      "sha256": "512c335cd659732ce3db1a29285bf07bb9c4a8455b0f62c770026eabacd81241",
+      "source": "/lambda/nfs/btiny/brandon-mini/sources/stage1-v1/src/tokenizer.py",
+      "source_mtime_utc": "2026-10-13T16:43:36+00:00"
+    },
+    "source/configs/mini_stage1_data.yaml": {
+      "sha256": "983b4233799db1de9adaf67ed59aa272bde40d221e6ea6d2ed476cff0c71dd9a",
+      "source": "/lambda/nfs/btiny/brandon-mini/sources/stage1-v1/configs/mini_stage1_data.yaml",
+      "source_mtime_utc": "2026-10-13T18:55:48+00:00"
+    },
+    "source/configs/model_mini_108m_stage1.yaml": {
+      "sha256": "69bad107b8a29a4d7a356154591d0dc3319c95f7ff511232233f5b4bd494225d",
+      "source": "/lambda/nfs/btiny/brandon-mini/sources/stage1-v1/configs/model_mini_108m_stage1.yaml",
+      "source_mtime_utc": "2026-10-13T18:55:48+00:00"
+    }
+  },
+  "limitations": [
+    "In-progress snapshot; the initial pilot tokens are excluded from stage token counts.",
+    "Window throughput includes data transfer, forward/backward, optimizer, DDP and synchronization; excludes validation and checkpoint pauses.",
+    "Step latency percentiles are percentiles of 100-step window means, not per-step tail latency.",
+    "Untimed wall time combines initialization, initial/periodic validation, checkpoint writes and logging; components were not separately timed.",
+    "Wall time starts at the current stage launch; data preparation and the preceding pilot are excluded.",
+    "No historical peak allocator memory, kernel profile, per-step clipping rate, MFU, or full-run energy was measured.",
+    "GPU telemetry is a short live sample; it cannot establish historical utilization or peak memory.",
+    "Validation is a fixed sample per source; macro mean gives equal weight to the two sources.",
+    "Token counts are sampled training positions with replacement, not unique corpus coverage."
+  ]
+}

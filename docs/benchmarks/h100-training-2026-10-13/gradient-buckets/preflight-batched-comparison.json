@@ -1,0 +1,27 @@
+{
+  "status": "passed",
+  "reference": "/home/ubuntu/ntransformer-h100/training/gradient-buckets-20261015-r2/preflight-control",
+  "candidate": "/home/ubuntu/ntransformer-h100/training/gradient-buckets-20261015-r2/preflight-batched",
+  "paired_throughput_ratio": 1.0946305051729253,
+  "historical_throughput_ratio": 0.9966469262105817,
+  "historical_ratio_scope": "Descriptive only: separate initialization and instrumentation",
+  "max_training_loss_delta": 0.0,
+  "final_validation_delta": 0.0,
+  "relative_update_difference": 0.0,
+  "max_weight_difference": 0.0,
+  "updated_tensors": 273,
+  "total_tensors": 273,
+  "exact": {
+    "model_state_dict": true,
+    "optimizer_states": true,
+    "rng_states": true,
+    "recorded_metrics": true,
+    "validation": true
+  },
+  "require_exact": true,
+  "limits": {
+    "training_loss": 0.03,
+    "validation_loss": 0.02,
+    "relative_update_difference": 0.1
+  }
+}

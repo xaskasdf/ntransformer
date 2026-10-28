@@ -1,0 +1,25 @@
+{
+  "payload_files_verified": 150,
+  "executed_sources_exact": true,
+  "rank0_trace_reanalysis": {
+    "strict-control": {
+      "summary_exact": true,
+      "head_reduction_kernels": 0
+    },
+    "strict-gqa": {
+      "summary_exact": true,
+      "head_reduction_kernels": 0
+    },
+    "normal-control": {
+      "summary_exact": true,
+      "head_reduction_kernels": 0
+    },
+    "normal-gqa": {
+      "summary_exact": true,
+      "head_reduction_kernels": 240
+    }
+  },
+  "python_compilation": "passed",
+  "measurement_tests": 4,
+  "queue_tests": 5
+}

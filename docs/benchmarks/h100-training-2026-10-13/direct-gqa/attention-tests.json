@@ -1,0 +1,35 @@
+{
+  "attention": [
+    {
+      "case": "causal",
+      "exact": true
+    },
+    {
+      "case": "mask",
+      "exact": true
+    },
+    {
+      "case": "prefill",
+      "exact": true
+    },
+    {
+      "case": "decode",
+      "exact": true
+    }
+  ],
+  "model": [
+    {
+      "masked_targets": false,
+      "loss": 2.3237571716308594,
+      "exact_parameter_gradients": 272,
+      "parameters": 107604288
+    },
+    {
+      "masked_targets": true,
+      "loss": 2.271360158920288,
+      "exact_parameter_gradients": 272,
+      "parameters": 107604288
+    }
+  ],
+  "status": "passed"
+}

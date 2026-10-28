@@ -1,0 +1,1 @@
+{"status": "passed", "cases": [{"reserved": false, "gradient_aliases_replay": true, "accumulated_gradient": 6.0, "expected_sum": 4.0}, {"reserved": true, "gradient_aliases_replay": false, "accumulated_gradient": 4.0, "expected_sum": 4.0}]}

@@ -1,0 +1,37 @@
+[
+  {
+    "threshold": 3,
+    "first_observed_step": 2000,
+    "training_tokens": 131072000,
+    "validation_loss": 2.939250312745571,
+    "training_window_seconds_to_step": 428.94162518100075
+  },
+  {
+    "threshold": 2.5,
+    "first_observed_step": 10000,
+    "training_tokens": 655360000,
+    "validation_loss": 2.479359682649374,
+    "training_window_seconds_to_step": 2155.7344497500017
+  },
+  {
+    "threshold": 2.4,
+    "first_observed_step": 15000,
+    "training_tokens": 983040000,
+    "validation_loss": 2.3951711989939213,
+    "training_window_seconds_to_step": 3219.627542977996
+  },
+  {
+    "threshold": 2.35,
+    "first_observed_step": 20000,
+    "training_tokens": 1310720000,
+    "validation_loss": 2.3448288664221764,
+    "training_window_seconds_to_step": 4283.595502774989
+  },
+  {
+    "threshold": 2.32,
+    "first_observed_step": 24000,
+    "training_tokens": 1572864000,
+    "validation_loss": 2.315748658031225,
+    "training_window_seconds_to_step": 5135.314874573981
+  }
+]

@@ -1,0 +1,17 @@
+USDT:2026-10-13 23:08:28 59911:59911 SyncActivityProfilerHandler.cpp:39] profiler_start
+USDT:2026-10-13 23:08:28 59911:59911 SyncActivityProfilerHandler.cpp:46] profiler_stop
+{"deterministic": false, "mode": "reference", "loss": 2.1583938598632812, "attention_operators": ["aten::scaled_dot_product_attention", "aten::_scaled_dot_product_cudnn_attention", "aten::_cudnn_attention_forward", "autograd::engine::evaluate_function: ScaledDotProductCudnnAttentionBackward0", "ScaledDotProductCudnnAttentionBackward0", "aten::_scaled_dot_product_cudnn_attention_backward", "aten::_cudnn_attention_backward"], "gradient_difference": {}}
+{"deterministic": false, "mode": "reference-repeat", "loss": 2.1583938598632812, "gradient_difference": {"differing_tensors": 251, "total_tensors": 272, "mismatches": 39087054, "relative_l2": 0.0020079590205657025, "max_abs": 6.103515625e-05}}
+{"deterministic": false, "mode": "norms", "loss": 2.1583938598632812, "gradient_difference": {"differing_tensors": 251, "total_tensors": 272, "mismatches": 37419902, "relative_l2": 0.0019424788068972006, "max_abs": 6.103515625e-05}}
+{"deterministic": false, "mode": "swiglu", "loss": 2.1583938598632812, "gradient_difference": {"differing_tensors": 251, "total_tensors": 272, "mismatches": 32308636, "relative_l2": 0.0016406996318129895, "max_abs": 6.103515625e-05}}
+{"deterministic": false, "mode": "native", "loss": 2.1583938598632812, "gradient_difference": {"differing_tensors": 251, "total_tensors": 272, "mismatches": 38961296, "relative_l2": 0.0020199687471042444, "max_abs": 6.103515625e-05}}
+{"deterministic": false, "mode": "checkpoint", "loss": 2.1583938598632812, "gradient_difference": {"differing_tensors": 263, "total_tensors": 272, "mismatches": 39742054, "relative_l2": 0.0020418734648531083, "max_abs": 6.103515625e-05}}
+USDT:2026-10-13 23:08:35 59911:59911 SyncActivityProfilerHandler.cpp:39] profiler_start
+USDT:2026-10-13 23:08:35 59911:59911 SyncActivityProfilerHandler.cpp:46] profiler_stop
+{"deterministic": true, "mode": "reference", "loss": 2.1583409309387207, "attention_operators": ["aten::scaled_dot_product_attention", "aten::_scaled_dot_product_flash_attention", "aten::_flash_attention_forward", "autograd::engine::evaluate_function: ScaledDotProductFlashAttentionBackward0", "ScaledDotProductFlashAttentionBackward0", "aten::_scaled_dot_product_flash_attention_backward", "aten::_flash_attention_backward"], "gradient_difference": {}}
+{"deterministic": true, "mode": "reference-repeat", "loss": 2.1583409309387207, "gradient_difference": {"differing_tensors": 0, "total_tensors": 272, "mismatches": 0, "relative_l2": 0.0, "max_abs": 0.0}}
+{"deterministic": true, "mode": "norms", "loss": 2.1583409309387207, "gradient_difference": {"differing_tensors": 0, "total_tensors": 272, "mismatches": 0, "relative_l2": 0.0, "max_abs": 0.0}}
+{"deterministic": true, "mode": "swiglu", "loss": 2.1583409309387207, "gradient_difference": {"differing_tensors": 0, "total_tensors": 272, "mismatches": 0, "relative_l2": 0.0, "max_abs": 0.0}}
+{"deterministic": true, "mode": "native", "loss": 2.1583409309387207, "gradient_difference": {"differing_tensors": 0, "total_tensors": 272, "mismatches": 0, "relative_l2": 0.0, "max_abs": 0.0}}
+{"deterministic": true, "mode": "checkpoint", "loss": 2.1583409309387207, "gradient_difference": {"differing_tensors": 0, "total_tensors": 272, "mismatches": 0, "relative_l2": 0.0, "max_abs": 0.0}}
+Probe complete

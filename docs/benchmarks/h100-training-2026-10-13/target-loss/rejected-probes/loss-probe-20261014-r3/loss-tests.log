@@ -1,0 +1,27 @@
+{"scale": 1.0, "logp": {"exact": true, "max_abs": 0.0, "relative_l2": 0.0}, "gradient": {"exact": true, "max_abs": 0.0, "relative_l2": 0.0}}
+{"scale": 6.0, "logp": {"exact": true, "max_abs": 0.0, "relative_l2": 0.0}, "gradient": {"exact": true, "max_abs": 0.0, "relative_l2": 0.0}}
+{"scale": 30.0, "logp": {"exact": true, "max_abs": 0.0, "relative_l2": 0.0}, "gradient": {"exact": true, "max_abs": 0.0, "relative_l2": 0.0}}
+{"mode": "fused", "shifted": true, "mask": "none", "loss": 9.345552444458008, "reference_loss": 9.345552444458008}
+{"mode": "vocab-stream", "shifted": true, "mask": "none", "loss": 9.345552444458008, "reference_loss": 9.345552444458008}
+{"mode": "fused", "shifted": false, "mask": "none", "loss": 9.332932472229004, "reference_loss": 9.332932472229004}
+{"mode": "vocab-stream", "shifted": false, "mask": "none", "loss": 9.332932472229004, "reference_loss": 9.332932472229004}
+{"mode": "fused", "shifted": false, "mask": "weighted", "loss": 7.030524253845215, "reference_loss": 7.030524253845215}
+{"mode": "vocab-stream", "shifted": false, "mask": "weighted", "loss": 7.030524253845215, "reference_loss": 7.030524253845215}
+{"mode": "fused", "shifted": true, "mask": "zero", "loss": 0.0, "reference_loss": 0.0}
+{"mode": "vocab-stream", "shifted": true, "mask": "zero", "loss": 0.0, "reference_loss": 0.0}
+{"mode": "fused", "shifted": true, "mask": "ignored", "loss": NaN, "reference_loss": NaN}
+{"mode": "vocab-stream", "shifted": true, "mask": "ignored", "loss": NaN, "reference_loss": NaN}
+{"mode": "fused", "shifted": false, "mask": "ignored-mask", "loss": 0.0, "reference_loss": 0.0}
+{"mode": "vocab-stream", "shifted": false, "mask": "ignored-mask", "loss": 0.0, "reference_loss": 0.0}
+{"mode": "fused", "masked": false, "loss": 2.3237571716308594, "reference_loss": 2.3237571716308594, "loss_abs": 0.0, "tied_embedding": true, "parameter_tensors": 272}
+{"mode": "vocab-stream", "masked": false, "loss": 2.3237571716308594, "reference_loss": 2.3237571716308594, "loss_abs": 0.0, "tied_embedding": true, "parameter_tensors": 272}
+Traceback (most recent call last):
+  File "/home/ubuntu/ntransformer-h100/training/loss-probe-20261014-r3/source-snapshot/tests/test_training_loss.py", line 171, in <module>
+    main()
+  File "/home/ubuntu/ntransformer-h100/training/loss-probe-20261014-r3/source-snapshot/tests/test_training_loss.py", line 165, in main
+    result = dict(primitives=primitives(), semantics=semantics(), model=model_checks(args), status='passed')
+                                                                        ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/ntransformer-h100/training/loss-probe-20261014-r3/source-snapshot/tests/test_training_loss.py", line 141, in model_checks
+    assert max(v['relative_l2'] for v in values.values()) < .02
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

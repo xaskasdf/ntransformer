@@ -1,0 +1,110 @@
+import fcntl
+import json
+import os
+import shutil
+import signal
+import subprocess
+import time
+from contextlib import ExitStack
+from pathlib import Path
+
+root = Path('/home/ubuntu/ntransformer-h100')
+stage = Path('/lambda/nfs/btiny/brandon-mini/stages/stage1-v1')
+out = root / 'training/loss-probe-20261014-r2'
+python = '/home/ubuntu/brandon-mini/.venv/bin/python'
+env = dict(os.environ, OMP_NUM_THREADS='2', CUDA_VISIBLE_DEVICES='0,1', PYTHONUNBUFFERED='1',
+           NTRANSFORMER_TRAINING_LIB=str(out/'libntransformer_training.so'))
+env['LD_LIBRARY_PATH'] = f'{root}/env/targets/x86_64-linux/lib:{root}/env/lib:' + env.get('LD_LIBRARY_PATH', '')
+out.mkdir(exist_ok=False)
+shutil.copy2(root/'build-training-loss/libntransformer_training.so',out/'libntransformer_training.so')
+source = out / 'source-snapshot'
+shutil.copytree(root/'source/python', source/'python', ignore=shutil.ignore_patterns('__pycache__'))
+(source/'scripts').mkdir()
+for name in ('train_brandon_experiment.py', 'compare_training_experiment.py',
+             'analyze_verified_instructions.py', 'analyze_training_trace.py'):
+    shutil.copy2(root/'source/scripts'/name, source/'scripts'/name)
+(source/'tests').mkdir()
+for name in ('test_training_projection_casts.py','test_training_attention.py','test_training_rotary.py','test_training_loss.py'):
+    shutil.copy2(root/'source/tests'/name, source/'tests')
+shutil.copytree(root/'source/src/training',source/'src/training')
+(source/'src/cuda').mkdir()
+shutil.copy2(root/'source/src/cuda/rmsnorm.cu',source/'src/cuda/rmsnorm.cu')
+shutil.copy2(root/'source/CMakeLists.txt',source/'CMakeLists.txt')
+shutil.copytree(root/'training/loss-build-20261014',out/'build-record')
+shutil.copy2(root/'build-training-loss/compile_commands.json',out/'build-record/compile_commands.json')
+baseline = Path('docs/benchmarks/h100-training-2026-10-13/baseline-stage1-20261013-a')
+shutil.copytree(root/'source'/baseline, source/baseline)
+shutil.copy2(__file__, out/'run-fused-rope.py')
+
+def status(state, **kwargs):
+    (out/'status.json').write_text(json.dumps(dict(state=state, pid=os.getpid(), **kwargs)))
+
+def run(command, label):
+    status('running', stage=label)
+    with (out/(label+'.log')).open('x') as log:
+        process = subprocess.Popen(list(map(str, command)), env=env, stdout=log,
+                                   stderr=subprocess.STDOUT, start_new_session=True)
+        try:
+            code = process.wait(timeout=600)
+        except subprocess.TimeoutExpired:
+            os.killpg(process.pid, signal.SIGTERM)
+            try:
+                process.wait(timeout=15)
+            except subprocess.TimeoutExpired:
+                os.killpg(process.pid, signal.SIGKILL)
+                process.wait()
+            raise
+        if code:
+            raise RuntimeError(f'{label}: exit {code}')
+    print(label, flush=True)
+
+combined = ['--gradient-bucket-views', '--defer-loss-readbacks', '--shared-projection-casts', '--direct-gqa']
+strict = ['--deterministic', '--skip-uninitialized-fill', *combined]
+shared = ['--fused-rope']
+cases = [('strict-control', 'native', strict),
+         ('strict-rope', 'native', strict+shared),
+         ('normal-control', 'native', combined),
+         ('normal-rope', 'native', combined+shared),
+         ('strict-rope-repeat', 'native', strict+shared),
+         ('strict-control-repeat', 'native', strict),
+         ('peer-control', 'peer', strict),
+         ('peer-rope', 'peer', strict+shared)]
+
+def train(label, mode, flags, profile=False):
+    run([python, '-m', 'torch.distributed.run', '--standalone', '--nproc_per_node=2',
+         source/'scripts/train_brandon_experiment.py',
+         '--brandon-root', stage.parent.parent/'sources/stage1-v1',
+         '--checkpoint', stage/'pretrain/last.pt', '--data-dir', stage/'data',
+         '--output', out/label, '--mode', mode, '--warmup-steps', '10',
+         '--steps', '13' if profile else '100',
+         *(['--profile', '--profile-start', '11'] if profile else []), *flags], label)
+
+deadline = time.monotonic()+7200
+while True:
+    stack = ExitStack()
+    try:
+        for path in (stage, stage.parent/'behavior-v1'):
+            assert json.loads((path/'status.json').read_text())['state'] == 'complete'
+            lock = stack.enter_context((path/'pipeline.lock').open('a'))
+            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        active = subprocess.check_output(['nvidia-smi', '--query-compute-apps=pid', '--format=csv,noheader'], text=True).strip()
+        if active:
+            raise BlockingIOError('GPU processes still active')
+        break
+    except BlockingIOError:
+        stack.close()
+        status('waiting', stage='exclusive-gpu-locks')
+        if time.monotonic() > deadline:
+            status('deferred', stage='exclusive-gpu-locks')
+            raise SystemExit('No GPU work: admission deadline exceeded')
+        time.sleep(15)
+with stack:
+    try:
+        run([python, source/'tests/test_training_loss.py',
+             '--brandon-root', stage.parent.parent/'sources/stage1-v1',
+             '--checkpoint', stage/'pretrain/last.pt', '--data-dir', stage/'data',
+             '--output', out/'loss-tests.json'], 'loss-tests')
+        status('complete', stage='done')
+    except Exception as error:
+        status('failed', reason=str(error))
+        raise

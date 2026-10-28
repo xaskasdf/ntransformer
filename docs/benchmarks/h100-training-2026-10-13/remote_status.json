@@ -1,0 +1,38 @@
+{
+  "state": "failed",
+  "supervisor_pid": 38320,
+  "pipeline": "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1",
+  "steps": 100,
+  "reason": "CalledProcessError: Command '['/home/ubuntu/brandon-mini/.venv/bin/python', '/home/ubuntu/ntransformer-h100/source/tests/test_training_ops.py', '--brandon-root', '/lambda/nfs/btiny/brandon-mini/sources/stage1-v1', '--checkpoint', '/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/pretrain/last.pt', '--output', '/home/ubuntu/ntransformer-h100/training/experiment-20261013/validation.json']' returned non-zero exit status 1.",
+  "updated_at": "2026-10-13T21:29:16.913185+00:00",
+  "original_status": {
+    "state": "running",
+    "pipeline_pid": 27108,
+    "run_dir": "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1",
+    "stage": "sft-diagnostic",
+    "command": [
+      "/home/ubuntu/brandon-mini/.venv/bin/python",
+      "scripts/evaluate_mini_instructions.py",
+      "--checkpoint",
+      "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/sft/best.pt",
+      "--tokenizer",
+      "data/tokenizer_8k.model",
+      "--output",
+      "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/sft/instructions.json"
+    ],
+    "log": "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/sft-diagnostic.log",
+    "updated_at": "2026-10-13T21:27:49.150345+00:00",
+    "child_pid": 43491
+  },
+  "stage": "validate",
+  "command": [
+    "/home/ubuntu/brandon-mini/.venv/bin/python",
+    "/home/ubuntu/ntransformer-h100/source/tests/test_training_ops.py",
+    "--brandon-root",
+    "/lambda/nfs/btiny/brandon-mini/sources/stage1-v1",
+    "--checkpoint",
+    "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/pretrain/last.pt",
+    "--output",
+    "/home/ubuntu/ntransformer-h100/training/experiment-20261013/validation.json"
+  ]
+}

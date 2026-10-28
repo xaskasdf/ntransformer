@@ -1,0 +1,535 @@
+{
+  "trace": "/home/ubuntu/ntransformer-h100/training/labels-graph-20261014/profile-strict-graph/trace-rank0.json",
+  "scope": "Profiled events only; CPU/GPU sums overlap and include profiler overhead",
+  "categories": {
+    "<none>": 66,
+    "cpu_op": 9078,
+    "fwdbwd": 24,
+    "user_annotation": 56,
+    "cpu_instant_event": 2300,
+    "cuda_runtime": 6005,
+    "ac2g": 18907,
+    "kernel": 12208,
+    "gpu_memcpy": 32,
+    "gpu_memset": 624,
+    "cuda_driver": 38,
+    "gpu_user_annotation": 48,
+    "Trace": 1
+  },
+  "device_activity": {
+    "0": {
+      "envelope_ms": 373.87700903320314,
+      "active_union_ms": 351.37432739257815,
+      "uncovered_ms": 22.502681640625,
+      "event_count": 12864
+    }
+  },
+  "transfers": {
+    "Memcpy HtoD (Pageable -> Device)": {
+      "calls": 12,
+      "bytes": 1048624,
+      "duration_sum_ms": 0.041664
+    },
+    "Memcpy DtoD (Device -> Device)": {
+      "calls": 8,
+      "bytes": 32,
+      "duration_sum_ms": 0.009536
+    },
+    "Memcpy DtoH (Device -> Pageable)": {
+      "calls": 2,
+      "bytes": 16,
+      "duration_sum_ms": 0.004704
+    },
+    "Memcpy DtoH (Device -> Pinned)": {
+      "calls": 10,
+      "bytes": 58,
+      "duration_sum_ms": 0.022813999999999997
+    }
+  },
+  "runtime": {
+    "cudaDeviceSynchronize": {
+      "calls": 5,
+      "cpu_duration_ms": 0.048195
+    },
+    "cudaLaunchKernel": {
+      "calls": 1690,
+      "cpu_duration_ms": 6.746372999999985
+    },
+    "cudaStreamSynchronize": {
+      "calls": 24,
+      "cpu_duration_ms": 153.021304
+    },
+    "cudaGraphLaunch": {
+      "calls": 8,
+      "cpu_duration_ms": 9.142277
+    },
+    "cuLaunchKernelEx": {
+      "calls": 38,
+      "cpu_duration_ms": 0.210591
+    }
+  },
+  "annotations": {
+    "nccl:all_reduce": {
+      "calls": 38,
+      "duration_ms": 1.532362
+    },
+    "ProfilerStep#11": {
+      "calls": 1,
+      "duration_ms": 187.131611
+    },
+    "Optimizer.zero_grad#AdamW.zero_grad": {
+      "calls": 2,
+      "duration_ms": 0.751223
+    },
+    "nt::sample_batch": {
+      "calls": 4,
+      "duration_ms": 7.938873999999999
+    },
+    "nt::hash_batch": {
+      "calls": 4,
+      "duration_ms": 0.9933749999999999
+    },
+    "DistributedDataParallel.forward": {
+      "calls": 4,
+      "duration_ms": 4.831315999999999
+    },
+    "Optimizer.step#AdamW.step": {
+      "calls": 2,
+      "duration_ms": 1.757615
+    },
+    "ProfilerStep#12": {
+      "calls": 1,
+      "duration_ms": 187.342123
+    }
+  },
+  "fills": {
+    "1.": {
+      "calls": 4,
+      "logical_write_bytes": 16
+    },
+    "0": {
+      "calls": 2,
+      "logical_write_bytes": 156672
+    }
+  },
+  "operations": {
+    "GraphedBackward": {
+      "cpu_calls": 4,
+      "cpu_inclusive_ms": 9.016573000000001,
+      "cuda_calls": 7096,
+      "cuda_duration_sum_ms": 247.36356999999958
+    },
+    "Graphed": {
+      "cpu_calls": 4,
+      "cpu_inclusive_ms": 3.538666,
+      "cuda_calls": 4008,
+      "cuda_duration_sum_ms": 93.53236599999997
+    },
+    "record_param_comms": {
+      "cpu_calls": 38,
+      "cpu_inclusive_ms": 1.9696820000000002,
+      "cuda_calls": 38,
+      "cuda_duration_sum_ms": 4.4936549999999995
+    },
+    "aten::add_": {
+      "cpu_calls": 1088,
+      "cpu_inclusive_ms": 7.871751000000016,
+      "cuda_calls": 1088,
+      "cuda_duration_sum_ms": 4.088725000000002
+    },
+    "aten::_fused_adamw_": {
+      "cpu_calls": 4,
+      "cpu_inclusive_ms": 0.22859100000000002,
+      "cuda_calls": 4,
+      "cuda_duration_sum_ms": 2.07302
+    },
+    "aten::div_": {
+      "cpu_calls": 1088,
+      "cpu_inclusive_ms": 8.868511999999999,
+      "cuda_calls": 544,
+      "cuda_duration_sum_ms": 1.3194899999999992
+    },
+    "aten::_foreach_mul_": {
+      "cpu_calls": 2,
+      "cpu_inclusive_ms": 0.103661,
+      "cuda_calls": 2,
+      "cuda_duration_sum_ms": 0.596286
+    },
+    "aten::_foreach_norm": {
+      "cpu_calls": 2,
+      "cpu_inclusive_ms": 1.2081,
+      "cuda_calls": 4,
+      "cuda_duration_sum_ms": 0.30438400000000004
+    },
+    "aten::_foreach_zero_": {
+      "cpu_calls": 2,
+      "cpu_inclusive_ms": 0.115662,
+      "cuda_calls": 2,
+      "cuda_duration_sum_ms": 0.269983
+    },
+    "aten::copy_": {
+      "cpu_calls": 22,
+      "cpu_inclusive_ms": 303.5263779999999,
+      "cuda_calls": 22,
+      "cuda_duration_sum_ms": 0.055904
+    },
+    "aten::_local_scalar_dense": {
+      "cpu_calls": 10,
+      "cpu_inclusive_ms": 0.17793,
+      "cuda_calls": 10,
+      "cuda_duration_sum_ms": 0.022813999999999997
+    },
+    "aten::div": {
+      "cpu_calls": 10,
+      "cpu_inclusive_ms": 0.30978400000000006,
+      "cuda_calls": 10,
+      "cuda_duration_sum_ms": 0.013536000000000001
+    },
+    "aten::cat": {
+      "cpu_calls": 4,
+      "cpu_inclusive_ms": 0.161669,
+      "cuda_calls": 8,
+      "cuda_duration_sum_ms": 0.012832
+    },
+    "aten::_foreach_add_": {
+      "cpu_calls": 4,
+      "cpu_inclusive_ms": 0.123959,
+      "cuda_calls": 4,
+      "cuda_duration_sum_ms": 0.008064
+    },
+    "aten::fill_": {
+      "cpu_calls": 6,
+      "cpu_inclusive_ms": 0.0915,
+      "cuda_calls": 6,
+      "cuda_duration_sum_ms": 0.006368
+    },
+    "aten::linalg_vector_norm": {
+      "cpu_calls": 2,
+      "cpu_inclusive_ms": 0.050955,
+      "cuda_calls": 2,
+      "cuda_duration_sum_ms": 0.00464
+    },
+    "aten::reciprocal": {
+      "cpu_calls": 2,
+      "cpu_inclusive_ms": 0.028561,
+      "cuda_calls": 2,
+      "cuda_duration_sum_ms": 0.002784
+    },
+    "aten::clamp": {
+      "cpu_calls": 2,
+      "cpu_inclusive_ms": 0.037506,
+      "cuda_calls": 2,
+      "cuda_duration_sum_ms": 0.002464
+    },
+    "aten::logical_or": {
+      "cpu_calls": 4,
+      "cpu_inclusive_ms": 0.074674,
+      "cuda_calls": 2,
+      "cuda_duration_sum_ms": 0.0024330000000000003
+    },
+    "aten::ne": {
+      "cpu_calls": 2,
+      "cpu_inclusive_ms": 0.031744999999999995,
+      "cuda_calls": 2,
+      "cuda_duration_sum_ms": 0.002432
+    },
+    "aten::eq": {
+      "cpu_calls": 2,
+      "cpu_inclusive_ms": 0.034241,
+      "cuda_calls": 2,
+      "cuda_duration_sum_ms": 0.002432
+    },
+    "aten::abs": {
+      "cpu_calls": 4,
+      "cpu_inclusive_ms": 0.095273,
+      "cuda_calls": 2,
+      "cuda_duration_sum_ms": 0.0023039999999999996
+    },
+    "aten::add": {
+      "cpu_calls": 2,
+      "cpu_inclusive_ms": 0.034538,
+      "cuda_calls": 2,
+      "cuda_duration_sum_ms": 0.0023039999999999996
+    },
+    "aten::mul": {
+      "cpu_calls": 2,
+      "cpu_inclusive_ms": 0.029272,
+      "cuda_calls": 2,
+      "cuda_duration_sum_ms": 0.0023039999999999996
+    },
+    "autograd::engine::evaluate_function: DivBackward0": {
+      "cpu_calls": 4,
+      "cpu_inclusive_ms": 0.19460699999999997,
+      "cuda_calls": 0,
+      "cuda_duration_sum_ms": 0
+    },
+    "DivBackward0": {
+      "cpu_calls": 4,
+      "cpu_inclusive_ms": 0.15226599999999998,
+      "cuda_calls": 0,
+      "cuda_duration_sum_ms": 0
+    },
+    "autograd::engine::evaluate_function: CloneBackward0": {
+      "cpu_calls": 4,
+      "cpu_inclusive_ms": 0.041989,
+      "cuda_calls": 0,
+      "cuda_duration_sum_ms": 0
+    },
+    "CloneBackward0": {
+      "cpu_calls": 4,
+      "cpu_inclusive_ms": 0.002018,
+      "cuda_calls": 0,
+      "cuda_duration_sum_ms": 0
+    },
+    "autograd::engine::evaluate_function: GraphedBackward": {
+      "cpu_calls": 4,
+      "cpu_inclusive_ms": 13.870928,
+      "cuda_calls": 0,
+      "cuda_duration_sum_ms": 0
+    },
+    "aten::detach": {
+      "cpu_calls": 1104,
+      "cpu_inclusive_ms": 1.4954899999999993,
+      "cuda_calls": 0,
+      "cuda_duration_sum_ms": 0
+    },
+    "detach": {
+      "cpu_calls": 1104,
+      "cpu_inclusive_ms": 0.5105459999999998,
+      "cuda_calls": 0,
+      "cuda_duration_sum_ms": 0
+    },
+    "autograd::engine::evaluate_function: torch::autograd::AccumulateGrad": {
+      "cpu_calls": 1088,
+      "cpu_inclusive_ms": 23.31475400000003,
+      "cuda_calls": 0,
+      "cuda_duration_sum_ms": 0
+    },
+    "torch::autograd::AccumulateGrad": {
+      "cpu_calls": 1088,
+      "cpu_inclusive_ms": 9.563562999999986,
+      "cuda_calls": 0,
+      "cuda_duration_sum_ms": 0
+    },
+    "c10d::allreduce_": {
+      "cpu_calls": 38,
+      "cpu_inclusive_ms": 2.419193,
+      "cuda_calls": 0,
+      "cuda_duration_sum_ms": 0
+    },
+    "aten::as_strided": {
+      "cpu_calls": 1100,
+      "cpu_inclusive_ms": 0.4788449999999992,
+      "cuda_calls": 0,
+      "cuda_duration_sum_ms": 0
+    },
+    "aten::lift_fresh": {
+      "cpu_calls": 12,
+      "cpu_inclusive_ms": 0.010846999999999996,
+      "cuda_calls": 0,
+      "cuda_duration_sum_ms": 0
+    },
+    "aten::to": {
+      "cpu_calls": 562,
+      "cpu_inclusive_ms": 151.72416299999998,
+      "cuda_calls": 0,
+      "cuda_duration_sum_ms": 0
+    },
+    "aten::resolve_conj": {
+      "cpu_calls": 10,
+      "cpu_inclusive_ms": 0.0026920000000000004,
+      "cuda_calls": 0,
+      "cuda_duration_sum_ms": 0
+    },
+    "aten::resolve_neg": {
+      "cpu_calls": 10,
+      "cpu_inclusive_ms": 0.001775,
+      "cuda_calls": 0,
+      "cuda_duration_sum_ms": 0
+    },
+    "aten::clone": {
+      "cpu_calls": 4,
+      "cpu_inclusive_ms": 0.225161,
+      "cuda_calls": 0,
+      "cuda_duration_sum_ms": 0
+    },
+    "aten::empty_strided": {
+      "cpu_calls": 14,
+      "cpu_inclusive_ms": 0.10728199999999999,
+      "cuda_calls": 0,
+      "cuda_duration_sum_ms": 0
+    },
+    "aten::ones_like": {
+      "cpu_calls": 4,
+      "cpu_inclusive_ms": 0.11849300000000001,
+      "cuda_calls": 0,
+      "cuda_duration_sum_ms": 0
+    },
+    "aten::empty_like": {
+      "cpu_calls": 4,
+      "cpu_inclusive_ms": 0.032228,
+      "cuda_calls": 0,
+      "cuda_duration_sum_ms": 0
+    },
+    "aten::stack": {
+      "cpu_calls": 4,
+      "cpu_inclusive_ms": 1.1685280000000002,
+      "cuda_calls": 0,
+      "cuda_duration_sum_ms": 0
+    },
+    "aten::unsqueeze": {
+      "cpu_calls": 548,
+      "cpu_inclusive_ms": 0.6258340000000003,
+      "cuda_calls": 0,
+      "cuda_duration_sum_ms": 0
+    },
+    "aten::_to_copy": {
+      "cpu_calls": 6,
+      "cpu_inclusive_ms": 151.567676,
+      "cuda_calls": 0,
+      "cuda_duration_sum_ms": 0
+    },
+    "aten::zeros": {
+      "cpu_calls": 2,
+      "cpu_inclusive_ms": 0.08607000000000001,
+      "cuda_calls": 0,
+      "cuda_duration_sum_ms": 0
+    },
+    "aten::empty": {
+      "cpu_calls": 10,
+      "cpu_inclusive_ms": 0.044760999999999995,
+      "cuda_calls": 0,
+      "cuda_duration_sum_ms": 0
+    },
+    "aten::zero_": {
+      "cpu_calls": 2,
+      "cpu_inclusive_ms": 0.049652,
+      "cuda_calls": 0,
+      "cuda_duration_sum_ms": 0
+    },
+    "aten::isnan": {
+      "cpu_calls": 2,
+      "cpu_inclusive_ms": 0.036972000000000005,
+      "cuda_calls": 0,
+      "cuda_duration_sum_ms": 0
+    },
+    "aten::isinf": {
+      "cpu_calls": 2,
+      "cpu_inclusive_ms": 0.09909799999999999,
+      "cuda_calls": 0,
+      "cuda_duration_sum_ms": 0
+    },
+    "aten::resize_": {
+      "cpu_calls": 4,
+      "cpu_inclusive_ms": 0.011018,
+      "cuda_calls": 0,
+      "cuda_duration_sum_ms": 0
+    },
+    "aten::is_nonzero": {
+      "cpu_calls": 2,
+      "cpu_inclusive_ms": 0.062396,
+      "cuda_calls": 0,
+      "cuda_duration_sum_ms": 0
+    },
+    "aten::item": {
+      "cpu_calls": 10,
+      "cpu_inclusive_ms": 0.19515900000000003,
+      "cuda_calls": 0,
+      "cuda_duration_sum_ms": 0
+    },
+    "aten::detach_": {
+      "cpu_calls": 4,
+      "cpu_inclusive_ms": 0.008228000000000001,
+      "cuda_calls": 0,
+      "cuda_duration_sum_ms": 0
+    },
+    "detach_": {
+      "cpu_calls": 4,
+      "cpu_inclusive_ms": 0.0034260000000000002,
+      "cuda_calls": 0,
+      "cuda_duration_sum_ms": 0
+    },
+    "aten::select": {
+      "cpu_calls": 6,
+      "cpu_inclusive_ms": 0.028932,
+      "cuda_calls": 0,
+      "cuda_duration_sum_ms": 0
+    }
+  },
+  "copies": [
+    {
+      "shapes": [
+        [
+          16,
+          1024
+        ],
+        [
+          16,
+          1024
+        ]
+      ],
+      "types": [
+        "long int",
+        "long int"
+      ],
+      "calls": 8,
+      "logical_read_write_bytes": 2097152
+    },
+    {
+      "shapes": [
+        [],
+        []
+      ],
+      "types": [
+        "float",
+        "float"
+      ],
+      "calls": 8,
+      "logical_read_write_bytes": 64
+    },
+    {
+      "shapes": [
+        [
+          2
+        ],
+        [
+          2
+        ]
+      ],
+      "types": [
+        "double",
+        "double"
+      ],
+      "calls": 2,
+      "logical_read_write_bytes": 64
+    },
+    {
+      "shapes": [
+        [
+          2
+        ],
+        [
+          2
+        ]
+      ],
+      "types": [
+        "float",
+        "float"
+      ],
+      "calls": 2,
+      "logical_read_write_bytes": 32
+    },
+    {
+      "shapes": [
+        [],
+        []
+      ],
+      "types": [
+        "double",
+        "double"
+      ],
+      "calls": 2,
+      "logical_read_write_bytes": 32
+    }
+  ]
+}

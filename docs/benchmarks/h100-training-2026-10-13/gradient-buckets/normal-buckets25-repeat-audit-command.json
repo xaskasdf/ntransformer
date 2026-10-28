@@ -1,0 +1,12 @@
+[
+  "/home/ubuntu/brandon-mini/.venv/bin/python",
+  "/home/ubuntu/ntransformer-h100/training/gradient-buckets-20261015-r2/source-snapshot/scripts/compare_training_experiment.py",
+  "--reference",
+  "/home/ubuntu/ntransformer-h100/training/gradient-buckets-20261015-r2/normal-control",
+  "--candidate",
+  "/home/ubuntu/ntransformer-h100/training/gradient-buckets-20261015-r2/normal-buckets25-repeat",
+  "--source-checkpoint",
+  "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/pretrain/last.pt",
+  "--output",
+  "/home/ubuntu/ntransformer-h100/training/gradient-buckets-20261015-r2/normal-buckets25-repeat-comparison.json"
+]

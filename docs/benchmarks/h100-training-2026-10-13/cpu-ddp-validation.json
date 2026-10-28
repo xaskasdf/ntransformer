@@ -1,0 +1,18 @@
+[
+  {
+    "status": "passed",
+    "rank": 0,
+    "world_size": 2,
+    "steps": 3,
+    "weight_max_abs": 0.0,
+    "gradient_max_abs": 0.0
+  },
+  {
+    "status": "passed",
+    "rank": 1,
+    "world_size": 2,
+    "steps": 3,
+    "weight_max_abs": 0.0,
+    "gradient_max_abs": 0.0
+  }
+]

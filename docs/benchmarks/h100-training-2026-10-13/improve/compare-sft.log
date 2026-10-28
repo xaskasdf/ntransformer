@@ -1,0 +1,16 @@
+{
+  "status": "passed",
+  "candidate": "sft-compatible",
+  "batch_hashes_match": true,
+  "max_training_loss_delta": 0.0,
+  "final_validation_delta": 0.0,
+  "relative_update_difference": 0.0,
+  "max_weight_difference": 0.0,
+  "updated_tensors": 273,
+  "total_tensors": 273,
+  "limits": {
+    "training_loss": 0.03,
+    "validation_loss": 0.02,
+    "relative_update_difference": 0.1
+  }
+}

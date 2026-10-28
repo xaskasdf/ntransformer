@@ -1,0 +1,1067 @@
+{
+  "layer": 29,
+  "input_shapes": [
+    [
+      16,
+      9,
+      1024,
+      64
+    ],
+    [
+      16,
+      9,
+      1024,
+      64
+    ],
+    [
+      16,
+      9,
+      1024,
+      64
+    ]
+  ],
+  "upstream": "Actual layer-29 pretraining gradient; fixed across all replays",
+  "runs": [
+    {
+      "backend": "SDPBackend.CUDNN_ATTENTION",
+      "deterministic": false,
+      "repeat": 0
+    },
+    {
+      "backend": "SDPBackend.CUDNN_ATTENTION",
+      "deterministic": false,
+      "repeat": 1,
+      "difference": {
+        "differing_tensors": 1,
+        "total_tensors": 3,
+        "mismatches": 5,
+        "relative_l2": 1.0785073622879231e-07,
+        "max_abs": 1.1641532182693481e-10,
+        "tensors": [
+          {
+            "name": "q",
+            "mismatches": 5,
+            "elements": 9437184,
+            "max_abs": 1.1641532182693481e-10,
+            "error_l2_squared": 1.3605466717047136e-20,
+            "reference_l2_squared": 2.938941778840348e-07
+          },
+          {
+            "name": "k",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 4.954424071174307e-07
+          },
+          {
+            "name": "v",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 3.803438242313405e-07
+          }
+        ]
+      }
+    },
+    {
+      "backend": "SDPBackend.CUDNN_ATTENTION",
+      "deterministic": false,
+      "repeat": 2,
+      "difference": {
+        "differing_tensors": 1,
+        "total_tensors": 3,
+        "mismatches": 2,
+        "relative_l2": 6.727544136211783e-09,
+        "max_abs": 7.275957614183426e-12,
+        "tensors": [
+          {
+            "name": "q",
+            "mismatches": 2,
+            "elements": 9437184,
+            "max_abs": 7.275957614183426e-12,
+            "error_l2_squared": 5.293955999225468e-23,
+            "reference_l2_squared": 2.938941778840348e-07
+          },
+          {
+            "name": "k",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 4.954424071174307e-07
+          },
+          {
+            "name": "v",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 3.803438242313405e-07
+          }
+        ]
+      }
+    },
+    {
+      "backend": "SDPBackend.CUDNN_ATTENTION",
+      "deterministic": false,
+      "repeat": 3,
+      "difference": {
+        "differing_tensors": 1,
+        "total_tensors": 3,
+        "mismatches": 2,
+        "relative_l2": 6.727544136211783e-09,
+        "max_abs": 7.275957614183426e-12,
+        "tensors": [
+          {
+            "name": "q",
+            "mismatches": 2,
+            "elements": 9437184,
+            "max_abs": 7.275957614183426e-12,
+            "error_l2_squared": 5.293955999225468e-23,
+            "reference_l2_squared": 2.938941778840348e-07
+          },
+          {
+            "name": "k",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 4.954424071174307e-07
+          },
+          {
+            "name": "v",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 3.803438242313405e-07
+          }
+        ]
+      }
+    },
+    {
+      "backend": "SDPBackend.CUDNN_ATTENTION",
+      "deterministic": false,
+      "repeat": 4,
+      "difference": {
+        "differing_tensors": 1,
+        "total_tensors": 3,
+        "mismatches": 2,
+        "relative_l2": 6.727544136211783e-09,
+        "max_abs": 7.275957614183426e-12,
+        "tensors": [
+          {
+            "name": "q",
+            "mismatches": 2,
+            "elements": 9437184,
+            "max_abs": 7.275957614183426e-12,
+            "error_l2_squared": 5.293955999225468e-23,
+            "reference_l2_squared": 2.938941778840348e-07
+          },
+          {
+            "name": "k",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 4.954424071174307e-07
+          },
+          {
+            "name": "v",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 3.803438242313405e-07
+          }
+        ]
+      }
+    },
+    {
+      "backend": "SDPBackend.CUDNN_ATTENTION",
+      "deterministic": false,
+      "repeat": 5,
+      "difference": {
+        "differing_tensors": 1,
+        "total_tensors": 3,
+        "mismatches": 2,
+        "relative_l2": 6.727544136211783e-09,
+        "max_abs": 7.275957614183426e-12,
+        "tensors": [
+          {
+            "name": "q",
+            "mismatches": 2,
+            "elements": 9437184,
+            "max_abs": 7.275957614183426e-12,
+            "error_l2_squared": 5.293955999225468e-23,
+            "reference_l2_squared": 2.938941778840348e-07
+          },
+          {
+            "name": "k",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 4.954424071174307e-07
+          },
+          {
+            "name": "v",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 3.803438242313405e-07
+          }
+        ]
+      }
+    },
+    {
+      "backend": "SDPBackend.CUDNN_ATTENTION",
+      "deterministic": false,
+      "repeat": 6,
+      "difference": {
+        "differing_tensors": 1,
+        "total_tensors": 3,
+        "mismatches": 4,
+        "relative_l2": 1.1115727099534944e-07,
+        "max_abs": 1.1641532182693481e-10,
+        "tensors": [
+          {
+            "name": "q",
+            "mismatches": 4,
+            "elements": 9437184,
+            "max_abs": 1.1641532182693481e-10,
+            "error_l2_squared": 1.445249966331536e-20,
+            "reference_l2_squared": 2.938941778840348e-07
+          },
+          {
+            "name": "k",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 4.954424071174307e-07
+          },
+          {
+            "name": "v",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 3.803438242313405e-07
+          }
+        ]
+      }
+    },
+    {
+      "backend": "SDPBackend.CUDNN_ATTENTION",
+      "deterministic": false,
+      "repeat": 7,
+      "difference": {
+        "differing_tensors": 1,
+        "total_tensors": 3,
+        "mismatches": 4,
+        "relative_l2": 6.7406711139128255e-09,
+        "max_abs": 7.275957614183426e-12,
+        "tensors": [
+          {
+            "name": "q",
+            "mismatches": 4,
+            "elements": 9437184,
+            "max_abs": 7.275957614183426e-12,
+            "error_l2_squared": 5.314635593425384e-23,
+            "reference_l2_squared": 2.938941778840348e-07
+          },
+          {
+            "name": "k",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 4.954424071174307e-07
+          },
+          {
+            "name": "v",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 3.803438242313405e-07
+          }
+        ]
+      }
+    },
+    {
+      "backend": "SDPBackend.CUDNN_ATTENTION",
+      "deterministic": false,
+      "repeat": 8,
+      "difference": {
+        "differing_tensors": 1,
+        "total_tensors": 3,
+        "mismatches": 3,
+        "relative_l2": 6.72754414874281e-09,
+        "max_abs": 7.275957614183426e-12,
+        "tensors": [
+          {
+            "name": "q",
+            "mismatches": 3,
+            "elements": 9437184,
+            "max_abs": 7.275957614183426e-12,
+            "error_l2_squared": 5.29395601894699e-23,
+            "reference_l2_squared": 2.938941778840348e-07
+          },
+          {
+            "name": "k",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 4.954424071174307e-07
+          },
+          {
+            "name": "v",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 3.803438242313405e-07
+          }
+        ]
+      }
+    },
+    {
+      "backend": "SDPBackend.CUDNN_ATTENTION",
+      "deterministic": false,
+      "repeat": 9,
+      "difference": {
+        "differing_tensors": 1,
+        "total_tensors": 3,
+        "mismatches": 3,
+        "relative_l2": 6.72754414874281e-09,
+        "max_abs": 7.275957614183426e-12,
+        "tensors": [
+          {
+            "name": "q",
+            "mismatches": 3,
+            "elements": 9437184,
+            "max_abs": 7.275957614183426e-12,
+            "error_l2_squared": 5.29395601894699e-23,
+            "reference_l2_squared": 2.938941778840348e-07
+          },
+          {
+            "name": "k",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 4.954424071174307e-07
+          },
+          {
+            "name": "v",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 3.803438242313405e-07
+          }
+        ]
+      }
+    },
+    {
+      "backend": "SDPBackend.FLASH_ATTENTION",
+      "deterministic": false,
+      "repeat": 0
+    },
+    {
+      "backend": "SDPBackend.FLASH_ATTENTION",
+      "deterministic": false,
+      "repeat": 1,
+      "difference": {
+        "differing_tensors": 1,
+        "total_tensors": 3,
+        "mismatches": 103,
+        "relative_l2": 1.6792934390159134e-06,
+        "max_abs": 9.313225746154785e-10,
+        "tensors": [
+          {
+            "name": "q",
+            "mismatches": 103,
+            "elements": 9437184,
+            "max_abs": 9.313225746154785e-10,
+            "error_l2_squared": 3.2985898858312093e-18,
+            "reference_l2_squared": 2.9390370148103243e-07
+          },
+          {
+            "name": "k",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 4.954539787941814e-07
+          },
+          {
+            "name": "v",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 3.80344072265399e-07
+          }
+        ]
+      }
+    },
+    {
+      "backend": "SDPBackend.FLASH_ATTENTION",
+      "deterministic": false,
+      "repeat": 2,
+      "difference": {
+        "differing_tensors": 1,
+        "total_tensors": 3,
+        "mismatches": 104,
+        "relative_l2": 1.6888624825216547e-06,
+        "max_abs": 9.313225746154785e-10,
+        "tensors": [
+          {
+            "name": "q",
+            "mismatches": 104,
+            "elements": 9437184,
+            "max_abs": 9.313225746154785e-10,
+            "error_l2_squared": 3.3362894090468385e-18,
+            "reference_l2_squared": 2.9390370148103243e-07
+          },
+          {
+            "name": "k",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 4.954539787941814e-07
+          },
+          {
+            "name": "v",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 3.80344072265399e-07
+          }
+        ]
+      }
+    },
+    {
+      "backend": "SDPBackend.FLASH_ATTENTION",
+      "deterministic": false,
+      "repeat": 3,
+      "difference": {
+        "differing_tensors": 1,
+        "total_tensors": 3,
+        "mismatches": 103,
+        "relative_l2": 2.276094265645302e-06,
+        "max_abs": 1.862645149230957e-09,
+        "tensors": [
+          {
+            "name": "q",
+            "mismatches": 103,
+            "elements": 9437184,
+            "max_abs": 1.862645149230957e-09,
+            "error_l2_squared": 6.059762871830025e-18,
+            "reference_l2_squared": 2.9390370148103243e-07
+          },
+          {
+            "name": "k",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 4.954539787941814e-07
+          },
+          {
+            "name": "v",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 3.80344072265399e-07
+          }
+        ]
+      }
+    },
+    {
+      "backend": "SDPBackend.FLASH_ATTENTION",
+      "deterministic": false,
+      "repeat": 4,
+      "difference": {
+        "differing_tensors": 1,
+        "total_tensors": 3,
+        "mismatches": 127,
+        "relative_l2": 3.97615175718573e-06,
+        "max_abs": 3.725290298461914e-09,
+        "tensors": [
+          {
+            "name": "q",
+            "mismatches": 127,
+            "elements": 9437184,
+            "max_abs": 3.725290298461914e-09,
+            "error_l2_squared": 1.849273064396785e-17,
+            "reference_l2_squared": 2.9390370148103243e-07
+          },
+          {
+            "name": "k",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 4.954539787941814e-07
+          },
+          {
+            "name": "v",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 3.80344072265399e-07
+          }
+        ]
+      }
+    },
+    {
+      "backend": "SDPBackend.FLASH_ATTENTION",
+      "deterministic": false,
+      "repeat": 5,
+      "difference": {
+        "differing_tensors": 1,
+        "total_tensors": 3,
+        "mismatches": 93,
+        "relative_l2": 1.5474995436901647e-06,
+        "max_abs": 9.313225746154785e-10,
+        "tensors": [
+          {
+            "name": "q",
+            "mismatches": 93,
+            "elements": 9437184,
+            "max_abs": 9.313225746154785e-10,
+            "error_l2_squared": 2.801148930587678e-18,
+            "reference_l2_squared": 2.9390370148103243e-07
+          },
+          {
+            "name": "k",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 4.954539787941814e-07
+          },
+          {
+            "name": "v",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 3.80344072265399e-07
+          }
+        ]
+      }
+    },
+    {
+      "backend": "SDPBackend.FLASH_ATTENTION",
+      "deterministic": false,
+      "repeat": 6,
+      "difference": {
+        "differing_tensors": 1,
+        "total_tensors": 3,
+        "mismatches": 106,
+        "relative_l2": 3.803994429321541e-06,
+        "max_abs": 3.725290298461914e-09,
+        "tensors": [
+          {
+            "name": "q",
+            "mismatches": 106,
+            "elements": 9437184,
+            "max_abs": 3.725290298461914e-09,
+            "error_l2_squared": 1.6926021381253854e-17,
+            "reference_l2_squared": 2.9390370148103243e-07
+          },
+          {
+            "name": "k",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 4.954539787941814e-07
+          },
+          {
+            "name": "v",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 3.80344072265399e-07
+          }
+        ]
+      }
+    },
+    {
+      "backend": "SDPBackend.FLASH_ATTENTION",
+      "deterministic": false,
+      "repeat": 7,
+      "difference": {
+        "differing_tensors": 1,
+        "total_tensors": 3,
+        "mismatches": 98,
+        "relative_l2": 3.6409455681034416e-06,
+        "max_abs": 3.725290298461914e-09,
+        "tensors": [
+          {
+            "name": "q",
+            "mismatches": 98,
+            "elements": 9437184,
+            "max_abs": 3.725290298461914e-09,
+            "error_l2_squared": 1.5506133304112478e-17,
+            "reference_l2_squared": 2.9390370148103243e-07
+          },
+          {
+            "name": "k",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 4.954539787941814e-07
+          },
+          {
+            "name": "v",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 3.80344072265399e-07
+          }
+        ]
+      }
+    },
+    {
+      "backend": "SDPBackend.FLASH_ATTENTION",
+      "deterministic": false,
+      "repeat": 8,
+      "difference": {
+        "differing_tensors": 1,
+        "total_tensors": 3,
+        "mismatches": 106,
+        "relative_l2": 3.6198155552255025e-06,
+        "max_abs": 3.725290298461914e-09,
+        "tensors": [
+          {
+            "name": "q",
+            "mismatches": 106,
+            "elements": 9437184,
+            "max_abs": 3.725290298461914e-09,
+            "error_l2_squared": 1.5326677689264243e-17,
+            "reference_l2_squared": 2.9390370148103243e-07
+          },
+          {
+            "name": "k",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 4.954539787941814e-07
+          },
+          {
+            "name": "v",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 3.80344072265399e-07
+          }
+        ]
+      }
+    },
+    {
+      "backend": "SDPBackend.FLASH_ATTENTION",
+      "deterministic": false,
+      "repeat": 9,
+      "difference": {
+        "differing_tensors": 1,
+        "total_tensors": 3,
+        "mismatches": 115,
+        "relative_l2": 1.5610927932892662e-06,
+        "max_abs": 9.313225746154785e-10,
+        "tensors": [
+          {
+            "name": "q",
+            "mismatches": 115,
+            "elements": 9437184,
+            "max_abs": 9.313225746154785e-10,
+            "error_l2_squared": 2.8505756975812937e-18,
+            "reference_l2_squared": 2.9390370148103243e-07
+          },
+          {
+            "name": "k",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 4.954539787941814e-07
+          },
+          {
+            "name": "v",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 3.80344072265399e-07
+          }
+        ]
+      }
+    },
+    {
+      "backend": "SDPBackend.FLASH_ATTENTION",
+      "deterministic": true,
+      "repeat": 0
+    },
+    {
+      "backend": "SDPBackend.FLASH_ATTENTION",
+      "deterministic": true,
+      "repeat": 1,
+      "difference": {
+        "differing_tensors": 0,
+        "total_tensors": 3,
+        "mismatches": 0,
+        "relative_l2": 0.0,
+        "max_abs": 0.0,
+        "tensors": [
+          {
+            "name": "q",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 2.9390370306308536e-07
+          },
+          {
+            "name": "k",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 4.954539787941814e-07
+          },
+          {
+            "name": "v",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 3.80344072265399e-07
+          }
+        ]
+      }
+    },
+    {
+      "backend": "SDPBackend.FLASH_ATTENTION",
+      "deterministic": true,
+      "repeat": 2,
+      "difference": {
+        "differing_tensors": 0,
+        "total_tensors": 3,
+        "mismatches": 0,
+        "relative_l2": 0.0,
+        "max_abs": 0.0,
+        "tensors": [
+          {
+            "name": "q",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 2.9390370306308536e-07
+          },
+          {
+            "name": "k",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 4.954539787941814e-07
+          },
+          {
+            "name": "v",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 3.80344072265399e-07
+          }
+        ]
+      }
+    },
+    {
+      "backend": "SDPBackend.FLASH_ATTENTION",
+      "deterministic": true,
+      "repeat": 3,
+      "difference": {
+        "differing_tensors": 0,
+        "total_tensors": 3,
+        "mismatches": 0,
+        "relative_l2": 0.0,
+        "max_abs": 0.0,
+        "tensors": [
+          {
+            "name": "q",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 2.9390370306308536e-07
+          },
+          {
+            "name": "k",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 4.954539787941814e-07
+          },
+          {
+            "name": "v",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 3.80344072265399e-07
+          }
+        ]
+      }
+    },
+    {
+      "backend": "SDPBackend.FLASH_ATTENTION",
+      "deterministic": true,
+      "repeat": 4,
+      "difference": {
+        "differing_tensors": 0,
+        "total_tensors": 3,
+        "mismatches": 0,
+        "relative_l2": 0.0,
+        "max_abs": 0.0,
+        "tensors": [
+          {
+            "name": "q",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 2.9390370306308536e-07
+          },
+          {
+            "name": "k",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 4.954539787941814e-07
+          },
+          {
+            "name": "v",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 3.80344072265399e-07
+          }
+        ]
+      }
+    },
+    {
+      "backend": "SDPBackend.FLASH_ATTENTION",
+      "deterministic": true,
+      "repeat": 5,
+      "difference": {
+        "differing_tensors": 0,
+        "total_tensors": 3,
+        "mismatches": 0,
+        "relative_l2": 0.0,
+        "max_abs": 0.0,
+        "tensors": [
+          {
+            "name": "q",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 2.9390370306308536e-07
+          },
+          {
+            "name": "k",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 4.954539787941814e-07
+          },
+          {
+            "name": "v",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 3.80344072265399e-07
+          }
+        ]
+      }
+    },
+    {
+      "backend": "SDPBackend.FLASH_ATTENTION",
+      "deterministic": true,
+      "repeat": 6,
+      "difference": {
+        "differing_tensors": 0,
+        "total_tensors": 3,
+        "mismatches": 0,
+        "relative_l2": 0.0,
+        "max_abs": 0.0,
+        "tensors": [
+          {
+            "name": "q",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 2.9390370306308536e-07
+          },
+          {
+            "name": "k",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 4.954539787941814e-07
+          },
+          {
+            "name": "v",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 3.80344072265399e-07
+          }
+        ]
+      }
+    },
+    {
+      "backend": "SDPBackend.FLASH_ATTENTION",
+      "deterministic": true,
+      "repeat": 7,
+      "difference": {
+        "differing_tensors": 0,
+        "total_tensors": 3,
+        "mismatches": 0,
+        "relative_l2": 0.0,
+        "max_abs": 0.0,
+        "tensors": [
+          {
+            "name": "q",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 2.9390370306308536e-07
+          },
+          {
+            "name": "k",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 4.954539787941814e-07
+          },
+          {
+            "name": "v",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 3.80344072265399e-07
+          }
+        ]
+      }
+    },
+    {
+      "backend": "SDPBackend.FLASH_ATTENTION",
+      "deterministic": true,
+      "repeat": 8,
+      "difference": {
+        "differing_tensors": 0,
+        "total_tensors": 3,
+        "mismatches": 0,
+        "relative_l2": 0.0,
+        "max_abs": 0.0,
+        "tensors": [
+          {
+            "name": "q",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 2.9390370306308536e-07
+          },
+          {
+            "name": "k",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 4.954539787941814e-07
+          },
+          {
+            "name": "v",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 3.80344072265399e-07
+          }
+        ]
+      }
+    },
+    {
+      "backend": "SDPBackend.FLASH_ATTENTION",
+      "deterministic": true,
+      "repeat": 9,
+      "difference": {
+        "differing_tensors": 0,
+        "total_tensors": 3,
+        "mismatches": 0,
+        "relative_l2": 0.0,
+        "max_abs": 0.0,
+        "tensors": [
+          {
+            "name": "q",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 2.9390370306308536e-07
+          },
+          {
+            "name": "k",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 4.954539787941814e-07
+          },
+          {
+            "name": "v",
+            "mismatches": 0,
+            "elements": 9437184,
+            "max_abs": 0.0,
+            "error_l2_squared": 0.0,
+            "reference_l2_squared": 3.80344072265399e-07
+          }
+        ]
+      }
+    }
+  ]
+}

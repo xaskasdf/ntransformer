@@ -1,0 +1,88 @@
+{"step": 32778, "loss": 2.22571063041687, "seconds": 0.43715418899955694, "tokens": 65536, "grad_norm": 0.3459557294845581, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 112.31798362731934, "backward_stream_ms": 312.9216003417969, "optimizer_stream_ms": 3.2380800247192383, "measured": false}
+{"step": 32788, "loss": 2.313019096851349, "seconds": 0.4372591760002251, "tokens": 65536, "grad_norm": 0.34918108582496643, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 112.32390403747559, "backward_stream_ms": 312.9397430419922, "optimizer_stream_ms": 3.2028799057006836, "measured": true}
+{"step": 32798, "loss": 2.217575967311859, "seconds": 0.4374569760002487, "tokens": 65536, "grad_norm": 0.3400166928768158, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 112.3322868347168, "backward_stream_ms": 313.0264892578125, "optimizer_stream_ms": 3.3068480491638184, "measured": true}
+{"step": 32808, "loss": 2.3275174498558044, "seconds": 0.4376449950013921, "tokens": 65536, "grad_norm": 0.34536075592041016, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 112.27532768249512, "backward_stream_ms": 312.98057556152344, "optimizer_stream_ms": 3.247296094894409, "measured": true}
+{"step": 32818, "loss": 2.2125124335289, "seconds": 0.4371228059990244, "tokens": 65536, "grad_norm": 0.34190961718559265, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 112.32777404785156, "backward_stream_ms": 312.9620819091797, "optimizer_stream_ms": 3.210655927658081, "measured": true}
+{"step": 32828, "loss": 2.285333752632141, "seconds": 0.4361633560001792, "tokens": 65536, "grad_norm": 0.3396124243736267, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 112.26639938354492, "backward_stream_ms": 312.9949493408203, "optimizer_stream_ms": 3.181407928466797, "measured": true}
+{"step": 32838, "loss": 2.304590582847595, "seconds": 0.43667998500131944, "tokens": 65536, "grad_norm": 0.3451476991176605, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 112.39056015014648, "backward_stream_ms": 313.15087890625, "optimizer_stream_ms": 3.1576321125030518, "measured": true}
+{"step": 32848, "loss": 2.26734459400177, "seconds": 0.436703747998763, "tokens": 65536, "grad_norm": 0.34107550978660583, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 112.35049629211426, "backward_stream_ms": 313.01097106933594, "optimizer_stream_ms": 3.187135934829712, "measured": true}
+{"step": 32858, "loss": 2.209293305873871, "seconds": 0.436537612000393, "tokens": 65536, "grad_norm": 0.33490151166915894, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 112.36089706420898, "backward_stream_ms": 313.08873748779297, "optimizer_stream_ms": 3.185312032699585, "measured": true}
+{"step": 32868, "loss": 2.340044617652893, "seconds": 0.4366420040005323, "tokens": 65536, "grad_norm": 0.3411799669265747, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 112.37558555603027, "backward_stream_ms": 313.11685943603516, "optimizer_stream_ms": 3.175424098968506, "measured": true}
+{
+  "status": "complete",
+  "mode": "checkpoint",
+  "backend": {
+    "native_norms": 61,
+    "native_swiglu": 30,
+    "checkpoint_layers": 30,
+    "peer_activation_storage": false,
+    "gemm_attention_optimizer_ddp": "PyTorch",
+    "higher_order_gradients": false
+  },
+  "steps": 100,
+  "start_step": 32768,
+  "completed_steps": 32868,
+  "physical_world_size": 1,
+  "logical_world_size": 2,
+  "global_tokens_per_step": 65536,
+  "parameters": 107604288,
+  "warmup_steps": 10,
+  "measured_steps": 90,
+  "tokens_per_second": 149872.99290279715,
+  "mean_step_seconds": 0.43727691514444206,
+  "measured_window_seconds": 39.35492236299979,
+  "instrumented_step_mean_seconds": 0.4370201096889206,
+  "timings_rank0": {
+    "initialization_seconds": 4.574859243999526,
+    "initial_validation_seconds": 1.0815902590002224,
+    "training_seconds_including_warmup": 43.92610000499917,
+    "final_validation_seconds": 0.9065177790016605,
+    "checkpoint_and_batch_record_seconds": 1.0542701840004156,
+    "process_seconds_through_checkpoint": 51.54373287499948
+  },
+  "historical_baseline": {
+    "baseline_sha256": "bf58fea89c51f967ebcf59f9b74acb6fadb84f40a2720a679fe154436de43038",
+    "captured_step": 25400,
+    "historical_tokens_per_second": 307985.1565696424,
+    "scope": "Historical context; paired continuation is the causal implementation comparison",
+    "initialization": "Completed pretraining checkpoint, restored AdamW, final LR floor; not a pilot restart"
+  },
+  "initial_validation": {
+    "fineweb_edu": 2.65878763794899,
+    "cosmopedia": 1.6827723383903503,
+    "mean": 2.17077998816967
+  },
+  "final_validation": {
+    "fineweb_edu": 2.6585279554128647,
+    "cosmopedia": 1.6815686747431755,
+    "mean": 2.17004831507802
+  },
+  "batch_sha256": "b8c0439017c9037042592324992fe409427e4374902197e7829a10c9c4069106",
+  "ranks": [
+    {
+      "rank": 0,
+      "memory": [
+        {
+          "device": 0,
+          "peak_allocated_bytes": 4380096000,
+          "peak_reserved_bytes": 5282725888
+        },
+        {
+          "device": 1,
+          "peak_allocated_bytes": 0,
+          "peak_reserved_bytes": 0
+        }
+      ],
+      "pipeline": null
+    }
+  ],
+  "profiled": false,
+  "torch_version": "2.14.1+cu130",
+  "cuda_version": "13.0",
+  "nccl_version": [
+    2,
+    30,
+    7
+  ],
+  "source_checkpoint": "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/pretrain/last.pt"
+}

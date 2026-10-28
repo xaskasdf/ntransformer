@@ -1,0 +1,45 @@
+{
+  "pretrain": {
+    "phase": "pretrain",
+    "parameters": 107604288,
+    "world_size": 2,
+    "start_step": 0,
+    "completed_steps": 32768,
+    "planned_steps": 32768,
+    "initial_validation": {
+      "fineweb_edu": 4.3078595995903015,
+      "cosmopedia": 3.5625483244657516,
+      "mean": 3.9352039620280266
+    },
+    "final_validation": {
+      "fineweb_edu": 2.6587655395269394,
+      "cosmopedia": 1.6827282086014748,
+      "mean": 2.170746874064207
+    },
+    "best_validation_loss": 2.170746874064207,
+    "manifest_sha256": "00d1669f6a919139d8b0b82c49aa1944e4954f67ab3d2d075cf071f2eed3ec84",
+    "status": "complete",
+    "training_tokens": 2147483648
+  },
+  "pretrain_diagnostic": 0.0,
+  "sft": {
+    "phase": "sft",
+    "parameters": 107604288,
+    "world_size": 2,
+    "start_step": 0,
+    "completed_steps": 1200,
+    "planned_steps": 1200,
+    "initial_validation": {
+      "instructions": 1.8482667066261216,
+      "mean": 1.8482667066261216
+    },
+    "final_validation": {
+      "instructions": 1.373770063231728,
+      "mean": 1.373770063231728
+    },
+    "best_validation_loss": 1.373770063231728,
+    "manifest_sha256": "00d1669f6a919139d8b0b82c49aa1944e4954f67ab3d2d075cf071f2eed3ec84",
+    "status": "complete"
+  },
+  "sft_diagnostic": 0.0
+}

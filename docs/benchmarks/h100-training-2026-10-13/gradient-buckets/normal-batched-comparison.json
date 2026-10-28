@@ -1,0 +1,27 @@
+{
+  "status": "passed",
+  "reference": "/home/ubuntu/ntransformer-h100/training/gradient-buckets-20261015-r2/normal-control",
+  "candidate": "/home/ubuntu/ntransformer-h100/training/gradient-buckets-20261015-r2/normal-batched",
+  "paired_throughput_ratio": 1.0024996879728392,
+  "historical_throughput_ratio": 1.2968085115010326,
+  "historical_ratio_scope": "Descriptive only: separate initialization and instrumentation",
+  "max_training_loss_delta": 0.00016194581985473633,
+  "final_validation_delta": 3.394857048988342e-05,
+  "relative_update_difference": 0.023205926461433893,
+  "max_weight_difference": 0.0003257519565522671,
+  "updated_tensors": 273,
+  "total_tensors": 273,
+  "exact": {
+    "model_state_dict": false,
+    "optimizer_states": false,
+    "rng_states": true,
+    "recorded_metrics": false,
+    "validation": false
+  },
+  "require_exact": false,
+  "limits": {
+    "training_loss": 0.03,
+    "validation_loss": 0.02,
+    "relative_update_difference": 0.1
+  }
+}

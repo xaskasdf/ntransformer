@@ -1,0 +1,98 @@
+{
+  "strict": {
+    "samples": {
+      "control": [
+        313839.00797704206,
+        361258.04256858316
+      ],
+      "batched": [
+        361924.72516489413,
+        360863.18579729786
+      ],
+      "buckets25": [
+        364242.5980286352,
+        364344.289175713
+      ],
+      "buckets512": [
+        365573.9292391614,
+        365483.14103694103
+      ]
+    },
+    "means": {
+      "control": 337548.5252728126,
+      "batched": 361393.955481096,
+      "buckets25": 364293.4436021741,
+      "buckets512": 365528.53513805126
+    },
+    "ratios": {
+      "batched": 1.0706429695967747,
+      "buckets25": 1.0792328104759037,
+      "buckets512": 1.0828918148660989
+    },
+    "buckets25_vs_batched": 1.0080230675613218,
+    "buckets512_vs_batched": 1.0114406441896662,
+    "paired_buckets512_gains": [
+      0.16484541420008525,
+      0.011695513927709289
+    ],
+    "paired_buckets25_gains": [
+      0.16060333091315493,
+      0.008543053007723511
+    ]
+  },
+  "normal": {
+    "samples": {
+      "control": [
+        398401.8920376077,
+        398828.5910993605
+      ],
+      "batched": [
+        399397.7724554905,
+        399414.9537931042
+      ],
+      "buckets25": [
+        402287.424888425,
+        402327.64827940124
+      ],
+      "buckets512": [
+        403527.3346551804,
+        403822.7724635258
+      ]
+    },
+    "means": {
+      "control": 398615.2415684841,
+      "batched": 399406.36312429735,
+      "buckets25": 402307.53658391314,
+      "buckets512": 403675.0535593531
+    },
+    "ratios": {
+      "batched": 1.0019846746268415,
+      "buckets25": 1.0092628044048202,
+      "buckets512": 1.012693473463181
+    },
+    "buckets25_vs_batched": 1.0072637136697618,
+    "buckets512_vs_batched": 1.0106875874527,
+    "paired_buckets512_gains": [
+      0.01286500571410154,
+      0.0125221247313263
+    ],
+    "paired_buckets25_gains": [
+      0.009752797184132245,
+      0.008773335859386888
+    ]
+  },
+  "peer_ratio": 1.00293328453425,
+  "strict_confirmation": {
+    "state": "deferred",
+    "reason": "Another Brandon pipeline acquired GPUs after the completed suite"
+  },
+  "strict_control_variability": {
+    "all_control_samples": [
+      313839.00797704206,
+      361258.04256858316
+    ],
+    "first_control_retained": true,
+    "stable_reverse_pair_ratio": 1.0116955139277093,
+    "comparison_rule": "Report all original means; interpret speed with stable batched controls and the reverse-order pair; independent confirmation was deferred, and the initial slow control remains in the record"
+  }
+}

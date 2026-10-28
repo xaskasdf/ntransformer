@@ -1,0 +1,19 @@
+Traceback (most recent call last):
+  File "/home/ubuntu/ntransformer-h100/source/tests/test_training_ops.py", line 202, in <module>
+    main()
+  File "/home/ubuntu/ntransformer-h100/source/tests/test_training_ops.py", line 196, in main
+    result = dict(status='passed', primitive_tests=[] if args.cpu else primitives(), model_tests=model_tests(args))
+                                                                       ^^^^^^^^^^^^
+  File "/home/ubuntu/ntransformer-h100/source/tests/test_training_ops.py", line 34, in primitives
+    y = rmsnorm(x, w, 1e-5)
+        ^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/ntransformer-h100/source/python/ntransformer_training/ops.py", line 57, in forward
+    checked(library().nt_train_rms_forward(y.data_ptr(), x.data_ptr(), weight.data_ptr(),
+            ^^^^^^^^^
+  File "/home/ubuntu/ntransformer-h100/source/python/ntransformer_training/ops.py", line 15, in library
+    lib = ctypes.CDLL(str(path))
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: /home/ubuntu/ntransformer-h100/build-training/libntransformer_training.so: undefined symbol: __gxx_personality_v0

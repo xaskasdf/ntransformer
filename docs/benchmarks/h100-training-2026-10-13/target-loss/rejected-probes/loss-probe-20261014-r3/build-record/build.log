@@ -1,0 +1,2 @@
+[1/2] Building CUDA object CMakeFiles/ntransformer_training.dir/src/training/cross_entropy.cu.o
+[2/2] Linking CXX shared library libntransformer_training.so

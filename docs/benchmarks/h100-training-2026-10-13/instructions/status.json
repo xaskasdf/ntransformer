@@ -1,0 +1,20 @@
+{
+  "state": "complete",
+  "pid": 47400,
+  "steps_per_backend": 100,
+  "stage": "done",
+  "updated_unix": 1791928168.8019462,
+  "command": [
+    "/home/ubuntu/brandon-mini/.venv/bin/python",
+    "/lambda/nfs/btiny/brandon-mini/distillation/text-v1/source/evaluate_mini_instructions.py",
+    "--checkpoint",
+    "/home/ubuntu/ntransformer-h100/training/instructions-20261013/native/last.pt",
+    "--tokenizer",
+    "/lambda/nfs/btiny/brandon-mini/sources/stage1-v1/data/tokenizer_8k.model",
+    "--output",
+    "/home/ubuntu/ntransformer-h100/training/instructions-20261013/native-original.json",
+    "--max-new-tokens",
+    "32"
+  ],
+  "reason": "Paired 100-step SFT and all six evaluations completed"
+}

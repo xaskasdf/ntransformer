@@ -1,0 +1,129 @@
+{
+  "payload_files_verified": 334,
+  "executed_sources_exact": true,
+  "trace_reanalysis": {
+    "strict-control/rank0": {
+      "profile_window_peak_allocated_bytes": 13169947136,
+      "summary_exact": true,
+      "target_loss_kernels": 0,
+      "kernel_count": 11664,
+      "loss_kernel_names": {
+        "void at::native::(anonymous namespace)::cunn_SoftMaxForwardReg<c10::BFloat16, float, c10::BFloat16, at::native::(anonymous namespace)::LogSoftMaxForwardEpilogue, long, 8>(c10::BFloat16*, c10::BFloat16 const*, long)": 4,
+        "void at::native::(anonymous namespace)::nll_loss_forward_reduce_cuda_kernel_2d<float, float, long>(float*, float*, float const*, long const*, float const*, bool, long, long, long, long)": 4,
+        "void at::native::(anonymous namespace)::nll_loss_backward_reduce_cuda_kernel_2d<float, long>(float*, float const*, long const*, float const*, float const*, bool, int, int, long, long)": 4,
+        "void at::native::(anonymous namespace)::cunn_SoftMaxBackwardSmem<8, c10::BFloat16, float, c10::BFloat16, at::native::(anonymous namespace)::LogSoftMaxBackwardEpilogue>(c10::BFloat16*, c10::BFloat16 const*, c10::BFloat16 const*, long)": 4
+      }
+    },
+    "strict-control/rank1": {
+      "profile_window_peak_allocated_bytes": 13169947136,
+      "summary_exact": true,
+      "target_loss_kernels": 0,
+      "kernel_count": 11664,
+      "loss_kernel_names": {
+        "void at::native::(anonymous namespace)::cunn_SoftMaxForwardReg<c10::BFloat16, float, c10::BFloat16, at::native::(anonymous namespace)::LogSoftMaxForwardEpilogue, long, 8>(c10::BFloat16*, c10::BFloat16 const*, long)": 4,
+        "void at::native::(anonymous namespace)::nll_loss_forward_reduce_cuda_kernel_2d<float, float, long>(float*, float*, float const*, long const*, float const*, bool, long, long, long, long)": 4,
+        "void at::native::(anonymous namespace)::nll_loss_backward_reduce_cuda_kernel_2d<float, long>(float*, float const*, long const*, float const*, float const*, bool, int, int, long, long)": 4,
+        "void at::native::(anonymous namespace)::cunn_SoftMaxBackwardSmem<8, c10::BFloat16, float, c10::BFloat16, at::native::(anonymous namespace)::LogSoftMaxBackwardEpilogue>(c10::BFloat16*, c10::BFloat16 const*, c10::BFloat16 const*, long)": 4
+      }
+    },
+    "strict-fused/rank0": {
+      "profile_window_peak_allocated_bytes": 12362771968,
+      "summary_exact": true,
+      "target_loss_kernels": 8,
+      "kernel_count": 11700,
+      "loss_kernel_names": {
+        "nt::training::target_log_probability(float*, float*, __nv_bfloat16 const*, long const*, int, int, int, int)": 4,
+        "void at::native::(anonymous namespace)::nll_loss_forward_reduce_cuda_kernel_2d<float, float, long>(float*, float*, float const*, long const*, float const*, bool, long, long, long, long)": 4,
+        "void at::native::(anonymous namespace)::nll_loss_backward_reduce_cuda_kernel_2d<float, long>(float*, float const*, long const*, float const*, float const*, bool, int, int, long, long)": 4,
+        "nt::training::target_log_probability_backward(__nv_bfloat16*, __nv_bfloat16 const*, float const*, long const*, float const*, int, int, int)": 4
+      }
+    },
+    "strict-fused/rank1": {
+      "profile_window_peak_allocated_bytes": 12362771968,
+      "summary_exact": true,
+      "target_loss_kernels": 8,
+      "kernel_count": 11700,
+      "loss_kernel_names": {
+        "nt::training::target_log_probability(float*, float*, __nv_bfloat16 const*, long const*, int, int, int, int)": 4,
+        "void at::native::(anonymous namespace)::nll_loss_forward_reduce_cuda_kernel_2d<float, float, long>(float*, float*, float const*, long const*, float const*, bool, long, long, long, long)": 4,
+        "void at::native::(anonymous namespace)::nll_loss_backward_reduce_cuda_kernel_2d<float, long>(float*, float const*, long const*, float const*, float const*, bool, int, int, long, long)": 4,
+        "nt::training::target_log_probability_backward(__nv_bfloat16*, __nv_bfloat16 const*, float const*, long const*, float const*, int, int, int)": 4
+      }
+    },
+    "normal-control/rank0": {
+      "profile_window_peak_allocated_bytes": 13169947136,
+      "summary_exact": true,
+      "target_loss_kernels": 0,
+      "kernel_count": 11544,
+      "loss_kernel_names": {
+        "void at::native::(anonymous namespace)::cunn_SoftMaxForwardReg<c10::BFloat16, float, c10::BFloat16, at::native::(anonymous namespace)::LogSoftMaxForwardEpilogue, long, 8>(c10::BFloat16*, c10::BFloat16 const*, long)": 4,
+        "void at::native::(anonymous namespace)::nll_loss_forward_reduce_cuda_kernel_2d<float, float, long>(float*, float*, float const*, long const*, float const*, bool, long, long, long, long)": 4,
+        "void at::native::(anonymous namespace)::nll_loss_backward_reduce_cuda_kernel_2d<float, long>(float*, float const*, long const*, float const*, float const*, bool, int, int, long, long)": 4,
+        "void at::native::(anonymous namespace)::cunn_SoftMaxBackwardSmem<8, c10::BFloat16, float, c10::BFloat16, at::native::(anonymous namespace)::LogSoftMaxBackwardEpilogue>(c10::BFloat16*, c10::BFloat16 const*, c10::BFloat16 const*, long)": 4
+      }
+    },
+    "normal-control/rank1": {
+      "profile_window_peak_allocated_bytes": 13169947136,
+      "summary_exact": true,
+      "target_loss_kernels": 0,
+      "kernel_count": 11544,
+      "loss_kernel_names": {
+        "void at::native::(anonymous namespace)::cunn_SoftMaxForwardReg<c10::BFloat16, float, c10::BFloat16, at::native::(anonymous namespace)::LogSoftMaxForwardEpilogue, long, 8>(c10::BFloat16*, c10::BFloat16 const*, long)": 4,
+        "void at::native::(anonymous namespace)::nll_loss_forward_reduce_cuda_kernel_2d<float, float, long>(float*, float*, float const*, long const*, float const*, bool, long, long, long, long)": 4,
+        "void at::native::(anonymous namespace)::nll_loss_backward_reduce_cuda_kernel_2d<float, long>(float*, float const*, long const*, float const*, float const*, bool, int, int, long, long)": 4,
+        "void at::native::(anonymous namespace)::cunn_SoftMaxBackwardSmem<8, c10::BFloat16, float, c10::BFloat16, at::native::(anonymous namespace)::LogSoftMaxBackwardEpilogue>(c10::BFloat16*, c10::BFloat16 const*, c10::BFloat16 const*, long)": 4
+      }
+    },
+    "normal-fused/rank0": {
+      "profile_window_peak_allocated_bytes": 12362771968,
+      "summary_exact": true,
+      "target_loss_kernels": 8,
+      "kernel_count": 11580,
+      "loss_kernel_names": {
+        "nt::training::target_log_probability(float*, float*, __nv_bfloat16 const*, long const*, int, int, int, int)": 4,
+        "void at::native::(anonymous namespace)::nll_loss_forward_reduce_cuda_kernel_2d<float, float, long>(float*, float*, float const*, long const*, float const*, bool, long, long, long, long)": 4,
+        "void at::native::(anonymous namespace)::nll_loss_backward_reduce_cuda_kernel_2d<float, long>(float*, float const*, long const*, float const*, float const*, bool, int, int, long, long)": 4,
+        "nt::training::target_log_probability_backward(__nv_bfloat16*, __nv_bfloat16 const*, float const*, long const*, float const*, int, int, int)": 4
+      }
+    },
+    "normal-fused/rank1": {
+      "profile_window_peak_allocated_bytes": 12362771968,
+      "summary_exact": true,
+      "target_loss_kernels": 8,
+      "kernel_count": 11580,
+      "loss_kernel_names": {
+        "nt::training::target_log_probability(float*, float*, __nv_bfloat16 const*, long const*, int, int, int, int)": 4,
+        "void at::native::(anonymous namespace)::nll_loss_forward_reduce_cuda_kernel_2d<float, float, long>(float*, float*, float const*, long const*, float const*, bool, long, long, long, long)": 4,
+        "void at::native::(anonymous namespace)::nll_loss_backward_reduce_cuda_kernel_2d<float, long>(float*, float const*, long const*, float const*, float const*, bool, int, int, long, long)": 4,
+        "nt::training::target_log_probability_backward(__nv_bfloat16*, __nv_bfloat16 const*, float const*, long const*, float const*, int, int, int)": 4
+      }
+    },
+    "strict-stream/rank0": {
+      "profile_window_peak_allocated_bytes": 12080115200,
+      "summary_exact": true,
+      "target_loss_kernels": 32,
+      "kernel_count": 11948,
+      "loss_kernel_names": {
+        "nt::training::target_log_probability(float*, float*, __nv_bfloat16 const*, long const*, int, int, int, int)": 16,
+        "void at::native::(anonymous namespace)::nll_loss_forward_reduce_cuda_kernel_2d<float, float, long>(float*, float*, float const*, long const*, float const*, bool, long, long, long, long)": 4,
+        "void at::native::(anonymous namespace)::nll_loss_backward_reduce_cuda_kernel_2d<float, long>(float*, float const*, long const*, float const*, float const*, bool, int, int, long, long)": 4,
+        "nt::training::target_log_probability_backward(__nv_bfloat16*, __nv_bfloat16 const*, float const*, long const*, float const*, int, int, int)": 16
+      }
+    },
+    "strict-stream/rank1": {
+      "profile_window_peak_allocated_bytes": 12083260928,
+      "summary_exact": true,
+      "target_loss_kernels": 32,
+      "kernel_count": 11948,
+      "loss_kernel_names": {
+        "nt::training::target_log_probability(float*, float*, __nv_bfloat16 const*, long const*, int, int, int, int)": 16,
+        "void at::native::(anonymous namespace)::nll_loss_forward_reduce_cuda_kernel_2d<float, float, long>(float*, float*, float const*, long const*, float const*, bool, long, long, long, long)": 4,
+        "void at::native::(anonymous namespace)::nll_loss_backward_reduce_cuda_kernel_2d<float, long>(float*, float const*, long const*, float const*, float const*, bool, int, int, long, long)": 4,
+        "nt::training::target_log_probability_backward(__nv_bfloat16*, __nv_bfloat16 const*, float const*, long const*, float const*, int, int, int)": 16
+      }
+    }
+  },
+  "python_compilation": "passed",
+  "measurement_tests": 4,
+  "queue_tests": 5
+}

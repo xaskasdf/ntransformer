@@ -1,0 +1,109 @@
+{
+  "small": [
+    {
+      "full_model": false,
+      "bucket_mb": 25,
+      "exact": true,
+      "parameters": 20,
+      "statistics": {
+        "updates": 2,
+        "backward_calls": 4,
+        "collective_calls": 0,
+        "buckets": 2,
+        "bucket_bytes": [
+          25804800,
+          20507904
+        ],
+        "reserved_bytes": 46312704,
+        "state": "reduced",
+        "world_size": 1,
+        "microbatches": 2,
+        "accumulation": "first copy; ordered foreach adds; divide before NCCL sum",
+        "storage": "independent persistent buckets; optimizer parameter.grad views"
+      }
+    },
+    {
+      "full_model": false,
+      "bucket_mb": 512,
+      "exact": true,
+      "parameters": 20,
+      "statistics": {
+        "updates": 2,
+        "backward_calls": 4,
+        "collective_calls": 0,
+        "buckets": 1,
+        "bucket_bytes": [
+          46312704
+        ],
+        "reserved_bytes": 46312704,
+        "state": "reduced",
+        "world_size": 1,
+        "microbatches": 2,
+        "accumulation": "first copy; ordered foreach adds; divide before NCCL sum",
+        "storage": "independent persistent buckets; optimizer parameter.grad views"
+      }
+    }
+  ],
+  "full": [
+    {
+      "full_model": true,
+      "bucket_mb": 25,
+      "exact": true,
+      "parameters": 272,
+      "statistics": {
+        "updates": 2,
+        "backward_calls": 4,
+        "collective_calls": 0,
+        "buckets": 18,
+        "bucket_bytes": [
+          25804800,
+          24044544,
+          26108928,
+          25224192,
+          24039936,
+          24044544,
+          24044544,
+          26108928,
+          25224192,
+          24039936,
+          24044544,
+          24044544,
+          26108928,
+          25224192,
+          24039936,
+          24044544,
+          24044544,
+          10181376
+        ],
+        "reserved_bytes": 430417152,
+        "state": "reduced",
+        "world_size": 1,
+        "microbatches": 2,
+        "accumulation": "first copy; ordered foreach adds; divide before NCCL sum",
+        "storage": "independent persistent buckets; optimizer parameter.grad views"
+      }
+    },
+    {
+      "full_model": true,
+      "bucket_mb": 512,
+      "exact": true,
+      "parameters": 272,
+      "statistics": {
+        "updates": 2,
+        "backward_calls": 4,
+        "collective_calls": 0,
+        "buckets": 1,
+        "bucket_bytes": [
+          430417152
+        ],
+        "reserved_bytes": 430417152,
+        "state": "reduced",
+        "world_size": 1,
+        "microbatches": 2,
+        "accumulation": "first copy; ordered foreach adds; divide before NCCL sum",
+        "storage": "independent persistent buckets; optimizer parameter.grad views"
+      }
+    }
+  ],
+  "status": "passed"
+}

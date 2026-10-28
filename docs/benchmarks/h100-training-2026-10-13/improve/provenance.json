@@ -1,0 +1,106 @@
+{
+  "/home/ubuntu/ntransformer-h100/training/instructions-20261013/reference/summary.json": {
+    "local_record": "comparison-reference/summary.json",
+    "sha256": "f86d63f3405a19403ef7e90af39498d631e81fc6989bea78a9f5b8f34d03571c"
+  },
+  "/home/ubuntu/ntransformer-h100/training/instructions-20261013/reference/metrics.jsonl": {
+    "local_record": "comparison-reference/metrics.jsonl",
+    "sha256": "c57b2d6fca4d021233b08b84348a3fc51444af4657e7668129827b0bbe8ac69b"
+  },
+  "/home/ubuntu/ntransformer-h100/training/instructions-20261013/reference/experiment.json": {
+    "local_record": "comparison-reference/experiment.json",
+    "sha256": "8f6b82e05199e5156e407b07b7e0723473df909abfeb333d9a13cb08091c56fc"
+  },
+  "/home/ubuntu/ntransformer-h100/training/instructions-20261013/reference/batches-rank0.json": {
+    "local_record": "comparison-reference/batches-rank0.json",
+    "sha256": "3368a8ff5a6abec73e649ae457545e20d99d543b2cf40183804f6d0ee5345cf3"
+  },
+  "/home/ubuntu/ntransformer-h100/training/instructions-20261013/reference/batches-rank1.json": {
+    "local_record": "comparison-reference/batches-rank1.json",
+    "sha256": "425e88990cf343e307c4e16d2afcbd459550cfdc6005e208d73c71148ddece30"
+  },
+  "/home/ubuntu/ntransformer-h100/training/instructions-20261013/config.yaml": {
+    "local_record": "comparison-reference/config.yaml",
+    "sha256": "7619f1cf8855623605febe79da9dd6a109d110c515e9f81210898d519db53fad"
+  },
+  "/home/ubuntu/ntransformer-h100/training/instructions-20261013/inputs.json": {
+    "local_record": "comparison-reference/inputs.json",
+    "sha256": "90c7e9a2bbcbb858de6be1fb8b4bbe7e2e855d6657946828741ddb40e97d60d1"
+  },
+  "/home/ubuntu/ntransformer-h100/source/CMakeLists.txt": {
+    "local_record": "source-snapshot/CMakeLists.txt",
+    "sha256": "27874d21d0de20f4726bf01b24fa78307bd70169a88fb709cbc7ae45f2aa09c5"
+  },
+  "/home/ubuntu/ntransformer-h100/source/python/ntransformer_training/__init__.py": {
+    "local_record": "source-snapshot/python/ntransformer_training/__init__.py",
+    "sha256": "9bf5eb2e58c85eb90191fa557f56adce0144efbf083c00e0d5bac4aceab53ab2"
+  },
+  "/home/ubuntu/ntransformer-h100/source/python/ntransformer_training/brandon.py": {
+    "local_record": "source-snapshot/python/ntransformer_training/brandon.py",
+    "sha256": "cec581a0a2a9297c9cc579d8fa543f79ecfbb10165f81ab4bc8f641c7cab828b"
+  },
+  "/home/ubuntu/ntransformer-h100/source/python/ntransformer_training/measurement.py": {
+    "local_record": "source-snapshot/python/ntransformer_training/measurement.py",
+    "sha256": "d32f75b827b9f4faf899b7cc54c2a85685857cdc914a4ed2da816b91b735b8ce"
+  },
+  "/home/ubuntu/ntransformer-h100/source/python/ntransformer_training/ops.py": {
+    "local_record": "source-snapshot/python/ntransformer_training/ops.py",
+    "sha256": "7b2a4c7ee3887287b76bd4680e7df04e8cc6e059ac43f19410870d29850d8eb4"
+  },
+  "/home/ubuntu/ntransformer-h100/source/python/ntransformer_training/pipeline.py": {
+    "local_record": "source-snapshot/python/ntransformer_training/pipeline.py",
+    "sha256": "724eb1bb847bac91453844e030b166eb350ed994b1c9f7deb2c69e9462761de2"
+  },
+  "/home/ubuntu/ntransformer-h100/source/src/training/ops.cu": {
+    "local_record": "source-snapshot/src/training/ops.cu",
+    "sha256": "ee5ab6e3074b1c85397fe5044b0857fde9d96984061a165b72ffac7df4ff2e46"
+  },
+  "/home/ubuntu/ntransformer-h100/source/scripts/train_brandon_experiment.py": {
+    "local_record": "source-snapshot/scripts/train_brandon_experiment.py",
+    "sha256": "370749c387e0a5e82d7b17d4b4a19fb3f0c229c410e9510960792d7b3b58caae"
+  },
+  "/home/ubuntu/ntransformer-h100/source/scripts/train_verified_instructions.py": {
+    "local_record": "source-snapshot/scripts/train_verified_instructions.py",
+    "sha256": "17902e199dfa876dfec779808e6b7b5b33418e500b2674942e344cc742ff8f87"
+  },
+  "/home/ubuntu/ntransformer-h100/source/scripts/analyze_verified_instructions.py": {
+    "local_record": "source-snapshot/scripts/analyze_verified_instructions.py",
+    "sha256": "25454e9026d8bfcce6e14e2b38ea4d7535a32bfd9cf3a757c7e47b9054cf4be4"
+  },
+  "/home/ubuntu/ntransformer-h100/source/scripts/compare_training_experiment.py": {
+    "local_record": "source-snapshot/scripts/compare_training_experiment.py",
+    "sha256": "9931c9d6cdb9200a39bd1216d557a7f482983095024c399ccdac3c5d23b92ea3"
+  },
+  "/home/ubuntu/ntransformer-h100/source/tests/test_training_rms_compatible.py": {
+    "local_record": "source-snapshot/tests/test_training_rms_compatible.py",
+    "sha256": "c3c880fb3bb2615aa72f8c76dd3e9930e6abe29ddbe8c38125a701b6dca6b6d6"
+  },
+  "/home/ubuntu/ntransformer-h100/source/tests/test_training_ops.py": {
+    "local_record": "source-snapshot/tests/test_training_ops.py",
+    "sha256": "320539fd13a0bcdaf1ff95f62b16405859f5640c5317339170e1cc8a1df96248"
+  },
+  "/home/ubuntu/ntransformer-h100/run-improvement.py": {
+    "local_record": "execution/run-improvement.py",
+    "sha256": "768fa83290accda590b233865f5c7c172d8e3dcdf585d8e2df387434a8f0f5f6"
+  },
+  "/home/ubuntu/ntransformer-h100/improve-build.sh": {
+    "local_record": "execution/improve-build.sh",
+    "sha256": "cdde230ae90643bfe0b1a7ca0fbce6fd1f834112c0a5f63336970dc7b34a9af6"
+  },
+  "/home/ubuntu/ntransformer-h100/probe-rms.py": {
+    "local_record": "execution/probe-rms.py",
+    "sha256": "bd4835157dff225a52943a4e59282a971fa605e27b9467074529396c95b0fad2"
+  },
+  "/home/ubuntu/ntransformer-h100/seal-improvement.py": {
+    "local_record": "execution/seal-improvement.py",
+    "sha256": "e87e78c4e082e8c94729f7c0e30d9d8d81b501e707c0451ea96d47b79a1a6b18"
+  },
+  "/home/ubuntu/ntransformer-h100/training/instructions-20261013/reference/last.pt": {
+    "sha256": "32ac2810e7ff4dd06ae4240dc370fdc6ce69dc1a02ac2bf864436e24ff534cdd",
+    "storage": "Remote checkpoint; optimizer and RNG included"
+  },
+  "/home/ubuntu/ntransformer-h100/training/improve-20261013/sft-compatible/last.pt": {
+    "sha256": "32ac2810e7ff4dd06ae4240dc370fdc6ce69dc1a02ac2bf864436e24ff534cdd",
+    "storage": "Remote checkpoint; optimizer and RNG included"
+  }
+}

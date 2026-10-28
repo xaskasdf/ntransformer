@@ -1,0 +1,22 @@
+{"scale": 1.0, "logp": {"exact": true, "max_abs": 0.0, "relative_l2": 0.0}, "gradient": {"exact": true, "max_abs": 0.0, "relative_l2": 0.0}}
+{"scale": 6.0, "logp": {"exact": true, "max_abs": 0.0, "relative_l2": 0.0}, "gradient": {"exact": true, "max_abs": 0.0, "relative_l2": 0.0}}
+{"scale": 30.0, "logp": {"exact": true, "max_abs": 0.0, "relative_l2": 0.0}, "gradient": {"exact": true, "max_abs": 0.0, "relative_l2": 0.0}}
+{"mode": "fused", "shifted": true, "mask": "none", "loss": 9.345552444458008, "reference_loss": 9.345552444458008}
+{"mode": "fused", "shifted": false, "mask": "none", "loss": 9.332932472229004, "reference_loss": 9.332932472229004}
+{"mode": "fused", "shifted": false, "mask": "weighted", "loss": 7.030524253845215, "reference_loss": 7.030524253845215}
+{"mode": "fused", "shifted": true, "mask": "zero", "loss": 0.0, "reference_loss": 0.0}
+{"mode": "fused", "shifted": true, "mask": "ignored", "loss": NaN, "reference_loss": NaN}
+{"mode": "fused", "shifted": false, "mask": "ignored-mask", "loss": 0.0, "reference_loss": 0.0}
+/home/ubuntu/brandon-mini/.venv/lib/python3.12/site-packages/torch/autograd/graph.py:1072: UserWarning: The AccumulateGrad node's stream does not match the stream of the node that produced the incoming gradient. This may incur unnecessary synchronization and break CUDA graph capture if the AccumulateGrad node's stream is the default stream. This mismatch is caused by an AccumulateGrad node created prior to the current iteration being kept alive. This can happen if the autograd graph is still being kept alive by tensors such as the loss, or if you are using DDP, which will stash a reference to the node. To resolve the mismatch, delete all references to the autograd graph or ensure that DDP initialization is performed under the same stream as subsequent forwards. If the mismatch is intentional, you can use torch.autograd.graph.set_warn_on_accumulate_grad_stream_mismatch(False) to suppress this warning. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/input_buffer.cpp:310.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+Traceback (most recent call last):
+  File "/home/ubuntu/ntransformer-h100/training/labels-small-20261014/source-snapshot/tests/test_training_loss_labels.py", line 189, in <module>
+    main()
+  File "/home/ubuntu/ntransformer-h100/training/labels-small-20261014/source-snapshot/tests/test_training_loss_labels.py", line 179, in main
+    result['graph_small'] = graph_checks(args)
+                            ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/ntransformer-h100/training/labels-small-20261014/source-snapshot/tests/test_training_loss_labels.py", line 127, in graph_checks
+    torch.testing.assert_close(a['gradients'][n],b['gradients'][n],rtol=0,atol=0,msg=n)
+  File "/home/ubuntu/brandon-mini/.venv/lib/python3.12/site-packages/torch/testing/_comparison.py", line 1689, in assert_close
+    raise error_metas[0].to_error(msg)
+AssertionError: tok_embeddings.weight

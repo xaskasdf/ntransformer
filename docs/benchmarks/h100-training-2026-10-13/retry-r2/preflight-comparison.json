@@ -1,0 +1,19 @@
+{
+  "status": "passed",
+  "reference": "/home/ubuntu/ntransformer-h100/training/experiment-20261013-r2/preflight-reference",
+  "candidate": "/home/ubuntu/ntransformer-h100/training/experiment-20261013-r2/preflight-peer",
+  "paired_throughput_ratio": 0.9585319515239041,
+  "historical_throughput_ratio": 0.9251196579850235,
+  "historical_ratio_scope": "Descriptive only: separate initialization and instrumentation",
+  "max_training_loss_delta": 5.8710575103759766e-05,
+  "final_validation_delta": 2.130866050720215e-05,
+  "relative_update_difference": 0.007788431927827276,
+  "max_weight_difference": 7.513910531997681e-06,
+  "updated_tensors": 273,
+  "total_tensors": 273,
+  "limits": {
+    "training_loss": 0.03,
+    "validation_loss": 0.02,
+    "relative_update_difference": 0.1
+  }
+}

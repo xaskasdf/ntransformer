@@ -1,0 +1,2210 @@
+{
+  "suite": "mini-text-transformations-v1",
+  "seed": 20261014,
+  "scoring": "case-sensitive exact match, ignoring outer whitespace only",
+  "limitations": "Held-out inputs and paraphrases in training task families; includes teacher failures. Not unseen-skill evaluation.",
+  "cases": [
+    {
+      "id": "uppercase-validation-0000",
+      "category": "uppercase",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Rewrite the text using capital letters only; keep the spacing.\nText: ocean notebook ribbon rocket"
+        }
+      ],
+      "expected": "OCEAN NOTEBOOK RIBBON ROCKET",
+      "response": "Ocean notebook rocket",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "uppercase-validation-0001",
+      "category": "uppercase",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Rewrite the text using capital letters only; keep the spacing.\nText: velvet window notebook rabbit"
+        }
+      ],
+      "expected": "VELVET WINDOW NOTEBOOK RABBIT",
+      "response": "Rewrite the text with capital letters only.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "uppercase-validation-0002",
+      "category": "uppercase",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Rewrite the text using capital letters only; keep the spacing.\nText: forest basket orange copper"
+        }
+      ],
+      "expected": "FOREST BASKET ORANGE COPPER",
+      "response": "Forest basket orange copper",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "uppercase-validation-0003",
+      "category": "uppercase",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Rewrite the text using capital letters only; keep the spacing.\nText: turtle marble river cloud"
+        }
+      ],
+      "expected": "TURTLE MARBLE RIVER CLOUD",
+      "response": "turtle marble river cloud",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "uppercase-validation-0004",
+      "category": "uppercase",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Rewrite the text using capital letters only; keep the spacing.\nText: pocket rocket lantern river"
+        }
+      ],
+      "expected": "POCKET ROCKET LANTERN RIVER",
+      "response": "Rewrite the text with capital letters only.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "uppercase-validation-0005",
+      "category": "uppercase",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Rewrite the text using capital letters only; keep the spacing.\nText: turtle velvet blanket copper"
+        }
+      ],
+      "expected": "TURTLE VELVET BLANKET COPPER",
+      "response": "turtle velvet blanket copper",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "uppercase-validation-0006",
+      "category": "uppercase",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Rewrite the text using capital letters only; keep the spacing.\nText: island ocean forest notebook"
+        }
+      ],
+      "expected": "ISLAND OCEAN FOREST NOTEBOOK",
+      "response": "Rewrite the text with capital letters only.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "uppercase-validation-0007",
+      "category": "uppercase",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Rewrite the text using capital letters only; keep the spacing.\nText: rabbit notebook forest rocket"
+        }
+      ],
+      "expected": "RABBIT NOTEBOOK FOREST ROCKET",
+      "response": "Rabbit notebook forest rocket",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "uppercase-validation-0008",
+      "category": "uppercase",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Rewrite the text using capital letters only; keep the spacing.\nText: garden forest purple rabbit"
+        }
+      ],
+      "expected": "GARDEN FOREST PURPLE RABBIT",
+      "response": "Garden forest purple rabbit",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "uppercase-validation-0009",
+      "category": "uppercase",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Rewrite the text using capital letters only; keep the spacing.\nText: garden button orange ribbon"
+        }
+      ],
+      "expected": "GARDEN BUTTON ORANGE RIBBON",
+      "response": "Garden button orange ribbon",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "uppercase-validation-0010",
+      "category": "uppercase",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Rewrite the text using capital letters only; keep the spacing.\nText: apple meadow velvet lantern"
+        }
+      ],
+      "expected": "APPLE MEADOW VELVET LANTERN",
+      "response": "Rewrite the text with capital letters only.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "uppercase-validation-0011",
+      "category": "uppercase",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Rewrite the text using capital letters only; keep the spacing.\nText: ribbon blanket window river"
+        }
+      ],
+      "expected": "RIBBON BLANKET WINDOW RIVER",
+      "response": "Rewrite the text with capital letters only.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "uppercase-validation-0012",
+      "category": "uppercase",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Rewrite the text using capital letters only; keep the spacing.\nText: button lantern rocket river"
+        }
+      ],
+      "expected": "BUTTON LANTERN ROCKET RIVER",
+      "response": "button lantern rocket river",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "uppercase-validation-0013",
+      "category": "uppercase",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Rewrite the text using capital letters only; keep the spacing.\nText: ocean button pencil velvet"
+        }
+      ],
+      "expected": "OCEAN BUTTON PENCIL VELVET",
+      "response": "Rewrite the text with capital letters only.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "uppercase-validation-0014",
+      "category": "uppercase",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Rewrite the text using capital letters only; keep the spacing.\nText: blanket timber garden pebble"
+        }
+      ],
+      "expected": "BLANKET TIMBER GARDEN PEBBLE",
+      "response": "Rewrite the text with capital letters only.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "uppercase-validation-0015",
+      "category": "uppercase",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Rewrite the text using capital letters only; keep the spacing.\nText: winter candle cloud purple"
+        }
+      ],
+      "expected": "WINTER CANDLE CLOUD PURPLE",
+      "response": "Rewrite the text with capital letters only.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "uppercase-validation-0016",
+      "category": "uppercase",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Rewrite the text using capital letters only; keep the spacing.\nText: basket window meadow yellow"
+        }
+      ],
+      "expected": "BASKET WINDOW MEADOW YELLOW",
+      "response": "Rewrite the text with capital letters only.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "uppercase-validation-0017",
+      "category": "uppercase",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Rewrite the text using capital letters only; keep the spacing.\nText: flower candle ribbon notebook"
+        }
+      ],
+      "expected": "FLOWER CANDLE RIBBON NOTEBOOK",
+      "response": "Rewrite the text with capital letters only.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "uppercase-validation-0018",
+      "category": "uppercase",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Rewrite the text using capital letters only; keep the spacing.\nText: yellow notebook silver winter"
+        }
+      ],
+      "expected": "YELLOW NOTEBOOK SILVER WINTER",
+      "response": "Rewrite the text with capital letters only.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "uppercase-validation-0019",
+      "category": "uppercase",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Rewrite the text using capital letters only; keep the spacing.\nText: flower river pocket ribbon"
+        }
+      ],
+      "expected": "FLOWER RIVER POCKET RIBBON",
+      "response": "Rewrite the text with capital letters only.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "join-validation-0000",
+      "category": "join",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Put / between the items below. Keep their order and include no spaces.\nWords: button, basket, copper, ribbon"
+        }
+      ],
+      "expected": "button/basket/copper/ribbon",
+      "response": "Put / between the items below. Keep their order and include no spaces.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "join-validation-0001",
+      "category": "join",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Put / between the items below. Keep their order and include no spaces.\nWords: pocket, island, basket, window"
+        }
+      ],
+      "expected": "pocket/island/basket/window",
+      "response": "Pocket: Pocket, Pocket, Pocket, Pocket, Pocket, Pocket, Pocket, Pocket, Pocket, Pocket, Pocket, Pocket, Pocket, Pocket, Pocket,",
+      "stopped": false,
+      "correct": false
+    },
+    {
+      "id": "join-validation-0002",
+      "category": "join",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Put / between the items below. Keep their order and include no spaces.\nWords: purple, summer, rocket, pencil"
+        }
+      ],
+      "expected": "purple/summer/rocket/pencil",
+      "response": "Put / between the items below. Keep their order and include no spaces.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "join-validation-0003",
+      "category": "join",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Put / between the items below. Keep their order and include no spaces.\nWords: meadow, blanket, ocean, river"
+        }
+      ],
+      "expected": "meadow/blanket/ocean/river",
+      "response": "Put / between the items below. Keep their order and include no spaces.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "join-validation-0004",
+      "category": "join",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Put ; between the items below. Keep their order and include no spaces.\nWords: pencil, lantern, button, purple"
+        }
+      ],
+      "expected": "pencil;lantern;button;purple",
+      "response": "Put ; between the items below. Keep their order and include no spaces.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "join-validation-0005",
+      "category": "join",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Put / between the items below. Keep their order and include no spaces.\nWords: basket, garden, yellow, meadow"
+        }
+      ],
+      "expected": "basket/garden/yellow/meadow",
+      "response": "Keep their order and include no spaces.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "join-validation-0006",
+      "category": "join",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Put ; between the items below. Keep their order and include no spaces.\nWords: copper, pocket, meadow, marble"
+        }
+      ],
+      "expected": "copper;pocket;meadow;marble",
+      "response": "Put ; between the items below. Keep their order and include no spaces. Words: copper, pocket, meadow",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "join-validation-0007",
+      "category": "join",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Put ; between the items below. Keep their order and include no spaces.\nWords: apple, button, summer, ocean"
+        }
+      ],
+      "expected": "apple;button;summer;ocean",
+      "response": "\"Apple and button are the most common items in the store, followed by button and summer. They are the most common items in the store. Words: apple, button, summer, ocean",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "join-validation-0008",
+      "category": "join",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Put ; between the items below. Keep their order and include no spaces.\nWords: river, ribbon, feather, button"
+        }
+      ],
+      "expected": "river;ribbon;feather;button",
+      "response": "\"Words: river, ribbon, feather, button",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "join-validation-0009",
+      "category": "join",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Put / between the items below. Keep their order and include no spaces.\nWords: flower, pebble, summer, apple"
+        }
+      ],
+      "expected": "flower/pebble/summer/apple",
+      "response": "Put / between the items below. Keep their order and include no spaces.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "join-validation-0010",
+      "category": "join",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Put ; between the items below. Keep their order and include no spaces.\nWords: marble, pocket, copper, apple"
+        }
+      ],
+      "expected": "marble;pocket;copper;apple",
+      "response": "Put the order and include no spaces. Words: marble, pocket, copper, pocket",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "join-validation-0011",
+      "category": "join",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Put | between the items below. Keep their order and include no spaces.\nWords: ocean, velvet, cloud, button"
+        }
+      ],
+      "expected": "ocean|velvet|cloud|button",
+      "response": "Put  \u2047  between the items below. between the buttons and buttons.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "join-validation-0012",
+      "category": "join",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Put | between the items below. Keep their order and include no spaces.\nWords: forest, orange, blanket, pebble"
+        }
+      ],
+      "expected": "forest|orange|blanket|pebble",
+      "response": "Forest is a beautiful place, filled with trees that grow in harmony with the surroundings. It is a place where the trees grow, and the pebble is the only thing that grows in harmony with the surroundings. Words: forest, orange, pebble",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "join-validation-0013",
+      "category": "join",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Put | between the items below. Keep their order and include no spaces.\nWords: notebook, rocket, winter, feather"
+        }
+      ],
+      "expected": "notebook|rocket|winter|feather",
+      "response": "Put  \u2047  between the items below. Keep their order and include no spaces.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "join-validation-0014",
+      "category": "join",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Put | between the items below. Keep their order and include no spaces.\nWords: rabbit, garden, feather, button"
+        }
+      ],
+      "expected": "rabbit|garden|feather|button",
+      "response": "Put  \u2047  between the items below. Keep their order and include no spaces.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "join-validation-0015",
+      "category": "join",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Put ; between the items below. Keep their order and include no spaces.\nWords: notebook, feather, pocket, button"
+        }
+      ],
+      "expected": "notebook;feather;pocket;button",
+      "response": "Please provide the order of the items, including the items they are ordered from. I'll include no spaces in the order.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "join-validation-0016",
+      "category": "join",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Put ; between the items below. Keep their order and include no spaces.\nWords: island, candle, pencil, garden"
+        }
+      ],
+      "expected": "island;candle;pencil;garden",
+      "response": "Put ; between the items below. Keep their order and include no spaces. Words: island, candle, garden",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "join-validation-0017",
+      "category": "join",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Put | between the items below. Keep their order and include no spaces.\nWords: river, timber, silver, lantern"
+        }
+      ],
+      "expected": "river|timber|silver|lantern",
+      "response": "Put  \u2047  between the items below. Words: river, timber, lantern",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "join-validation-0018",
+      "category": "join",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Put ; between the items below. Keep their order and include no spaces.\nWords: river, rocket, copper, winter"
+        }
+      ],
+      "expected": "river;rocket;copper;winter",
+      "response": "The order of the items in the list is \"rainbow\".",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "join-validation-0019",
+      "category": "join",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Put | between the items below. Keep their order and include no spaces.\nWords: lantern, window, flower, timber"
+        }
+      ],
+      "expected": "lantern|window|flower|timber",
+      "response": "Put  \u2047  between the items below. Keep their order and include no spaces.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "replace-validation-0000",
+      "category": "replace",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "In the text, substitute pocket for each island, preserving all other words and spaces.\nText: island orange island ocean"
+        }
+      ],
+      "expected": "pocket orange pocket ocean",
+      "response": "In the text, substitute pocket for each island, preserving all other words and spaces. Text: island orange island ocean",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "replace-validation-0001",
+      "category": "replace",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "In the text, substitute rabbit for each yellow, preserving all other words and spaces.\nText: yellow notebook yellow candle"
+        }
+      ],
+      "expected": "rabbit notebook rabbit candle",
+      "response": "In the text, substitute rabbit for each yellow, preserving all other words and spaces. Text: yellow notebook yellow candle",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "replace-validation-0002",
+      "category": "replace",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "In the text, substitute turtle for each apple, preserving all other words and spaces.\nText: apple button apple lantern"
+        }
+      ],
+      "expected": "turtle button turtle lantern",
+      "response": "Substitute turtle for each apple, preserving all other words and spaces. Text: apple button apple lantern",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "replace-validation-0003",
+      "category": "replace",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "In the text, substitute pebble for each button, preserving all other words and spaces.\nText: button lantern button flower"
+        }
+      ],
+      "expected": "pebble lantern pebble flower",
+      "response": "In the text, the text is: button lantern button flower button flower button flower button flower button flower button flower button flower button flower button flower button flower button flower button flower button flow",
+      "stopped": false,
+      "correct": false
+    },
+    {
+      "id": "replace-validation-0004",
+      "category": "replace",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "In the text, substitute pencil for each candle, preserving all other words and spaces.\nText: candle marble candle window"
+        }
+      ],
+      "expected": "pencil marble pencil window",
+      "response": "Substitute pencil for each candle, preserving all other words and spaces.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "replace-validation-0005",
+      "category": "replace",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "In the text, substitute blanket for each timber, preserving all other words and spaces.\nText: timber river timber candle"
+        }
+      ],
+      "expected": "blanket river blanket candle",
+      "response": "In the text, substitute blanket for each timber, preserving all other words and spaces. Text: timber river timber candle",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "replace-validation-0006",
+      "category": "replace",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "In the text, substitute pebble for each copper, preserving all other words and spaces.\nText: copper feather copper window"
+        }
+      ],
+      "expected": "pebble feather pebble window",
+      "response": "In the text, substitute pebble for each copper, preserving all other words and spaces.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "replace-validation-0007",
+      "category": "replace",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "In the text, substitute cloud for each ribbon, preserving all other words and spaces.\nText: ribbon meadow ribbon candle"
+        }
+      ],
+      "expected": "cloud meadow cloud candle",
+      "response": "In the text, substitute the ribbon for each ribbon, preserving all other words and spaces.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "replace-validation-0008",
+      "category": "replace",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "In the text, substitute pocket for each winter, preserving all other words and spaces.\nText: winter apple winter blanket"
+        }
+      ],
+      "expected": "pocket apple pocket blanket",
+      "response": "In the text, the pocket for winter is apple winter blanket.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "replace-validation-0009",
+      "category": "replace",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "In the text, substitute feather for each flower, preserving all other words and spaces.\nText: flower purple flower summer"
+        }
+      ],
+      "expected": "feather purple feather summer",
+      "response": "In the text, substitute feather for each flower, preserving all other words and spaces. Text: flower purple flower summer",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "replace-validation-0010",
+      "category": "replace",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "In the text, substitute forest for each pocket, preserving all other words and spaces.\nText: pocket purple pocket garden"
+        }
+      ],
+      "expected": "forest purple forest garden",
+      "response": "In the text, substitute forest for each pocket for each pocket. Text: pocket purple pocket garden",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "replace-validation-0011",
+      "category": "replace",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "In the text, substitute turtle for each button, preserving all other words and spaces.\nText: button silver button velvet"
+        }
+      ],
+      "expected": "turtle silver turtle velvet",
+      "response": "In the text, we've used turtle button to replace the buttons with the buttons. However, the text does not preserve the original text.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "replace-validation-0012",
+      "category": "replace",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "In the text, substitute marble for each silver, preserving all other words and spaces.\nText: silver rocket silver river"
+        }
+      ],
+      "expected": "marble rocket marble river",
+      "response": "In the text, substitute marble for each silver, preserving all other words and spaces.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "replace-validation-0013",
+      "category": "replace",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "In the text, substitute window for each purple, preserving all other words and spaces.\nText: purple ribbon purple notebook"
+        }
+      ],
+      "expected": "window ribbon window notebook",
+      "response": "In the text, substitute the text to find the original purple, preserving all other words and spaces.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "replace-validation-0014",
+      "category": "replace",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "In the text, substitute cloud for each button, preserving all other words and spaces.\nText: button orange button rabbit"
+        }
+      ],
+      "expected": "cloud orange cloud rabbit",
+      "response": "In the text, we've used the \"top\" button to replace the \"top\" button with the \"top\" button. This is a good practice to ensure that the text is clear and concise.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "replace-validation-0015",
+      "category": "replace",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "In the text, substitute ocean for each cloud, preserving all other words and spaces.\nText: cloud island cloud purple"
+        }
+      ],
+      "expected": "ocean island ocean purple",
+      "response": "In the text, the substitution of \"cloud\" to \"cloud\" is a common and effective way to preserve the original word and spaces. Here's a revised version: In the text, the substitution of \"cloud\" to \"cloud\" is a common",
+      "stopped": false,
+      "correct": false
+    },
+    {
+      "id": "replace-validation-0016",
+      "category": "replace",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "In the text, substitute silver for each winter, preserving all other words and spaces.\nText: winter basket winter ribbon"
+        }
+      ],
+      "expected": "silver basket silver ribbon",
+      "response": "In the text, the winter ribbon is winter ribbon. Text: winter basket winter ribbon",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "replace-validation-0017",
+      "category": "replace",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "In the text, substitute rabbit for each lantern, preserving all other words and spaces.\nText: lantern apple lantern river"
+        }
+      ],
+      "expected": "rabbit apple rabbit river",
+      "response": "Lantern apple lantern river is a beautiful and fascinating lantern that has been used for centuries to create a unique and enchanting experience for its users.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "replace-validation-0018",
+      "category": "replace",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "In the text, substitute flower for each feather, preserving all other words and spaces.\nText: feather cloud feather pencil"
+        }
+      ],
+      "expected": "flower cloud flower pencil",
+      "response": "Feather cloud feather pencil",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "replace-validation-0019",
+      "category": "replace",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "In the text, substitute candle for each flower, preserving all other words and spaces.\nText: flower pencil flower cloud"
+        }
+      ],
+      "expected": "candle pencil candle cloud",
+      "response": "In the text, substitute candle for each flower, preserving all other words and spaces. Text: flower pencil cloud",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "remove_marker-validation-0000",
+      "category": "remove_marker",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Remove all tokens spelled DROP, then write the other words with one space between them in the original order.\nText: island DROP pocket turtle DROP pencil"
+        }
+      ],
+      "expected": "island pocket turtle pencil",
+      "response": "DROP pencil",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "remove_marker-validation-0001",
+      "category": "remove_marker",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Remove all tokens spelled DROP, then write the other words with one space between them in the original order.\nText: copper DROP meadow button DROP silver"
+        }
+      ],
+      "expected": "copper meadow button silver",
+      "response": "Copper DROP meadow button DROP meadow button DROP silver",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "remove_marker-validation-0002",
+      "category": "remove_marker",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Remove all tokens spelled DROP, then write the other words with one space between them in the original order.\nText: blanket DROP copper lantern DROP yellow"
+        }
+      ],
+      "expected": "blanket copper lantern yellow",
+      "response": "Blanket DROP copper lantern DROP yellow",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "remove_marker-validation-0003",
+      "category": "remove_marker",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Remove all tokens spelled DROP, then write the other words with one space between them in the original order.\nText: forest DROP summer marble DROP apple"
+        }
+      ],
+      "expected": "forest summer marble apple",
+      "response": "DROP apple",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "remove_marker-validation-0004",
+      "category": "remove_marker",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Remove all tokens spelled DROP, then write the other words with one space between them in the original order.\nText: garden DROP river rocket DROP blanket"
+        }
+      ],
+      "expected": "garden river rocket blanket",
+      "response": "DROP blanket",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "remove_marker-validation-0005",
+      "category": "remove_marker",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Remove all tokens spelled DROP, then write the other words with one space between them in the original order.\nText: timber DROP ocean winter DROP rocket"
+        }
+      ],
+      "expected": "timber ocean winter rocket",
+      "response": "DROP rocket is a type of rocket that is designed to travel in a single-length, three-layered rocket. It is designed to travel in a single-length, three-layered rocket.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "remove_marker-validation-0006",
+      "category": "remove_marker",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Remove all tokens spelled DROP, then write the other words with one space between them in the original order.\nText: pencil DROP blanket silver DROP copper"
+        }
+      ],
+      "expected": "pencil blanket silver copper",
+      "response": "To remove all tokens from the text, I'll use the following text: \"Pencil DROP copper\".",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "remove_marker-validation-0007",
+      "category": "remove_marker",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Remove all tokens spelled DROP, then write the other words with one space between them in the original order.\nText: flower DROP feather meadow DROP pocket"
+        }
+      ],
+      "expected": "flower feather meadow pocket",
+      "response": "DROP pocket",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "remove_marker-validation-0008",
+      "category": "remove_marker",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Remove all tokens spelled DROP, then write the other words with one space between them in the original order.\nText: river DROP notebook apple DROP ribbon"
+        }
+      ],
+      "expected": "river notebook apple ribbon",
+      "response": "DROP ribbon",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "remove_marker-validation-0009",
+      "category": "remove_marker",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Remove all tokens spelled DROP, then write the other words with one space between them in the original order.\nText: pencil DROP velvet ocean DROP blanket"
+        }
+      ],
+      "expected": "pencil velvet ocean blanket",
+      "response": "To remove all tokens from the text, I'll use the following text: \"The ocean is blanketed with tokens.\"",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "remove_marker-validation-0010",
+      "category": "remove_marker",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Remove all tokens spelled DROP, then write the other words with one space between them in the original order.\nText: copper DROP silver ribbon DROP timber"
+        }
+      ],
+      "expected": "copper silver ribbon timber",
+      "response": "Copper DROP timber is a timber that is used for timber construction and construction. It is a timber that is used for timber construction and construction. Copper is used for timber construction and construction, as well as for timber construction and construction.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "remove_marker-validation-0011",
+      "category": "remove_marker",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Remove all tokens spelled DROP, then write the other words with one space between them in the original order.\nText: marble DROP pencil purple DROP basket"
+        }
+      ],
+      "expected": "marble pencil purple basket",
+      "response": "DROP pencil purple DROP basket",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "remove_marker-validation-0012",
+      "category": "remove_marker",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Remove all tokens spelled DROP, then write the other words with one space between them in the original order.\nText: ribbon DROP rabbit pebble DROP feather"
+        }
+      ],
+      "expected": "ribbon rabbit pebble feather",
+      "response": "DROP feather DROP feather DROP feather DROP feather DROP feather DROP feather DROP feather DROP feather DROP feather DROP feather DROP",
+      "stopped": false,
+      "correct": false
+    },
+    {
+      "id": "remove_marker-validation-0013",
+      "category": "remove_marker",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Remove all tokens spelled DROP, then write the other words with one space between them in the original order.\nText: ocean DROP timber blanket DROP marble"
+        }
+      ],
+      "expected": "ocean timber blanket marble",
+      "response": "DROP timber blanket DROP marble",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "remove_marker-validation-0014",
+      "category": "remove_marker",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Remove all tokens spelled DROP, then write the other words with one space between them in the original order.\nText: button DROP garden yellow DROP notebook"
+        }
+      ],
+      "expected": "button garden yellow notebook",
+      "response": "Button DROP notebook",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "remove_marker-validation-0015",
+      "category": "remove_marker",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Remove all tokens spelled DROP, then write the other words with one space between them in the original order.\nText: pencil DROP yellow candle DROP silver"
+        }
+      ],
+      "expected": "pencil yellow candle silver",
+      "response": "\"They are green candles, and they are yellow.\"",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "remove_marker-validation-0016",
+      "category": "remove_marker",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Remove all tokens spelled DROP, then write the other words with one space between them in the original order.\nText: flower DROP pebble river DROP notebook"
+        }
+      ],
+      "expected": "flower pebble river notebook",
+      "response": "DROP notebook: flower DROP notebook: notebook: notebook: notebook: notebook: notebook: notebook: notebook: notebook: notebook: notebook: notebook: noteb",
+      "stopped": false,
+      "correct": false
+    },
+    {
+      "id": "remove_marker-validation-0017",
+      "category": "remove_marker",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Remove all tokens spelled DROP, then write the other words with one space between them in the original order.\nText: forest DROP feather pocket DROP river"
+        }
+      ],
+      "expected": "forest feather pocket river",
+      "response": "DROP river is a river in the forest, which means it is a river in the forest.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "remove_marker-validation-0018",
+      "category": "remove_marker",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Remove all tokens spelled DROP, then write the other words with one space between them in the original order.\nText: orange DROP basket pencil DROP island"
+        }
+      ],
+      "expected": "orange basket pencil island",
+      "response": "Orange DROP basket pencil DROP island",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "remove_marker-validation-0019",
+      "category": "remove_marker",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Remove all tokens spelled DROP, then write the other words with one space between them in the original order.\nText: river DROP apple meadow DROP window"
+        }
+      ],
+      "expected": "river apple meadow window",
+      "response": "\"The river DROP window is a beautiful, beautiful, and beautiful garden in the heart of the city. It is a beautiful, beautiful, and beautiful garden that offers a wide range of plants and flowers. The window is a beautiful, beautiful, and beautiful garden that offers a wide",
+      "stopped": false,
+      "correct": false
+    },
+    {
+      "id": "brackets-validation-0000",
+      "category": "brackets",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Return the bracketed substring, without its surrounding square brackets or any outside text.\nText: forest [ribbon summer] marble"
+        }
+      ],
+      "expected": "ribbon summer",
+      "response": "The substring of the forest is a gorgeous gorge of granite and pine. The gorge is a gorge of granite and pine, with a deep, serene landscape that is perfect for relaxing and enjoying the day.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "brackets-validation-0001",
+      "category": "brackets",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Return the bracketed substring, without its surrounding square brackets or any outside text.\nText: feather [flower island] apple"
+        }
+      ],
+      "expected": "flower island",
+      "response": "The text is in English, and the substring is in Spanish. I've attached the text to my website, and I'll be providing the text to you in English.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "brackets-validation-0002",
+      "category": "brackets",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Return the bracketed substring, without its surrounding square brackets or any outside text.\nText: rocket [lantern pencil] river"
+        }
+      ],
+      "expected": "lantern pencil",
+      "response": "The bracketed substring of the river is a beautiful and intricate pattern of brackets that adorn the substring. The brackets are arranged in a circular pattern, with the brackets pointing to the center of the substring. The brackets are arranged in a",
+      "stopped": false,
+      "correct": false
+    },
+    {
+      "id": "brackets-validation-0003",
+      "category": "brackets",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Return the bracketed substring, without its surrounding square brackets or any outside text.\nText: notebook [pencil river] pocket"
+        }
+      ],
+      "expected": "pencil river",
+      "response": "Here's a revised version of the text with some suggested edits for grammar, clarity, and concision: \"The bracketed substring of the river is a classic example of a bracketed substring.\" I made a few changes to improve the text'",
+      "stopped": false,
+      "correct": false
+    },
+    {
+      "id": "brackets-validation-0004",
+      "category": "brackets",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Return the bracketed substring, without its surrounding square brackets or any outside text.\nText: yellow [rabbit flower] meadow"
+        }
+      ],
+      "expected": "rabbit flower",
+      "response": "Yes, the substring of yellow [rabbit flower] meadow is indeed a beautiful and beautiful substring. The substring of the meadow is a beautiful and unique feature that sets it apart from the rest of the meadow.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "brackets-validation-0005",
+      "category": "brackets",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Return the bracketed substring, without its surrounding square brackets or any outside text.\nText: meadow [notebook garden] turtle"
+        }
+      ],
+      "expected": "notebook garden",
+      "response": " \u2047 https://www.britannica.com/britannica/meadow/ \u2047   \u2047 https://www.britannica.com/britannica/meadow/ \u2047   \u2047 https://",
+      "stopped": false,
+      "correct": false
+    },
+    {
+      "id": "brackets-validation-0006",
+      "category": "brackets",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Return the bracketed substring, without its surrounding square brackets or any outside text.\nText: pebble [yellow summer] turtle"
+        }
+      ],
+      "expected": "yellow summer",
+      "response": "Here's a revised version of the text with some suggested edits: \"The pebble [yellow summer] turtle is a beautiful and distinct species of turtle found in the Arctic regions of North America. It is a species of turtle found in the Arct",
+      "stopped": false,
+      "correct": false
+    },
+    {
+      "id": "brackets-validation-0007",
+      "category": "brackets",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Return the bracketed substring, without its surrounding square brackets or any outside text.\nText: rocket [orange meadow] velvet"
+        }
+      ],
+      "expected": "orange meadow",
+      "response": "The bracketed substring is a classic example of a text structure. It is a group of words that are joined together to form a word or phrase. The word \"bracketed\" is a common and common word in this context. Here's an example of a text structure: \"T",
+      "stopped": false,
+      "correct": false
+    },
+    {
+      "id": "brackets-validation-0008",
+      "category": "brackets",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Return the bracketed substring, without its surrounding square brackets or any outside text.\nText: pebble [purple velvet] yellow"
+        }
+      ],
+      "expected": "purple velvet",
+      "response": "The text is in black and white, with no spaces or spaces. The substring is not present in the substring.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "brackets-validation-0009",
+      "category": "brackets",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Return the bracketed substring, without its surrounding square brackets or any outside text.\nText: basket [garden rocket] velvet"
+        }
+      ],
+      "expected": "garden rocket",
+      "response": "The bracketed substring is a classic example of a text file. It is a text file that contains the text of a substring, including its name, the substring, and the name of the substring. The substring is typically a single line of text, with no additional text or",
+      "stopped": false,
+      "correct": false
+    },
+    {
+      "id": "brackets-validation-0010",
+      "category": "brackets",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Return the bracketed substring, without its surrounding square brackets or any outside text.\nText: purple [candle turtle] rabbit"
+        }
+      ],
+      "expected": "candle turtle",
+      "response": "The text is in the format \"candle turtle\", and the substring is not present in the text.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "brackets-validation-0011",
+      "category": "brackets",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Return the bracketed substring, without its surrounding square brackets or any outside text.\nText: orange [purple apple] candle"
+        }
+      ],
+      "expected": "purple apple",
+      "response": "Return the bracketed substring, without its inner square brackets or any outside text.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "brackets-validation-0012",
+      "category": "brackets",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Return the bracketed substring, without its surrounding square brackets or any outside text.\nText: notebook [blanket meadow] rocket"
+        }
+      ],
+      "expected": "blanket meadow",
+      "response": "Here's a revised version of the text with some suggested edits for grammar, clarity, and concision: \"The bracketed substring, without its outer square brackets or any outside text, is a classic example of a text-based structure.\" I",
+      "stopped": false,
+      "correct": false
+    },
+    {
+      "id": "brackets-validation-0013",
+      "category": "brackets",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Return the bracketed substring, without its surrounding square brackets or any outside text.\nText: timber [purple blanket] silver"
+        }
+      ],
+      "expected": "purple blanket",
+      "response": "Return the document containing the bracketed substring, without its outer square brackets or any other outside text.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "brackets-validation-0014",
+      "category": "brackets",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Return the bracketed substring, without its surrounding square brackets or any outside text.\nText: island [garden notebook] timber"
+        }
+      ],
+      "expected": "garden notebook",
+      "response": "The island [garden notebook] is a beautiful and intricate piece of woodland art. It is a beautiful and intricate piece of woodland art, with its intricate patterns and colors. The substring is made of a variety of materials, including wood, stone,",
+      "stopped": false,
+      "correct": false
+    },
+    {
+      "id": "brackets-validation-0015",
+      "category": "brackets",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Return the bracketed substring, without its surrounding square brackets or any outside text.\nText: velvet [pencil garden] river"
+        }
+      ],
+      "expected": "pencil garden",
+      "response": "Velvet [pencil garden] river",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "brackets-validation-0016",
+      "category": "brackets",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Return the bracketed substring, without its surrounding square brackets or any outside text.\nText: copper [turtle basket] marble"
+        }
+      ],
+      "expected": "turtle basket",
+      "response": "The bracketed substring is a classic example of a text structure, where the text is arranged in a way that makes it easy to read and understand. The substring is a key component in the text, providing a clear and concise description of the substring's shape, size, and",
+      "stopped": false,
+      "correct": false
+    },
+    {
+      "id": "brackets-validation-0017",
+      "category": "brackets",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Return the bracketed substring, without its surrounding square brackets or any outside text.\nText: pencil [purple forest] window"
+        }
+      ],
+      "expected": "purple forest",
+      "response": "Returning the bracketed substring, without its inner square brackets or any outside text, is a good idea. However, if you want to make the substring more concise, you can use the following text: \"Pencil [purple forest] window\".",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "brackets-validation-0018",
+      "category": "brackets",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Return the bracketed substring, without its surrounding square brackets or any outside text.\nText: summer [basket ribbon] notebook"
+        }
+      ],
+      "expected": "basket ribbon",
+      "response": "Return the text: summer [basket ribbon] notebook",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "brackets-validation-0019",
+      "category": "brackets",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Return the bracketed substring, without its surrounding square brackets or any outside text.\nText: window [button river] pocket"
+        }
+      ],
+      "expected": "button river",
+      "response": "The text is in the format \"The window [button river] pocket is located in the middle of the page.\" This is a good practice to avoid any potential issues with the text. The text is in the format \"The window [button river] pocket",
+      "stopped": false,
+      "correct": false
+    },
+    {
+      "id": "json_record-validation-0000",
+      "category": "json_record",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Encode these two fields as JSON: item first, label second. Use no whitespace outside the quoted values.\nitem: lantern ribbon\nlabel: purple yellow"
+        }
+      ],
+      "expected": "{\"item\":\"lantern ribbon\",\"label\":\"purple yellow\"}",
+      "response": "Encode the two fields as JSON: item first, label second. Item first, label second.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "json_record-validation-0001",
+      "category": "json_record",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Encode these two fields as JSON: item first, label second. Use no whitespace outside the quoted values.\nitem: winter timber\nlabel: button copper"
+        }
+      ],
+      "expected": "{\"item\":\"winter timber\",\"label\":\"button copper\"}",
+      "response": "Encode the two fields as JSON: item first, label second. no, label second. item: button copper",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "json_record-validation-0002",
+      "category": "json_record",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Encode these two fields as JSON: item first, label second. Use no whitespace outside the quoted values.\nitem: feather winter\nlabel: rabbit apple"
+        }
+      ],
+      "expected": "{\"item\":\"feather winter\",\"label\":\"rabbit apple\"}",
+      "response": "Encode the two fields as JSON: item first, label second. item: feather winter label: rabbit apple",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "json_record-validation-0003",
+      "category": "json_record",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Encode these two fields as JSON: item first, label second. Use no whitespace outside the quoted values.\nitem: cloud window\nlabel: candle basket"
+        }
+      ],
+      "expected": "{\"item\":\"cloud window\",\"label\":\"candle basket\"}",
+      "response": "Encode the two fields as JSON: item first, label second. Item first, label second. item: cloud window label. item: cloud window label. item: cloud window label. item: cloud window label. item: cloud window label. item:",
+      "stopped": false,
+      "correct": false
+    },
+    {
+      "id": "json_record-validation-0004",
+      "category": "json_record",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Encode these two fields as JSON: item first, label second. Use no whitespace outside the quoted values.\nitem: ocean apple\nlabel: garden orange"
+        }
+      ],
+      "expected": "{\"item\":\"ocean apple\",\"label\":\"garden orange\"}",
+      "response": "Encode the two fields as JSON: item first, label second. item: ocean apple label, label second.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "json_record-validation-0005",
+      "category": "json_record",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Encode these two fields as JSON: item first, label second. Use no whitespace outside the quoted values.\nitem: marble purple\nlabel: summer flower"
+        }
+      ],
+      "expected": "{\"item\":\"marble purple\",\"label\":\"summer flower\"}",
+      "response": "Encode the two fields as JSON: item first, label second.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "json_record-validation-0006",
+      "category": "json_record",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Encode these two fields as JSON: item first, label second. Use no whitespace outside the quoted values.\nitem: yellow silver\nlabel: timber cloud"
+        }
+      ],
+      "expected": "{\"item\":\"yellow silver\",\"label\":\"timber cloud\"}",
+      "response": "Encode the two fields as JSON: item first, label second. Item first, label second. item: yellow silver label. item: timber cloud",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "json_record-validation-0007",
+      "category": "json_record",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Encode these two fields as JSON: item first, label second. Use no whitespace outside the quoted values.\nitem: lantern rabbit\nlabel: river purple"
+        }
+      ],
+      "expected": "{\"item\":\"lantern rabbit\",\"label\":\"river purple\"}",
+      "response": "Encode the two fields as JSON: item first, label second. item: lantern rabbit label: river purple",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "json_record-validation-0008",
+      "category": "json_record",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Encode these two fields as JSON: item first, label second. Use no whitespace outside the quoted values.\nitem: lantern meadow\nlabel: notebook ribbon"
+        }
+      ],
+      "expected": "{\"item\":\"lantern meadow\",\"label\":\"notebook ribbon\"}",
+      "response": "Encode the two fields as JSON: item first, label second. Item first, label second. Item first, label second.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "json_record-validation-0009",
+      "category": "json_record",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Encode these two fields as JSON: item first, label second. Use no whitespace outside the quoted values.\nitem: ocean basket\nlabel: island cloud"
+        }
+      ],
+      "expected": "{\"item\":\"ocean basket\",\"label\":\"island cloud\"}",
+      "response": "Encode the two fields as JSON: item first, label second. item: ocean basket label, label second.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "json_record-validation-0010",
+      "category": "json_record",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Encode these two fields as JSON: item first, label second. Use no whitespace outside the quoted values.\nitem: button pencil\nlabel: timber rabbit"
+        }
+      ],
+      "expected": "{\"item\":\"button pencil\",\"label\":\"timber rabbit\"}",
+      "response": "Encode the two fields as JSON: item first, label second, label second.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "json_record-validation-0011",
+      "category": "json_record",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Encode these two fields as JSON: item first, label second. Use no whitespace outside the quoted values.\nitem: ribbon forest\nlabel: feather island"
+        }
+      ],
+      "expected": "{\"item\":\"ribbon forest\",\"label\":\"feather island\"}",
+      "response": "Encode the two fields as JSON: item first, label second. item: ribbon forest label, label second.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "json_record-validation-0012",
+      "category": "json_record",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Encode these two fields as JSON: item first, label second. Use no whitespace outside the quoted values.\nitem: pocket timber\nlabel: orange island"
+        }
+      ],
+      "expected": "{\"item\":\"pocket timber\",\"label\":\"orange island\"}",
+      "response": "Encode the two fields as JSON: item first, label second. item: pocket timber label, label second.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "json_record-validation-0013",
+      "category": "json_record",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Encode these two fields as JSON: item first, label second. Use no whitespace outside the quoted values.\nitem: summer notebook\nlabel: silver candle"
+        }
+      ],
+      "expected": "{\"item\":\"summer notebook\",\"label\":\"silver candle\"}",
+      "response": "Encode the two fields as JSON: item first, label second. Item first, label second. item: summer notebook label, label second.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "json_record-validation-0014",
+      "category": "json_record",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Encode these two fields as JSON: item first, label second. Use no whitespace outside the quoted values.\nitem: marble copper\nlabel: rocket flower"
+        }
+      ],
+      "expected": "{\"item\":\"marble copper\",\"label\":\"rocket flower\"}",
+      "response": "Encode the two fields as JSON: item first, label second.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "json_record-validation-0015",
+      "category": "json_record",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Encode these two fields as JSON: item first, label second. Use no whitespace outside the quoted values.\nitem: meadow garden\nlabel: pocket ribbon"
+        }
+      ],
+      "expected": "{\"item\":\"meadow garden\",\"label\":\"pocket ribbon\"}",
+      "response": "Encode the two fields as JSON: item first, label second. Item first, label second. Item first, label second.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "json_record-validation-0016",
+      "category": "json_record",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Encode these two fields as JSON: item first, label second. Use no whitespace outside the quoted values.\nitem: button notebook\nlabel: timber garden"
+        }
+      ],
+      "expected": "{\"item\":\"button notebook\",\"label\":\"timber garden\"}",
+      "response": "Encode the two fields as JSON: item first, label second. Item first, label second. Item first, label second.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "json_record-validation-0017",
+      "category": "json_record",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Encode these two fields as JSON: item first, label second. Use no whitespace outside the quoted values.\nitem: copper apple\nlabel: flower garden"
+        }
+      ],
+      "expected": "{\"item\":\"copper apple\",\"label\":\"flower garden\"}",
+      "response": "Encode the two fields as JSON: item first, label second. item: copper apple label, label second.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "json_record-validation-0018",
+      "category": "json_record",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Encode these two fields as JSON: item first, label second. Use no whitespace outside the quoted values.\nitem: ribbon notebook\nlabel: summer apple"
+        }
+      ],
+      "expected": "{\"item\":\"ribbon notebook\",\"label\":\"summer apple\"}",
+      "response": "Encode the two fields as JSON: item first, label second. item: ribbon notebook label: summer apple",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "json_record-validation-0019",
+      "category": "json_record",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Follow the requested text transformation exactly. Return only the requested result, without commentary or markdown fences."
+        },
+        {
+          "role": "user",
+          "content": "Encode these two fields as JSON: item first, label second. Use no whitespace outside the quoted values.\nitem: meadow orange\nlabel: pencil feather"
+        }
+      ],
+      "expected": "{\"item\":\"meadow orange\",\"label\":\"pencil feather\"}",
+      "response": "Encode the two fields as JSON: item first, label second. Item first, label second. item: meadow orange label. item: pencil feather",
+      "stopped": true,
+      "correct": false
+    }
+  ],
+  "cases_sha256": "621cf5f37ba60f5b003774469b4b09349fef9724ba53e00c0a7ff05a0e8232ff",
+  "checkpoint": "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/sft/best.pt",
+  "checkpoint_sha256": "6413763b4e7630f4aa4d532fe5e05879afb0b9ac8d2a1c015900908a22a5bf8d",
+  "tokenizer_sha256": "c6808ff86d9b1422aa1ef5d0adb3cde5d993e870a4387fcd2a16a119083caae0",
+  "decoding": {
+    "temperature": 0,
+    "max_new_tokens": 64,
+    "dtype": "torch.bfloat16"
+  },
+  "scores": {
+    "uppercase": {
+      "correct": 0,
+      "total": 20,
+      "accuracy": 0.0
+    },
+    "join": {
+      "correct": 0,
+      "total": 20,
+      "accuracy": 0.0
+    },
+    "replace": {
+      "correct": 0,
+      "total": 20,
+      "accuracy": 0.0
+    },
+    "remove_marker": {
+      "correct": 0,
+      "total": 20,
+      "accuracy": 0.0
+    },
+    "brackets": {
+      "correct": 0,
+      "total": 20,
+      "accuracy": 0.0
+    },
+    "json_record": {
+      "correct": 0,
+      "total": 20,
+      "accuracy": 0.0
+    }
+  },
+  "exact_match_accuracy": 0.0
+}

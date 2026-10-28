@@ -1,0 +1,27 @@
+# First extended stage; retain pilot split seed to prevent holdout leakage.
+seed: 20261013
+tokenizer: data/tokenizer_8k.model
+validation_modulus: 50
+sources:
+  - name: fineweb_edu
+    repo: HuggingFaceFW/fineweb-edu
+    config: sample-10BT
+    revision: 87f09149ef4734204d70ed1d046ddc9ca3f2b8f9
+    license: odc-by
+    train_tokens: 1200000000
+    validation_tokens: 1000000
+  - name: cosmopedia
+    repo: HuggingFaceTB/smollm-corpus
+    config: cosmopedia-v2
+    revision: 3ba9d605774198c5868892d7a8deda78031a781f
+    license: odc-by
+    train_tokens: 800000000
+    validation_tokens: 1000000
+instructions:
+  repo: HuggingFaceTB/smol-smoltalk
+  config: default
+  revision: f73fe857d519ff6ac5af2ea67c4d3834da7b8bcc
+  license: apache-2.0
+  train_examples: 20000
+  validation_examples: 500
+  max_seq_len: 1024

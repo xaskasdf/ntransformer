@@ -1,0 +1,589 @@
+{
+  "suite": "mini-instructions-v1",
+  "seed": 20261014,
+  "scoring": "case-sensitive exact match, ignoring outer whitespace only",
+  "limitations": "Six generated templates; not a general capability benchmark.",
+  "cases": [
+    {
+      "id": "context_lookup-000",
+      "category": "context_lookup",
+      "prompt": "Lumi has the yellow box. Oren has the blue box. Who has the blue box? Reply with the name only.",
+      "expected": "Oren",
+      "response": "The yellow box is Oren, a character from the movie \"The Lost Cause.\" Oren is a character from the movie \"The",
+      "stopped": false,
+      "correct": false
+    },
+    {
+      "id": "sorting_format-000",
+      "category": "sorting_format",
+      "prompt": "Sort these numbers from smallest to largest: 85, 75, 52, 91. Reply with numbers separated by commas, without spaces or other text.",
+      "expected": "52,75,85,91",
+      "response": "To sort the numbers from smallest to largest, we can use the  \u2047 sorted \u2047  function in Python. This function takes a list of",
+      "stopped": false,
+      "correct": false
+    },
+    {
+      "id": "concept_role-000",
+      "category": "concept_role",
+      "prompt": "In a fictional republic, a president is the person elected to lead the council. Lumi teaches at a school. Oren was elected to lead the council. Kelan repairs bridges. Who is the president? Reply with the name only.",
+      "expected": "Oren",
+      "response": "The president is the person elected to lead the council.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "missing_information-000",
+      "category": "missing_information",
+      "prompt": "The register says: Lumi has a yellow bicycle. Using only this register, what color is Oren's bicycle? Reply with the color only, or UNKNOWN if the register does not say.",
+      "expected": "UNKNOWN",
+      "response": "The register says: Lumi has a yellow bicycle.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "conditional_rule-000",
+      "category": "conditional_rule",
+      "prompt": "Rule: if the number is even, output yellow; otherwise output blue. The number is 85. Reply with the required word only.",
+      "expected": "blue",
+      "response": "To solve this problem, we need to determine the value of the number. We know that the number is 85. To find the number of ways to",
+      "stopped": false,
+      "correct": false
+    },
+    {
+      "id": "context_update-000",
+      "category": "context_update",
+      "prompt": "Lumi puts a key in the yellow box. Later, Oren moves that key to the blue box. Where is the key now? Reply with the box color only.",
+      "expected": "blue",
+      "response": "To solve this problem, we need to determine the value of Oren's key and then use the color of the box to find the corresponding",
+      "stopped": false,
+      "correct": false
+    },
+    {
+      "id": "context_lookup-001",
+      "category": "context_lookup",
+      "prompt": "Tavi has the blue box. Lumi has the orange box. Who has the orange box? Reply with the name only.",
+      "expected": "Lumi",
+      "response": "The orange box is Lumi, the orange box.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "sorting_format-001",
+      "category": "sorting_format",
+      "prompt": "Sort these numbers from smallest to largest: 49, 66, 65, 44. Reply with numbers separated by commas, without spaces or other text.",
+      "expected": "44,49,65,66",
+      "response": "To sort the numbers from smallest to largest, we can use the  \u2047 sorted \u2047  function in Python. This function takes a list of",
+      "stopped": false,
+      "correct": false
+    },
+    {
+      "id": "concept_role-001",
+      "category": "concept_role",
+      "prompt": "In a fictional republic, a president is the person elected to lead the council. Tavi teaches at a school. Lumi was elected to lead the council. Oren repairs bridges. Who is the president? Reply with the name only.",
+      "expected": "Lumi",
+      "response": "The president is the person elected to lead the council.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "missing_information-001",
+      "category": "missing_information",
+      "prompt": "The register says: Tavi has a blue bicycle. Using only this register, what color is Lumi's bicycle? Reply with the color only, or UNKNOWN if the register does not say.",
+      "expected": "UNKNOWN",
+      "response": "Lumi's bicycle is blue.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "conditional_rule-001",
+      "category": "conditional_rule",
+      "prompt": "Rule: if the number is even, output blue; otherwise output orange. The number is 49. Reply with the required word only.",
+      "expected": "orange",
+      "response": "If the number is even, output blue.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "context_update-001",
+      "category": "context_update",
+      "prompt": "Tavi puts a key in the blue box. Later, Lumi moves that key to the orange box. Where is the key now? Reply with the box color only.",
+      "expected": "orange",
+      "response": "Lumi moves to the orange box.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "context_lookup-002",
+      "category": "context_lookup",
+      "prompt": "Kelan has the yellow box. Mira has the green box. Who has the green box? Reply with the name only.",
+      "expected": "Mira",
+      "response": "Mira has the green box.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "sorting_format-002",
+      "category": "sorting_format",
+      "prompt": "Sort these numbers from smallest to largest: 50, 43, 64, 82. Reply with numbers separated by commas, without spaces or other text.",
+      "expected": "43,50,64,82",
+      "response": "To sort the numbers from smallest to largest, we can use the  \u2047 sorted \u2047  function in Python. This function takes a list of",
+      "stopped": false,
+      "correct": false
+    },
+    {
+      "id": "concept_role-002",
+      "category": "concept_role",
+      "prompt": "In a fictional republic, a president is the person elected to lead the council. Kelan teaches at a school. Mira was elected to lead the council. Nora repairs bridges. Who is the president? Reply with the name only.",
+      "expected": "Mira",
+      "response": "The president is the person elected to lead the council.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "missing_information-002",
+      "category": "missing_information",
+      "prompt": "The register says: Kelan has a yellow bicycle. Using only this register, what color is Mira's bicycle? Reply with the color only, or UNKNOWN if the register does not say.",
+      "expected": "UNKNOWN",
+      "response": "To solve this problem, let's break it down into manageable parts. We know that Mira has a yellow bicycle, and we",
+      "stopped": false,
+      "correct": false
+    },
+    {
+      "id": "conditional_rule-002",
+      "category": "conditional_rule",
+      "prompt": "Rule: if the number is even, output yellow; otherwise output green. The number is 50. Reply with the required word only.",
+      "expected": "yellow",
+      "response": "To solve this problem, we need to determine the value of the number. We know that the number is even, and we can express it as a",
+      "stopped": false,
+      "correct": false
+    },
+    {
+      "id": "context_update-002",
+      "category": "context_update",
+      "prompt": "Kelan puts a key in the yellow box. Later, Mira moves that key to the green box. Where is the key now? Reply with the box color only.",
+      "expected": "green",
+      "response": "Kelan, the green box, is now in the yellow box.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "context_lookup-003",
+      "category": "context_lookup",
+      "prompt": "Kelan has the blue box. Mira has the red box. Who has the red box? Reply with the name only.",
+      "expected": "Mira",
+      "response": "Kelan has the blue box.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "sorting_format-003",
+      "category": "sorting_format",
+      "prompt": "Sort these numbers from smallest to largest: 22, 11, 16, 57. Reply with numbers separated by commas, without spaces or other text.",
+      "expected": "11,16,22,57",
+      "response": "To sort the numbers from smallest to largest, we can use the  \u2047 sorted \u2047  function in Python. This function takes a list of",
+      "stopped": false,
+      "correct": false
+    },
+    {
+      "id": "concept_role-003",
+      "category": "concept_role",
+      "prompt": "In a fictional republic, a president is the person elected to lead the council. Kelan teaches at a school. Mira was elected to lead the council. Tavi repairs bridges. Who is the president? Reply with the name only.",
+      "expected": "Mira",
+      "response": "The president is the person elected to lead the council.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "missing_information-003",
+      "category": "missing_information",
+      "prompt": "The register says: Kelan has a blue bicycle. Using only this register, what color is Mira's bicycle? Reply with the color only, or UNKNOWN if the register does not say.",
+      "expected": "UNKNOWN",
+      "response": "To solve this problem, let's break it down into manageable parts. We know that Mira has blue bicycle, and we want",
+      "stopped": false,
+      "correct": false
+    },
+    {
+      "id": "conditional_rule-003",
+      "category": "conditional_rule",
+      "prompt": "Rule: if the number is even, output blue; otherwise output red. The number is 22. Reply with the required word only.",
+      "expected": "blue",
+      "response": "To determine if the given number is even, we need to consider the relationship between the number and the value of the number. If the number is even,",
+      "stopped": false,
+      "correct": false
+    },
+    {
+      "id": "context_update-003",
+      "category": "context_update",
+      "prompt": "Kelan puts a key in the blue box. Later, Mira moves that key to the red box. Where is the key now? Reply with the box color only.",
+      "expected": "red",
+      "response": "Kelan, the red box, is now in the blue box.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "context_lookup-004",
+      "category": "context_lookup",
+      "prompt": "Tavi has the purple box. Nora has the yellow box. Who has the yellow box? Reply with the name only.",
+      "expected": "Nora",
+      "response": "I've been reading the text and can't help but notice that the author is referring to a character named \"Tavi\". I",
+      "stopped": false,
+      "correct": false
+    },
+    {
+      "id": "sorting_format-004",
+      "category": "sorting_format",
+      "prompt": "Sort these numbers from smallest to largest: 26, 28, 44, 56. Reply with numbers separated by commas, without spaces or other text.",
+      "expected": "26,28,44,56",
+      "response": "To sort the numbers from smallest to largest, we can use the  \u2047 sorted \u2047  function in Python. This function takes a list of",
+      "stopped": false,
+      "correct": false
+    },
+    {
+      "id": "concept_role-004",
+      "category": "concept_role",
+      "prompt": "In a fictional republic, a president is the person elected to lead the council. Tavi teaches at a school. Nora was elected to lead the council. Mira repairs bridges. Who is the president? Reply with the name only.",
+      "expected": "Nora",
+      "response": "The president is the person elected to lead the council.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "missing_information-004",
+      "category": "missing_information",
+      "prompt": "The register says: Tavi has a purple bicycle. Using only this register, what color is Nora's bicycle? Reply with the color only, or UNKNOWN if the register does not say.",
+      "expected": "UNKNOWN",
+      "response": "The register says: Tavi has a purple bicycle.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "conditional_rule-004",
+      "category": "conditional_rule",
+      "prompt": "Rule: if the number is even, output purple; otherwise output yellow. The number is 26. Reply with the required word only.",
+      "expected": "purple",
+      "response": "To determine if the given number is even, we need to consider the fact that it is a multiple of 6 and is not divisible by any other",
+      "stopped": false,
+      "correct": false
+    },
+    {
+      "id": "context_update-004",
+      "category": "context_update",
+      "prompt": "Tavi puts a key in the purple box. Later, Nora moves that key to the yellow box. Where is the key now? Reply with the box color only.",
+      "expected": "yellow",
+      "response": "The purple box is nowhere to be found in the purple box.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "context_lookup-005",
+      "category": "context_lookup",
+      "prompt": "Mira has the red box. Tavi has the blue box. Who has the blue box? Reply with the name only.",
+      "expected": "Tavi",
+      "response": "Mira has the blue box.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "sorting_format-005",
+      "category": "sorting_format",
+      "prompt": "Sort these numbers from smallest to largest: 47, 76, 81, 10. Reply with numbers separated by commas, without spaces or other text.",
+      "expected": "10,47,76,81",
+      "response": "To sort the numbers from smallest to largest, we can use the  \u2047 sorted \u2047  function in Python. This function takes a list of",
+      "stopped": false,
+      "correct": false
+    },
+    {
+      "id": "concept_role-005",
+      "category": "concept_role",
+      "prompt": "In a fictional republic, a president is the person elected to lead the council. Mira teaches at a school. Tavi was elected to lead the council. Kelan repairs bridges. Who is the president? Reply with the name only.",
+      "expected": "Tavi",
+      "response": "The president is the person elected to lead the council.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "missing_information-005",
+      "category": "missing_information",
+      "prompt": "The register says: Mira has a red bicycle. Using only this register, what color is Tavi's bicycle? Reply with the color only, or UNKNOWN if the register does not say.",
+      "expected": "UNKNOWN",
+      "response": "The register says: Mira has a red bicycle.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "conditional_rule-005",
+      "category": "conditional_rule",
+      "prompt": "Rule: if the number is even, output red; otherwise output blue. The number is 47. Reply with the required word only.",
+      "expected": "blue",
+      "response": "To solve this problem, we need to determine the value of the number. We know that the number is even, and we can express it as a",
+      "stopped": false,
+      "correct": false
+    },
+    {
+      "id": "context_update-005",
+      "category": "context_update",
+      "prompt": "Mira puts a key in the red box. Later, Tavi moves that key to the blue box. Where is the key now? Reply with the box color only.",
+      "expected": "blue",
+      "response": "Mira's key is now in the blue box.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "context_lookup-006",
+      "category": "context_lookup",
+      "prompt": "Mira has the green box. Tavi has the orange box. Who has the orange box? Reply with the name only.",
+      "expected": "Tavi",
+      "response": "Mira has the green box.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "sorting_format-006",
+      "category": "sorting_format",
+      "prompt": "Sort these numbers from smallest to largest: 22, 55, 10, 43. Reply with numbers separated by commas, without spaces or other text.",
+      "expected": "10,22,43,55",
+      "response": "To sort the numbers from smallest to largest, we can use the  \u2047 sorted \u2047  function in Python. This function takes a list of",
+      "stopped": false,
+      "correct": false
+    },
+    {
+      "id": "concept_role-006",
+      "category": "concept_role",
+      "prompt": "In a fictional republic, a president is the person elected to lead the council. Mira teaches at a school. Tavi was elected to lead the council. Lumi repairs bridges. Who is the president? Reply with the name only.",
+      "expected": "Tavi",
+      "response": "The president is the person elected to lead the council.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "missing_information-006",
+      "category": "missing_information",
+      "prompt": "The register says: Mira has a green bicycle. Using only this register, what color is Tavi's bicycle? Reply with the color only, or UNKNOWN if the register does not say.",
+      "expected": "UNKNOWN",
+      "response": "The register says: Mira has a green bicycle.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "conditional_rule-006",
+      "category": "conditional_rule",
+      "prompt": "Rule: if the number is even, output green; otherwise output orange. The number is 22. Reply with the required word only.",
+      "expected": "green",
+      "response": "To determine if the given number is even, we need to consider the relationship between the number and the number itself. The number is even if it is even",
+      "stopped": false,
+      "correct": false
+    },
+    {
+      "id": "context_update-006",
+      "category": "context_update",
+      "prompt": "Mira puts a key in the green box. Later, Tavi moves that key to the orange box. Where is the key now? Reply with the box color only.",
+      "expected": "orange",
+      "response": "The green box is nowhere to be found.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "context_lookup-007",
+      "category": "context_lookup",
+      "prompt": "Mira has the yellow box. Lumi has the red box. Who has the red box? Reply with the name only.",
+      "expected": "Lumi",
+      "response": "Mira has the yellow box.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "sorting_format-007",
+      "category": "sorting_format",
+      "prompt": "Sort these numbers from smallest to largest: 11, 31, 37, 80. Reply with numbers separated by commas, without spaces or other text.",
+      "expected": "11,31,37,80",
+      "response": "To sort the numbers from smallest to largest, we can use the  \u2047 sorted \u2047  function in Python. This function takes a list of",
+      "stopped": false,
+      "correct": false
+    },
+    {
+      "id": "concept_role-007",
+      "category": "concept_role",
+      "prompt": "In a fictional republic, a president is the person elected to lead the council. Mira teaches at a school. Lumi was elected to lead the council. Nora repairs bridges. Who is the president? Reply with the name only.",
+      "expected": "Lumi",
+      "response": "The president is the person elected to lead the council.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "missing_information-007",
+      "category": "missing_information",
+      "prompt": "The register says: Mira has a yellow bicycle. Using only this register, what color is Lumi's bicycle? Reply with the color only, or UNKNOWN if the register does not say.",
+      "expected": "UNKNOWN",
+      "response": "The register says: Mira has a yellow bicycle.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "conditional_rule-007",
+      "category": "conditional_rule",
+      "prompt": "Rule: if the number is even, output yellow; otherwise output red. The number is 11. Reply with the required word only.",
+      "expected": "red",
+      "response": "To solve this problem, we need to determine the value of the number. We know that the number is even, and we can express it as a",
+      "stopped": false,
+      "correct": false
+    },
+    {
+      "id": "context_update-007",
+      "category": "context_update",
+      "prompt": "Mira puts a key in the yellow box. Later, Lumi moves that key to the red box. Where is the key now? Reply with the box color only.",
+      "expected": "red",
+      "response": "To solve this problem, we need to determine the value of the key in the yellow box. Since we are looking for the key in the yellow box",
+      "stopped": false,
+      "correct": false
+    },
+    {
+      "id": "context_lookup-008",
+      "category": "context_lookup",
+      "prompt": "Tavi has the green box. Kelan has the red box. Who has the red box? Reply with the name only.",
+      "expected": "Kelan",
+      "response": "Kelan has the green box.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "sorting_format-008",
+      "category": "sorting_format",
+      "prompt": "Sort these numbers from smallest to largest: 28, 22, 84, 85. Reply with numbers separated by commas, without spaces or other text.",
+      "expected": "22,28,84,85",
+      "response": "To sort the numbers from smallest to largest, we can use the  \u2047 sorted \u2047  function in Python. This function takes a list of",
+      "stopped": false,
+      "correct": false
+    },
+    {
+      "id": "concept_role-008",
+      "category": "concept_role",
+      "prompt": "In a fictional republic, a president is the person elected to lead the council. Tavi teaches at a school. Kelan was elected to lead the council. Lumi repairs bridges. Who is the president? Reply with the name only.",
+      "expected": "Kelan",
+      "response": "The president is the person elected to lead the council.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "missing_information-008",
+      "category": "missing_information",
+      "prompt": "The register says: Tavi has a green bicycle. Using only this register, what color is Kelan's bicycle? Reply with the color only, or UNKNOWN if the register does not say.",
+      "expected": "UNKNOWN",
+      "response": "The register says: Tavi has a green bicycle.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "conditional_rule-008",
+      "category": "conditional_rule",
+      "prompt": "Rule: if the number is even, output green; otherwise output red. The number is 28. Reply with the required word only.",
+      "expected": "green",
+      "response": "To determine if the given number is even, we need to consider the fact that the number is even. If the number is even, it means that the",
+      "stopped": false,
+      "correct": false
+    },
+    {
+      "id": "context_update-008",
+      "category": "context_update",
+      "prompt": "Tavi puts a key in the green box. Later, Kelan moves that key to the red box. Where is the key now? Reply with the box color only.",
+      "expected": "red",
+      "response": "Kelan's key is now in the green box.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "context_lookup-009",
+      "category": "context_lookup",
+      "prompt": "Kelan has the yellow box. Lumi has the blue box. Who has the blue box? Reply with the name only.",
+      "expected": "Lumi",
+      "response": "Kelan has the yellow box.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "sorting_format-009",
+      "category": "sorting_format",
+      "prompt": "Sort these numbers from smallest to largest: 78, 43, 75, 29. Reply with numbers separated by commas, without spaces or other text.",
+      "expected": "29,43,75,78",
+      "response": "To sort the numbers from smallest to largest, we can use the  \u2047 sorted \u2047  function in Python. This function takes a list of",
+      "stopped": false,
+      "correct": false
+    },
+    {
+      "id": "concept_role-009",
+      "category": "concept_role",
+      "prompt": "In a fictional republic, a president is the person elected to lead the council. Kelan teaches at a school. Lumi was elected to lead the council. Mira repairs bridges. Who is the president? Reply with the name only.",
+      "expected": "Lumi",
+      "response": "The president is the person elected to lead the council.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "missing_information-009",
+      "category": "missing_information",
+      "prompt": "The register says: Kelan has a yellow bicycle. Using only this register, what color is Lumi's bicycle? Reply with the color only, or UNKNOWN if the register does not say.",
+      "expected": "UNKNOWN",
+      "response": "The register says: Kelan has a yellow bicycle.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "conditional_rule-009",
+      "category": "conditional_rule",
+      "prompt": "Rule: if the number is even, output yellow; otherwise output blue. The number is 78. Reply with the required word only.",
+      "expected": "yellow",
+      "response": "The rule states that if the number is even, output yellow.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "context_update-009",
+      "category": "context_update",
+      "prompt": "Kelan puts a key in the yellow box. Later, Lumi moves that key to the blue box. Where is the key now? Reply with the box color only.",
+      "expected": "blue",
+      "response": "Kelan's key is now in the yellow box.",
+      "stopped": true,
+      "correct": false
+    }
+  ],
+  "checkpoint": "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/sft/best.pt",
+  "checkpoint_sha256": "6413763b4e7630f4aa4d532fe5e05879afb0b9ac8d2a1c015900908a22a5bf8d",
+  "tokenizer_sha256": "c6808ff86d9b1422aa1ef5d0adb3cde5d993e870a4387fcd2a16a119083caae0",
+  "decoding": {
+    "temperature": 0,
+    "max_new_tokens": 32,
+    "dtype": "torch.bfloat16"
+  },
+  "scores": {
+    "context_lookup": {
+      "correct": 0,
+      "total": 10,
+      "accuracy": 0.0
+    },
+    "sorting_format": {
+      "correct": 0,
+      "total": 10,
+      "accuracy": 0.0
+    },
+    "concept_role": {
+      "correct": 0,
+      "total": 10,
+      "accuracy": 0.0
+    },
+    "missing_information": {
+      "correct": 0,
+      "total": 10,
+      "accuracy": 0.0
+    },
+    "conditional_rule": {
+      "correct": 0,
+      "total": 10,
+      "accuracy": 0.0
+    },
+    "context_update": {
+      "correct": 0,
+      "total": 10,
+      "accuracy": 0.0
+    }
+  },
+  "exact_match_accuracy": 0.0
+}

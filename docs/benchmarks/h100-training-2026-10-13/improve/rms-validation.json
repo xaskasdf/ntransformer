@@ -1,0 +1,64 @@
+{
+  "status": "passed",
+  "primitives": [
+    {
+      "shape": [
+        7
+      ],
+      "forward": 0,
+      "dx": 0,
+      "dw": 0
+    },
+    {
+      "shape": [
+        17,
+        1
+      ],
+      "forward": 0,
+      "dx": 0,
+      "dw": 0
+    },
+    {
+      "shape": [
+        3,
+        33
+      ],
+      "forward": 0,
+      "dx": 0,
+      "dw": 0
+    },
+    {
+      "shape": [
+        2,
+        7,
+        576
+      ],
+      "forward": 0,
+      "dx": 0,
+      "dw": 0
+    },
+    {
+      "shape": [
+        257,
+        576
+      ],
+      "forward": 0,
+      "dx": 0,
+      "dw": 0
+    },
+    {
+      "shape": [
+        19,
+        4097
+      ],
+      "forward": 0,
+      "dx": 0,
+      "dw": 0
+    }
+  ],
+  "real_sft": {
+    "loss": 2.9799654483795166,
+    "exact_gradients": 272,
+    "parameters": 107604288
+  }
+}

@@ -1,0 +1,734 @@
+{
+  "model": [
+    {
+      "mode": "reference",
+      "loss": 2.9799654483795166,
+      "relative": 0.0,
+      "differing_parameters": 0,
+      "worst": []
+    },
+    {
+      "mode": "swiglu",
+      "loss": 2.9799654483795166,
+      "relative": 0.0056517093918452095,
+      "differing_parameters": 269,
+      "worst": [
+        {
+          "name": "layers.10.attention_norm.weight",
+          "relative": 0.020996462021123843
+        },
+        {
+          "name": "layers.8.attention_norm.weight",
+          "relative": 0.016651180214370398
+        },
+        {
+          "name": "layers.3.attention_norm.weight",
+          "relative": 0.013518393338481227
+        },
+        {
+          "name": "layers.1.attention.wk.weight",
+          "relative": 0.01140510829153423
+        },
+        {
+          "name": "layers.14.attention_norm.weight",
+          "relative": 0.011217096132483995
+        },
+        {
+          "name": "layers.1.attention.wq.weight",
+          "relative": 0.010340349915051408
+        },
+        {
+          "name": "layers.4.attention.wk.weight",
+          "relative": 0.010301839408867518
+        },
+        {
+          "name": "layers.12.ffn_norm.weight",
+          "relative": 0.009169487896754031
+        }
+      ]
+    },
+    {
+      "mode": "norms",
+      "loss": 2.9818408489227295,
+      "relative": 0.019633865153433322,
+      "differing_parameters": 272,
+      "worst": [
+        {
+          "name": "layers.2.attention_norm.weight",
+          "relative": 0.07421035464632965
+        },
+        {
+          "name": "layers.9.ffn_norm.weight",
+          "relative": 0.046326273734270174
+        },
+        {
+          "name": "layers.10.attention_norm.weight",
+          "relative": 0.04390557669470734
+        },
+        {
+          "name": "layers.3.attention_norm.weight",
+          "relative": 0.041275798095376286
+        },
+        {
+          "name": "layers.1.attention_norm.weight",
+          "relative": 0.03542050296191463
+        },
+        {
+          "name": "layers.4.attention.wq.weight",
+          "relative": 0.02928848671533658
+        },
+        {
+          "name": "layers.12.attention.wk.weight",
+          "relative": 0.02925045530437572
+        },
+        {
+          "name": "layers.4.attention.wk.weight",
+          "relative": 0.029226113611171993
+        }
+      ]
+    }
+  ],
+  "primitives": [
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        0,
+        0
+      ],
+      "examples": []
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        0,
+        0
+      ],
+      "examples": []
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        0,
+        0
+      ],
+      "examples": []
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        0,
+        0
+      ],
+      "examples": []
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        1,
+        0
+      ],
+      "examples": [
+        {
+          "operand": "gate",
+          "gate": -2.09375,
+          "up": -0.82421875,
+          "dy": -4.3392181396484375e-05,
+          "native": -3.382563591003418e-06,
+          "reference": -3.3974647521972656e-06
+        }
+      ]
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        0,
+        0
+      ],
+      "examples": []
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        1,
+        0
+      ],
+      "examples": [
+        {
+          "operand": "gate",
+          "gate": -2.09375,
+          "up": 0.4375,
+          "dy": -1.0251998901367188e-05,
+          "native": 4.2282044887542725e-07,
+          "reference": 4.246830940246582e-07
+        }
+      ]
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        3,
+        0
+      ],
+      "examples": [
+        {
+          "operand": "gate",
+          "gate": -2.09375,
+          "up": -1.1328125,
+          "dy": -6.29425048828125e-05,
+          "native": -6.765127182006836e-06,
+          "reference": -6.794929504394531e-06
+        },
+        {
+          "operand": "gate",
+          "gate": -2.09375,
+          "up": 2.046875,
+          "dy": -3.504753112792969e-05,
+          "native": 6.765127182006836e-06,
+          "reference": 6.794929504394531e-06
+        }
+      ]
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        3,
+        0
+      ],
+      "examples": [
+        {
+          "operand": "gate",
+          "gate": -2.09375,
+          "up": 0.92578125,
+          "dy": 0.0001544952392578125,
+          "native": -1.3530254364013672e-05,
+          "reference": -1.3589859008789062e-05
+        },
+        {
+          "operand": "gate",
+          "gate": -2.09375,
+          "up": 0.1337890625,
+          "dy": 0.001068115234375,
+          "native": -1.3530254364013672e-05,
+          "reference": -1.3589859008789062e-05
+        }
+      ]
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        5,
+        0
+      ],
+      "examples": [
+        {
+          "operand": "gate",
+          "gate": -2.09375,
+          "up": -0.453125,
+          "dy": 0.00015735626220703125,
+          "native": 6.765127182006836e-06,
+          "reference": 6.794929504394531e-06
+        },
+        {
+          "operand": "gate",
+          "gate": -2.09375,
+          "up": 0.287109375,
+          "dy": -0.00012493133544921875,
+          "native": 3.382563591003418e-06,
+          "reference": 3.3974647521972656e-06
+        }
+      ]
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        1,
+        0
+      ],
+      "examples": [
+        {
+          "operand": "gate",
+          "gate": -2.09375,
+          "up": -0.1640625,
+          "dy": 0.00021839141845703125,
+          "native": 3.382563591003418e-06,
+          "reference": 3.3974647521972656e-06
+        }
+      ]
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        7,
+        0
+      ],
+      "examples": [
+        {
+          "operand": "gate",
+          "gate": -2.09375,
+          "up": 0.2099609375,
+          "dy": -0.00017070770263671875,
+          "native": 3.382563591003418e-06,
+          "reference": 3.3974647521972656e-06
+        },
+        {
+          "operand": "gate",
+          "gate": -2.09375,
+          "up": -0.3203125,
+          "dy": 0.00089263916015625,
+          "native": 2.7060508728027344e-05,
+          "reference": 2.7179718017578125e-05
+        }
+      ]
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        6,
+        0
+      ],
+      "examples": [
+        {
+          "operand": "gate",
+          "gate": -2.09375,
+          "up": -0.5546875,
+          "dy": -1.609325408935547e-05,
+          "native": -8.456408977508545e-07,
+          "reference": -8.493661880493164e-07
+        },
+        {
+          "operand": "gate",
+          "gate": -2.09375,
+          "up": -1.453125,
+          "dy": -4.9114227294921875e-05,
+          "native": -6.765127182006836e-06,
+          "reference": -6.794929504394531e-06
+        }
+      ]
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        4,
+        0
+      ],
+      "examples": [
+        {
+          "operand": "gate",
+          "gate": -2.09375,
+          "up": 0.080078125,
+          "dy": -1.3947486877441406e-05,
+          "native": 1.0570511221885681e-07,
+          "reference": 1.0617077350616455e-07
+        },
+        {
+          "operand": "gate",
+          "gate": -2.09375,
+          "up": -1.25,
+          "dy": -0.0018310546875,
+          "native": -0.00021648406982421875,
+          "reference": -0.000217437744140625
+        }
+      ]
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        5,
+        0
+      ],
+      "examples": [
+        {
+          "operand": "gate",
+          "gate": -2.09375,
+          "up": 0.09130859375,
+          "dy": -1.2218952178955078e-05,
+          "native": 1.0570511221885681e-07,
+          "reference": 1.0617077350616455e-07
+        },
+        {
+          "operand": "gate",
+          "gate": -2.09375,
+          "up": 1.40625,
+          "dy": -2.5391578674316406e-05,
+          "native": 3.382563591003418e-06,
+          "reference": 3.3974647521972656e-06
+        }
+      ]
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        9,
+        0
+      ],
+      "examples": [
+        {
+          "operand": "gate",
+          "gate": -2.09375,
+          "up": -0.255859375,
+          "dy": -8.761882781982422e-06,
+          "native": -2.1141022443771362e-07,
+          "reference": -2.123415470123291e-07
+        },
+        {
+          "operand": "gate",
+          "gate": -2.09375,
+          "up": 0.003173828125,
+          "dy": 4.38690185546875e-05,
+          "native": -1.3213139027357101e-08,
+          "reference": -1.3271346688270569e-08
+        }
+      ]
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        10,
+        0
+      ],
+      "examples": [
+        {
+          "operand": "gate",
+          "gate": -2.09375,
+          "up": 0.310546875,
+          "dy": -0.00011491775512695312,
+          "native": 3.382563591003418e-06,
+          "reference": 3.3974647521972656e-06
+        },
+        {
+          "operand": "gate",
+          "gate": -2.09375,
+          "up": 0.73046875,
+          "dy": 4.9114227294921875e-05,
+          "native": -3.382563591003418e-06,
+          "reference": -3.3974647521972656e-06
+        }
+      ]
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        10,
+        0
+      ],
+      "examples": [
+        {
+          "operand": "gate",
+          "gate": -2.09375,
+          "up": -0.56640625,
+          "dy": 6.29425048828125e-05,
+          "native": 3.382563591003418e-06,
+          "reference": 3.3974647521972656e-06
+        },
+        {
+          "operand": "gate",
+          "gate": -2.09375,
+          "up": -0.0654296875,
+          "dy": 6.818771362304688e-05,
+          "native": 4.2282044887542725e-07,
+          "reference": 4.246830940246582e-07
+        }
+      ]
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        10,
+        0
+      ],
+      "examples": [
+        {
+          "operand": "gate",
+          "gate": -2.09375,
+          "up": -0.65234375,
+          "dy": -1.3709068298339844e-05,
+          "native": -8.456408977508545e-07,
+          "reference": -8.493661880493164e-07
+        },
+        {
+          "operand": "gate",
+          "gate": -2.09375,
+          "up": -0.32421875,
+          "dy": 1.3768672943115234e-05,
+          "native": 4.2282044887542725e-07,
+          "reference": 4.246830940246582e-07
+        }
+      ]
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        11,
+        0
+      ],
+      "examples": [
+        {
+          "operand": "gate",
+          "gate": -2.09375,
+          "up": 1.265625,
+          "dy": -0.00022602081298828125,
+          "native": 2.7060508728027344e-05,
+          "reference": 2.7179718017578125e-05
+        },
+        {
+          "operand": "gate",
+          "gate": -2.09375,
+          "up": -0.51171875,
+          "dy": -1.7523765563964844e-05,
+          "native": -8.456408977508545e-07,
+          "reference": -8.493661880493164e-07
+        }
+      ]
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        9,
+        0
+      ],
+      "examples": [
+        {
+          "operand": "gate",
+          "gate": -2.09375,
+          "up": -1.390625,
+          "dy": -2.574920654296875e-05,
+          "native": -3.382563591003418e-06,
+          "reference": -3.3974647521972656e-06
+        },
+        {
+          "operand": "gate",
+          "gate": -2.09375,
+          "up": 1.625,
+          "dy": -4.38690185546875e-05,
+          "native": 6.765127182006836e-06,
+          "reference": 6.794929504394531e-06
+        }
+      ]
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        8,
+        0
+      ],
+      "examples": [
+        {
+          "operand": "gate",
+          "gate": -2.09375,
+          "up": -0.005126953125,
+          "dy": 2.7298927307128906e-05,
+          "native": 1.3213139027357101e-08,
+          "reference": 1.3271346688270569e-08
+        },
+        {
+          "operand": "gate",
+          "gate": -2.09375,
+          "up": -1.453125,
+          "dy": 0.00019741058349609375,
+          "native": 2.7060508728027344e-05,
+          "reference": 2.7179718017578125e-05
+        }
+      ]
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        11,
+        0
+      ],
+      "examples": [
+        {
+          "operand": "gate",
+          "gate": -2.09375,
+          "up": -0.1748046875,
+          "dy": 2.562999725341797e-05,
+          "native": 4.2282044887542725e-07,
+          "reference": 4.246830940246582e-07
+        },
+        {
+          "operand": "gate",
+          "gate": -2.09375,
+          "up": -0.58203125,
+          "dy": -4.805624485015869e-07,
+          "native": -2.6426278054714203e-08,
+          "reference": -2.6542693376541138e-08
+        }
+      ]
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        11,
+        0
+      ],
+      "examples": [
+        {
+          "operand": "gate",
+          "gate": -2.09375,
+          "up": 1.5078125,
+          "dy": 2.9653310775756836e-06,
+          "native": -4.2282044887542725e-07,
+          "reference": -4.246830940246582e-07
+        },
+        {
+          "operand": "gate",
+          "gate": -2.09375,
+          "up": 1.3203125,
+          "dy": 1.691281795501709e-06,
+          "native": -2.1141022443771362e-07,
+          "reference": -2.123415470123291e-07
+        }
+      ]
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        13,
+        0
+      ],
+      "examples": [
+        {
+          "operand": "gate",
+          "gate": -2.09375,
+          "up": -0.083984375,
+          "dy": -4.172325134277344e-07,
+          "native": -3.3032847568392754e-09,
+          "reference": -3.3178366720676422e-09
+        },
+        {
+          "operand": "gate",
+          "gate": -2.09375,
+          "up": 0.5546875,
+          "dy": -5.029141902923584e-07,
+          "native": 2.6426278054714203e-08,
+          "reference": 2.6542693376541138e-08
+        }
+      ]
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        8,
+        0
+      ],
+      "examples": [
+        {
+          "operand": "gate",
+          "gate": -2.09375,
+          "up": 0.9921875,
+          "dy": -9.000301361083984e-06,
+          "native": 8.456408977508545e-07,
+          "reference": 8.493661880493164e-07
+        },
+        {
+          "operand": "gate",
+          "gate": -2.09375,
+          "up": 0.1650390625,
+          "dy": -3.382563591003418e-06,
+          "native": 5.2852556109428406e-08,
+          "reference": 5.3085386753082275e-08
+        }
+      ]
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        8,
+        0
+      ],
+      "examples": [
+        {
+          "operand": "gate",
+          "gate": -2.09375,
+          "up": -0.859375,
+          "dy": -3.241002559661865e-07,
+          "native": -2.6426278054714203e-08,
+          "reference": -2.6542693376541138e-08
+        },
+        {
+          "operand": "gate",
+          "gate": -2.09375,
+          "up": -0.984375,
+          "dy": -9.059906005859375e-06,
+          "native": -8.456408977508545e-07,
+          "reference": -8.493661880493164e-07
+        }
+      ]
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        12,
+        0
+      ],
+      "examples": [
+        {
+          "operand": "gate",
+          "gate": -2.09375,
+          "up": 0.8125,
+          "dy": 1.1026859283447266e-05,
+          "native": -8.456408977508545e-07,
+          "reference": -8.493661880493164e-07
+        },
+        {
+          "operand": "gate",
+          "gate": -2.09375,
+          "up": -2.265625,
+          "dy": 7.867813110351562e-06,
+          "native": 1.691281795501709e-06,
+          "reference": 1.6987323760986328e-06
+        }
+      ]
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        12,
+        0
+      ],
+      "examples": [
+        {
+          "operand": "gate",
+          "gate": -2.09375,
+          "up": -0.93359375,
+          "dy": -4.685716703534126e-09,
+          "native": -4.129105946049094e-10,
+          "reference": -4.147295840084553e-10
+        },
+        {
+          "operand": "gate",
+          "gate": -2.09375,
+          "up": -0.64453125,
+          "dy": 5.4016709327697754e-08,
+          "native": 3.3032847568392754e-09,
+          "reference": 3.3178366720676422e-09
+        }
+      ]
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        3,
+        0
+      ],
+      "examples": [
+        {
+          "operand": "gate",
+          "gate": -2.09375,
+          "up": 1.3515625,
+          "dy": 5.2928924560546875e-05,
+          "native": -6.765127182006836e-06,
+          "reference": -6.794929504394531e-06
+        },
+        {
+          "operand": "gate",
+          "gate": -2.09375,
+          "up": 2.109375,
+          "dy": 1.6927719116210938e-05,
+          "native": -3.382563591003418e-06,
+          "reference": -3.3974647521972656e-06
+        }
+      ]
+    }
+  ]
+}

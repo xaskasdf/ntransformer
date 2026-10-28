@@ -1,0 +1,300 @@
+{
+  "payload_files_verified": 370,
+  "executed_sources_exact": [
+    "CMakeLists.txt",
+    "scripts/analyze_training_trace.py",
+    "scripts/analyze_verified_instructions.py",
+    "scripts/compare_training_experiment.py",
+    "scripts/train_brandon_experiment.py",
+    "tests/test_training_gradient_buckets.py",
+    "tests/test_training_graph_storage.py",
+    "tests/test_training_loss.py",
+    "tests/test_training_loss_labels.py",
+    "src/cuda/rmsnorm.cu",
+    "src/training/cross_entropy.cu",
+    "src/training/ops.cu",
+    "src/training/rotary.cu",
+    "python/ntransformer_training/attention.py",
+    "python/ntransformer_training/brandon.py",
+    "python/ntransformer_training/gradients.py",
+    "python/ntransformer_training/graphs.py",
+    "python/ntransformer_training/loss.py",
+    "python/ntransformer_training/measurement.py",
+    "python/ntransformer_training/ops.py",
+    "python/ntransformer_training/pipeline.py",
+    "python/ntransformer_training/projections.py",
+    "python/ntransformer_training/rotary.py",
+    "python/ntransformer_training/__init__.py"
+  ],
+  "matrix_kernel_counts_identical": true,
+  "unrelated_current_build_changes": {},
+  "trace_reanalysis": {
+    "strict-control/rank0": {
+      "summary_exact": true,
+      "kernel_count": 12208,
+      "cpu_operations": 9078,
+      "host_launches": {
+        "cudaLaunchKernel": 1690,
+        "cudaGraphLaunch": 8,
+        "cuLaunchKernelEx": 38
+      },
+      "graph_launches": 8,
+      "matrix_kernel_names": {
+        "nvjet_sm90_tst_192x192_64x4_1x2_h_bz_coopB_TNN": 360,
+        "nvjet_sm90_tst_192x128_64x5_1x2_h_bz_coopB_TNT": 240,
+        "nvjet_sm90_tst_256x128_64x4_1x2_h_bz_coopA_TNT": 240,
+        "nvjet_sm90_tst_192x192_64x4_2x1_v_bz_coopB_TNN": 4,
+        "nvjet_sm90_tst_192x192_64x3_1x2_h_bz_coopB_NTN": 4,
+        "nvjet_sm90_tst_192x192_64x3_1x2_h_bz_coopB_NNN": 724,
+        "nvjet_sm90_tst_64x128_64x8_4x1_v_bz_NTN": 120,
+        "nvjet_sm90_tst_256x128_64x4_1x2_h_bz_coopA_NNT": 120,
+        "nvjet_sm90_tst_128x64_64x8_1x4_h_bz_NTT": 240,
+        "nvjet_sm90_tst_96x128_64x6_2x1_v_bz_splitK_NTN": 240,
+        "void cublasLt::splitKreduce_kernel<32, 16, int, float, __nv_bfloat16, float, __nv_bfloat16, false, float, __nv_bfloat16, __nv_bfloat16, true, false, false, false>(cublasLt::cublasSplitKParams<float>, float const*, __nv_bfloat16 const*, float*, __nv_bfloat16*, float const*, float const*, __nv_bfloat16 const*, float const*, __nv_bfloat16*, void*, long, float*, int*, float*, float*, float const*, float const*, float const*, float const*, float const*)": 480,
+        "nvjet_sm90_tst_64x64_64x13_2x1_v_bz_splitK_NTT": 240
+      },
+      "loss_kernels": {
+        "void nt::training::target_log_probability<true>(float*, float*, long*, __nv_bfloat16 const*, long const*, int, int, int, int, nt::training::LabelLayout)": 4,
+        "void nt::training::target_log_probability_backward<true>(__nv_bfloat16*, __nv_bfloat16 const*, float const*, long const*, float const*, int, int, int, nt::training::LabelLayout)": 4
+      }
+    },
+    "strict-control/rank1": {
+      "summary_exact": true,
+      "kernel_count": 12208,
+      "cpu_operations": 9078,
+      "host_launches": {
+        "cudaLaunchKernel": 1690,
+        "cudaGraphLaunch": 8,
+        "cuLaunchKernelEx": 38
+      },
+      "graph_launches": 8,
+      "matrix_kernel_names": {
+        "nvjet_sm90_tst_192x192_64x4_1x2_h_bz_coopB_TNN": 360,
+        "nvjet_sm90_tst_192x128_64x5_1x2_h_bz_coopB_TNT": 240,
+        "nvjet_sm90_tst_256x128_64x4_1x2_h_bz_coopA_TNT": 240,
+        "nvjet_sm90_tst_192x192_64x4_2x1_v_bz_coopB_TNN": 4,
+        "nvjet_sm90_tst_192x192_64x3_1x2_h_bz_coopB_NTN": 4,
+        "nvjet_sm90_tst_192x192_64x3_1x2_h_bz_coopB_NNN": 724,
+        "nvjet_sm90_tst_64x128_64x8_4x1_v_bz_NTN": 120,
+        "nvjet_sm90_tst_256x128_64x4_1x2_h_bz_coopA_NNT": 120,
+        "nvjet_sm90_tst_128x64_64x8_1x4_h_bz_NTT": 240,
+        "nvjet_sm90_tst_96x128_64x6_2x1_v_bz_splitK_NTN": 240,
+        "void cublasLt::splitKreduce_kernel<32, 16, int, float, __nv_bfloat16, float, __nv_bfloat16, false, float, __nv_bfloat16, __nv_bfloat16, true, false, false, false>(cublasLt::cublasSplitKParams<float>, float const*, __nv_bfloat16 const*, float*, __nv_bfloat16*, float const*, float const*, __nv_bfloat16 const*, float const*, __nv_bfloat16*, void*, long, float*, int*, float*, float*, float const*, float const*, float const*, float const*, float const*)": 480,
+        "nvjet_sm90_tst_64x64_64x13_2x1_v_bz_splitK_NTT": 240
+      },
+      "loss_kernels": {
+        "void nt::training::target_log_probability<true>(float*, float*, long*, __nv_bfloat16 const*, long const*, int, int, int, int, nt::training::LabelLayout)": 4,
+        "void nt::training::target_log_probability_backward<true>(__nv_bfloat16*, __nv_bfloat16 const*, float const*, long const*, float const*, int, int, int, nt::training::LabelLayout)": 4
+      }
+    },
+    "strict-batched/rank0": {
+      "summary_exact": true,
+      "kernel_count": 11698,
+      "cpu_operations": 8058,
+      "host_launches": {
+        "cudaLaunchKernel": 1180,
+        "cudaGraphLaunch": 8,
+        "cuLaunchKernelEx": 38
+      },
+      "graph_launches": 8,
+      "matrix_kernel_names": {
+        "nvjet_sm90_tst_192x192_64x4_1x2_h_bz_coopB_TNN": 360,
+        "nvjet_sm90_tst_192x128_64x5_1x2_h_bz_coopB_TNT": 240,
+        "nvjet_sm90_tst_256x128_64x4_1x2_h_bz_coopA_TNT": 240,
+        "nvjet_sm90_tst_192x192_64x4_2x1_v_bz_coopB_TNN": 4,
+        "nvjet_sm90_tst_192x192_64x3_1x2_h_bz_coopB_NTN": 4,
+        "nvjet_sm90_tst_192x192_64x3_1x2_h_bz_coopB_NNN": 724,
+        "nvjet_sm90_tst_64x128_64x8_4x1_v_bz_NTN": 120,
+        "nvjet_sm90_tst_256x128_64x4_1x2_h_bz_coopA_NNT": 120,
+        "nvjet_sm90_tst_128x64_64x8_1x4_h_bz_NTT": 240,
+        "nvjet_sm90_tst_96x128_64x6_2x1_v_bz_splitK_NTN": 240,
+        "void cublasLt::splitKreduce_kernel<32, 16, int, float, __nv_bfloat16, float, __nv_bfloat16, false, float, __nv_bfloat16, __nv_bfloat16, true, false, false, false>(cublasLt::cublasSplitKParams<float>, float const*, __nv_bfloat16 const*, float*, __nv_bfloat16*, float const*, float const*, __nv_bfloat16 const*, float const*, __nv_bfloat16*, void*, long, float*, int*, float*, float*, float const*, float const*, float const*, float const*, float const*)": 480,
+        "nvjet_sm90_tst_64x64_64x13_2x1_v_bz_splitK_NTT": 240
+      },
+      "loss_kernels": {
+        "void nt::training::target_log_probability<true>(float*, float*, long*, __nv_bfloat16 const*, long const*, int, int, int, int, nt::training::LabelLayout)": 4,
+        "void nt::training::target_log_probability_backward<true>(__nv_bfloat16*, __nv_bfloat16 const*, float const*, long const*, float const*, int, int, int, nt::training::LabelLayout)": 4
+      }
+    },
+    "strict-batched/rank1": {
+      "summary_exact": true,
+      "kernel_count": 11698,
+      "cpu_operations": 8058,
+      "host_launches": {
+        "cudaLaunchKernel": 1180,
+        "cudaGraphLaunch": 8,
+        "cuLaunchKernelEx": 38
+      },
+      "graph_launches": 8,
+      "matrix_kernel_names": {
+        "nvjet_sm90_tst_192x192_64x4_1x2_h_bz_coopB_TNN": 360,
+        "nvjet_sm90_tst_192x128_64x5_1x2_h_bz_coopB_TNT": 240,
+        "nvjet_sm90_tst_256x128_64x4_1x2_h_bz_coopA_TNT": 240,
+        "nvjet_sm90_tst_192x192_64x4_2x1_v_bz_coopB_TNN": 4,
+        "nvjet_sm90_tst_192x192_64x3_1x2_h_bz_coopB_NTN": 4,
+        "nvjet_sm90_tst_192x192_64x3_1x2_h_bz_coopB_NNN": 724,
+        "nvjet_sm90_tst_64x128_64x8_4x1_v_bz_NTN": 120,
+        "nvjet_sm90_tst_256x128_64x4_1x2_h_bz_coopA_NNT": 120,
+        "nvjet_sm90_tst_128x64_64x8_1x4_h_bz_NTT": 240,
+        "nvjet_sm90_tst_96x128_64x6_2x1_v_bz_splitK_NTN": 240,
+        "void cublasLt::splitKreduce_kernel<32, 16, int, float, __nv_bfloat16, float, __nv_bfloat16, false, float, __nv_bfloat16, __nv_bfloat16, true, false, false, false>(cublasLt::cublasSplitKParams<float>, float const*, __nv_bfloat16 const*, float*, __nv_bfloat16*, float const*, float const*, __nv_bfloat16 const*, float const*, __nv_bfloat16*, void*, long, float*, int*, float*, float*, float const*, float const*, float const*, float const*, float const*)": 480,
+        "nvjet_sm90_tst_64x64_64x13_2x1_v_bz_splitK_NTT": 240
+      },
+      "loss_kernels": {
+        "void nt::training::target_log_probability<true>(float*, float*, long*, __nv_bfloat16 const*, long const*, int, int, int, int, nt::training::LabelLayout)": 4,
+        "void nt::training::target_log_probability_backward<true>(__nv_bfloat16*, __nv_bfloat16 const*, float const*, long const*, float const*, int, int, int, nt::training::LabelLayout)": 4
+      }
+    },
+    "strict-buckets25/rank0": {
+      "summary_exact": true,
+      "kernel_count": 10582,
+      "cpu_operations": 5314,
+      "host_launches": {
+        "cudaGraphLaunch": 8,
+        "cudaLaunchKernel": 62,
+        "cuLaunchKernelEx": 40
+      },
+      "graph_launches": 8,
+      "matrix_kernel_names": {
+        "nvjet_sm90_tst_192x192_64x4_1x2_h_bz_coopB_TNN": 360,
+        "nvjet_sm90_tst_192x128_64x5_1x2_h_bz_coopB_TNT": 240,
+        "nvjet_sm90_tst_256x128_64x4_1x2_h_bz_coopA_TNT": 240,
+        "nvjet_sm90_tst_192x192_64x4_2x1_v_bz_coopB_TNN": 4,
+        "nvjet_sm90_tst_192x192_64x3_1x2_h_bz_coopB_NTN": 4,
+        "nvjet_sm90_tst_192x192_64x3_1x2_h_bz_coopB_NNN": 724,
+        "nvjet_sm90_tst_64x128_64x8_4x1_v_bz_NTN": 120,
+        "nvjet_sm90_tst_256x128_64x4_1x2_h_bz_coopA_NNT": 120,
+        "nvjet_sm90_tst_128x64_64x8_1x4_h_bz_NTT": 240,
+        "nvjet_sm90_tst_96x128_64x6_2x1_v_bz_splitK_NTN": 240,
+        "void cublasLt::splitKreduce_kernel<32, 16, int, float, __nv_bfloat16, float, __nv_bfloat16, false, float, __nv_bfloat16, __nv_bfloat16, true, false, false, false>(cublasLt::cublasSplitKParams<float>, float const*, __nv_bfloat16 const*, float*, __nv_bfloat16*, float const*, float const*, __nv_bfloat16 const*, float const*, __nv_bfloat16*, void*, long, float*, int*, float*, float*, float const*, float const*, float const*, float const*, float const*)": 480,
+        "nvjet_sm90_tst_64x64_64x13_2x1_v_bz_splitK_NTT": 240
+      },
+      "loss_kernels": {
+        "void nt::training::target_log_probability<true>(float*, float*, long*, __nv_bfloat16 const*, long const*, int, int, int, int, nt::training::LabelLayout)": 4,
+        "void nt::training::target_log_probability_backward<true>(__nv_bfloat16*, __nv_bfloat16 const*, float const*, long const*, float const*, int, int, int, nt::training::LabelLayout)": 4
+      }
+    },
+    "strict-buckets25/rank1": {
+      "summary_exact": true,
+      "kernel_count": 10582,
+      "cpu_operations": 5314,
+      "host_launches": {
+        "cudaGraphLaunch": 8,
+        "cudaLaunchKernel": 62,
+        "cuLaunchKernelEx": 40
+      },
+      "graph_launches": 8,
+      "matrix_kernel_names": {
+        "nvjet_sm90_tst_192x192_64x4_1x2_h_bz_coopB_TNN": 360,
+        "nvjet_sm90_tst_192x128_64x5_1x2_h_bz_coopB_TNT": 240,
+        "nvjet_sm90_tst_256x128_64x4_1x2_h_bz_coopA_TNT": 240,
+        "nvjet_sm90_tst_192x192_64x4_2x1_v_bz_coopB_TNN": 4,
+        "nvjet_sm90_tst_192x192_64x3_1x2_h_bz_coopB_NTN": 4,
+        "nvjet_sm90_tst_192x192_64x3_1x2_h_bz_coopB_NNN": 724,
+        "nvjet_sm90_tst_64x128_64x8_4x1_v_bz_NTN": 120,
+        "nvjet_sm90_tst_256x128_64x4_1x2_h_bz_coopA_NNT": 120,
+        "nvjet_sm90_tst_128x64_64x8_1x4_h_bz_NTT": 240,
+        "nvjet_sm90_tst_96x128_64x6_2x1_v_bz_splitK_NTN": 240,
+        "void cublasLt::splitKreduce_kernel<32, 16, int, float, __nv_bfloat16, float, __nv_bfloat16, false, float, __nv_bfloat16, __nv_bfloat16, true, false, false, false>(cublasLt::cublasSplitKParams<float>, float const*, __nv_bfloat16 const*, float*, __nv_bfloat16*, float const*, float const*, __nv_bfloat16 const*, float const*, __nv_bfloat16*, void*, long, float*, int*, float*, float*, float const*, float const*, float const*, float const*, float const*)": 480,
+        "nvjet_sm90_tst_64x64_64x13_2x1_v_bz_splitK_NTT": 240
+      },
+      "loss_kernels": {
+        "void nt::training::target_log_probability<true>(float*, float*, long*, __nv_bfloat16 const*, long const*, int, int, int, int, nt::training::LabelLayout)": 4,
+        "void nt::training::target_log_probability_backward<true>(__nv_bfloat16*, __nv_bfloat16 const*, float const*, long const*, float const*, int, int, int, nt::training::LabelLayout)": 4
+      }
+    },
+    "strict-buckets512/rank0": {
+      "summary_exact": true,
+      "kernel_count": 10548,
+      "cpu_operations": 5212,
+      "host_launches": {
+        "cudaGraphLaunch": 8,
+        "cudaLaunchKernel": 62,
+        "cuLaunchKernelEx": 6
+      },
+      "graph_launches": 8,
+      "matrix_kernel_names": {
+        "nvjet_sm90_tst_192x192_64x4_1x2_h_bz_coopB_TNN": 360,
+        "nvjet_sm90_tst_192x128_64x5_1x2_h_bz_coopB_TNT": 240,
+        "nvjet_sm90_tst_256x128_64x4_1x2_h_bz_coopA_TNT": 240,
+        "nvjet_sm90_tst_192x192_64x4_2x1_v_bz_coopB_TNN": 4,
+        "nvjet_sm90_tst_192x192_64x3_1x2_h_bz_coopB_NTN": 4,
+        "nvjet_sm90_tst_192x192_64x3_1x2_h_bz_coopB_NNN": 724,
+        "nvjet_sm90_tst_64x128_64x8_4x1_v_bz_NTN": 120,
+        "nvjet_sm90_tst_256x128_64x4_1x2_h_bz_coopA_NNT": 120,
+        "nvjet_sm90_tst_128x64_64x8_1x4_h_bz_NTT": 240,
+        "nvjet_sm90_tst_96x128_64x6_2x1_v_bz_splitK_NTN": 240,
+        "void cublasLt::splitKreduce_kernel<32, 16, int, float, __nv_bfloat16, float, __nv_bfloat16, false, float, __nv_bfloat16, __nv_bfloat16, true, false, false, false>(cublasLt::cublasSplitKParams<float>, float const*, __nv_bfloat16 const*, float*, __nv_bfloat16*, float const*, float const*, __nv_bfloat16 const*, float const*, __nv_bfloat16*, void*, long, float*, int*, float*, float*, float const*, float const*, float const*, float const*, float const*)": 480,
+        "nvjet_sm90_tst_64x64_64x13_2x1_v_bz_splitK_NTT": 240
+      },
+      "loss_kernels": {
+        "void nt::training::target_log_probability<true>(float*, float*, long*, __nv_bfloat16 const*, long const*, int, int, int, int, nt::training::LabelLayout)": 4,
+        "void nt::training::target_log_probability_backward<true>(__nv_bfloat16*, __nv_bfloat16 const*, float const*, long const*, float const*, int, int, int, nt::training::LabelLayout)": 4
+      }
+    },
+    "strict-buckets512/rank1": {
+      "summary_exact": true,
+      "kernel_count": 10548,
+      "cpu_operations": 5212,
+      "host_launches": {
+        "cudaGraphLaunch": 8,
+        "cudaLaunchKernel": 62,
+        "cuLaunchKernelEx": 6
+      },
+      "graph_launches": 8,
+      "matrix_kernel_names": {
+        "nvjet_sm90_tst_192x192_64x4_1x2_h_bz_coopB_TNN": 360,
+        "nvjet_sm90_tst_192x128_64x5_1x2_h_bz_coopB_TNT": 240,
+        "nvjet_sm90_tst_256x128_64x4_1x2_h_bz_coopA_TNT": 240,
+        "nvjet_sm90_tst_192x192_64x4_2x1_v_bz_coopB_TNN": 4,
+        "nvjet_sm90_tst_192x192_64x3_1x2_h_bz_coopB_NTN": 4,
+        "nvjet_sm90_tst_192x192_64x3_1x2_h_bz_coopB_NNN": 724,
+        "nvjet_sm90_tst_64x128_64x8_4x1_v_bz_NTN": 120,
+        "nvjet_sm90_tst_256x128_64x4_1x2_h_bz_coopA_NNT": 120,
+        "nvjet_sm90_tst_128x64_64x8_1x4_h_bz_NTT": 240,
+        "nvjet_sm90_tst_96x128_64x6_2x1_v_bz_splitK_NTN": 240,
+        "void cublasLt::splitKreduce_kernel<32, 16, int, float, __nv_bfloat16, float, __nv_bfloat16, false, float, __nv_bfloat16, __nv_bfloat16, true, false, false, false>(cublasLt::cublasSplitKParams<float>, float const*, __nv_bfloat16 const*, float*, __nv_bfloat16*, float const*, float const*, __nv_bfloat16 const*, float const*, __nv_bfloat16*, void*, long, float*, int*, float*, float*, float const*, float const*, float const*, float const*, float const*)": 480,
+        "nvjet_sm90_tst_64x64_64x13_2x1_v_bz_splitK_NTT": 240
+      },
+      "loss_kernels": {
+        "void nt::training::target_log_probability<true>(float*, float*, long*, __nv_bfloat16 const*, long const*, int, int, int, int, nt::training::LabelLayout)": 4,
+        "void nt::training::target_log_probability_backward<true>(__nv_bfloat16*, __nv_bfloat16 const*, float const*, long const*, float const*, int, int, int, nt::training::LabelLayout)": 4
+      }
+    }
+  },
+  "kernel_differences": {
+    "strict-control-to-strict-batched/rank0": {
+      "void at::native::vectorized_elementwise_kernel<4, at::native::BUnaryFunctor<float, float, float, at::native::binary_internal::MulFunctor<float> >, std::array<char*, 2ul>, false>(int, at::native::BUnaryFunctor<float, float, float, at::native::binary_internal::MulFunctor<float> >, std::array<char*, 2ul>)": -510
+    },
+    "strict-control-to-strict-batched/rank1": {
+      "void at::native::vectorized_elementwise_kernel<4, at::native::BUnaryFunctor<float, float, float, at::native::binary_internal::MulFunctor<float> >, std::array<char*, 2ul>, false>(int, at::native::BUnaryFunctor<float, float, float, at::native::binary_internal::MulFunctor<float> >, std::array<char*, 2ul>)": -510
+    },
+    "strict-batched-to-strict-buckets25/rank0": {
+      "ncclDevKernel_AllReduce_Sum_f32_RING_LL(ncclDevKernelArgsStorage<4096ul>)": 2,
+      "void at::native::(anonymous namespace)::multi_tensor_apply_kernel<at::native::(anonymous namespace)::TensorListMetadata<1>, at::native::(anonymous namespace)::BinaryOpScalarFunctor<float, 1, 1, 0>, std::multiplies<float>, float>(at::native::(anonymous namespace)::TensorListMetadata<1>, at::native::(anonymous namespace)::BinaryOpScalarFunctor<float, 1, 1, 0>, std::multiplies<float>, float)": 2,
+      "void at::native::(anonymous namespace)::multi_tensor_apply_kernel<at::native::(anonymous namespace)::TensorListMetadata<1>, at::native::(anonymous namespace)::ZeroFunctor<float, 1, 1, 0>>(at::native::(anonymous namespace)::TensorListMetadata<1>, at::native::(anonymous namespace)::ZeroFunctor<float, 1, 1, 0>)": -2,
+      "void at::native::(anonymous namespace)::multi_tensor_apply_kernel<at::native::(anonymous namespace)::TensorListMetadata<2>, at::native::(anonymous namespace)::BinaryOpListAlphaFunctor<float, 2, 2, 0>, std::plus<float>, float>(at::native::(anonymous namespace)::TensorListMetadata<2>, at::native::(anonymous namespace)::BinaryOpListAlphaFunctor<float, 2, 2, 0>, std::plus<float>, float)": 2,
+      "void at::native::(anonymous namespace)::multi_tensor_apply_kernel<at::native::(anonymous namespace)::TensorListMetadata<2>, at::native::(anonymous namespace)::UnaryOpFunctor<float, 2, 1, 1>, at::native::Copy<float, float> >(at::native::(anonymous namespace)::TensorListMetadata<2>, at::native::(anonymous namespace)::UnaryOpFunctor<float, 2, 1, 1>, at::native::Copy<float, float>)": 2,
+      "void at::native::vectorized_elementwise_kernel<4, at::native::BUnaryFunctor<float, float, float, at::native::binary_internal::MulFunctor<float> >, std::array<char*, 2ul>, false>(int, at::native::BUnaryFunctor<float, float, float, at::native::binary_internal::MulFunctor<float> >, std::array<char*, 2ul>)": -34,
+      "void at::native::vectorized_elementwise_kernel<4, at::native::CUDAFunctor_add<float>, std::array<char*, 3ul>, false>(int, at::native::CUDAFunctor_add<float>, std::array<char*, 3ul>)": -1088
+    },
+    "strict-batched-to-strict-buckets25/rank1": {
+      "ncclDevKernel_AllReduce_Sum_f32_RING_LL(ncclDevKernelArgsStorage<4096ul>)": 2,
+      "void at::native::(anonymous namespace)::multi_tensor_apply_kernel<at::native::(anonymous namespace)::TensorListMetadata<1>, at::native::(anonymous namespace)::BinaryOpScalarFunctor<float, 1, 1, 0>, std::multiplies<float>, float>(at::native::(anonymous namespace)::TensorListMetadata<1>, at::native::(anonymous namespace)::BinaryOpScalarFunctor<float, 1, 1, 0>, std::multiplies<float>, float)": 2,
+      "void at::native::(anonymous namespace)::multi_tensor_apply_kernel<at::native::(anonymous namespace)::TensorListMetadata<1>, at::native::(anonymous namespace)::ZeroFunctor<float, 1, 1, 0>>(at::native::(anonymous namespace)::TensorListMetadata<1>, at::native::(anonymous namespace)::ZeroFunctor<float, 1, 1, 0>)": -2,
+      "void at::native::(anonymous namespace)::multi_tensor_apply_kernel<at::native::(anonymous namespace)::TensorListMetadata<2>, at::native::(anonymous namespace)::BinaryOpListAlphaFunctor<float, 2, 2, 0>, std::plus<float>, float>(at::native::(anonymous namespace)::TensorListMetadata<2>, at::native::(anonymous namespace)::BinaryOpListAlphaFunctor<float, 2, 2, 0>, std::plus<float>, float)": 2,
+      "void at::native::(anonymous namespace)::multi_tensor_apply_kernel<at::native::(anonymous namespace)::TensorListMetadata<2>, at::native::(anonymous namespace)::UnaryOpFunctor<float, 2, 1, 1>, at::native::Copy<float, float> >(at::native::(anonymous namespace)::TensorListMetadata<2>, at::native::(anonymous namespace)::UnaryOpFunctor<float, 2, 1, 1>, at::native::Copy<float, float>)": 2,
+      "void at::native::vectorized_elementwise_kernel<4, at::native::BUnaryFunctor<float, float, float, at::native::binary_internal::MulFunctor<float> >, std::array<char*, 2ul>, false>(int, at::native::BUnaryFunctor<float, float, float, at::native::binary_internal::MulFunctor<float> >, std::array<char*, 2ul>)": -34,
+      "void at::native::vectorized_elementwise_kernel<4, at::native::CUDAFunctor_add<float>, std::array<char*, 3ul>, false>(int, at::native::CUDAFunctor_add<float>, std::array<char*, 3ul>)": -1088
+    },
+    "strict-buckets25-to-strict-buckets512/rank0": {
+      "ncclDevKernel_AllReduce_Sum_f32_RING_LL(ncclDevKernelArgsStorage<4096ul>)": -34
+    },
+    "strict-buckets25-to-strict-buckets512/rank1": {
+      "ncclDevKernel_AllReduce_Sum_f32_RING_LL(ncclDevKernelArgsStorage<4096ul>)": -34
+    }
+  },
+  "python_compilation": "passed",
+  "completed_100_update_runs": 18,
+  "passed_numerical_audits": 20
+}

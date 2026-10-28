@@ -1,0 +1,41 @@
+model:
+  dim: 576
+  n_layers: 30
+  n_heads: 9
+  n_kv_heads: 3
+  vocab_size: 8192
+  hidden_dim: 1472
+  max_seq_len: 1024
+  dropout: 0.0
+  weight_tying: true
+  norm_eps: 1.0e-05
+  rope_theta: 10000.0
+  block_sharing: false
+  n_predict: 1
+  dense_former: false
+  value_residual: false
+  n_registers: 0
+  n_loops: 1
+  ternary: false
+  relu_squared: false
+  step_embedding: false
+  feedback: false
+tokenizer:
+  model_path: /lambda/nfs/btiny/brandon-mini/sources/stage1-v1/data/tokenizer_8k.model
+finetune:
+  max_steps: 100
+  warmup_steps: 10
+  batch_size: 8
+  gradient_accumulation_steps: 2
+  optimizer: adamw
+  learning_rate: 5.0e-05
+  muon_learning_rate: 0.001
+  min_lr_ratio: 0.1
+  decay_fraction: 0.8
+  weight_decay: 0.01
+  grad_clip: 1.0
+  eval_interval: 50
+  eval_batches: 8
+  save_interval: 100
+  log_interval: 10
+  seed: 20261013

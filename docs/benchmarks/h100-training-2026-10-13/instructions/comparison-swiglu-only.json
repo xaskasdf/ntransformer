@@ -1,0 +1,16 @@
+{
+  "status": "failed",
+  "candidate": "swiglu-only",
+  "batch_hashes_match": true,
+  "max_training_loss_delta": 0.0017152335810953975,
+  "final_validation_delta": 0.008877344270614151,
+  "relative_update_difference": 0.12177954633858508,
+  "max_weight_difference": 0.0006853975355625153,
+  "updated_tensors": 273,
+  "total_tensors": 273,
+  "limits": {
+    "training_loss": 0.03,
+    "validation_loss": 0.02,
+    "relative_update_difference": 0.1
+  }
+}

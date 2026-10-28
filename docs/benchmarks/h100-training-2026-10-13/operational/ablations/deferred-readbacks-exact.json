@@ -1,0 +1,27 @@
+{
+  "status": "passed",
+  "reference": "/home/ubuntu/ntransformer-h100/training/difference-review-20261013/deterministic-reference",
+  "candidate": "/home/ubuntu/ntransformer-h100/training/operational-ablation-20261013/deferred-readbacks",
+  "paired_throughput_ratio": 1.221588931693085,
+  "historical_throughput_ratio": 1.0204412350991399,
+  "historical_ratio_scope": "Descriptive only: separate initialization and instrumentation",
+  "max_training_loss_delta": 0.0,
+  "final_validation_delta": 0.0,
+  "relative_update_difference": 0.0,
+  "max_weight_difference": 0.0,
+  "updated_tensors": 273,
+  "total_tensors": 273,
+  "exact": {
+    "model_state_dict": true,
+    "optimizer_states": true,
+    "rng_states": true,
+    "recorded_metrics": true,
+    "validation": true
+  },
+  "require_exact": true,
+  "limits": {
+    "training_loss": 0.03,
+    "validation_loss": 0.02,
+    "relative_update_difference": 0.1
+  }
+}

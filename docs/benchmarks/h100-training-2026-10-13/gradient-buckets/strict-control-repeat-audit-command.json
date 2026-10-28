@@ -1,0 +1,13 @@
+[
+  "/home/ubuntu/brandon-mini/.venv/bin/python",
+  "/home/ubuntu/ntransformer-h100/training/gradient-buckets-20261015-r2/source-snapshot/scripts/compare_training_experiment.py",
+  "--reference",
+  "/home/ubuntu/ntransformer-h100/training/difference-review-20261013/deterministic-reference",
+  "--candidate",
+  "/home/ubuntu/ntransformer-h100/training/gradient-buckets-20261015-r2/strict-control-repeat",
+  "--source-checkpoint",
+  "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/pretrain/last.pt",
+  "--output",
+  "/home/ubuntu/ntransformer-h100/training/gradient-buckets-20261015-r2/strict-control-repeat-comparison.json",
+  "--require-exact"
+]

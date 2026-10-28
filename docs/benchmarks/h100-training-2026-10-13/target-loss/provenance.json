@@ -1,0 +1,8 @@
+{
+  "library_sha256": "a7359a4d920f4217433ccefa5f7c6a3fd2a3504a5abb013710b29294fb233092",
+  "source_checkpoint": "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/pretrain/last.pt",
+  "source_checkpoint_sha256": "c2d96fa49ba170246c4be6c017ac84321460379d2295472e5a46708094af7764",
+  "throughput_scope": "100 updates, offsets 10..99; continuous window includes data, audit, communication and logging",
+  "profile_scope": "Separate 13-update runs, active offsets 11 and 12; not throughput benchmarks",
+  "tests_scope": "Exact fused primitive, mask/shift and tied full-model gradient tests; stream gradient gate retained even when failed; not a new SFT quality evaluation"
+}

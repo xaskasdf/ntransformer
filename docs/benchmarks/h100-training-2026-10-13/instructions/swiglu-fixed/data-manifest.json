@@ -1,0 +1,32 @@
+{
+  "tokenizer_sha256": "c6808ff86d9b1422aa1ef5d0adb3cde5d993e870a4387fcd2a16a119083caae0",
+  "sources": [],
+  "instructions": {
+    "name": "verified-text-distillation-pilot-v1",
+    "files": {
+      "train": {
+        "path": "train.jsonl",
+        "sha256": "52e821caf20a78ce9d2a8f9d00720e6bd2ee871cff93044c2bf31b757e6fe953",
+        "examples": 391
+      },
+      "validation": {
+        "path": "validation.jsonl",
+        "sha256": "47922a4193403d4356fe3d0c0ce793c919586cbb402bfad2612212d5e4dfb348",
+        "examples": 78
+      }
+    }
+  },
+  "report_sha256": "57f537188b74598d9a1ac83f664dad4b6f8e16dc536b49c3f44c522a2676c239",
+  "student_tokenization": {
+    "train": {
+      "max_tokens": 104,
+      "tokens": 34268,
+      "supervised_tokens": 4709
+    },
+    "validation": {
+      "max_tokens": 105,
+      "tokens": 7116,
+      "supervised_tokens": 1066
+    }
+  }
+}

@@ -1,0 +1,300 @@
+{
+  "model": [
+    {
+      "mode": "reference",
+      "loss": 2.9799654483795166,
+      "relative": 0.0,
+      "differing_parameters": 0,
+      "worst": []
+    },
+    {
+      "mode": "swiglu",
+      "loss": 2.9799654483795166,
+      "relative": 0.0,
+      "differing_parameters": 0,
+      "worst": []
+    },
+    {
+      "mode": "norms",
+      "loss": 2.9818408489227295,
+      "relative": 0.019633865153433322,
+      "differing_parameters": 272,
+      "worst": [
+        {
+          "name": "layers.2.attention_norm.weight",
+          "relative": 0.07421035464632965
+        },
+        {
+          "name": "layers.9.ffn_norm.weight",
+          "relative": 0.046326273734270174
+        },
+        {
+          "name": "layers.10.attention_norm.weight",
+          "relative": 0.04390557669470734
+        },
+        {
+          "name": "layers.3.attention_norm.weight",
+          "relative": 0.041275798095376286
+        },
+        {
+          "name": "layers.1.attention_norm.weight",
+          "relative": 0.03542050296191463
+        },
+        {
+          "name": "layers.4.attention.wq.weight",
+          "relative": 0.02928848671533658
+        },
+        {
+          "name": "layers.12.attention.wk.weight",
+          "relative": 0.02925045530437572
+        },
+        {
+          "name": "layers.4.attention.wk.weight",
+          "relative": 0.029226113611171993
+        }
+      ]
+    }
+  ],
+  "primitives": [
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        0,
+        0
+      ],
+      "examples": []
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        0,
+        0
+      ],
+      "examples": []
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        0,
+        0
+      ],
+      "examples": []
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        0,
+        0
+      ],
+      "examples": []
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        0,
+        0
+      ],
+      "examples": []
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        0,
+        0
+      ],
+      "examples": []
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        0,
+        0
+      ],
+      "examples": []
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        0,
+        0
+      ],
+      "examples": []
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        0,
+        0
+      ],
+      "examples": []
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        0,
+        0
+      ],
+      "examples": []
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        0,
+        0
+      ],
+      "examples": []
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        0,
+        0
+      ],
+      "examples": []
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        0,
+        0
+      ],
+      "examples": []
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        0,
+        0
+      ],
+      "examples": []
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        0,
+        0
+      ],
+      "examples": []
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        0,
+        0
+      ],
+      "examples": []
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        0,
+        0
+      ],
+      "examples": []
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        0,
+        0
+      ],
+      "examples": []
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        0,
+        0
+      ],
+      "examples": []
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        0,
+        0
+      ],
+      "examples": []
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        0,
+        0
+      ],
+      "examples": []
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        0,
+        0
+      ],
+      "examples": []
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        0,
+        0
+      ],
+      "examples": []
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        0,
+        0
+      ],
+      "examples": []
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        0,
+        0
+      ],
+      "examples": []
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        0,
+        0
+      ],
+      "examples": []
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        0,
+        0
+      ],
+      "examples": []
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        0,
+        0
+      ],
+      "examples": []
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        0,
+        0
+      ],
+      "examples": []
+    },
+    {
+      "forward_mismatches": 0,
+      "backward_mismatches": [
+        0,
+        0
+      ],
+      "examples": []
+    }
+  ]
+}

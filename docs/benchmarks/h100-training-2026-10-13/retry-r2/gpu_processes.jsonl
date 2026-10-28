@@ -1,0 +1,653 @@
+{"time": 1791927417.4532936, "stage": "validate", "processes": []}
+{"time": 1791927421.0274224, "stage": "validate", "processes": []}
+{"time": 1791927423.4768493, "stage": "validate", "processes": ["44961, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 522"]}
+{"time": 1791927424.00192, "stage": "validate", "processes": ["44961, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 708"]}
+{"time": 1791927424.5269501, "stage": "validate", "processes": ["44961, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 708"]}
+{"time": 1791927425.0525815, "stage": "validate", "processes": ["44961, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 708"]}
+{"time": 1791927425.578207, "stage": "validate", "processes": ["44961, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 708"]}
+{"time": 1791927426.102935, "stage": "validate", "processes": ["44961, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 708"]}
+{"time": 1791927426.6275122, "stage": "validate", "processes": ["44961, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1810"]}
+{"time": 1791927427.1528428, "stage": "validate", "processes": ["44961, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 2576"]}
+{"time": 1791927427.6785052, "stage": "validate", "processes": ["44961, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 2576"]}
+{"time": 1791927428.203315, "stage": "validate", "processes": ["44961, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 2576"]}
+{"time": 1791927428.7282388, "stage": "validate", "processes": ["44961, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 2578"]}
+{"time": 1791927429.2530153, "stage": "validate", "processes": ["44961, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 2578"]}
+{"time": 1791927429.7781758, "stage": "validate", "processes": ["44961, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 2578", "44961, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 14"]}
+{"time": 1791927430.3159368, "stage": "validate", "processes": ["44961, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 2578", "44961, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 524"]}
+{"time": 1791927430.8413806, "stage": "validate", "processes": ["44961, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 2578", "44961, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 524"]}
+{"time": 1791927431.3668768, "stage": "validate", "processes": ["44961, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 2620", "44961, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 524"]}
+{"time": 1791927431.8917403, "stage": "validate", "processes": ["44961, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 2644", "44961, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 524"]}
+{"time": 1791927432.4174454, "stage": "validate", "processes": ["44961, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 2644", "44961, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 524"]}
+{"time": 1791927432.9433703, "stage": "validate", "processes": ["44961, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 2644", "44961, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 524"]}
+{"time": 1791927433.4684649, "stage": "validate", "processes": ["44961, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 2644", "44961, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 524"]}
+{"time": 1791927433.99402, "stage": "validate", "processes": ["44961, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 2644", "44961, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 524"]}
+{"time": 1791927434.5196066, "stage": "validate", "processes": ["44961, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 2644", "44961, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 524"]}
+{"time": 1791927435.0448604, "stage": "validate", "processes": ["44961, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 2644", "44961, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 524"]}
+{"time": 1791927435.570534, "stage": "validate", "processes": ["44961, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 2644", "44961, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 524"]}
+{"time": 1791927436.0955327, "stage": "validate", "processes": []}
+{"time": 1791927442.5842524, "stage": "preflight-reference", "processes": []}
+{"time": 1791927444.8089652, "stage": "preflight-reference", "processes": []}
+{"time": 1791927445.333234, "stage": "preflight-reference", "processes": []}
+{"time": 1791927445.85793, "stage": "preflight-reference", "processes": ["45125, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 14", "45126, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 14"]}
+{"time": 1791927446.4271164, "stage": "preflight-reference", "processes": ["45125, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 720", "45126, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 720"]}
+{"time": 1791927446.952533, "stage": "preflight-reference", "processes": ["45125, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1490", "45126, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1490"]}
+{"time": 1791927447.4782743, "stage": "preflight-reference", "processes": ["45125, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1490", "45126, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1490"]}
+{"time": 1791927448.003523, "stage": "preflight-reference", "processes": ["45125, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1490", "45126, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1490"]}
+{"time": 1791927448.5285885, "stage": "preflight-reference", "processes": ["45125, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1490", "45126, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1490"]}
+{"time": 1791927449.0534422, "stage": "preflight-reference", "processes": ["45125, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1490", "45126, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1490"]}
+{"time": 1791927449.5783541, "stage": "preflight-reference", "processes": ["45125, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1918", "45126, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1918"]}
+{"time": 1791927450.1037412, "stage": "preflight-reference", "processes": ["45125, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1918", "45126, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1918"]}
+{"time": 1791927450.6286495, "stage": "preflight-reference", "processes": ["45125, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 3584", "45126, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 3584"]}
+{"time": 1791927451.1547165, "stage": "preflight-reference", "processes": ["45125, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4956", "45126, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 4956"]}
+{"time": 1791927451.6840768, "stage": "preflight-reference", "processes": ["45125, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 20014", "45126, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 20014"]}
+{"time": 1791927452.21466, "stage": "preflight-reference", "processes": ["45125, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 21068", "45126, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 21068"]}
+{"time": 1791927452.7452362, "stage": "preflight-reference", "processes": ["45125, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 21068", "45126, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 21068"]}
+{"time": 1791927453.2716622, "stage": "preflight-reference", "processes": ["45125, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 21068", "45126, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 21068"]}
+{"time": 1791927453.7978826, "stage": "preflight-reference", "processes": ["45125, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 20550", "45126, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 20550"]}
+{"time": 1791927454.3237877, "stage": "preflight-reference", "processes": ["45125, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 20550", "45126, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 20550"]}
+{"time": 1791927454.9568052, "stage": "preflight-reference", "processes": []}
+{"time": 1791927459.1471858, "stage": "preflight-peer", "processes": []}
+{"time": 1791927463.590119, "stage": "preflight-peer", "processes": []}
+{"time": 1791927464.1144238, "stage": "preflight-peer", "processes": []}
+{"time": 1791927464.638966, "stage": "preflight-peer", "processes": []}
+{"time": 1791927465.1663654, "stage": "preflight-peer", "processes": ["45313, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 664", "45314, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 664"]}
+{"time": 1791927465.691877, "stage": "preflight-peer", "processes": ["45313, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1490", "45314, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1490"]}
+{"time": 1791927466.2175674, "stage": "preflight-peer", "processes": ["45313, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1490", "45314, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1490"]}
+{"time": 1791927466.7430038, "stage": "preflight-peer", "processes": ["45313, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1490", "45314, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1490"]}
+{"time": 1791927467.2684307, "stage": "preflight-peer", "processes": ["45313, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1490", "45314, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1490"]}
+{"time": 1791927467.7934728, "stage": "preflight-peer", "processes": ["45313, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1490", "45314, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1490"]}
+{"time": 1791927468.3190732, "stage": "preflight-peer", "processes": ["45313, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1918", "45314, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1918"]}
+{"time": 1791927468.8449407, "stage": "preflight-peer", "processes": ["45313, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1918", "45314, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1918"]}
+{"time": 1791927469.3700693, "stage": "preflight-peer", "processes": ["45313, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 2754", "45314, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 24", "45313, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 32", "45314, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 2754"]}
+{"time": 1791927469.914069, "stage": "preflight-peer", "processes": ["45313, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 3730", "45314, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "45313, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "45314, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 3730"]}
+{"time": 1791927470.4401186, "stage": "preflight-peer", "processes": ["45313, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5494", "45314, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "45313, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "45314, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 4982"]}
+{"time": 1791927470.9693198, "stage": "preflight-peer", "processes": ["45313, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6108", "45314, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "45313, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "45314, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6108"]}
+{"time": 1791927471.4984932, "stage": "preflight-peer", "processes": ["45313, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6108", "45314, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "45313, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "45314, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6108"]}
+{"time": 1791927472.0260785, "stage": "preflight-peer", "processes": ["45313, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6108", "45314, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "45313, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "45314, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6108"]}
+{"time": 1791927472.5518842, "stage": "preflight-peer", "processes": ["45313, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6108", "45314, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "45313, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "45314, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6108"]}
+{"time": 1791927473.077234, "stage": "preflight-peer", "processes": ["45313, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5590", "45314, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "45313, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "45314, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 5590"]}
+{"time": 1791927473.61566, "stage": "preflight-peer", "processes": ["45313, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5590", "45314, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "45313, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "45314, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 5590"]}
+{"time": 1791927474.141941, "stage": "preflight-peer", "processes": []}
+{"time": 1791927474.667181, "stage": "preflight-peer", "processes": []}
+{"time": 1791927478.6512504, "stage": "compare-preflight", "processes": []}
+{"time": 1791927482.2898874, "stage": "ddp-reference", "processes": []}
+{"time": 1791927485.241339, "stage": "ddp-reference", "processes": []}
+{"time": 1791927485.7661245, "stage": "ddp-reference", "processes": []}
+{"time": 1791927486.290932, "stage": "ddp-reference", "processes": []}
+{"time": 1791927486.8154254, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 612", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 612"]}
+{"time": 1791927487.340796, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1490", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1490"]}
+{"time": 1791927487.8663788, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1490", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1490"]}
+{"time": 1791927488.3916502, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1490", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1490"]}
+{"time": 1791927488.9169364, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1490", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1490"]}
+{"time": 1791927489.442037, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1490", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1490"]}
+{"time": 1791927489.9668393, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1918", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1918"]}
+{"time": 1791927490.4930606, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1918", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1918"]}
+{"time": 1791927491.0184896, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 3584", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 3584"]}
+{"time": 1791927491.5445662, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4956", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 4956"]}
+{"time": 1791927492.0741944, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 20556", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 20556"]}
+{"time": 1791927492.6038983, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 20556", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 20556"]}
+{"time": 1791927493.1335132, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 20556", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 20556"]}
+{"time": 1791927493.6625433, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 20556", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 20556"]}
+{"time": 1791927494.190699, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 20556", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 20556"]}
+{"time": 1791927494.7191584, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 20556", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 20556"]}
+{"time": 1791927495.2473404, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 20556", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 20556"]}
+{"time": 1791927495.7753146, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 20556", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 20556"]}
+{"time": 1791927496.3038142, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 20556", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 20556"]}
+{"time": 1791927496.8315156, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 20556", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 20556"]}
+{"time": 1791927497.3601105, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 20556", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 20556"]}
+{"time": 1791927497.888716, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 20556", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 20556"]}
+{"time": 1791927498.4172819, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 20556", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 20556"]}
+{"time": 1791927498.9458218, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 20556", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 20556"]}
+{"time": 1791927499.4736235, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 20556", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 20556"]}
+{"time": 1791927500.0016377, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 20556", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 20556"]}
+{"time": 1791927500.5288014, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 20556", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 20556"]}
+{"time": 1791927501.0572834, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 20556", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 20556"]}
+{"time": 1791927501.5857308, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 20556", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 20556"]}
+{"time": 1791927502.1145542, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 20556", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 20556"]}
+{"time": 1791927502.6441624, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 20556", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 20556"]}
+{"time": 1791927503.1722069, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 20556", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 20556"]}
+{"time": 1791927503.700053, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 20556", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 20556"]}
+{"time": 1791927504.2283814, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 20556", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 20556"]}
+{"time": 1791927504.756755, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 20556", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 20556"]}
+{"time": 1791927505.2851653, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 20556", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 20556"]}
+{"time": 1791927505.8132586, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 20556", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 20556"]}
+{"time": 1791927506.341617, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 20556", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 20556"]}
+{"time": 1791927506.869683, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 20556", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 20556"]}
+{"time": 1791927507.3990886, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 20556", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 20556"]}
+{"time": 1791927507.9275854, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 20556", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 20556"]}
+{"time": 1791927508.4560573, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 20556", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 20556"]}
+{"time": 1791927508.9840457, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 20556", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 20556"]}
+{"time": 1791927509.5121133, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 20556", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 20556"]}
+{"time": 1791927510.041076, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 20556", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 20556"]}
+{"time": 1791927510.5698755, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 20556", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 20556"]}
+{"time": 1791927511.0982146, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 20556", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 20556"]}
+{"time": 1791927511.626225, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 20556", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 20556"]}
+{"time": 1791927512.1556048, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 20556", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 20556"]}
+{"time": 1791927512.684057, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 20556", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 20556"]}
+{"time": 1791927513.2121973, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 20556", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 20556"]}
+{"time": 1791927513.739155, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 20556", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 20556"]}
+{"time": 1791927514.2668781, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 20556", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 20556"]}
+{"time": 1791927514.791968, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 20556", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 20556"]}
+{"time": 1791927515.317653, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 20268", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 20268"]}
+{"time": 1791927515.8435278, "stage": "ddp-reference", "processes": ["45470, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 20038", "45471, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 20038"]}
+{"time": 1791927516.3693032, "stage": "ddp-reference", "processes": []}
+{"time": 1791927516.8946958, "stage": "ddp-reference", "processes": []}
+{"time": 1791927520.2986813, "stage": "ddp-native", "processes": []}
+{"time": 1791927520.8232234, "stage": "ddp-native", "processes": []}
+{"time": 1791927521.3478937, "stage": "ddp-native", "processes": []}
+{"time": 1791927521.872542, "stage": "ddp-native", "processes": ["45656, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 612", "45657, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 612"]}
+{"time": 1791927522.3979182, "stage": "ddp-native", "processes": ["45656, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1490", "45657, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1490"]}
+{"time": 1791927522.9239852, "stage": "ddp-native", "processes": ["45656, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1490", "45657, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1490"]}
+{"time": 1791927523.4496698, "stage": "ddp-native", "processes": ["45656, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1490", "45657, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1490"]}
+{"time": 1791927523.9752645, "stage": "ddp-native", "processes": ["45656, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1490", "45657, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1490"]}
+{"time": 1791927524.5004468, "stage": "ddp-native", "processes": ["45656, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1490", "45657, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1490"]}
+{"time": 1791927525.0255535, "stage": "ddp-native", "processes": ["45656, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1918", "45657, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1918"]}
+{"time": 1791927525.5519848, "stage": "ddp-native", "processes": ["45656, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1918", "45657, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1918"]}
+{"time": 1791927526.077076, "stage": "ddp-native", "processes": ["45656, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 3584", "45657, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 3584"]}
+{"time": 1791927526.602676, "stage": "ddp-native", "processes": ["45656, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4910", "45657, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 4910"]}
+{"time": 1791927527.1316366, "stage": "ddp-native", "processes": ["45656, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 16986", "45657, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 16986"]}
+{"time": 1791927527.6590092, "stage": "ddp-native", "processes": ["45656, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 17498", "45657, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 17498"]}
+{"time": 1791927528.1876328, "stage": "ddp-native", "processes": ["45656, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 17498", "45657, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 17498"]}
+{"time": 1791927528.7156806, "stage": "ddp-native", "processes": ["45656, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 17498", "45657, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 17498"]}
+{"time": 1791927529.2431302, "stage": "ddp-native", "processes": ["45656, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 17498", "45657, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 17498"]}
+{"time": 1791927529.7699316, "stage": "ddp-native", "processes": ["45656, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 17498", "45657, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 17498"]}
+{"time": 1791927530.298072, "stage": "ddp-native", "processes": ["45656, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 17498", "45657, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 17498"]}
+{"time": 1791927530.8252647, "stage": "ddp-native", "processes": ["45656, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 17498", "45657, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 17498"]}
+{"time": 1791927531.3530135, "stage": "ddp-native", "processes": ["45656, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 17498", "45657, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 17498"]}
+{"time": 1791927531.8808663, "stage": "ddp-native", "processes": ["45656, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 17498", "45657, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 17498"]}
+{"time": 1791927532.408557, "stage": "ddp-native", "processes": ["45656, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 17498", "45657, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 17498"]}
+{"time": 1791927532.9357991, "stage": "ddp-native", "processes": ["45656, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 17498", "45657, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 17498"]}
+{"time": 1791927533.463815, "stage": "ddp-native", "processes": ["45656, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 17498", "45657, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 17498"]}
+{"time": 1791927533.9912956, "stage": "ddp-native", "processes": ["45656, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 17498", "45657, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 17498"]}
+{"time": 1791927534.5190125, "stage": "ddp-native", "processes": ["45656, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 17498", "45657, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 17498"]}
+{"time": 1791927535.0461986, "stage": "ddp-native", "processes": ["45656, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 17498", "45657, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 17498"]}
+{"time": 1791927535.5738993, "stage": "ddp-native", "processes": ["45656, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 17498", "45657, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 17498"]}
+{"time": 1791927536.101391, "stage": "ddp-native", "processes": ["45656, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 17498", "45657, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 17498"]}
+{"time": 1791927536.628547, "stage": "ddp-native", "processes": ["45656, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 17498", "45657, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 17498"]}
+{"time": 1791927537.155281, "stage": "ddp-native", "processes": ["45656, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 17498", "45657, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 17498"]}
+{"time": 1791927537.6892807, "stage": "ddp-native", "processes": ["45656, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 17498", "45657, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 17498"]}
+{"time": 1791927538.2174413, "stage": "ddp-native", "processes": ["45656, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 17498", "45657, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 17498"]}
+{"time": 1791927538.7448103, "stage": "ddp-native", "processes": ["45656, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 17498", "45657, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 17498"]}
+{"time": 1791927539.2727518, "stage": "ddp-native", "processes": ["45656, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 17498", "45657, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 17498"]}
+{"time": 1791927539.8015444, "stage": "ddp-native", "processes": ["45656, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 17498", "45657, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 17498"]}
+{"time": 1791927540.3294692, "stage": "ddp-native", "processes": ["45656, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 17498", "45657, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 17498"]}
+{"time": 1791927540.857095, "stage": "ddp-native", "processes": ["45656, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 17498", "45657, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 17498"]}
+{"time": 1791927541.3842986, "stage": "ddp-native", "processes": ["45656, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 17498", "45657, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 17498"]}
+{"time": 1791927541.9121232, "stage": "ddp-native", "processes": ["45656, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 17498", "45657, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 17498"]}
+{"time": 1791927542.4400184, "stage": "ddp-native", "processes": ["45656, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 17498", "45657, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 17498"]}
+{"time": 1791927542.967637, "stage": "ddp-native", "processes": ["45656, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 17498", "45657, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 17498"]}
+{"time": 1791927543.4957824, "stage": "ddp-native", "processes": ["45656, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 17498", "45657, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 17498"]}
+{"time": 1791927544.0237253, "stage": "ddp-native", "processes": ["45656, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 17498", "45657, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 17498"]}
+{"time": 1791927544.5510898, "stage": "ddp-native", "processes": ["45656, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 17498", "45657, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 17498"]}
+{"time": 1791927545.0780709, "stage": "ddp-native", "processes": ["45656, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 17498", "45657, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 17498"]}
+{"time": 1791927545.6042917, "stage": "ddp-native", "processes": ["45656, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 17498", "45657, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 17498"]}
+{"time": 1791927546.12992, "stage": "ddp-native", "processes": ["45656, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 16980", "45657, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 16980"]}
+{"time": 1791927546.655481, "stage": "ddp-native", "processes": []}
+{"time": 1791927547.180448, "stage": "ddp-native", "processes": []}
+{"time": 1791927550.7283816, "stage": "ddp-checkpoint", "processes": []}
+{"time": 1791927551.255393, "stage": "ddp-checkpoint", "processes": []}
+{"time": 1791927551.7803078, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 14", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 14"]}
+{"time": 1791927552.3536792, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 888", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 904"]}
+{"time": 1791927552.8794475, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1490", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1490"]}
+{"time": 1791927553.4051588, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1490", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1490"]}
+{"time": 1791927553.9309058, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1490", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1490"]}
+{"time": 1791927554.4558945, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1490", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1490"]}
+{"time": 1791927554.980854, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1490", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1490"]}
+{"time": 1791927555.5057673, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1918", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1918"]}
+{"time": 1791927556.0310748, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1918", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1918"]}
+{"time": 1791927556.5560603, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4910", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 4910"]}
+{"time": 1791927557.0842855, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6522", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6522"]}
+{"time": 1791927557.6100755, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 7060", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 7572"]}
+{"time": 1791927558.1385047, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 7060", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 7572"]}
+{"time": 1791927558.6665878, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 7060", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 7572"]}
+{"time": 1791927559.1943738, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 7060", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 7572"]}
+{"time": 1791927559.721501, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 7060", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 7572"]}
+{"time": 1791927560.249336, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 7060", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 7572"]}
+{"time": 1791927560.7765453, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 7060", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 7572"]}
+{"time": 1791927561.3029494, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 7060", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 7572"]}
+{"time": 1791927561.8302596, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 7060", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 7572"]}
+{"time": 1791927562.3570533, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 7060", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 7572"]}
+{"time": 1791927562.884063, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 7060", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 7572"]}
+{"time": 1791927563.4108346, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 7060", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 7572"]}
+{"time": 1791927563.9381285, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 7060", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 7572"]}
+{"time": 1791927564.4653413, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 7060", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 7572"]}
+{"time": 1791927564.9913814, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 7060", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 7572"]}
+{"time": 1791927565.5181212, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 7060", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 7572"]}
+{"time": 1791927566.045077, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 7060", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 7572"]}
+{"time": 1791927566.5720658, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 7060", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 7572"]}
+{"time": 1791927567.0991387, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 7060", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 7572"]}
+{"time": 1791927567.6258943, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 7060", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 7572"]}
+{"time": 1791927568.1528673, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 7060", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 7572"]}
+{"time": 1791927568.679554, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 7060", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 7572"]}
+{"time": 1791927569.2070017, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 7060", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 7572"]}
+{"time": 1791927569.734583, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 7060", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 7572"]}
+{"time": 1791927570.2621186, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 7060", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 7572"]}
+{"time": 1791927570.7895906, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 7060", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 7572"]}
+{"time": 1791927571.3166945, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 7060", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 7572"]}
+{"time": 1791927571.8427944, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 7060", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 7572"]}
+{"time": 1791927572.3695462, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 7060", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 7572"]}
+{"time": 1791927572.8961961, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 7060", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 7572"]}
+{"time": 1791927573.4227793, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 7060", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 7572"]}
+{"time": 1791927573.9496164, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 7060", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 7572"]}
+{"time": 1791927574.4771152, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 7060", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 7572"]}
+{"time": 1791927575.0046854, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 7060", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 7572"]}
+{"time": 1791927575.5320075, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 7060", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 7572"]}
+{"time": 1791927576.0589738, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 7060", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 7572"]}
+{"time": 1791927576.5859222, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 7060", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 7572"]}
+{"time": 1791927577.1127841, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 7060", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 7572"]}
+{"time": 1791927577.639328, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 7060", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 7572"]}
+{"time": 1791927578.1663857, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 7060", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 7572"]}
+{"time": 1791927578.693329, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 7060", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 7572"]}
+{"time": 1791927579.2200239, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 7060", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 7572"]}
+{"time": 1791927579.7511451, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 7060", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 7572"]}
+{"time": 1791927580.2791147, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 7060", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 7572"]}
+{"time": 1791927580.8043773, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 7060", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 7572"]}
+{"time": 1791927581.329901, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6772", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 7284"]}
+{"time": 1791927581.8546839, "stage": "ddp-checkpoint", "processes": ["45820, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6542", "45821, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 7054"]}
+{"time": 1791927582.380179, "stage": "ddp-checkpoint", "processes": []}
+{"time": 1791927582.9048884, "stage": "ddp-checkpoint", "processes": []}
+{"time": 1791927587.1886992, "stage": "ddp-peer", "processes": []}
+{"time": 1791927591.6230726, "stage": "ddp-peer", "processes": []}
+{"time": 1791927592.1479805, "stage": "ddp-peer", "processes": []}
+{"time": 1791927592.6728368, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 14", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 14"]}
+{"time": 1791927593.238455, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 946", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 944"]}
+{"time": 1791927593.763236, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1490", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1490"]}
+{"time": 1791927594.2891464, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1490", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1490"]}
+{"time": 1791927594.8148022, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1490", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1490"]}
+{"time": 1791927595.339988, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1490", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1490"]}
+{"time": 1791927595.8647873, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1490", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1490"]}
+{"time": 1791927596.3896875, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1918", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1918"]}
+{"time": 1791927596.9150598, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1918", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1918"]}
+{"time": 1791927597.439942, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 3656", "46030, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "46029, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 3656"]}
+{"time": 1791927597.9654605, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4982", "46030, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "46029, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 4982"]}
+{"time": 1791927598.4944186, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6108", "46030, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "46029, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6108"]}
+{"time": 1791927599.020325, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6620", "46030, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "46029, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6620"]}
+{"time": 1791927599.548639, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6620", "46030, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "46029, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6620"]}
+{"time": 1791927600.0763345, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6620", "46030, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "46029, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6620"]}
+{"time": 1791927600.6041772, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6620", "46030, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "46029, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6620"]}
+{"time": 1791927601.1323905, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6620", "46030, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "46029, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6620"]}
+{"time": 1791927601.6599152, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6620", "46030, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "46029, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6620"]}
+{"time": 1791927602.1877975, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6620", "46030, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "46029, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6620"]}
+{"time": 1791927602.714733, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6620", "46030, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "46029, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6620"]}
+{"time": 1791927603.2419236, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6620", "46030, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "46029, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6620"]}
+{"time": 1791927603.7690337, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6620", "46030, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "46029, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6620"]}
+{"time": 1791927604.2954156, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6620", "46030, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "46029, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6620"]}
+{"time": 1791927604.822556, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6620", "46030, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "46029, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6620"]}
+{"time": 1791927605.3507707, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6620", "46030, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "46029, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6620"]}
+{"time": 1791927605.8777945, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6620", "46030, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "46029, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6620"]}
+{"time": 1791927606.404998, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6620", "46030, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "46029, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6620"]}
+{"time": 1791927606.9320877, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6620", "46030, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "46029, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6620"]}
+{"time": 1791927607.4595423, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6620", "46030, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "46029, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6620"]}
+{"time": 1791927607.9868886, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6620", "46030, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "46029, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6620"]}
+{"time": 1791927608.5138319, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6620", "46030, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "46029, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6620"]}
+{"time": 1791927609.0403917, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6620", "46030, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "46029, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6620"]}
+{"time": 1791927609.566398, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6620", "46030, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "46029, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6620"]}
+{"time": 1791927610.0940647, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6620", "46030, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "46029, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6620"]}
+{"time": 1791927610.6216245, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6620", "46030, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "46029, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6620"]}
+{"time": 1791927611.1488888, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6620", "46030, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "46029, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6620"]}
+{"time": 1791927611.676388, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6620", "46030, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "46029, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6620"]}
+{"time": 1791927612.2051606, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6620", "46030, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "46029, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6620"]}
+{"time": 1791927612.7326999, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6620", "46030, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "46029, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6620"]}
+{"time": 1791927613.259889, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6620", "46030, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "46029, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6620"]}
+{"time": 1791927613.7866943, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6620", "46030, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "46029, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6620"]}
+{"time": 1791927614.3138084, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6620", "46030, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "46029, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6620"]}
+{"time": 1791927614.8412256, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6620", "46030, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "46029, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6620"]}
+{"time": 1791927615.3685606, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6620", "46030, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "46029, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6620"]}
+{"time": 1791927615.898984, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6620", "46030, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "46029, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6620"]}
+{"time": 1791927616.4270144, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6620", "46030, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "46029, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6620"]}
+{"time": 1791927616.9544766, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6620", "46030, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "46029, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6620"]}
+{"time": 1791927617.4819224, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6620", "46030, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "46029, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6620"]}
+{"time": 1791927618.0099459, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6620", "46030, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "46029, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6620"]}
+{"time": 1791927618.5371761, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6620", "46030, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "46029, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6620"]}
+{"time": 1791927619.0642273, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6620", "46030, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "46029, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6620"]}
+{"time": 1791927619.5909672, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6620", "46030, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "46029, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6620"]}
+{"time": 1791927620.1180007, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6620", "46030, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "46029, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6620"]}
+{"time": 1791927620.6457076, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6620", "46030, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "46029, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6620"]}
+{"time": 1791927621.1734154, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6620", "46030, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "46029, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6620"]}
+{"time": 1791927621.7004972, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6620", "46030, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "46029, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6620"]}
+{"time": 1791927622.2255142, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6620", "46030, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "46029, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6620"]}
+{"time": 1791927622.7510915, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6332", "46030, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1886", "46029, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1886", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6332"]}
+{"time": 1791927623.2758954, "stage": "ddp-peer", "processes": ["46029, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 6102", "46030, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1598", "46029, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598", "46030, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 6102"]}
+{"time": 1791927623.8014152, "stage": "ddp-peer", "processes": []}
+{"time": 1791927624.3457475, "stage": "ddp-peer", "processes": []}
+{"time": 1791927630.9505236, "stage": "single-checkpoint", "processes": []}
+{"time": 1791927633.2023025, "stage": "single-checkpoint", "processes": []}
+{"time": 1791927633.7267883, "stage": "single-checkpoint", "processes": []}
+{"time": 1791927634.2516413, "stage": "single-checkpoint", "processes": []}
+{"time": 1791927634.7765274, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 518"]}
+{"time": 1791927635.3017967, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 518"]}
+{"time": 1791927635.8267488, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 518"]}
+{"time": 1791927636.3517709, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 518"]}
+{"time": 1791927636.8760831, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 948"]}
+{"time": 1791927637.4013438, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 948"]}
+{"time": 1791927637.9260614, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 2082"]}
+{"time": 1791927638.4510775, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 3648"]}
+{"time": 1791927638.9778652, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 3648"]}
+{"time": 1791927639.5034468, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927640.0296912, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927640.55615, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927641.0822043, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927641.6083796, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927642.1338642, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927642.6590886, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927643.184379, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927643.7113168, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927644.2385273, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927644.7662, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927645.2936292, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927645.8208086, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927646.348644, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927646.87683, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927647.404458, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927647.9327729, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927648.460009, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927648.986863, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927649.5137212, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927650.0410798, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927650.5680838, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927651.0950634, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927651.6220093, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927652.1506758, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927652.6779225, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927653.2055266, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927653.7328284, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927654.260647, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927654.7880497, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927655.3162494, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927655.8435924, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927656.3707597, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927656.8977873, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927657.4250398, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927657.951904, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927658.4814897, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927659.0086386, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927659.5354676, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927660.0634573, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927660.5972767, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927661.1252582, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927661.6529126, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927662.1805296, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927662.7080364, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927663.2344441, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927663.7614574, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927664.2885425, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927664.8155808, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927665.3426723, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927665.8704417, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927666.3973587, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927666.9248955, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927667.4523041, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927667.9799957, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927668.5071692, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927669.034518, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927669.5612702, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927670.0890608, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927670.615852, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927671.1429617, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927671.6699207, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927672.1962466, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927672.7235503, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927673.250487, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927673.7772918, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927674.3040776, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927674.8312414, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927675.358234, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927675.8853757, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927676.4125733, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927676.9399564, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927677.4675455, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927677.9946513, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927678.5215156, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927679.0484705, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927679.575226, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927680.1020217, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927680.6286957, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927681.1555243, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927681.682195, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927682.2088573, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927682.735964, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927683.263064, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927683.7892902, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927684.3150406, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927684.8416948, "stage": "single-checkpoint", "processes": ["46245, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5796"]}
+{"time": 1791927685.368251, "stage": "single-checkpoint", "processes": []}
+{"time": 1791927685.9090252, "stage": "single-checkpoint", "processes": []}
+{"time": 1791927690.27816, "stage": "single-peer", "processes": []}
+{"time": 1791927694.7055614, "stage": "single-peer", "processes": []}
+{"time": 1791927695.2305596, "stage": "single-peer", "processes": []}
+{"time": 1791927695.7554467, "stage": "single-peer", "processes": []}
+{"time": 1791927696.2825363, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 518"]}
+{"time": 1791927696.807497, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 518"]}
+{"time": 1791927697.3325756, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 518"]}
+{"time": 1791927697.8574107, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 518"]}
+{"time": 1791927698.3822505, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 948"]}
+{"time": 1791927698.9069417, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 948"]}
+{"time": 1791927699.4311936, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 1926", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927699.956561, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 3790", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927700.4835405, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 3790", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927701.0100749, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927701.5371149, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927702.0640821, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927702.5903797, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927703.1164465, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927703.642883, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927704.1686447, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927704.694546, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927705.2208245, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927705.7471807, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927706.27314, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927706.8000908, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927707.3264437, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927707.8530998, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927708.3789556, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927708.9048953, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927709.4307642, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927709.956314, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927710.4821522, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927711.007515, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927711.5333743, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927712.0593452, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927712.5853875, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927713.1107943, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927713.6365767, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927714.1630592, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927714.6895576, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927715.2164145, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927715.7432702, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927716.269845, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927716.7959387, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927717.3221962, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927717.849086, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927718.3750637, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927718.9011455, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927719.4275649, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927719.9537325, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927720.4797077, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927721.0054631, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927721.5319383, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927722.0581348, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927722.584233, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927723.110674, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927723.635897, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927724.161785, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927724.6876075, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927725.2141917, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927725.7402537, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927726.2666752, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927726.7929833, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927727.3187878, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927727.8444717, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927728.370176, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927728.8957567, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927729.4215596, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927729.947354, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927730.472951, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927730.999089, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927731.5246735, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927732.0503182, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927732.5757165, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927733.1016815, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927733.6274657, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927734.15312, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927734.6789114, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927735.2047472, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927735.7315028, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927736.2581203, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927736.7839546, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927737.3100827, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927737.8362489, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927738.3622954, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927738.8875082, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927739.4127352, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927739.938154, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927740.4636657, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927740.989211, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927741.5153282, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927742.0407975, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927742.566244, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927743.092126, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927743.618647, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927744.1441283, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927744.6694717, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927745.1953359, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927745.7202687, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927746.2452614, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927746.7702076, "stage": "single-peer", "processes": ["46671, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4914", "46671, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927747.2950926, "stage": "single-peer", "processes": []}
+{"time": 1791927747.8201406, "stage": "single-peer", "processes": []}
+{"time": 1791927752.1347725, "stage": "compare-ddp-native", "processes": []}
+{"time": 1791927755.746512, "stage": "compare-ddp-checkpoint", "processes": []}
+{"time": 1791927759.346863, "stage": "compare-ddp-peer", "processes": []}
+{"time": 1791927762.958265, "stage": "compare-ddp-peer", "processes": []}
+{"time": 1791927766.5773714, "stage": "compare-single-checkpoint", "processes": []}
+{"time": 1791927770.1742268, "stage": "compare-single-peer", "processes": []}
+{"time": 1791927773.8077466, "stage": "profile-single-checkpoint", "processes": []}
+{"time": 1791927777.42876, "stage": "profile-single-checkpoint", "processes": []}
+{"time": 1791927781.8396072, "stage": "profile-single-checkpoint", "processes": []}
+{"time": 1791927782.3645706, "stage": "profile-single-checkpoint", "processes": []}
+{"time": 1791927782.8890958, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 518"]}
+{"time": 1791927783.4152725, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 518"]}
+{"time": 1791927783.9404876, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 518"]}
+{"time": 1791927784.4653547, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 518"]}
+{"time": 1791927784.9902542, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 518"]}
+{"time": 1791927785.5155296, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 948"]}
+{"time": 1791927786.0409133, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 948"]}
+{"time": 1791927786.5652537, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 3648"]}
+{"time": 1791927787.0918574, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 3648"]}
+{"time": 1791927787.6180096, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5272"]}
+{"time": 1791927788.1438823, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5810"]}
+{"time": 1791927788.669805, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5810"]}
+{"time": 1791927789.1959305, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5810"]}
+{"time": 1791927789.7210288, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5810"]}
+{"time": 1791927790.2465916, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5810"]}
+{"time": 1791927790.7717671, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5810"]}
+{"time": 1791927791.2966468, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5810"]}
+{"time": 1791927791.821317, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5810"]}
+{"time": 1791927792.346318, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5810"]}
+{"time": 1791927792.8728528, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5810"]}
+{"time": 1791927793.3993294, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5810"]}
+{"time": 1791927793.9259422, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5810"]}
+{"time": 1791927794.4525926, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5810"]}
+{"time": 1791927794.9794278, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5810"]}
+{"time": 1791927795.5064523, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5810"]}
+{"time": 1791927796.0338764, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5810"]}
+{"time": 1791927796.5606625, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5810"]}
+{"time": 1791927797.0869699, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5810"]}
+{"time": 1791927797.6137445, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5810"]}
+{"time": 1791927798.1401308, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5810"]}
+{"time": 1791927798.6664624, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5810"]}
+{"time": 1791927799.1927137, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5810"]}
+{"time": 1791927799.719023, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5810"]}
+{"time": 1791927800.2450578, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5810"]}
+{"time": 1791927800.7715433, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5810"]}
+{"time": 1791927801.2984834, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5810"]}
+{"time": 1791927801.824771, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5810"]}
+{"time": 1791927802.351131, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5810"]}
+{"time": 1791927802.877489, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5810"]}
+{"time": 1791927803.404036, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5810"]}
+{"time": 1791927803.9308567, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5810"]}
+{"time": 1791927804.4576943, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5810"]}
+{"time": 1791927804.9844806, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5810"]}
+{"time": 1791927805.5112891, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5810"]}
+{"time": 1791927806.0383055, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5810"]}
+{"time": 1791927806.5642612, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5810"]}
+{"time": 1791927807.0899506, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5810"]}
+{"time": 1791927807.6156104, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5810"]}
+{"time": 1791927808.141355, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5810"]}
+{"time": 1791927808.667127, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5810"]}
+{"time": 1791927809.1945004, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5810"]}
+{"time": 1791927809.7215319, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5810"]}
+{"time": 1791927810.2482917, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5810"]}
+{"time": 1791927810.7749145, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5810"]}
+{"time": 1791927811.3019824, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5810"]}
+{"time": 1791927811.8284328, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5810"]}
+{"time": 1791927812.3549533, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5810"]}
+{"time": 1791927812.8811312, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5810"]}
+{"time": 1791927813.4075751, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5810"]}
+{"time": 1791927813.9340994, "stage": "profile-single-checkpoint", "processes": ["47180, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 5810"]}
+{"time": 1791927814.4612923, "stage": "profile-single-checkpoint", "processes": []}
+{"time": 1791927817.6267126, "stage": "profile-single-peer", "processes": []}
+{"time": 1791927818.1531441, "stage": "profile-single-peer", "processes": []}
+{"time": 1791927818.6795847, "stage": "profile-single-peer", "processes": []}
+{"time": 1791927819.2057643, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 518"]}
+{"time": 1791927819.732665, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 518"]}
+{"time": 1791927820.2595673, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 518"]}
+{"time": 1791927820.786055, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 518"]}
+{"time": 1791927821.3119917, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 948"]}
+{"time": 1791927821.8383646, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 948"]}
+{"time": 1791927822.36451, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 2054", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927822.8898609, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 3790", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927823.4158912, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 3790", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1598"]}
+{"time": 1791927823.9412074, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927824.4675677, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927824.9941437, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927825.5205684, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927826.0462394, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927826.5715032, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927827.0967534, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927827.62152, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927828.1463313, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927828.67087, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927829.1956682, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927829.72097, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927830.245818, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927830.7705498, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927831.2959979, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927831.821484, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927832.346636, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927832.8714817, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927833.3963087, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927833.9211142, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927834.4456303, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927834.9703653, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927835.4951167, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927836.0194664, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927836.5441616, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927837.0691655, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927837.5940664, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927838.118626, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927838.6432376, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927839.1679432, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927839.6927829, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927840.21762, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927840.742632, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927841.267465, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927841.7924309, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927842.3170562, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927842.8413577, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927843.365366, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927843.8892462, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927844.4130585, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927844.9369085, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927845.4631035, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927845.9880064, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927846.5131404, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927847.0381145, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927847.5635023, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927848.088361, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927848.613082, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927849.1377144, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927849.6626172, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927850.1874325, "stage": "profile-single-peer", "processes": ["47592, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, 4928", "47592, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, 1612"]}
+{"time": 1791927850.712675, "stage": "profile-single-peer", "processes": []}
+{"time": 1791927851.238061, "stage": "profile-single-peer", "processes": []}

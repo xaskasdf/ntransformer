@@ -1,0 +1,27 @@
+{
+  "status": "passed",
+  "reference": "/home/ubuntu/ntransformer-h100/training/fused-rope-20261014/normal-control",
+  "candidate": "/home/ubuntu/ntransformer-h100/training/fused-rope-20261014/normal-rope",
+  "paired_throughput_ratio": 1.054501201864974,
+  "historical_throughput_ratio": 1.2362849453697133,
+  "historical_ratio_scope": "Descriptive only: separate initialization and instrumentation",
+  "max_training_loss_delta": 0.00017642974853515625,
+  "final_validation_delta": 2.734363079071045e-05,
+  "relative_update_difference": 0.017138907967632254,
+  "max_weight_difference": 0.0003225468099117279,
+  "updated_tensors": 273,
+  "total_tensors": 273,
+  "exact": {
+    "model_state_dict": false,
+    "optimizer_states": false,
+    "rng_states": true,
+    "recorded_metrics": false,
+    "validation": false
+  },
+  "require_exact": false,
+  "limits": {
+    "training_loss": 0.03,
+    "validation_loss": 0.02,
+    "relative_update_difference": 0.1
+  }
+}

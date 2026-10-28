@@ -1,0 +1,67 @@
+{
+  "checkpoint": "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/pretrain/last.pt",
+  "checkpoint_sha256": "c2d96fa49ba170246c4be6c017ac84321460379d2295472e5a46708094af7764",
+  "manifest_sha256": "00d1669f6a919139d8b0b82c49aa1944e4954f67ab3d2d075cf071f2eed3ec84",
+  "files": {
+    "/home/ubuntu/ntransformer-h100/source/CMakeLists.txt": "37510a710eb94508b84d2804f46d9eb43340238bbc31aa633b8d7202bbada2c9",
+    "/home/ubuntu/ntransformer-h100/source/src/cuda/rmsnorm.cu": "813c6d1cad55e97c9b3a718297ff40cc1de6b0369b2bd2f47f86aea7f1dc6638",
+    "/home/ubuntu/ntransformer-h100/build-training/libntransformer_training.so": "cfa6ad362aad3d072499407a99749a148bebaa60bd80133026cfaa5746e0c031",
+    "/home/ubuntu/ntransformer-h100/source/src/training/ops.cu": "9cb66a1acfda51d4a1db2f77f051099fc19d7e7d92c5fd99ec72c876a57b6e5b",
+    "/home/ubuntu/ntransformer-h100/source/python/ntransformer_training/measurement.py": "d32f75b827b9f4faf899b7cc54c2a85685857cdc914a4ed2da816b91b735b8ce",
+    "/home/ubuntu/ntransformer-h100/source/python/ntransformer_training/ops.py": "6a327f3e501a2411d0d98a4d7a2a8b0c58e8675165f0f85b619198365757946f",
+    "/home/ubuntu/ntransformer-h100/source/python/ntransformer_training/brandon.py": "cc57e6adc7d8486e235767def5af4b69d05d6a369ce291554545ea56a435896b",
+    "/home/ubuntu/ntransformer-h100/source/python/ntransformer_training/__init__.py": "9bf5eb2e58c85eb90191fa557f56adce0144efbf083c00e0d5bac4aceab53ab2",
+    "/home/ubuntu/ntransformer-h100/source/python/ntransformer_training/pipeline.py": "724eb1bb847bac91453844e030b166eb350ed994b1c9f7deb2c69e9462761de2",
+    "/home/ubuntu/ntransformer-h100/source/scripts/train_brandon_experiment.py": "cac648d824ff76816e7e0bfdf4090ae9ac0a6f622365bd01a2810cd94b01e496",
+    "/home/ubuntu/ntransformer-h100/source/scripts/queue_brandon_training.py": "b360f783bcdd78be3e1dc19003b18e5284e97671553b45905a4bba49eae5ae2c",
+    "/lambda/nfs/btiny/brandon-mini/sources/stage1-v1/src/model.py": "ce3f41f52d7f00e9d46637c7512a5e029acdb383fb80f4f59ea136ae13f3d0b0",
+    "/lambda/nfs/btiny/brandon-mini/sources/stage1-v1/src/data/mini.py": "0c9946d86c1ce16f3ee9ba9ad964726349755108bb61d2b955a88b9502d364f1",
+    "/lambda/nfs/btiny/brandon-mini/sources/stage1-v1/scripts/train_mini.py": "bc852dfef99ae7a3515767500bd0362c894849ad06ce8f6d67b6241eea6de243"
+  },
+  "original_results": {
+    "pretrain": {
+      "phase": "pretrain",
+      "parameters": 107604288,
+      "world_size": 2,
+      "start_step": 0,
+      "completed_steps": 32768,
+      "planned_steps": 32768,
+      "initial_validation": {
+        "fineweb_edu": 4.3078595995903015,
+        "cosmopedia": 3.5625483244657516,
+        "mean": 3.9352039620280266
+      },
+      "final_validation": {
+        "fineweb_edu": 2.6587655395269394,
+        "cosmopedia": 1.6827282086014748,
+        "mean": 2.170746874064207
+      },
+      "best_validation_loss": 2.170746874064207,
+      "manifest_sha256": "00d1669f6a919139d8b0b82c49aa1944e4954f67ab3d2d075cf071f2eed3ec84",
+      "status": "complete",
+      "training_tokens": 2147483648
+    },
+    "pretrain_diagnostic": 0.0,
+    "sft": {
+      "phase": "sft",
+      "parameters": 107604288,
+      "world_size": 2,
+      "start_step": 0,
+      "completed_steps": 1200,
+      "planned_steps": 1200,
+      "initial_validation": {
+        "instructions": 1.8482667066261216,
+        "mean": 1.8482667066261216
+      },
+      "final_validation": {
+        "instructions": 1.373770063231728,
+        "mean": 1.373770063231728
+      },
+      "best_validation_loss": 1.373770063231728,
+      "manifest_sha256": "00d1669f6a919139d8b0b82c49aa1944e4954f67ab3d2d075cf071f2eed3ec84",
+      "status": "complete"
+    },
+    "sft_diagnostic": 0.0
+  },
+  "hypothesis": "Native fused kernels and an event-ordered speculative peer activation pipeline"
+}

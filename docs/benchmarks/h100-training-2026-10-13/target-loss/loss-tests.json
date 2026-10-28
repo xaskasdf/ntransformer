@@ -1,0 +1,5744 @@
+{
+  "primitives": [
+    {
+      "scale": 1.0,
+      "logp": {
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_l2": 0.0
+      },
+      "gradient": {
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_l2": 0.0
+      }
+    },
+    {
+      "scale": 6.0,
+      "logp": {
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_l2": 0.0
+      },
+      "gradient": {
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_l2": 0.0
+      }
+    },
+    {
+      "scale": 30.0,
+      "logp": {
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_l2": 0.0
+      },
+      "gradient": {
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_l2": 0.0
+      }
+    }
+  ],
+  "semantics": [
+    {
+      "mode": "fused",
+      "shifted": true,
+      "mask": "none",
+      "gradients": [
+        {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        }
+      ]
+    },
+    {
+      "mode": "vocab-stream",
+      "shifted": true,
+      "mask": "none",
+      "gradients": [
+        {
+          "exact": false,
+          "max_abs": 4.656612873077393e-10,
+          "relative_l2": 4.048520198258013e-09
+        },
+        {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        }
+      ]
+    },
+    {
+      "mode": "fused",
+      "shifted": false,
+      "mask": "none",
+      "gradients": [
+        {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        }
+      ]
+    },
+    {
+      "mode": "vocab-stream",
+      "shifted": false,
+      "mask": "none",
+      "gradients": [
+        {
+          "exact": false,
+          "max_abs": 4.76837158203125e-07,
+          "relative_l2": 4.283855610201905e-06
+        },
+        {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        }
+      ]
+    },
+    {
+      "mode": "fused",
+      "shifted": false,
+      "mask": "weighted",
+      "gradients": [
+        {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        }
+      ]
+    },
+    {
+      "mode": "vocab-stream",
+      "shifted": false,
+      "mask": "weighted",
+      "gradients": [
+        {
+          "exact": false,
+          "max_abs": 3.814697265625e-06,
+          "relative_l2": 3.774677508253445e-05
+        },
+        {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        }
+      ]
+    },
+    {
+      "mode": "fused",
+      "shifted": true,
+      "mask": "zero",
+      "gradients": [
+        {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        }
+      ]
+    },
+    {
+      "mode": "vocab-stream",
+      "shifted": true,
+      "mask": "zero",
+      "gradients": [
+        {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        }
+      ]
+    },
+    {
+      "mode": "fused",
+      "shifted": true,
+      "mask": "ignored",
+      "gradients": [
+        {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        }
+      ]
+    },
+    {
+      "mode": "vocab-stream",
+      "shifted": true,
+      "mask": "ignored",
+      "gradients": [
+        {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        }
+      ]
+    },
+    {
+      "mode": "fused",
+      "shifted": false,
+      "mask": "ignored-mask",
+      "gradients": [
+        {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        }
+      ]
+    },
+    {
+      "mode": "vocab-stream",
+      "shifted": false,
+      "mask": "ignored-mask",
+      "gradients": [
+        {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        }
+      ]
+    }
+  ],
+  "model": [
+    {
+      "mode": "fused",
+      "masked": false,
+      "loss": 2.3237571716308594,
+      "reference_loss": 2.3237571716308594,
+      "loss_abs": 0.0,
+      "gradients": {
+        "tok_embeddings.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.0.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.0.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.0.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.0.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.0.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.0.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.0.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.0.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.0.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.1.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.1.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.1.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.1.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.1.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.1.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.1.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.1.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.1.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.2.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.2.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.2.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.2.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.2.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.2.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.2.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.2.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.2.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.3.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.3.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.3.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.3.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.3.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.3.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.3.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.3.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.3.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.4.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.4.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.4.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.4.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.4.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.4.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.4.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.4.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.4.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.5.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.5.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.5.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.5.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.5.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.5.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.5.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.5.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.5.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.6.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.6.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.6.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.6.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.6.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.6.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.6.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.6.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.6.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.7.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.7.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.7.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.7.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.7.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.7.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.7.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.7.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.7.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.8.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.8.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.8.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.8.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.8.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.8.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.8.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.8.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.8.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.9.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.9.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.9.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.9.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.9.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.9.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.9.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.9.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.9.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.10.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.10.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.10.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.10.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.10.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.10.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.10.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.10.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.10.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.11.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.11.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.11.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.11.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.11.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.11.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.11.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.11.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.11.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.12.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.12.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.12.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.12.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.12.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.12.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.12.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.12.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.12.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.13.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.13.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.13.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.13.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.13.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.13.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.13.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.13.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.13.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.14.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.14.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.14.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.14.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.14.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.14.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.14.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.14.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.14.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.15.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.15.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.15.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.15.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.15.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.15.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.15.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.15.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.15.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.16.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.16.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.16.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.16.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.16.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.16.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.16.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.16.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.16.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.17.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.17.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.17.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.17.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.17.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.17.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.17.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.17.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.17.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.18.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.18.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.18.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.18.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.18.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.18.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.18.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.18.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.18.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.19.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.19.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.19.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.19.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.19.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.19.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.19.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.19.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.19.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.20.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.20.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.20.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.20.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.20.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.20.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.20.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.20.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.20.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.21.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.21.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.21.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.21.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.21.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.21.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.21.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.21.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.21.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.22.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.22.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.22.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.22.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.22.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.22.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.22.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.22.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.22.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.23.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.23.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.23.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.23.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.23.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.23.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.23.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.23.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.23.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.24.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.24.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.24.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.24.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.24.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.24.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.24.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.24.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.24.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.25.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.25.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.25.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.25.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.25.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.25.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.25.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.25.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.25.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.26.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.26.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.26.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.26.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.26.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.26.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.26.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.26.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.26.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.27.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.27.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.27.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.27.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.27.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.27.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.27.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.27.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.27.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.28.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.28.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.28.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.28.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.28.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.28.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.28.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.28.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.28.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.29.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.29.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.29.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.29.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.29.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.29.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.29.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.29.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.29.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        }
+      },
+      "tied_embedding": true,
+      "parameter_tensors": 272,
+      "max_gradient_relative_l2": 0.0,
+      "gradient_gate_2pct": true
+    },
+    {
+      "mode": "vocab-stream",
+      "masked": false,
+      "loss": 2.3237571716308594,
+      "reference_loss": 2.3237571716308594,
+      "loss_abs": 0.0,
+      "gradients": {
+        "tok_embeddings.weight": {
+          "exact": false,
+          "max_abs": 1.5957513824105263e-05,
+          "relative_l2": 0.0015805581797411813
+        },
+        "layers.0.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 1.9073486328125e-06,
+          "relative_l2": 0.006632602876988954
+        },
+        "layers.0.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 3.5762786865234375e-07,
+          "relative_l2": 0.007479705671647521
+        },
+        "layers.0.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 3.0517578125e-05,
+          "relative_l2": 0.008342419701454096
+        },
+        "layers.0.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 9.5367431640625e-06,
+          "relative_l2": 0.007451066240897084
+        },
+        "layers.0.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 3.814697265625e-06,
+          "relative_l2": 0.008218463019831078
+        },
+        "layers.0.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 8.58306884765625e-06,
+          "relative_l2": 0.0076526510509141174
+        },
+        "layers.0.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 3.933906555175781e-06,
+          "relative_l2": 0.007958731551733917
+        },
+        "layers.0.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 9.926356142386794e-06,
+          "relative_l2": 0.006033610183397669
+        },
+        "layers.0.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 4.128291038796306e-06,
+          "relative_l2": 0.0071686723382793785
+        },
+        "layers.1.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 1.9073486328125e-06,
+          "relative_l2": 0.008616884904521014
+        },
+        "layers.1.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 2.384185791015625e-06,
+          "relative_l2": 0.008883916160167553
+        },
+        "layers.1.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 9.1552734375e-05,
+          "relative_l2": 0.009413767534609416
+        },
+        "layers.1.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 1.1444091796875e-05,
+          "relative_l2": 0.00769878886327468
+        },
+        "layers.1.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 9.5367431640625e-07,
+          "relative_l2": 0.008153893765817096
+        },
+        "layers.1.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 3.814697265625e-06,
+          "relative_l2": 0.0076624920970838235
+        },
+        "layers.1.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 9.5367431640625e-07,
+          "relative_l2": 0.008077318697369114
+        },
+        "layers.1.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 2.5828136131167412e-05,
+          "relative_l2": 0.007945374228441476
+        },
+        "layers.1.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 3.3942051231861115e-06,
+          "relative_l2": 0.00325864970585216
+        },
+        "layers.2.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 4.291534423828125e-06,
+          "relative_l2": 0.008875740443705576
+        },
+        "layers.2.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 2.86102294921875e-06,
+          "relative_l2": 0.00974751702984876
+        },
+        "layers.2.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 6.866455078125e-05,
+          "relative_l2": 0.00873672246024513
+        },
+        "layers.2.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 1.1920928955078125e-06,
+          "relative_l2": 0.00778789277981172
+        },
+        "layers.2.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 7.152557373046875e-06,
+          "relative_l2": 0.008193210643263645
+        },
+        "layers.2.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 1.9073486328125e-06,
+          "relative_l2": 0.007651104631410911
+        },
+        "layers.2.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 7.62939453125e-06,
+          "relative_l2": 0.00818488443937822
+        },
+        "layers.2.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 2.9193004593253136e-05,
+          "relative_l2": 0.03490249042202548
+        },
+        "layers.2.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 3.806978929787874e-05,
+          "relative_l2": 0.021535800350966625
+        },
+        "layers.3.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 1.1444091796875e-05,
+          "relative_l2": 0.008536860915350898
+        },
+        "layers.3.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 6.198883056640625e-06,
+          "relative_l2": 0.008692310142725156
+        },
+        "layers.3.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 9.1552734375e-05,
+          "relative_l2": 0.008957953444778873
+        },
+        "layers.3.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 2.1457672119140625e-06,
+          "relative_l2": 0.0077881384395437625
+        },
+        "layers.3.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 1.1444091796875e-05,
+          "relative_l2": 0.008204465581192803
+        },
+        "layers.3.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 1.9073486328125e-06,
+          "relative_l2": 0.007594642523565309
+        },
+        "layers.3.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 7.62939453125e-06,
+          "relative_l2": 0.008194615136536777
+        },
+        "layers.3.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 2.1648709662258625e-05,
+          "relative_l2": 0.014630001926089747
+        },
+        "layers.3.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 8.526688907295465e-05,
+          "relative_l2": 0.06334297419747126
+        },
+        "layers.4.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 4.00543212890625e-05,
+          "relative_l2": 0.009961250942840382
+        },
+        "layers.4.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 3.814697265625e-05,
+          "relative_l2": 0.010519223628971074
+        },
+        "layers.4.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 0.0001373291015625,
+          "relative_l2": 0.009179826708986247
+        },
+        "layers.4.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 5.245208740234375e-06,
+          "relative_l2": 0.007796428791965476
+        },
+        "layers.4.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 3.814697265625e-06,
+          "relative_l2": 0.00823939940150251
+        },
+        "layers.4.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 3.0994415283203125e-06,
+          "relative_l2": 0.0076422174144964924
+        },
+        "layers.4.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 3.814697265625e-06,
+          "relative_l2": 0.008035333994592416
+        },
+        "layers.4.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 2.384185791015625e-06,
+          "relative_l2": 0.007752016499540999
+        },
+        "layers.4.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 2.794829197227955e-05,
+          "relative_l2": 0.011526535514903166
+        },
+        "layers.5.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 2.288818359375e-05,
+          "relative_l2": 0.00862789534791702
+        },
+        "layers.5.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 1.52587890625e-05,
+          "relative_l2": 0.007550829985997278
+        },
+        "layers.5.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 9.34600830078125e-05,
+          "relative_l2": 0.009137706304863052
+        },
+        "layers.5.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 3.814697265625e-06,
+          "relative_l2": 0.007638374379796644
+        },
+        "layers.5.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 3.814697265625e-06,
+          "relative_l2": 0.008012588057967323
+        },
+        "layers.5.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 2.384185791015625e-06,
+          "relative_l2": 0.007444801313091473
+        },
+        "layers.5.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 3.814697265625e-06,
+          "relative_l2": 0.00785156615952501
+        },
+        "layers.5.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 1.9135914044454694e-06,
+          "relative_l2": 0.0022419881553735243
+        },
+        "layers.5.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 2.170470543205738e-05,
+          "relative_l2": 0.008743485789351187
+        },
+        "layers.6.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 8.106231689453125e-06,
+          "relative_l2": 0.009055179404373968
+        },
+        "layers.6.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 1.9073486328125e-05,
+          "relative_l2": 0.009784057395413171
+        },
+        "layers.6.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 9.1552734375e-05,
+          "relative_l2": 0.008365869635072933
+        },
+        "layers.6.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 3.814697265625e-06,
+          "relative_l2": 0.007198084810163305
+        },
+        "layers.6.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 5.7220458984375e-06,
+          "relative_l2": 0.007786995982610818
+        },
+        "layers.6.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 3.814697265625e-06,
+          "relative_l2": 0.007277276339002394
+        },
+        "layers.6.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 5.7220458984375e-06,
+          "relative_l2": 0.007626903743576235
+        },
+        "layers.6.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 4.6986271627247334e-05,
+          "relative_l2": 0.027073831169287393
+        },
+        "layers.6.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 2.468423917889595e-05,
+          "relative_l2": 0.00402726613540366
+        },
+        "layers.7.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 1.52587890625e-05,
+          "relative_l2": 0.007346654133591806
+        },
+        "layers.7.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 1.71661376953125e-05,
+          "relative_l2": 0.008754551402403903
+        },
+        "layers.7.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 0.0001220703125,
+          "relative_l2": 0.007364258016782138
+        },
+        "layers.7.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 2.86102294921875e-06,
+          "relative_l2": 0.006972084289653192
+        },
+        "layers.7.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 6.67572021484375e-06,
+          "relative_l2": 0.007590009655392645
+        },
+        "layers.7.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 3.814697265625e-06,
+          "relative_l2": 0.007065437036773647
+        },
+        "layers.7.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 6.794929504394531e-06,
+          "relative_l2": 0.007391134027140997
+        },
+        "layers.7.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 1.675332896411419e-05,
+          "relative_l2": 0.006433744905661172
+        },
+        "layers.7.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 2.0395498722791672e-05,
+          "relative_l2": 0.004525450179647096
+        },
+        "layers.8.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 1.52587890625e-05,
+          "relative_l2": 0.0069711173183156306
+        },
+        "layers.8.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 1.1041760444641113e-05,
+          "relative_l2": 0.007310231860714044
+        },
+        "layers.8.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 0.0001220703125,
+          "relative_l2": 0.007185227780628317
+        },
+        "layers.8.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 2.86102294921875e-06,
+          "relative_l2": 0.006687335017851145
+        },
+        "layers.8.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 7.62939453125e-06,
+          "relative_l2": 0.007433424187356433
+        },
+        "layers.8.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 2.86102294921875e-06,
+          "relative_l2": 0.006836322071982466
+        },
+        "layers.8.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 1.1444091796875e-05,
+          "relative_l2": 0.007233469740531631
+        },
+        "layers.8.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 2.922629937529564e-05,
+          "relative_l2": 0.016102092762982766
+        },
+        "layers.8.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 1.1462252587080002e-05,
+          "relative_l2": 0.005986654200005659
+        },
+        "layers.9.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 1.7642974853515625e-05,
+          "relative_l2": 0.007196577584521997
+        },
+        "layers.9.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 1.1444091796875e-05,
+          "relative_l2": 0.007886797072147298
+        },
+        "layers.9.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 0.0001220703125,
+          "relative_l2": 0.007549249825988195
+        },
+        "layers.9.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 2.384185791015625e-06,
+          "relative_l2": 0.006731943858652909
+        },
+        "layers.9.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 5.7220458984375e-06,
+          "relative_l2": 0.00726365779386476
+        },
+        "layers.9.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 1.9669532775878906e-06,
+          "relative_l2": 0.006717972357616731
+        },
+        "layers.9.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 4.76837158203125e-06,
+          "relative_l2": 0.00707079449745614
+        },
+        "layers.9.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 1.020974013954401e-05,
+          "relative_l2": 0.0068805757884850115
+        },
+        "layers.9.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 2.021944965235889e-06,
+          "relative_l2": 0.003892216595295441
+        },
+        "layers.10.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 1.71661376953125e-05,
+          "relative_l2": 0.00746467713272989
+        },
+        "layers.10.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 2.6702880859375e-05,
+          "relative_l2": 0.008220440174181142
+        },
+        "layers.10.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.007142980695038785
+        },
+        "layers.10.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 1.9073486328125e-06,
+          "relative_l2": 0.006459398326688543
+        },
+        "layers.10.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 7.62939453125e-06,
+          "relative_l2": 0.007133879627208024
+        },
+        "layers.10.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 2.0265579223632812e-06,
+          "relative_l2": 0.006576173083868935
+        },
+        "layers.10.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 7.62939453125e-06,
+          "relative_l2": 0.006942800513237391
+        },
+        "layers.10.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 1.7156009562313557e-05,
+          "relative_l2": 0.010805347313016722
+        },
+        "layers.10.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 2.1629384718835354e-06,
+          "relative_l2": 0.006021440927960669
+        },
+        "layers.11.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 1.0967254638671875e-05,
+          "relative_l2": 0.00680504212972852
+        },
+        "layers.11.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 1.1444091796875e-05,
+          "relative_l2": 0.007477618782660238
+        },
+        "layers.11.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 6.866455078125e-05,
+          "relative_l2": 0.006447962588385514
+        },
+        "layers.11.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 1.9073486328125e-06,
+          "relative_l2": 0.006288043101040662
+        },
+        "layers.11.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 7.62939453125e-06,
+          "relative_l2": 0.00693085925442451
+        },
+        "layers.11.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 7.62939453125e-06,
+          "relative_l2": 0.006355329824251386
+        },
+        "layers.11.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 1.52587890625e-05,
+          "relative_l2": 0.006743885730471531
+        },
+        "layers.11.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 4.706578329205513e-05,
+          "relative_l2": 0.01546258870804497
+        },
+        "layers.11.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 9.552575647830963e-06,
+          "relative_l2": 0.003658520892813803
+        },
+        "layers.12.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 7.62939453125e-06,
+          "relative_l2": 0.007439927885764204
+        },
+        "layers.12.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 1.1444091796875e-05,
+          "relative_l2": 0.007581290003557158
+        },
+        "layers.12.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 7.62939453125e-05,
+          "relative_l2": 0.006495511005892636
+        },
+        "layers.12.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 1.9073486328125e-06,
+          "relative_l2": 0.006229693722266737
+        },
+        "layers.12.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 7.62939453125e-06,
+          "relative_l2": 0.0067648007483430556
+        },
+        "layers.12.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 5.7220458984375e-06,
+          "relative_l2": 0.0062606447540610585
+        },
+        "layers.12.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 4.0531158447265625e-06,
+          "relative_l2": 0.006617981164688956
+        },
+        "layers.12.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 1.8903403542935848e-05,
+          "relative_l2": 0.011604943235856606
+        },
+        "layers.12.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 7.80716072767973e-06,
+          "relative_l2": 0.0066343908696602375
+        },
+        "layers.13.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 1.239776611328125e-05,
+          "relative_l2": 0.0071837853103368715
+        },
+        "layers.13.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 1.9073486328125e-05,
+          "relative_l2": 0.007474740486738758
+        },
+        "layers.13.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 6.29425048828125e-05,
+          "relative_l2": 0.00606616799364146
+        },
+        "layers.13.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 2.384185791015625e-06,
+          "relative_l2": 0.005851468063362455
+        },
+        "layers.13.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 7.62939453125e-06,
+          "relative_l2": 0.006592510575368286
+        },
+        "layers.13.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 3.0517578125e-05,
+          "relative_l2": 0.005707724401610248
+        },
+        "layers.13.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 7.62939453125e-06,
+          "relative_l2": 0.006437690442411075
+        },
+        "layers.13.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 8.987728506326675e-06,
+          "relative_l2": 0.0032604288267264374
+        },
+        "layers.13.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 7.339753210544586e-06,
+          "relative_l2": 0.006200096509411306
+        },
+        "layers.14.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 1.52587890625e-05,
+          "relative_l2": 0.006260553472039996
+        },
+        "layers.14.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 2.288818359375e-05,
+          "relative_l2": 0.006426404500127978
+        },
+        "layers.14.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.006288925355763974
+        },
+        "layers.14.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 2.86102294921875e-06,
+          "relative_l2": 0.005696732588294942
+        },
+        "layers.14.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 7.62939453125e-06,
+          "relative_l2": 0.006422315254623045
+        },
+        "layers.14.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 0.0001220703125,
+          "relative_l2": 0.004886047679053581
+        },
+        "layers.14.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 7.62939453125e-06,
+          "relative_l2": 0.006234250934327496
+        },
+        "layers.14.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 2.237735316157341e-06,
+          "relative_l2": 0.0028680631483873243
+        },
+        "layers.14.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 5.020759999752045e-06,
+          "relative_l2": 0.003175873997982955
+        },
+        "layers.15.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 1.9073486328125e-05,
+          "relative_l2": 0.006805978539199065
+        },
+        "layers.15.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 3.0517578125e-05,
+          "relative_l2": 0.006705772016957463
+        },
+        "layers.15.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.006006116197135222
+        },
+        "layers.15.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 2.1457672119140625e-06,
+          "relative_l2": 0.005487837485824472
+        },
+        "layers.15.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 7.62939453125e-06,
+          "relative_l2": 0.0062555744876193675
+        },
+        "layers.15.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 9.1552734375e-05,
+          "relative_l2": 0.00507992276621512
+        },
+        "layers.15.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 7.62939453125e-06,
+          "relative_l2": 0.00610379591550081
+        },
+        "layers.15.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 5.032634362578392e-06,
+          "relative_l2": 0.0030943316381228476
+        },
+        "layers.15.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 3.747176378965378e-06,
+          "relative_l2": 0.0031857698444236787
+        },
+        "layers.16.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 1.52587890625e-05,
+          "relative_l2": 0.006495305257571619
+        },
+        "layers.16.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 2.6702880859375e-05,
+          "relative_l2": 0.006797695212416438
+        },
+        "layers.16.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.005811211549233438
+        },
+        "layers.16.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 2.86102294921875e-06,
+          "relative_l2": 0.005268723585850161
+        },
+        "layers.16.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 5.7220458984375e-06,
+          "relative_l2": 0.006121040835657166
+        },
+        "layers.16.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 2.384185791015625e-06,
+          "relative_l2": 0.005606145955828913
+        },
+        "layers.16.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 3.814697265625e-06,
+          "relative_l2": 0.005892431882869533
+        },
+        "layers.16.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 1.4819670468568802e-05,
+          "relative_l2": 0.009144365152752328
+        },
+        "layers.16.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 1.797547156456858e-06,
+          "relative_l2": 0.0031133585488847793
+        },
+        "layers.17.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 2.288818359375e-05,
+          "relative_l2": 0.0066948822896102066
+        },
+        "layers.17.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 1.52587890625e-05,
+          "relative_l2": 0.006341546166538811
+        },
+        "layers.17.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 4.57763671875e-05,
+          "relative_l2": 0.00539508617482285
+        },
+        "layers.17.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 2.0265579223632812e-06,
+          "relative_l2": 0.005271927854128554
+        },
+        "layers.17.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 5.7220458984375e-06,
+          "relative_l2": 0.0060088858929911605
+        },
+        "layers.17.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 3.4332275390625e-05,
+          "relative_l2": 0.005138617844380725
+        },
+        "layers.17.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 3.814697265625e-06,
+          "relative_l2": 0.005803916085490839
+        },
+        "layers.17.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 4.0457816794514656e-05,
+          "relative_l2": 0.014358267963739511
+        },
+        "layers.17.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 1.8175458535552025e-05,
+          "relative_l2": 0.01006006030050281
+        },
+        "layers.18.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 1.1444091796875e-05,
+          "relative_l2": 0.006218894759405928
+        },
+        "layers.18.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 7.62939453125e-06,
+          "relative_l2": 0.005929663700831235
+        },
+        "layers.18.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 3.0517578125e-05,
+          "relative_l2": 0.005208900456287651
+        },
+        "layers.18.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 1.9073486328125e-06,
+          "relative_l2": 0.005094847923081505
+        },
+        "layers.18.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 7.62939453125e-06,
+          "relative_l2": 0.005884319007315757
+        },
+        "layers.18.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 2.86102294921875e-06,
+          "relative_l2": 0.005278754785075091
+        },
+        "layers.18.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 4.0531158447265625e-06,
+          "relative_l2": 0.0056547839705979805
+        },
+        "layers.18.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 9.242212399840355e-06,
+          "relative_l2": 0.005613811381684005
+        },
+        "layers.18.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 4.606845322996378e-06,
+          "relative_l2": 0.00537846425343212
+        },
+        "layers.19.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 1.1444091796875e-05,
+          "relative_l2": 0.005477106453294181
+        },
+        "layers.19.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 1.71661376953125e-05,
+          "relative_l2": 0.0056072834570158525
+        },
+        "layers.19.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 3.0517578125e-05,
+          "relative_l2": 0.0052222366926700445
+        },
+        "layers.19.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 1.9073486328125e-06,
+          "relative_l2": 0.004932777089181506
+        },
+        "layers.19.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 3.814697265625e-06,
+          "relative_l2": 0.005819964295689632
+        },
+        "layers.19.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 3.814697265625e-06,
+          "relative_l2": 0.0051810202706791585
+        },
+        "layers.19.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 4.291534423828125e-06,
+          "relative_l2": 0.005623319830443832
+        },
+        "layers.19.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 9.78552270680666e-06,
+          "relative_l2": 0.005019543368072018
+        },
+        "layers.19.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 1.719923602649942e-06,
+          "relative_l2": 0.005516329327328363
+        },
+        "layers.20.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 3.814697265625e-06,
+          "relative_l2": 0.005860724346512188
+        },
+        "layers.20.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 5.7220458984375e-06,
+          "relative_l2": 0.005783303779367843
+        },
+        "layers.20.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 2.288818359375e-05,
+          "relative_l2": 0.004912553777137814
+        },
+        "layers.20.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 1.9073486328125e-06,
+          "relative_l2": 0.004847468471282558
+        },
+        "layers.20.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 3.814697265625e-06,
+          "relative_l2": 0.005695628609755
+        },
+        "layers.20.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 3.814697265625e-06,
+          "relative_l2": 0.005054781312687537
+        },
+        "layers.20.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 3.814697265625e-06,
+          "relative_l2": 0.0054841591963888745
+        },
+        "layers.20.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 6.080837920308113e-06,
+          "relative_l2": 0.0043946190685477775
+        },
+        "layers.20.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 7.661990821361542e-06,
+          "relative_l2": 0.005284837771373642
+        },
+        "layers.21.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 8.463859558105469e-06,
+          "relative_l2": 0.005448711703907896
+        },
+        "layers.21.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 8.58306884765625e-06,
+          "relative_l2": 0.005849069982964033
+        },
+        "layers.21.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 1.621246337890625e-05,
+          "relative_l2": 0.00562453124884925
+        },
+        "layers.21.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 1.9073486328125e-06,
+          "relative_l2": 0.004724078987666909
+        },
+        "layers.21.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 3.814697265625e-06,
+          "relative_l2": 0.005551257215689364
+        },
+        "layers.21.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 1.9073486328125e-06,
+          "relative_l2": 0.004891433904526094
+        },
+        "layers.21.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 3.814697265625e-06,
+          "relative_l2": 0.005332581098987163
+        },
+        "layers.21.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 3.8351863622665405e-06,
+          "relative_l2": 0.004364402654503247
+        },
+        "layers.21.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 2.6721972972154617e-06,
+          "relative_l2": 0.004805096529386925
+        },
+        "layers.22.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 7.62939453125e-06,
+          "relative_l2": 0.006056232328938917
+        },
+        "layers.22.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 2.288818359375e-05,
+          "relative_l2": 0.005686024890348805
+        },
+        "layers.22.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 2.288818359375e-05,
+          "relative_l2": 0.0052034660236155
+        },
+        "layers.22.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 1.9073486328125e-06,
+          "relative_l2": 0.004644183457192267
+        },
+        "layers.22.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 3.814697265625e-06,
+          "relative_l2": 0.005381827549400919
+        },
+        "layers.22.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 1.9073486328125e-06,
+          "relative_l2": 0.0047036935390891614
+        },
+        "layers.22.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 3.814697265625e-06,
+          "relative_l2": 0.005201373483204965
+        },
+        "layers.22.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 3.3116230042651296e-06,
+          "relative_l2": 0.005015798491785711
+        },
+        "layers.22.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 3.8005528040230274e-06,
+          "relative_l2": 0.0050037118397235104
+        },
+        "layers.23.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 1.52587890625e-05,
+          "relative_l2": 0.005924919147529646
+        },
+        "layers.23.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 1.52587890625e-05,
+          "relative_l2": 0.006129596058198752
+        },
+        "layers.23.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 1.52587890625e-05,
+          "relative_l2": 0.005265169506225132
+        },
+        "layers.23.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 1.9073486328125e-06,
+          "relative_l2": 0.004571285721712019
+        },
+        "layers.23.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 2.384185791015625e-06,
+          "relative_l2": 0.005176424586849815
+        },
+        "layers.23.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 1.9073486328125e-06,
+          "relative_l2": 0.004535127387599011
+        },
+        "layers.23.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 3.814697265625e-06,
+          "relative_l2": 0.005048593599122978
+        },
+        "layers.23.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 8.048089512158185e-06,
+          "relative_l2": 0.006326391449415181
+        },
+        "layers.23.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 3.6411802284419537e-06,
+          "relative_l2": 0.004635684912798868
+        },
+        "layers.24.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 3.814697265625e-06,
+          "relative_l2": 0.005253495200641166
+        },
+        "layers.24.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 5.7220458984375e-06,
+          "relative_l2": 0.00527814211904663
+        },
+        "layers.24.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 1.52587890625e-05,
+          "relative_l2": 0.005227720793096351
+        },
+        "layers.24.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 1.1026859283447266e-06,
+          "relative_l2": 0.004247314746734336
+        },
+        "layers.24.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 3.814697265625e-06,
+          "relative_l2": 0.005062102410472233
+        },
+        "layers.24.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 1.9073486328125e-06,
+          "relative_l2": 0.004335826144496653
+        },
+        "layers.24.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 3.814697265625e-06,
+          "relative_l2": 0.004911443273268159
+        },
+        "layers.24.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 5.065754521638155e-06,
+          "relative_l2": 0.005947610853720751
+        },
+        "layers.24.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 4.888715920969844e-06,
+          "relative_l2": 0.0052723696650654435
+        },
+        "layers.25.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 3.814697265625e-06,
+          "relative_l2": 0.005780363106480038
+        },
+        "layers.25.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 4.291534423828125e-06,
+          "relative_l2": 0.005493164119506517
+        },
+        "layers.25.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 1.71661376953125e-05,
+          "relative_l2": 0.005494396380608926
+        },
+        "layers.25.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 1.9073486328125e-06,
+          "relative_l2": 0.004214245552723626
+        },
+        "layers.25.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 7.62939453125e-06,
+          "relative_l2": 0.004543290678003986
+        },
+        "layers.25.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 7.62939453125e-06,
+          "relative_l2": 0.004025082048419913
+        },
+        "layers.25.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 7.62939453125e-06,
+          "relative_l2": 0.004356793311801131
+        },
+        "layers.25.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 3.5954872146248817e-06,
+          "relative_l2": 0.005458509030265303
+        },
+        "layers.25.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 1.9206490833312273e-06,
+          "relative_l2": 0.003864274666971513
+        },
+        "layers.26.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 9.5367431640625e-06,
+          "relative_l2": 0.0044282003023266535
+        },
+        "layers.26.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 1.52587890625e-05,
+          "relative_l2": 0.004028128710422288
+        },
+        "layers.26.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.0043640959469511235
+        },
+        "layers.26.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 1.9073486328125e-06,
+          "relative_l2": 0.0036083289211883023
+        },
+        "layers.26.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 3.814697265625e-06,
+          "relative_l2": 0.0044713173411616266
+        },
+        "layers.26.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 1.9073486328125e-06,
+          "relative_l2": 0.003618719645538426
+        },
+        "layers.26.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 3.814697265625e-06,
+          "relative_l2": 0.004339876225027031
+        },
+        "layers.26.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 7.621711120009422e-06,
+          "relative_l2": 0.005398265633761389
+        },
+        "layers.26.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 4.240020643919706e-06,
+          "relative_l2": 0.004380900270988376
+        },
+        "layers.27.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 7.62939453125e-06,
+          "relative_l2": 0.004586998342409645
+        },
+        "layers.27.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 7.62939453125e-06,
+          "relative_l2": 0.0043748330481107305
+        },
+        "layers.27.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 3.0517578125e-05,
+          "relative_l2": 0.0044397107629165706
+        },
+        "layers.27.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 1.9073486328125e-06,
+          "relative_l2": 0.0033591734425168
+        },
+        "layers.27.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 3.814697265625e-06,
+          "relative_l2": 0.004013525516247324
+        },
+        "layers.27.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 1.9073486328125e-05,
+          "relative_l2": 0.003008730117858011
+        },
+        "layers.27.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 3.814697265625e-06,
+          "relative_l2": 0.0038794062709116097
+        },
+        "layers.27.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 2.8577560442499816e-06,
+          "relative_l2": 0.003980552427514632
+        },
+        "layers.27.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 3.0875526135787368e-06,
+          "relative_l2": 0.003916549871781326
+        },
+        "layers.28.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 4.76837158203125e-06,
+          "relative_l2": 0.0045898161040095605
+        },
+        "layers.28.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 7.987022399902344e-06,
+          "relative_l2": 0.004845155865482002
+        },
+        "layers.28.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 1.52587890625e-05,
+          "relative_l2": 0.00422837428612652
+        },
+        "layers.28.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 9.5367431640625e-07,
+          "relative_l2": 0.002906766451650766
+        },
+        "layers.28.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 3.814697265625e-06,
+          "relative_l2": 0.00324532437688995
+        },
+        "layers.28.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 0.0001220703125,
+          "relative_l2": 0.00306155857121317
+        },
+        "layers.28.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 3.814697265625e-06,
+          "relative_l2": 0.003169001471003074
+        },
+        "layers.28.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 1.1190240911673754e-06,
+          "relative_l2": 0.0029099370698480063
+        },
+        "layers.28.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 4.972564056515694e-06,
+          "relative_l2": 0.0033026419055813675
+        },
+        "layers.29.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 3.814697265625e-06,
+          "relative_l2": 0.0036747998526089924
+        },
+        "layers.29.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 3.814697265625e-06,
+          "relative_l2": 0.0039136874892865174
+        },
+        "layers.29.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 7.62939453125e-06,
+          "relative_l2": 0.0029014788539447034
+        },
+        "layers.29.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 9.5367431640625e-07,
+          "relative_l2": 0.002063485265051761
+        },
+        "layers.29.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 7.62939453125e-06,
+          "relative_l2": 0.0018156581550822712
+        },
+        "layers.29.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 7.62939453125e-06,
+          "relative_l2": 0.0011398366711086651
+        },
+        "layers.29.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 9.328126907348633e-06,
+          "relative_l2": 0.0018633704054643193
+        },
+        "layers.29.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 4.168279701843858e-06,
+          "relative_l2": 0.004278888742680288
+        },
+        "layers.29.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 7.909140549600124e-06,
+          "relative_l2": 0.0024759192667299073
+        },
+        "norm.weight": {
+          "exact": false,
+          "max_abs": 6.8024382926523685e-06,
+          "relative_l2": 0.0017433041369289749
+        }
+      },
+      "tied_embedding": true,
+      "parameter_tensors": 272,
+      "max_gradient_relative_l2": 0.06334297419747126,
+      "gradient_gate_2pct": false
+    },
+    {
+      "mode": "fused",
+      "masked": true,
+      "loss": 11.296375274658203,
+      "reference_loss": 11.296375274658203,
+      "loss_abs": 0.0,
+      "gradients": {
+        "tok_embeddings.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.0.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.0.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.0.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.0.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.0.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.0.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.0.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.0.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.0.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.1.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.1.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.1.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.1.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.1.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.1.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.1.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.1.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.1.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.2.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.2.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.2.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.2.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.2.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.2.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.2.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.2.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.2.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.3.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.3.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.3.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.3.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.3.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.3.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.3.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.3.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.3.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.4.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.4.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.4.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.4.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.4.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.4.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.4.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.4.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.4.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.5.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.5.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.5.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.5.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.5.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.5.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.5.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.5.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.5.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.6.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.6.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.6.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.6.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.6.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.6.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.6.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.6.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.6.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.7.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.7.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.7.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.7.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.7.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.7.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.7.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.7.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.7.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.8.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.8.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.8.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.8.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.8.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.8.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.8.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.8.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.8.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.9.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.9.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.9.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.9.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.9.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.9.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.9.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.9.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.9.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.10.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.10.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.10.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.10.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.10.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.10.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.10.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.10.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.10.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.11.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.11.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.11.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.11.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.11.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.11.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.11.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.11.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.11.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.12.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.12.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.12.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.12.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.12.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.12.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.12.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.12.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.12.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.13.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.13.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.13.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.13.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.13.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.13.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.13.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.13.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.13.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.14.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.14.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.14.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.14.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.14.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.14.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.14.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.14.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.14.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.15.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.15.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.15.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.15.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.15.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.15.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.15.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.15.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.15.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.16.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.16.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.16.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.16.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.16.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.16.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.16.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.16.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.16.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.17.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.17.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.17.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.17.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.17.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.17.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.17.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.17.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.17.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.18.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.18.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.18.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.18.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.18.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.18.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.18.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.18.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.18.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.19.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.19.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.19.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.19.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.19.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.19.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.19.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.19.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.19.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.20.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.20.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.20.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.20.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.20.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.20.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.20.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.20.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.20.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.21.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.21.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.21.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.21.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.21.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.21.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.21.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.21.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.21.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.22.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.22.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.22.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.22.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.22.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.22.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.22.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.22.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.22.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.23.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.23.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.23.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.23.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.23.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.23.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.23.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.23.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.23.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.24.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.24.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.24.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.24.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.24.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.24.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.24.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.24.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.24.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.25.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.25.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.25.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.25.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.25.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.25.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.25.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.25.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.25.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.26.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.26.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.26.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.26.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.26.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.26.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.26.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.26.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.26.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.27.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.27.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.27.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.27.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.27.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.27.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.27.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.27.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.27.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.28.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.28.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.28.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.28.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.28.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.28.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.28.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.28.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.28.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.29.attention.wq.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.29.attention.wk.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.29.attention.wv.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.29.attention.wo.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.29.feed_forward.w1.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.29.feed_forward.w2.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.29.feed_forward.w3.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.29.attention_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "layers.29.ffn_norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        },
+        "norm.weight": {
+          "exact": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0
+        }
+      },
+      "tied_embedding": true,
+      "parameter_tensors": 272,
+      "max_gradient_relative_l2": 0.0,
+      "gradient_gate_2pct": true
+    },
+    {
+      "mode": "vocab-stream",
+      "masked": true,
+      "loss": 11.296375274658203,
+      "reference_loss": 11.296375274658203,
+      "loss_abs": 0.0,
+      "gradients": {
+        "tok_embeddings.weight": {
+          "exact": false,
+          "max_abs": 0.00012327730655670166,
+          "relative_l2": 0.001132244377900933
+        },
+        "layers.0.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 1.52587890625e-05,
+          "relative_l2": 0.0021692169293814176
+        },
+        "layers.0.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 1.9073486328125e-06,
+          "relative_l2": 0.003722808723016038
+        },
+        "layers.0.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 6.866455078125e-05,
+          "relative_l2": 0.0032434914208953653
+        },
+        "layers.0.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.0027593267345007396
+        },
+        "layers.0.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 1.52587890625e-05,
+          "relative_l2": 0.005619185786435711
+        },
+        "layers.0.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.00499481023521995
+        },
+        "layers.0.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 3.0517578125e-05,
+          "relative_l2": 0.004967390684177778
+        },
+        "layers.0.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 1.9470928236842155e-05,
+          "relative_l2": 0.0018811598626182827
+        },
+        "layers.0.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 1.629604957997799e-05,
+          "relative_l2": 0.00303369292193208
+        },
+        "layers.1.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 7.62939453125e-06,
+          "relative_l2": 0.003666529725454491
+        },
+        "layers.1.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 7.62939453125e-06,
+          "relative_l2": 0.002705961335026644
+        },
+        "layers.1.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 0.0009765625,
+          "relative_l2": 0.002932673511941553
+        },
+        "layers.1.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 0.0001220703125,
+          "relative_l2": 0.002695259620404974
+        },
+        "layers.1.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 3.814697265625e-06,
+          "relative_l2": 0.005859015595758589
+        },
+        "layers.1.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 1.52587890625e-05,
+          "relative_l2": 0.0045266291889708606
+        },
+        "layers.1.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 3.814697265625e-06,
+          "relative_l2": 0.005575023362463757
+        },
+        "layers.1.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 0.00010064244270324707,
+          "relative_l2": 0.0007574724074241381
+        },
+        "layers.1.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 4.1272491216659546e-05,
+          "relative_l2": 0.0010582626538331462
+        },
+        "layers.2.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 1.52587890625e-05,
+          "relative_l2": 0.003460363220185724
+        },
+        "layers.2.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 1.1444091796875e-05,
+          "relative_l2": 0.005558670884648012
+        },
+        "layers.2.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 0.00048828125,
+          "relative_l2": 0.0029073228756979217
+        },
+        "layers.2.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 3.814697265625e-06,
+          "relative_l2": 0.004819011305656916
+        },
+        "layers.2.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 7.62939453125e-06,
+          "relative_l2": 0.0058472883674665545
+        },
+        "layers.2.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 1.52587890625e-05,
+          "relative_l2": 0.005194316076617359
+        },
+        "layers.2.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 1.52587890625e-05,
+          "relative_l2": 0.005386057803224572
+        },
+        "layers.2.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 3.0175200663506985e-05,
+          "relative_l2": 0.008806963281667716
+        },
+        "layers.2.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 5.286186933517456e-06,
+          "relative_l2": 0.0011111787962038606
+        },
+        "layers.3.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 3.0517578125e-05,
+          "relative_l2": 0.005422171517370674
+        },
+        "layers.3.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 3.0517578125e-05,
+          "relative_l2": 0.005701704535523923
+        },
+        "layers.3.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 0.00048828125,
+          "relative_l2": 0.0023482732757357724
+        },
+        "layers.3.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 7.62939453125e-06,
+          "relative_l2": 0.005724186145735639
+        },
+        "layers.3.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.0036154401075816013
+        },
+        "layers.3.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 1.52587890625e-05,
+          "relative_l2": 0.005173525839627243
+        },
+        "layers.3.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.003655743592524836
+        },
+        "layers.3.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 0.00024145841598510742,
+          "relative_l2": 0.005414801210647312
+        },
+        "layers.3.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 3.2782554626464844e-05,
+          "relative_l2": 0.00014492591832324355
+        },
+        "layers.4.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.00400468648575576
+        },
+        "layers.4.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 0.0001220703125,
+          "relative_l2": 0.004901548026779744
+        },
+        "layers.4.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 0.0009765625,
+          "relative_l2": 0.0027690244303130536
+        },
+        "layers.4.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 1.52587890625e-05,
+          "relative_l2": 0.005653606337598559
+        },
+        "layers.4.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 1.52587890625e-05,
+          "relative_l2": 0.00609195851930857
+        },
+        "layers.4.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 1.52587890625e-05,
+          "relative_l2": 0.005693934275542582
+        },
+        "layers.4.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 3.0517578125e-05,
+          "relative_l2": 0.0056039294227048075
+        },
+        "layers.4.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 1.887977123260498e-05,
+          "relative_l2": 0.0010425452768496463
+        },
+        "layers.4.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 6.875023245811462e-05,
+          "relative_l2": 0.001509809205596993
+        },
+        "layers.5.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.00511406444880686
+        },
+        "layers.5.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.0058321091526439195
+        },
+        "layers.5.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 0.0009765625,
+          "relative_l2": 0.0027582046082271824
+        },
+        "layers.5.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 1.1444091796875e-05,
+          "relative_l2": 0.005589501285604319
+        },
+        "layers.5.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 1.52587890625e-05,
+          "relative_l2": 0.005870994793215468
+        },
+        "layers.5.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 1.52587890625e-05,
+          "relative_l2": 0.005559544458980392
+        },
+        "layers.5.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 3.0517578125e-05,
+          "relative_l2": 0.00541131682103917
+        },
+        "layers.5.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 2.1221116185188293e-05,
+          "relative_l2": 0.005025427988786396
+        },
+        "layers.5.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 4.38690185546875e-05,
+          "relative_l2": 0.0006806991102399337
+        },
+        "layers.6.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 3.0517578125e-05,
+          "relative_l2": 0.004293696123922175
+        },
+        "layers.6.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 3.0517578125e-05,
+          "relative_l2": 0.005767691081772064
+        },
+        "layers.6.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 0.0009765625,
+          "relative_l2": 0.0024004126207618067
+        },
+        "layers.6.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 1.52587890625e-05,
+          "relative_l2": 0.004998219633188036
+        },
+        "layers.6.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.005567737037332747
+        },
+        "layers.6.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 1.52587890625e-05,
+          "relative_l2": 0.005317489088692806
+        },
+        "layers.6.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.005117597722320901
+        },
+        "layers.6.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 3.4751370549201965e-05,
+          "relative_l2": 0.0039026742597974328
+        },
+        "layers.6.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 6.8247318267822266e-06,
+          "relative_l2": 0.00035168290906153945
+        },
+        "layers.7.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.003377823753312692
+        },
+        "layers.7.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 0.0001220703125,
+          "relative_l2": 0.0037773962033611865
+        },
+        "layers.7.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 0.0009765625,
+          "relative_l2": 0.002865923109462615
+        },
+        "layers.7.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 1.52587890625e-05,
+          "relative_l2": 0.004686028135458559
+        },
+        "layers.7.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 3.0517578125e-05,
+          "relative_l2": 0.005382591095536578
+        },
+        "layers.7.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 3.0517578125e-05,
+          "relative_l2": 0.005114514649545729
+        },
+        "layers.7.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 0.0001220703125,
+          "relative_l2": 0.004834006623081926
+        },
+        "layers.7.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 7.170438766479492e-05,
+          "relative_l2": 0.0009256681832822582
+        },
+        "layers.7.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 1.4469027519226074e-05,
+          "relative_l2": 0.0006544893721462959
+        },
+        "layers.8.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.003348281875504335
+        },
+        "layers.8.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.0049085567142168425
+        },
+        "layers.8.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 0.0009765625,
+          "relative_l2": 0.0027615892802210083
+        },
+        "layers.8.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 1.52587890625e-05,
+          "relative_l2": 0.0039236393907435526
+        },
+        "layers.8.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 3.0517578125e-05,
+          "relative_l2": 0.0051869474240812214
+        },
+        "layers.8.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 1.52587890625e-05,
+          "relative_l2": 0.00467114577344202
+        },
+        "layers.8.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.00477416761024168
+        },
+        "layers.8.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 2.49519944190979e-05,
+          "relative_l2": 0.0036505954645008796
+        },
+        "layers.8.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 2.781115472316742e-05,
+          "relative_l2": 0.0017806633152363165
+        },
+        "layers.9.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 0.0001220703125,
+          "relative_l2": 0.003055180212694052
+        },
+        "layers.9.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.0038124416618081584
+        },
+        "layers.9.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 0.0009765625,
+          "relative_l2": 0.0018301824548387171
+        },
+        "layers.9.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 1.52587890625e-05,
+          "relative_l2": 0.004161482693126968
+        },
+        "layers.9.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 0.0001220703125,
+          "relative_l2": 0.005015764011566408
+        },
+        "layers.9.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 1.52587890625e-05,
+          "relative_l2": 0.004680751555516801
+        },
+        "layers.9.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.004224344294872728
+        },
+        "layers.9.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 6.911158561706543e-05,
+          "relative_l2": 0.0007348497406949917
+        },
+        "layers.9.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 1.5329569578170776e-05,
+          "relative_l2": 0.0018592746458086454
+        },
+        "layers.10.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 0.0001220703125,
+          "relative_l2": 0.002682535429375487
+        },
+        "layers.10.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.0034729955036081578
+        },
+        "layers.10.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 0.00048828125,
+          "relative_l2": 0.0022645368904722634
+        },
+        "layers.10.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 1.52587890625e-05,
+          "relative_l2": 0.0038677317084324344
+        },
+        "layers.10.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.0044039347642054315
+        },
+        "layers.10.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 1.52587890625e-05,
+          "relative_l2": 0.004635413698604003
+        },
+        "layers.10.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.004036456156133003
+        },
+        "layers.10.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 4.007917596027255e-06,
+          "relative_l2": 0.0003358786980881311
+        },
+        "layers.10.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 1.9047409296035767e-05,
+          "relative_l2": 0.0026656436666845458
+        },
+        "layers.11.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 0.0001220703125,
+          "relative_l2": 0.0030111802603429183
+        },
+        "layers.11.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.0031489626146588407
+        },
+        "layers.11.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 0.0009765625,
+          "relative_l2": 0.0015885922018804596
+        },
+        "layers.11.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 7.62939453125e-06,
+          "relative_l2": 0.003565537306894514
+        },
+        "layers.11.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 3.0517578125e-05,
+          "relative_l2": 0.004533550262036937
+        },
+        "layers.11.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 0.000244140625,
+          "relative_l2": 0.003066246878859796
+        },
+        "layers.11.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.0037431874455225605
+        },
+        "layers.11.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 3.185868263244629e-05,
+          "relative_l2": 0.0004467451686463161
+        },
+        "layers.11.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 3.30805778503418e-05,
+          "relative_l2": 0.0014801556098862473
+        },
+        "layers.12.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.0032598116278016206
+        },
+        "layers.12.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.003799121508962928
+        },
+        "layers.12.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 0.0009765625,
+          "relative_l2": 0.0023546152848541654
+        },
+        "layers.12.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 1.52587890625e-05,
+          "relative_l2": 0.003766692260538439
+        },
+        "layers.12.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.004491822759558759
+        },
+        "layers.12.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 3.0517578125e-05,
+          "relative_l2": 0.003924486381684435
+        },
+        "layers.12.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.004012100359496985
+        },
+        "layers.12.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 5.7544559240341187e-05,
+          "relative_l2": 0.0016280554574795855
+        },
+        "layers.12.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 6.190408021211624e-05,
+          "relative_l2": 0.006391072977277632
+        },
+        "layers.13.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.0034309413693849934
+        },
+        "layers.13.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.0039432139383613705
+        },
+        "layers.13.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 0.0009765625,
+          "relative_l2": 0.0023874406291477146
+        },
+        "layers.13.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 1.52587890625e-05,
+          "relative_l2": 0.0034743805746062706
+        },
+        "layers.13.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 0.0001220703125,
+          "relative_l2": 0.004102117307128094
+        },
+        "layers.13.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 0.00048828125,
+          "relative_l2": 0.0026258695340684144
+        },
+        "layers.13.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.0035989795063484683
+        },
+        "layers.13.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 1.214444637298584e-05,
+          "relative_l2": 0.0004759710449228476
+        },
+        "layers.13.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 4.0723010897636414e-05,
+          "relative_l2": 0.0034096446223881205
+        },
+        "layers.14.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 0.0001220703125,
+          "relative_l2": 0.0025999938086242913
+        },
+        "layers.14.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 0.0001220703125,
+          "relative_l2": 0.003577468406232147
+        },
+        "layers.14.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 0.0009765625,
+          "relative_l2": 0.0016844688097742149
+        },
+        "layers.14.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 3.0517578125e-05,
+          "relative_l2": 0.0029795945352656165
+        },
+        "layers.14.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 0.0001220703125,
+          "relative_l2": 0.0036401693794866356
+        },
+        "layers.14.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 0.0009765625,
+          "relative_l2": 0.0021789841651482064
+        },
+        "layers.14.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 0.0001220703125,
+          "relative_l2": 0.003400082906904532
+        },
+        "layers.14.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 3.521144390106201e-05,
+          "relative_l2": 0.00050903122760093
+        },
+        "layers.14.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 1.2248754501342773e-05,
+          "relative_l2": 0.0010461634711019484
+        },
+        "layers.15.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 0.0001220703125,
+          "relative_l2": 0.0018694013087811815
+        },
+        "layers.15.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 0.000244140625,
+          "relative_l2": 0.0021126623953792614
+        },
+        "layers.15.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 0.0009765625,
+          "relative_l2": 0.001710506773874564
+        },
+        "layers.15.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 1.52587890625e-05,
+          "relative_l2": 0.0029173924591063653
+        },
+        "layers.15.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.003418817878368661
+        },
+        "layers.15.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 0.001953125,
+          "relative_l2": 0.001816392054683815
+        },
+        "layers.15.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.0030037384424149503
+        },
+        "layers.15.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 3.515183925628662e-05,
+          "relative_l2": 0.0003278373524747416
+        },
+        "layers.15.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 1.589953899383545e-05,
+          "relative_l2": 0.0003829656601678465
+        },
+        "layers.16.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 0.000244140625,
+          "relative_l2": 0.002479529556356428
+        },
+        "layers.16.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 0.0001220703125,
+          "relative_l2": 0.0024511791956799084
+        },
+        "layers.16.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 0.0009765625,
+          "relative_l2": 0.0018547943195399278
+        },
+        "layers.16.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 3.0517578125e-05,
+          "relative_l2": 0.002799292325048447
+        },
+        "layers.16.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.003275707791305092
+        },
+        "layers.16.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 3.0517578125e-05,
+          "relative_l2": 0.003044548726554384
+        },
+        "layers.16.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 0.0001220703125,
+          "relative_l2": 0.00297780140370978
+        },
+        "layers.16.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 1.3813376426696777e-05,
+          "relative_l2": 0.0003644758825744093
+        },
+        "layers.16.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 9.909272193908691e-06,
+          "relative_l2": 0.00043223627030541365
+        },
+        "layers.17.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 0.0001220703125,
+          "relative_l2": 0.0017454835067710521
+        },
+        "layers.17.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 0.0001220703125,
+          "relative_l2": 0.002525235666593818
+        },
+        "layers.17.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 0.0009765625,
+          "relative_l2": 0.001710987669082002
+        },
+        "layers.17.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 3.0517578125e-05,
+          "relative_l2": 0.0027412563795330335
+        },
+        "layers.17.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.0033256331288005064
+        },
+        "layers.17.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 0.00048828125,
+          "relative_l2": 0.0019927006529715397
+        },
+        "layers.17.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 0.0001220703125,
+          "relative_l2": 0.0031261254916380493
+        },
+        "layers.17.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 1.1943280696868896e-05,
+          "relative_l2": 0.0008641293923664672
+        },
+        "layers.17.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 1.4647841453552246e-05,
+          "relative_l2": 0.0005138680853051934
+        },
+        "layers.18.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 0.0001220703125,
+          "relative_l2": 0.0025655127988104642
+        },
+        "layers.18.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 0.0001220703125,
+          "relative_l2": 0.002822461393597681
+        },
+        "layers.18.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 0.0009765625,
+          "relative_l2": 0.001573056894530637
+        },
+        "layers.18.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 1.52587890625e-05,
+          "relative_l2": 0.0026293237053351707
+        },
+        "layers.18.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.0032544980161072017
+        },
+        "layers.18.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 3.0517578125e-05,
+          "relative_l2": 0.0030661712285724404
+        },
+        "layers.18.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.003055986492522145
+        },
+        "layers.18.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 5.361391231417656e-05,
+          "relative_l2": 0.0018043230759911496
+        },
+        "layers.18.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 9.588897228240967e-06,
+          "relative_l2": 0.0005763323537942034
+        },
+        "layers.19.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.0022548224852487544
+        },
+        "layers.19.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.0029658370229249382
+        },
+        "layers.19.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 0.00048828125,
+          "relative_l2": 0.0016791289421556853
+        },
+        "layers.19.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 3.0517578125e-05,
+          "relative_l2": 0.002315270516267431
+        },
+        "layers.19.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.003582321752620955
+        },
+        "layers.19.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 3.0517578125e-05,
+          "relative_l2": 0.0030570628365294947
+        },
+        "layers.19.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.0032699262600343684
+        },
+        "layers.19.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 2.3604370653629303e-05,
+          "relative_l2": 0.0006893279029105673
+        },
+        "layers.19.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 5.139139830134809e-06,
+          "relative_l2": 0.0009177089867098004
+        },
+        "layers.20.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.0026725627601251645
+        },
+        "layers.20.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.0026388358335994113
+        },
+        "layers.20.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 0.00048828125,
+          "relative_l2": 0.0010785152350187139
+        },
+        "layers.20.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 1.52587890625e-05,
+          "relative_l2": 0.002650876029519526
+        },
+        "layers.20.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.0038598551117441995
+        },
+        "layers.20.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.003088839987414215
+        },
+        "layers.20.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 0.0001220703125,
+          "relative_l2": 0.00293457808343712
+        },
+        "layers.20.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 4.4288113713264465e-05,
+          "relative_l2": 0.0010238495741589566
+        },
+        "layers.20.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 2.2739171981811523e-05,
+          "relative_l2": 0.0018209665706868082
+        },
+        "layers.21.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 0.0001220703125,
+          "relative_l2": 0.002773656019975148
+        },
+        "layers.21.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.003148351608681154
+        },
+        "layers.21.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 0.00048828125,
+          "relative_l2": 0.0019606928989972312
+        },
+        "layers.21.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 1.52587890625e-05,
+          "relative_l2": 0.0025780001613264023
+        },
+        "layers.21.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 3.0517578125e-05,
+          "relative_l2": 0.003661265109660984
+        },
+        "layers.21.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 3.0517578125e-05,
+          "relative_l2": 0.0030315630317381114
+        },
+        "layers.21.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.002823023463749727
+        },
+        "layers.21.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 3.583729267120361e-05,
+          "relative_l2": 0.0009094232529399506
+        },
+        "layers.21.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 2.7138739824295044e-05,
+          "relative_l2": 0.0025233361397868346
+        },
+        "layers.22.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.002696286699073626
+        },
+        "layers.22.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 0.0001220703125,
+          "relative_l2": 0.0026183740288839618
+        },
+        "layers.22.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 0.00048828125,
+          "relative_l2": 0.0015919683195764556
+        },
+        "layers.22.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 3.0517578125e-05,
+          "relative_l2": 0.002359212515410184
+        },
+        "layers.22.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 3.0517578125e-05,
+          "relative_l2": 0.0035575769720815912
+        },
+        "layers.22.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 3.0517578125e-05,
+          "relative_l2": 0.002913486178323061
+        },
+        "layers.22.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 3.0517578125e-05,
+          "relative_l2": 0.003038919232940454
+        },
+        "layers.22.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 1.6415491700172424e-05,
+          "relative_l2": 0.0010624512486011894
+        },
+        "layers.22.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 4.9908412620425224e-06,
+          "relative_l2": 0.0019785383622697604
+        },
+        "layers.23.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 3.0517578125e-05,
+          "relative_l2": 0.0028343441537211954
+        },
+        "layers.23.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.00277839011074345
+        },
+        "layers.23.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 0.000244140625,
+          "relative_l2": 0.0016178978461830079
+        },
+        "layers.23.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 3.0517578125e-05,
+          "relative_l2": 0.0024327512374190206
+        },
+        "layers.23.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 3.0517578125e-05,
+          "relative_l2": 0.003349158534836485
+        },
+        "layers.23.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 3.0517578125e-05,
+          "relative_l2": 0.0028048947759272457
+        },
+        "layers.23.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.0027862198087534235
+        },
+        "layers.23.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 1.088809221982956e-05,
+          "relative_l2": 0.0017160114588710461
+        },
+        "layers.23.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 4.805566277354956e-06,
+          "relative_l2": 0.0017614465436755096
+        },
+        "layers.24.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.00336072837254479
+        },
+        "layers.24.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 3.0517578125e-05,
+          "relative_l2": 0.0033258657190794083
+        },
+        "layers.24.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 0.00048828125,
+          "relative_l2": 0.001643388920976944
+        },
+        "layers.24.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.0019388533647226465
+        },
+        "layers.24.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.003153488567604846
+        },
+        "layers.24.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 3.0517578125e-05,
+          "relative_l2": 0.0026502469952315653
+        },
+        "layers.24.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 0.0001220703125,
+          "relative_l2": 0.002650647809417489
+        },
+        "layers.24.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 5.568726919591427e-06,
+          "relative_l2": 0.0010076319001728316
+        },
+        "layers.24.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 4.802364856004715e-06,
+          "relative_l2": 0.0011984696124146255
+        },
+        "layers.25.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 0.0001220703125,
+          "relative_l2": 0.0019918995135773656
+        },
+        "layers.25.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 3.0517578125e-05,
+          "relative_l2": 0.0017790371430082101
+        },
+        "layers.25.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 0.000244140625,
+          "relative_l2": 0.0014436945782756144
+        },
+        "layers.25.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 3.0517578125e-05,
+          "relative_l2": 0.0019827696702518403
+        },
+        "layers.25.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.002559887963633949
+        },
+        "layers.25.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 0.000244140625,
+          "relative_l2": 0.0013493186059090512
+        },
+        "layers.25.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 0.0001220703125,
+          "relative_l2": 0.0020111024629312466
+        },
+        "layers.25.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 7.345457561314106e-06,
+          "relative_l2": 0.0012352646773408323
+        },
+        "layers.25.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 2.709031105041504e-05,
+          "relative_l2": 0.00046249257273420533
+        },
+        "layers.26.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.0017723854587130786
+        },
+        "layers.26.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 0.0001220703125,
+          "relative_l2": 0.0018598480204702692
+        },
+        "layers.26.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 0.0009765625,
+          "relative_l2": 0.0015424365251607904
+        },
+        "layers.26.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 3.0517578125e-05,
+          "relative_l2": 0.0015683571345478022
+        },
+        "layers.26.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.0026974104911923146
+        },
+        "layers.26.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 3.0517578125e-05,
+          "relative_l2": 0.0021849024970000018
+        },
+        "layers.26.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.0018443809765747643
+        },
+        "layers.26.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 8.095800876617432e-05,
+          "relative_l2": 0.0009245021837687732
+        },
+        "layers.26.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 1.2129545211791992e-05,
+          "relative_l2": 0.0010470685736756699
+        },
+        "layers.27.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 3.0517578125e-05,
+          "relative_l2": 0.002465821593475114
+        },
+        "layers.27.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 0.000244140625,
+          "relative_l2": 0.0021892037732252965
+        },
+        "layers.27.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 0.00048828125,
+          "relative_l2": 0.0011528652513576225
+        },
+        "layers.27.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 1.52587890625e-05,
+          "relative_l2": 0.0017000112978564235
+        },
+        "layers.27.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 3.0517578125e-05,
+          "relative_l2": 0.0026853077146049378
+        },
+        "layers.27.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 0.000244140625,
+          "relative_l2": 0.002002147858700826
+        },
+        "layers.27.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 0.0001220703125,
+          "relative_l2": 0.002123837340182255
+        },
+        "layers.27.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 4.780292510986328e-05,
+          "relative_l2": 0.0004620745510545546
+        },
+        "layers.27.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 7.6051801443099976e-06,
+          "relative_l2": 0.0012803909583706005
+        },
+        "layers.28.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 3.0517578125e-05,
+          "relative_l2": 0.002415668317270383
+        },
+        "layers.28.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 0.0001220703125,
+          "relative_l2": 0.0018532802410368657
+        },
+        "layers.28.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 0.000244140625,
+          "relative_l2": 0.0007295593522205459
+        },
+        "layers.28.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 3.0517578125e-05,
+          "relative_l2": 0.0015785842289169796
+        },
+        "layers.28.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 3.0517578125e-05,
+          "relative_l2": 0.0019226607526136037
+        },
+        "layers.28.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 0.000244140625,
+          "relative_l2": 0.001401015614115574
+        },
+        "layers.28.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.0015802836964542563
+        },
+        "layers.28.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 9.94652509689331e-06,
+          "relative_l2": 0.0001843379496236059
+        },
+        "layers.28.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 5.289912223815918e-06,
+          "relative_l2": 0.00033245981274735543
+        },
+        "layers.29.attention.wq.weight": {
+          "exact": false,
+          "max_abs": 3.0517578125e-05,
+          "relative_l2": 0.001880442410348915
+        },
+        "layers.29.attention.wk.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.001750122876949682
+        },
+        "layers.29.attention.wv.weight": {
+          "exact": false,
+          "max_abs": 0.000244140625,
+          "relative_l2": 0.0005780565349053972
+        },
+        "layers.29.attention.wo.weight": {
+          "exact": false,
+          "max_abs": 3.0517578125e-05,
+          "relative_l2": 0.0010607869607624704
+        },
+        "layers.29.feed_forward.w1.weight": {
+          "exact": false,
+          "max_abs": 6.103515625e-05,
+          "relative_l2": 0.000729706061221106
+        },
+        "layers.29.feed_forward.w2.weight": {
+          "exact": false,
+          "max_abs": 0.0001220703125,
+          "relative_l2": 0.0006094736928538511
+        },
+        "layers.29.feed_forward.w3.weight": {
+          "exact": false,
+          "max_abs": 0.0001220703125,
+          "relative_l2": 0.000697823822628842
+        },
+        "layers.29.attention_norm.weight": {
+          "exact": false,
+          "max_abs": 6.7427754402160645e-06,
+          "relative_l2": 0.00011354767854400656
+        },
+        "layers.29.ffn_norm.weight": {
+          "exact": false,
+          "max_abs": 1.189112663269043e-05,
+          "relative_l2": 9.583658479870714e-05
+        },
+        "norm.weight": {
+          "exact": false,
+          "max_abs": 1.1764466762542725e-05,
+          "relative_l2": 5.4567294668081224e-05
+        }
+      },
+      "tied_embedding": true,
+      "parameter_tensors": 272,
+      "max_gradient_relative_l2": 0.008806963281667716,
+      "gradient_gate_2pct": true
+    }
+  ],
+  "status": "passed"
+}

@@ -1,0 +1,119 @@
+/home/ubuntu/brandon-mini/.venv/lib/python3.12/site-packages/torch/distributed/c10d_logger.py:83: UserWarning: barrier(): using the device under current context. You can specify `device_id` in `init_process_group` to mute this warning.
+  return func(*args, **kwargs)
+[rank0]:[W1014 02:13:07.546156615 ProcessGroupNCCL.cpp:5310] Guessing device ID based on global rank. This can cause a hang if rank to GPU mapping is heterogeneous. You can specify device_id in init_process_group()
+/home/ubuntu/ntransformer-h100/training/direct-gqa-20261014/source-snapshot/scripts/train_brandon_experiment.py:158: FutureWarning: `broadcast_buffers` is deprecated. Use `forward_sync_buffers` instead. IMPORTANT: unlike `broadcast_buffers=False`, `forward_sync_buffers=False` still syncs buffers at init. If you rely on buffers NOT being synced at init (e.g. rank-local buffers), keep using `broadcast_buffers=False` until `init_sync_buffers` is available.
+  distributed = (DDP(model, device_ids=[device.index], broadcast_buffers=False,
+/home/ubuntu/ntransformer-h100/training/direct-gqa-20261014/source-snapshot/scripts/train_brandon_experiment.py:158: FutureWarning: `broadcast_buffers` is deprecated. Use `forward_sync_buffers` instead. IMPORTANT: unlike `broadcast_buffers=False`, `forward_sync_buffers=False` still syncs buffers at init. If you rely on buffers NOT being synced at init (e.g. rank-local buffers), keep using `broadcast_buffers=False` until `init_sync_buffers` is available.
+  distributed = (DDP(model, device_ids=[device.index], broadcast_buffers=False,
+{"step": 32778, "loss": 2.225658893585205, "seconds": 0.18708778300060658, "tokens": 65536, "grad_norm": 0.3461737036705017, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 56.989633560180664, "backward_stream_ms": 124.2778205871582, "optimizer_stream_ms": 3.3226239681243896, "measured": false}
+/home/ubuntu/brandon-mini/.venv/lib/python3.12/site-packages/torch/distributed/c10d_logger.py:83: UserWarning: barrier(): using the device under current context. You can specify `device_id` in `init_process_group` to mute this warning.
+  return func(*args, **kwargs)
+USDT:2026-10-14 02:13:14 89006:89006 SyncActivityProfilerHandler.cpp:39] profiler_start
+USDT:2026-10-14 02:13:14 89005:89005 SyncActivityProfilerHandler.cpp:39] profiler_start
+{"step": 32781, "loss": 2.3501224517822266, "seconds": 0.2868061930021213, "tokens": 65536, "grad_norm": 0.3487781286239624, "learning_rate": 2.9999999999999997e-05, "forward_stream_ms": 92.19296264648438, "backward_stream_ms": 183.66883087158203, "optimizer_stream_ms": 4.783711910247803, "measured": true}
+USDT:2026-10-14 02:13:15 89005:89005 SyncActivityProfilerHandler.cpp:46] profiler_stop
+USDT:2026-10-14 02:13:15 89006:89006 SyncActivityProfilerHandler.cpp:46] profiler_stop
+{
+  "status": "complete",
+  "mode": "native",
+  "backend": {
+    "native_norms": 61,
+    "norm_mode": "compatible",
+    "norm_reductions": "PyTorch",
+    "native_swiglu": 30,
+    "shared_projection_cast_groups": 60,
+    "direct_gqa_layers": 0,
+    "checkpoint_layers": 0,
+    "peer_activation_storage": false,
+    "gemm_attention_optimizer_ddp": "PyTorch",
+    "higher_order_gradients": false,
+    "deterministic_algorithms": false,
+    "fill_uninitialized_memory": true,
+    "gradient_bucket_views": true,
+    "defer_loss_readbacks": true,
+    "cublas_workspace_config": null,
+    "attention_dispatch": "PyTorch SDPA automatic; constrained by determinism setting"
+  },
+  "steps": 13,
+  "start_step": 32768,
+  "completed_steps": 32781,
+  "physical_world_size": 2,
+  "logical_world_size": 2,
+  "global_tokens_per_step": 65536,
+  "parameters": 107604288,
+  "warmup_steps": 10,
+  "measured_steps": 3,
+  "tokens_per_second": 135082.7631228191,
+  "mean_step_seconds": 0.4851544229992821,
+  "measured_window_seconds": 1.4554632689978462,
+  "instrumented_step_mean_seconds": 0.2588738483342847,
+  "timings_rank0": {
+    "initialization_seconds": 5.6332547740021255,
+    "initial_validation_seconds": 0.6310738760003005,
+    "training_seconds_including_warmup": 3.578908433999459,
+    "final_validation_seconds": 0.47052084999813815,
+    "checkpoint_and_batch_record_seconds": 1.0713935470012075,
+    "process_seconds_through_checkpoint": 18.42765960000179
+  },
+  "historical_baseline": {
+    "baseline_sha256": "bf58fea89c51f967ebcf59f9b74acb6fadb84f40a2720a679fe154436de43038",
+    "captured_step": 25400,
+    "historical_tokens_per_second": 307985.1565696424,
+    "scope": "Historical context; paired continuation is the causal implementation comparison",
+    "initialization": "Completed pretraining checkpoint, restored AdamW, final LR floor; not a pilot restart"
+  },
+  "initial_validation": {
+    "fineweb_edu": 2.6587655395269394,
+    "cosmopedia": 1.6827282086014748,
+    "mean": 2.170746874064207
+  },
+  "final_validation": {
+    "fineweb_edu": 2.658698484301567,
+    "cosmopedia": 1.6822378039360046,
+    "mean": 2.170468144118786
+  },
+  "batch_sha256": "849e57dcbfd84f0d8f994ac62b41522aaf4bc289ac75a069bdace7b12cd71633",
+  "ranks": [
+    {
+      "rank": 0,
+      "memory": [
+        {
+          "device": 0,
+          "peak_allocated_bytes": 14345171456,
+          "peak_reserved_bytes": 14929625088
+        },
+        {
+          "device": 1,
+          "peak_allocated_bytes": 0,
+          "peak_reserved_bytes": 0
+        }
+      ],
+      "pipeline": null
+    },
+    {
+      "rank": 1,
+      "memory": [
+        {
+          "device": 0,
+          "peak_allocated_bytes": 0,
+          "peak_reserved_bytes": 0
+        },
+        {
+          "device": 1,
+          "peak_allocated_bytes": 14345171456,
+          "peak_reserved_bytes": 14929625088
+        }
+      ],
+      "pipeline": null
+    }
+  ],
+  "profiled": true,
+  "torch_version": "2.14.1+cu130",
+  "cuda_version": "13.0",
+  "nccl_version": [
+    2,
+    30,
+    7
+  ],
+  "source_checkpoint": "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/pretrain/last.pt"
+}

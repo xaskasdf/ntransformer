@@ -1,0 +1,41 @@
+/home/ubuntu/brandon-mini/.venv/lib/python3.12/site-packages/torch/distributed/c10d_logger.py:83: UserWarning: barrier(): using the device under current context. You can specify `device_id` in `init_process_group` to mute this warning.
+  return func(*args, **kwargs)
+[rank0]:[W1013 21:44:38.323292254 ProcessGroupNCCL.cpp:5310] Guessing device ID based on global rank. This can cause a hang if rank to GPU mapping is heterogeneous. You can specify device_id in init_process_group()
+/lambda/nfs/btiny/brandon-mini/sources/stage1-v1/scripts/train_mini.py:168: FutureWarning: `broadcast_buffers` is deprecated. Use `forward_sync_buffers` instead. IMPORTANT: unlike `broadcast_buffers=False`, `forward_sync_buffers=False` still syncs buffers at init. If you rely on buffers NOT being synced at init (e.g. rank-local buffers), keep using `broadcast_buffers=False` until `init_sync_buffers` is available.
+  distributed = DDP(model, device_ids=[device.index] if device.type == 'cuda' else None,
+/lambda/nfs/btiny/brandon-mini/sources/stage1-v1/scripts/train_mini.py:168: FutureWarning: `broadcast_buffers` is deprecated. Use `forward_sync_buffers` instead. IMPORTANT: unlike `broadcast_buffers=False`, `forward_sync_buffers=False` still syncs buffers at init. If you rely on buffers NOT being synced at init (e.g. rank-local buffers), keep using `broadcast_buffers=False` until `init_sync_buffers` is available.
+  distributed = DDP(model, device_ids=[device.index] if device.type == 'cuda' else None,
+{"event": "validation", "step": 0, "loss": {"instructions": 2.781039579013649, "mean": 2.781039579013649}}
+{"event": "train", "step": 10, "loss": 1.6956512244215092, "supervised_tokens_per_second": 1579.5871941365156, "learning_rate": 5e-05, "grad_norm": 6.7264509201049805}
+{"event": "train", "step": 20, "loss": 0.41136462706296395, "supervised_tokens_per_second": 1961.8740744661206, "learning_rate": 5e-05, "grad_norm": 2.8673088550567627}
+{"event": "train", "step": 30, "loss": 0.14315353321097696, "supervised_tokens_per_second": 2649.1760527892693, "learning_rate": 4.8287289481503954e-05, "grad_norm": 2.701688289642334}
+{"event": "train", "step": 40, "loss": 0.06000724650160689, "supervised_tokens_per_second": 2773.0457143347307, "learning_rate": 4.340990257669732e-05, "grad_norm": 1.421302080154419}
+{"event": "train", "step": 50, "loss": 0.03220326961573696, "supervised_tokens_per_second": 2816.089157132953, "learning_rate": 3.611037722821452e-05, "grad_norm": 0.5041708946228027}
+{"event": "validation", "step": 50, "loss": {"instructions": 0.3305567423536052, "mean": 0.3305567423536052}}
+/home/ubuntu/brandon-mini/.venv/lib/python3.12/site-packages/torch/distributed/c10d_logger.py:83: UserWarning: barrier(): using the device under current context. You can specify `device_id` in `init_process_group` to mute this warning.
+  return func(*args, **kwargs)
+{"event": "train", "step": 60, "loss": 0.016524869070982728, "supervised_tokens_per_second": 2797.060128336701, "learning_rate": 2.7500000000000004e-05, "grad_norm": 1.068663239479065}
+{"event": "train", "step": 70, "loss": 0.014346507532535278, "supervised_tokens_per_second": 2687.4044025049043, "learning_rate": 1.888962277178548e-05, "grad_norm": 0.7031105160713196}
+{"event": "train", "step": 80, "loss": 0.006260247929114143, "supervised_tokens_per_second": 2761.814223486265, "learning_rate": 1.1590097423302684e-05, "grad_norm": 0.05437589809298515}
+{"event": "train", "step": 90, "loss": 0.005075716696841922, "supervised_tokens_per_second": 2685.200540620907, "learning_rate": 6.712710518496049e-06, "grad_norm": 0.0976850837469101}
+{"event": "train", "step": 100, "loss": 0.002920625445156401, "supervised_tokens_per_second": 2669.318496835839, "learning_rate": 5e-06, "grad_norm": 0.7143112421035767}
+{"event": "validation", "step": 100, "loss": {"instructions": 0.3019062414782082, "mean": 0.3019062414782082}}
+{
+  "phase": "sft",
+  "parameters": 107604288,
+  "world_size": 2,
+  "start_step": 0,
+  "completed_steps": 100,
+  "planned_steps": 100,
+  "initial_validation": {
+    "instructions": 2.781039579013649,
+    "mean": 2.781039579013649
+  },
+  "final_validation": {
+    "instructions": 0.3019062414782082,
+    "mean": 0.3019062414782082
+  },
+  "best_validation_loss": 0.3019062414782082,
+  "manifest_sha256": "8ec4eae0df2b56c3039398b4ea9ec940cca5cf3372d6f96cc48c0243ba5a879f",
+  "status": "complete"
+}

@@ -1,0 +1,2340 @@
+{
+  "preflight-labels": {
+    "status": "complete",
+    "mode": "native",
+    "backend": {
+      "native_norms": 61,
+      "norm_mode": "compatible",
+      "norm_reductions": "PyTorch",
+      "native_swiglu": 30,
+      "shared_projection_cast_groups": 60,
+      "direct_gqa_layers": 30,
+      "native_rotary_layers": 30,
+      "loss_mode": "fused",
+      "loss_block_size": 2048,
+      "fused_loss_labels": true,
+      "checkpoint_layers": 0,
+      "peer_activation_storage": false,
+      "gemm_attention_optimizer_ddp": "PyTorch",
+      "higher_order_gradients": false,
+      "deterministic_algorithms": true,
+      "fill_uninitialized_memory": false,
+      "gradient_bucket_views": true,
+      "defer_loss_readbacks": true,
+      "cublas_workspace_config": ":4096:8",
+      "attention_dispatch": "PyTorch SDPA automatic; constrained by determinism setting"
+    },
+    "steps": 2,
+    "start_step": 32768,
+    "completed_steps": 32770,
+    "physical_world_size": 2,
+    "logical_world_size": 2,
+    "global_tokens_per_step": 65536,
+    "parameters": 107604288,
+    "warmup_steps": 0,
+    "measured_steps": 2,
+    "tokens_per_second": 247836.85893428844,
+    "mean_step_seconds": 0.2644320150029671,
+    "measured_window_seconds": 0.5288640300059342,
+    "instrumented_step_mean_seconds": 0.2639908370001649,
+    "timings_rank0": {
+      "initialization_seconds": 5.6646047870017355,
+      "initial_validation_seconds": 0.5038141910044942,
+      "training_seconds_including_warmup": 0.5298876140004722,
+      "final_validation_seconds": 0.40845857900421834,
+      "checkpoint_and_batch_record_seconds": 1.0612494090019027,
+      "process_seconds_through_checkpoint": 8.173587385004794
+    },
+    "historical_baseline": {
+      "baseline_sha256": "bf58fea89c51f967ebcf59f9b74acb6fadb84f40a2720a679fe154436de43038",
+      "captured_step": 25400,
+      "historical_tokens_per_second": 307985.1565696424,
+      "scope": "Historical context; paired continuation is the causal implementation comparison",
+      "initialization": "Completed pretraining checkpoint, restored AdamW, final LR floor; not a pilot restart"
+    },
+    "initial_validation": {
+      "fineweb_edu": 2.6587175726890564,
+      "cosmopedia": 1.6827719807624817,
+      "mean": 2.170744776725769
+    },
+    "final_validation": {
+      "fineweb_edu": 2.658703312277794,
+      "cosmopedia": 1.6827641278505325,
+      "mean": 2.170733720064163
+    },
+    "batch_sha256": "bb43f142c737a6e197972aa2b0265a18a9ef33f1953729bd335271a724674c75",
+    "ranks": [
+      {
+        "rank": 0,
+        "memory": [
+          {
+            "device": 0,
+            "peak_allocated_bytes": 12362903040,
+            "peak_reserved_bytes": 12803112960
+          },
+          {
+            "device": 1,
+            "peak_allocated_bytes": 0,
+            "peak_reserved_bytes": 0
+          }
+        ],
+        "graph": null,
+        "pipeline": null
+      },
+      {
+        "rank": 1,
+        "memory": [
+          {
+            "device": 0,
+            "peak_allocated_bytes": 0,
+            "peak_reserved_bytes": 0
+          },
+          {
+            "device": 1,
+            "peak_allocated_bytes": 12362903040,
+            "peak_reserved_bytes": 12803112960
+          }
+        ],
+        "graph": null,
+        "pipeline": null
+      }
+    ],
+    "profiled": false,
+    "torch_version": "2.14.1+cu130",
+    "cuda_version": "13.0",
+    "nccl_version": [
+      2,
+      30,
+      7
+    ],
+    "source_checkpoint": "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/pretrain/last.pt",
+    "checkpoint_sha256": "db218440f4029ebef0a6b577401344710b01a1cfc13641abde166ab207ff177c"
+  },
+  "preflight-graph": {
+    "status": "complete",
+    "mode": "native",
+    "backend": {
+      "native_norms": 61,
+      "norm_mode": "compatible",
+      "norm_reductions": "PyTorch",
+      "native_swiglu": 30,
+      "shared_projection_cast_groups": 60,
+      "direct_gqa_layers": 30,
+      "native_rotary_layers": 30,
+      "loss_mode": "fused",
+      "loss_block_size": 2048,
+      "fused_loss_labels": true,
+      "checkpoint_layers": 0,
+      "peer_activation_storage": false,
+      "gemm_attention_optimizer_ddp": "PyTorch",
+      "higher_order_gradients": false,
+      "deterministic_algorithms": true,
+      "fill_uninitialized_memory": false,
+      "gradient_bucket_views": true,
+      "defer_loss_readbacks": true,
+      "cublas_workspace_config": ":4096:8",
+      "attention_dispatch": "PyTorch SDPA automatic; constrained by determinism setting",
+      "graph_capture_seconds": 0.6013896369986469,
+      "training_graph": true
+    },
+    "steps": 2,
+    "start_step": 32768,
+    "completed_steps": 32770,
+    "physical_world_size": 2,
+    "logical_world_size": 2,
+    "global_tokens_per_step": 65536,
+    "parameters": 107604288,
+    "warmup_steps": 0,
+    "measured_steps": 2,
+    "tokens_per_second": 306700.96327003336,
+    "mean_step_seconds": 0.21368045049894135,
+    "measured_window_seconds": 0.4273609009978827,
+    "instrumented_step_mean_seconds": 0.21317340600216994,
+    "timings_rank0": {
+      "initialization_seconds": 6.267721031996189,
+      "initial_validation_seconds": 0.4145664149982622,
+      "training_seconds_including_warmup": 0.4277426900007413,
+      "final_validation_seconds": 0.40796791200409643,
+      "checkpoint_and_batch_record_seconds": 1.06455753800401,
+      "process_seconds_through_checkpoint": 8.588091331999749
+    },
+    "historical_baseline": {
+      "baseline_sha256": "bf58fea89c51f967ebcf59f9b74acb6fadb84f40a2720a679fe154436de43038",
+      "captured_step": 25400,
+      "historical_tokens_per_second": 307985.1565696424,
+      "scope": "Historical context; paired continuation is the causal implementation comparison",
+      "initialization": "Completed pretraining checkpoint, restored AdamW, final LR floor; not a pilot restart"
+    },
+    "initial_validation": {
+      "fineweb_edu": 2.6587175726890564,
+      "cosmopedia": 1.6827719807624817,
+      "mean": 2.170744776725769
+    },
+    "final_validation": {
+      "fineweb_edu": 2.658703312277794,
+      "cosmopedia": 1.6827641278505325,
+      "mean": 2.170733720064163
+    },
+    "batch_sha256": "bb43f142c737a6e197972aa2b0265a18a9ef33f1953729bd335271a724674c75",
+    "ranks": [
+      {
+        "rank": 0,
+        "memory": [
+          {
+            "device": 0,
+            "peak_allocated_bytes": 2720866816,
+            "peak_reserved_bytes": 13186891776
+          },
+          {
+            "device": 1,
+            "peak_allocated_bytes": 0,
+            "peak_reserved_bytes": 0
+          }
+        ],
+        "graph": {
+          "forward_replays": 4,
+          "backward_replays": 4,
+          "input_reserved_bytes": 262144,
+          "input_addresses": [
+            139653944115200,
+            139653944246272
+          ],
+          "parameter_addresses_unchanged": true,
+          "captured": "model forward and backward",
+          "collective_optimizer": "eager",
+          "accumulation_storage": "separate persistent parameter gradients",
+          "live_forward": false
+        },
+        "pipeline": null
+      },
+      {
+        "rank": 1,
+        "memory": [
+          {
+            "device": 0,
+            "peak_allocated_bytes": 0,
+            "peak_reserved_bytes": 0
+          },
+          {
+            "device": 1,
+            "peak_allocated_bytes": 2720866816,
+            "peak_reserved_bytes": 13186891776
+          }
+        ],
+        "graph": {
+          "forward_replays": 4,
+          "backward_replays": 4,
+          "input_reserved_bytes": 262144,
+          "input_addresses": [
+            140141422903296,
+            140141423034368
+          ],
+          "parameter_addresses_unchanged": true,
+          "captured": "model forward and backward",
+          "collective_optimizer": "eager",
+          "accumulation_storage": "separate persistent parameter gradients",
+          "live_forward": false
+        },
+        "pipeline": null
+      }
+    ],
+    "profiled": false,
+    "torch_version": "2.14.1+cu130",
+    "cuda_version": "13.0",
+    "nccl_version": [
+      2,
+      30,
+      7
+    ],
+    "source_checkpoint": "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/pretrain/last.pt",
+    "checkpoint_sha256": "05a32713ba9ccb9cb5044a0edda6c765dd95b6573c63f21d8f0c8b68cf8bc532",
+    "audit": {
+      "status": "passed",
+      "reference": "/home/ubuntu/ntransformer-h100/training/labels-graph-20261014/preflight-labels",
+      "candidate": "/home/ubuntu/ntransformer-h100/training/labels-graph-20261014/preflight-graph",
+      "paired_throughput_ratio": 1.2375115008674,
+      "historical_throughput_ratio": 0.9958303402868096,
+      "historical_ratio_scope": "Descriptive only: separate initialization and instrumentation",
+      "max_training_loss_delta": 0.0,
+      "final_validation_delta": 0.0,
+      "relative_update_difference": 0.0,
+      "max_weight_difference": 0.0,
+      "updated_tensors": 273,
+      "total_tensors": 273,
+      "exact": {
+        "model_state_dict": true,
+        "optimizer_states": true,
+        "rng_states": true,
+        "recorded_metrics": true,
+        "validation": true
+      },
+      "require_exact": true,
+      "limits": {
+        "training_loss": 0.03,
+        "validation_loss": 0.02,
+        "relative_update_difference": 0.1
+      }
+    }
+  },
+  "strict-control": {
+    "status": "complete",
+    "mode": "native",
+    "backend": {
+      "native_norms": 61,
+      "norm_mode": "compatible",
+      "norm_reductions": "PyTorch",
+      "native_swiglu": 30,
+      "shared_projection_cast_groups": 60,
+      "direct_gqa_layers": 30,
+      "native_rotary_layers": 30,
+      "loss_mode": "fused",
+      "loss_block_size": 2048,
+      "fused_loss_labels": false,
+      "checkpoint_layers": 0,
+      "peer_activation_storage": false,
+      "gemm_attention_optimizer_ddp": "PyTorch",
+      "higher_order_gradients": false,
+      "deterministic_algorithms": true,
+      "fill_uninitialized_memory": false,
+      "gradient_bucket_views": true,
+      "defer_loss_readbacks": true,
+      "cublas_workspace_config": ":4096:8",
+      "attention_dispatch": "PyTorch SDPA automatic; constrained by determinism setting"
+    },
+    "steps": 100,
+    "start_step": 32768,
+    "completed_steps": 32868,
+    "physical_world_size": 2,
+    "logical_world_size": 2,
+    "global_tokens_per_step": 65536,
+    "parameters": 107604288,
+    "warmup_steps": 10,
+    "measured_steps": 90,
+    "tokens_per_second": 347275.20796135365,
+    "mean_step_seconds": 0.18871488231112987,
+    "measured_window_seconds": 16.984339408001688,
+    "instrumented_step_mean_seconds": 0.18839164151092216,
+    "timings_rank0": {
+      "initialization_seconds": 5.602436003995535,
+      "initial_validation_seconds": 0.5276137769978959,
+      "training_seconds_including_warmup": 19.005969655998342,
+      "final_validation_seconds": 0.4084793250003713,
+      "checkpoint_and_batch_record_seconds": 1.0750455130037153,
+      "process_seconds_through_checkpoint": 26.622451646995614
+    },
+    "historical_baseline": {
+      "baseline_sha256": "bf58fea89c51f967ebcf59f9b74acb6fadb84f40a2720a679fe154436de43038",
+      "captured_step": 25400,
+      "historical_tokens_per_second": 307985.1565696424,
+      "scope": "Historical context; paired continuation is the causal implementation comparison",
+      "initialization": "Completed pretraining checkpoint, restored AdamW, final LR floor; not a pilot restart"
+    },
+    "initial_validation": {
+      "fineweb_edu": 2.6587175726890564,
+      "cosmopedia": 1.6827719807624817,
+      "mean": 2.170744776725769
+    },
+    "final_validation": {
+      "fineweb_edu": 2.6584929823875427,
+      "cosmopedia": 1.6815914139151573,
+      "mean": 2.17004219815135
+    },
+    "batch_sha256": "b8c0439017c9037042592324992fe409427e4374902197e7829a10c9c4069106",
+    "ranks": [
+      {
+        "rank": 0,
+        "memory": [
+          {
+            "device": 0,
+            "peak_allocated_bytes": 12362771968,
+            "peak_reserved_bytes": 12803112960
+          },
+          {
+            "device": 1,
+            "peak_allocated_bytes": 0,
+            "peak_reserved_bytes": 0
+          }
+        ],
+        "graph": null,
+        "pipeline": null
+      },
+      {
+        "rank": 1,
+        "memory": [
+          {
+            "device": 0,
+            "peak_allocated_bytes": 0,
+            "peak_reserved_bytes": 0
+          },
+          {
+            "device": 1,
+            "peak_allocated_bytes": 12362771968,
+            "peak_reserved_bytes": 12803112960
+          }
+        ],
+        "graph": null,
+        "pipeline": null
+      }
+    ],
+    "profiled": false,
+    "torch_version": "2.14.1+cu130",
+    "cuda_version": "13.0",
+    "nccl_version": [
+      2,
+      30,
+      7
+    ],
+    "source_checkpoint": "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/pretrain/last.pt",
+    "checkpoint_sha256": "ddf46bd1ccd8aaea1c3cd8e11f9e8190e2f83520b31eb70dec2de54f34d49774",
+    "audit": {
+      "status": "passed",
+      "reference": "/home/ubuntu/ntransformer-h100/training/difference-review-20261013/deterministic-reference",
+      "candidate": "/home/ubuntu/ntransformer-h100/training/labels-graph-20261014/strict-control",
+      "paired_throughput_ratio": 1.3498362387410447,
+      "historical_throughput_ratio": 1.127571249956739,
+      "historical_ratio_scope": "Descriptive only: separate initialization and instrumentation",
+      "max_training_loss_delta": 0.0,
+      "final_validation_delta": 0.0,
+      "relative_update_difference": 0.0,
+      "max_weight_difference": 0.0,
+      "updated_tensors": 273,
+      "total_tensors": 273,
+      "exact": {
+        "model_state_dict": true,
+        "optimizer_states": true,
+        "rng_states": true,
+        "recorded_metrics": true,
+        "validation": true
+      },
+      "require_exact": true,
+      "limits": {
+        "training_loss": 0.03,
+        "validation_loss": 0.02,
+        "relative_update_difference": 0.1
+      }
+    }
+  },
+  "strict-labels": {
+    "status": "complete",
+    "mode": "native",
+    "backend": {
+      "native_norms": 61,
+      "norm_mode": "compatible",
+      "norm_reductions": "PyTorch",
+      "native_swiglu": 30,
+      "shared_projection_cast_groups": 60,
+      "direct_gqa_layers": 30,
+      "native_rotary_layers": 30,
+      "loss_mode": "fused",
+      "loss_block_size": 2048,
+      "fused_loss_labels": true,
+      "checkpoint_layers": 0,
+      "peer_activation_storage": false,
+      "gemm_attention_optimizer_ddp": "PyTorch",
+      "higher_order_gradients": false,
+      "deterministic_algorithms": true,
+      "fill_uninitialized_memory": false,
+      "gradient_bucket_views": true,
+      "defer_loss_readbacks": true,
+      "cublas_workspace_config": ":4096:8",
+      "attention_dispatch": "PyTorch SDPA automatic; constrained by determinism setting"
+    },
+    "steps": 100,
+    "start_step": 32768,
+    "completed_steps": 32868,
+    "physical_world_size": 2,
+    "logical_world_size": 2,
+    "global_tokens_per_step": 65536,
+    "parameters": 107604288,
+    "warmup_steps": 10,
+    "measured_steps": 90,
+    "tokens_per_second": 348674.79958221223,
+    "mean_step_seconds": 0.1879573748333011,
+    "measured_window_seconds": 16.9161637349971,
+    "instrumented_step_mean_seconds": 0.1876317897222988,
+    "timings_rank0": {
+      "initialization_seconds": 5.678490651000175,
+      "initial_validation_seconds": 0.503273533002357,
+      "training_seconds_including_warmup": 18.950461486005224,
+      "final_validation_seconds": 0.4082708320056554,
+      "checkpoint_and_batch_record_seconds": 1.07190444200387,
+      "process_seconds_through_checkpoint": 26.61822660799953
+    },
+    "historical_baseline": {
+      "baseline_sha256": "bf58fea89c51f967ebcf59f9b74acb6fadb84f40a2720a679fe154436de43038",
+      "captured_step": 25400,
+      "historical_tokens_per_second": 307985.1565696424,
+      "scope": "Historical context; paired continuation is the causal implementation comparison",
+      "initialization": "Completed pretraining checkpoint, restored AdamW, final LR floor; not a pilot restart"
+    },
+    "initial_validation": {
+      "fineweb_edu": 2.6587175726890564,
+      "cosmopedia": 1.6827719807624817,
+      "mean": 2.170744776725769
+    },
+    "final_validation": {
+      "fineweb_edu": 2.6584929823875427,
+      "cosmopedia": 1.6815914139151573,
+      "mean": 2.17004219815135
+    },
+    "batch_sha256": "b8c0439017c9037042592324992fe409427e4374902197e7829a10c9c4069106",
+    "ranks": [
+      {
+        "rank": 0,
+        "memory": [
+          {
+            "device": 0,
+            "peak_allocated_bytes": 12792819200,
+            "peak_reserved_bytes": 13071548416
+          },
+          {
+            "device": 1,
+            "peak_allocated_bytes": 0,
+            "peak_reserved_bytes": 0
+          }
+        ],
+        "graph": null,
+        "pipeline": null
+      },
+      {
+        "rank": 1,
+        "memory": [
+          {
+            "device": 0,
+            "peak_allocated_bytes": 0,
+            "peak_reserved_bytes": 0
+          },
+          {
+            "device": 1,
+            "peak_allocated_bytes": 12792819200,
+            "peak_reserved_bytes": 13071548416
+          }
+        ],
+        "graph": null,
+        "pipeline": null
+      }
+    ],
+    "profiled": false,
+    "torch_version": "2.14.1+cu130",
+    "cuda_version": "13.0",
+    "nccl_version": [
+      2,
+      30,
+      7
+    ],
+    "source_checkpoint": "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/pretrain/last.pt",
+    "checkpoint_sha256": "1454d322b7565864200f607ee3b11da7fc4acf2a2f32a7fb45fe15b05ec44237",
+    "audit": {
+      "status": "passed",
+      "reference": "/home/ubuntu/ntransformer-h100/training/difference-review-20261013/deterministic-reference",
+      "candidate": "/home/ubuntu/ntransformer-h100/training/labels-graph-20261014/strict-labels",
+      "paired_throughput_ratio": 1.3552763607133667,
+      "historical_throughput_ratio": 1.132115597601435,
+      "historical_ratio_scope": "Descriptive only: separate initialization and instrumentation",
+      "max_training_loss_delta": 0.0,
+      "final_validation_delta": 0.0,
+      "relative_update_difference": 0.0,
+      "max_weight_difference": 0.0,
+      "updated_tensors": 273,
+      "total_tensors": 273,
+      "exact": {
+        "model_state_dict": true,
+        "optimizer_states": true,
+        "rng_states": true,
+        "recorded_metrics": true,
+        "validation": true
+      },
+      "require_exact": true,
+      "limits": {
+        "training_loss": 0.03,
+        "validation_loss": 0.02,
+        "relative_update_difference": 0.1
+      }
+    }
+  },
+  "strict-graph": {
+    "status": "complete",
+    "mode": "native",
+    "backend": {
+      "native_norms": 61,
+      "norm_mode": "compatible",
+      "norm_reductions": "PyTorch",
+      "native_swiglu": 30,
+      "shared_projection_cast_groups": 60,
+      "direct_gqa_layers": 30,
+      "native_rotary_layers": 30,
+      "loss_mode": "fused",
+      "loss_block_size": 2048,
+      "fused_loss_labels": true,
+      "checkpoint_layers": 0,
+      "peer_activation_storage": false,
+      "gemm_attention_optimizer_ddp": "PyTorch",
+      "higher_order_gradients": false,
+      "deterministic_algorithms": true,
+      "fill_uninitialized_memory": false,
+      "gradient_bucket_views": true,
+      "defer_loss_readbacks": true,
+      "cublas_workspace_config": ":4096:8",
+      "attention_dispatch": "PyTorch SDPA automatic; constrained by determinism setting",
+      "graph_capture_seconds": 0.6578867540010833,
+      "training_graph": true
+    },
+    "steps": 100,
+    "start_step": 32768,
+    "completed_steps": 32868,
+    "physical_world_size": 2,
+    "logical_world_size": 2,
+    "global_tokens_per_step": 65536,
+    "parameters": 107604288,
+    "warmup_steps": 10,
+    "measured_steps": 90,
+    "tokens_per_second": 361178.5330042358,
+    "mean_step_seconds": 0.18145042966668068,
+    "measured_window_seconds": 16.33053867000126,
+    "instrumented_step_mean_seconds": 0.18114360157811057,
+    "timings_rank0": {
+      "initialization_seconds": 6.362059897001018,
+      "initial_validation_seconds": 0.41451971499918727,
+      "training_seconds_including_warmup": 18.211986291993526,
+      "final_validation_seconds": 0.4081437070053653,
+      "checkpoint_and_batch_record_seconds": 1.0615368920043693,
+      "process_seconds_through_checkpoint": 26.464094098002533
+    },
+    "historical_baseline": {
+      "baseline_sha256": "bf58fea89c51f967ebcf59f9b74acb6fadb84f40a2720a679fe154436de43038",
+      "captured_step": 25400,
+      "historical_tokens_per_second": 307985.1565696424,
+      "scope": "Historical context; paired continuation is the causal implementation comparison",
+      "initialization": "Completed pretraining checkpoint, restored AdamW, final LR floor; not a pilot restart"
+    },
+    "initial_validation": {
+      "fineweb_edu": 2.6587175726890564,
+      "cosmopedia": 1.6827719807624817,
+      "mean": 2.170744776725769
+    },
+    "final_validation": {
+      "fineweb_edu": 2.6584929823875427,
+      "cosmopedia": 1.6815914139151573,
+      "mean": 2.17004219815135
+    },
+    "batch_sha256": "b8c0439017c9037042592324992fe409427e4374902197e7829a10c9c4069106",
+    "ranks": [
+      {
+        "rank": 0,
+        "memory": [
+          {
+            "device": 0,
+            "peak_allocated_bytes": 2720868864,
+            "peak_reserved_bytes": 13186891776
+          },
+          {
+            "device": 1,
+            "peak_allocated_bytes": 0,
+            "peak_reserved_bytes": 0
+          }
+        ],
+        "graph": {
+          "forward_replays": 200,
+          "backward_replays": 200,
+          "input_reserved_bytes": 262144,
+          "input_addresses": [
+            140022908649472,
+            140022908780544
+          ],
+          "parameter_addresses_unchanged": true,
+          "captured": "model forward and backward",
+          "collective_optimizer": "eager",
+          "accumulation_storage": "separate persistent parameter gradients",
+          "live_forward": false
+        },
+        "pipeline": null
+      },
+      {
+        "rank": 1,
+        "memory": [
+          {
+            "device": 0,
+            "peak_allocated_bytes": 0,
+            "peak_reserved_bytes": 0
+          },
+          {
+            "device": 1,
+            "peak_allocated_bytes": 2720868864,
+            "peak_reserved_bytes": 13186891776
+          }
+        ],
+        "graph": {
+          "forward_replays": 200,
+          "backward_replays": 200,
+          "input_reserved_bytes": 262144,
+          "input_addresses": [
+            140381873963008,
+            140381874094080
+          ],
+          "parameter_addresses_unchanged": true,
+          "captured": "model forward and backward",
+          "collective_optimizer": "eager",
+          "accumulation_storage": "separate persistent parameter gradients",
+          "live_forward": false
+        },
+        "pipeline": null
+      }
+    ],
+    "profiled": false,
+    "torch_version": "2.14.1+cu130",
+    "cuda_version": "13.0",
+    "nccl_version": [
+      2,
+      30,
+      7
+    ],
+    "source_checkpoint": "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/pretrain/last.pt",
+    "checkpoint_sha256": "75c7052f3aa55be9c1ce3c9bc518de833e7110257cb74fa9863e970da2ff023e",
+    "audit": {
+      "status": "passed",
+      "reference": "/home/ubuntu/ntransformer-h100/training/difference-review-20261013/deterministic-reference",
+      "candidate": "/home/ubuntu/ntransformer-h100/training/labels-graph-20261014/strict-graph",
+      "paired_throughput_ratio": 1.4038775626007278,
+      "historical_throughput_ratio": 1.172714091247333,
+      "historical_ratio_scope": "Descriptive only: separate initialization and instrumentation",
+      "max_training_loss_delta": 0.0,
+      "final_validation_delta": 0.0,
+      "relative_update_difference": 0.0,
+      "max_weight_difference": 0.0,
+      "updated_tensors": 273,
+      "total_tensors": 273,
+      "exact": {
+        "model_state_dict": true,
+        "optimizer_states": true,
+        "rng_states": true,
+        "recorded_metrics": true,
+        "validation": true
+      },
+      "require_exact": true,
+      "limits": {
+        "training_loss": 0.03,
+        "validation_loss": 0.02,
+        "relative_update_difference": 0.1
+      }
+    }
+  },
+  "normal-control": {
+    "status": "complete",
+    "mode": "native",
+    "backend": {
+      "native_norms": 61,
+      "norm_mode": "compatible",
+      "norm_reductions": "PyTorch",
+      "native_swiglu": 30,
+      "shared_projection_cast_groups": 60,
+      "direct_gqa_layers": 30,
+      "native_rotary_layers": 30,
+      "loss_mode": "fused",
+      "loss_block_size": 2048,
+      "fused_loss_labels": false,
+      "checkpoint_layers": 0,
+      "peer_activation_storage": false,
+      "gemm_attention_optimizer_ddp": "PyTorch",
+      "higher_order_gradients": false,
+      "deterministic_algorithms": false,
+      "fill_uninitialized_memory": true,
+      "gradient_bucket_views": true,
+      "defer_loss_readbacks": true,
+      "cublas_workspace_config": null,
+      "attention_dispatch": "PyTorch SDPA automatic; constrained by determinism setting"
+    },
+    "steps": 100,
+    "start_step": 32768,
+    "completed_steps": 32868,
+    "physical_world_size": 2,
+    "logical_world_size": 2,
+    "global_tokens_per_step": 65536,
+    "parameters": 107604288,
+    "warmup_steps": 10,
+    "measured_steps": 90,
+    "tokens_per_second": 385016.69124268496,
+    "mean_step_seconds": 0.17021599709995724,
+    "measured_window_seconds": 15.319439738996152,
+    "instrumented_step_mean_seconds": 0.1698909104007018,
+    "timings_rank0": {
+      "initialization_seconds": 5.676736872999754,
+      "initial_validation_seconds": 0.5687133009996614,
+      "training_seconds_including_warmup": 17.252769250997517,
+      "final_validation_seconds": 0.38810658999864245,
+      "checkpoint_and_batch_record_seconds": 1.0706100159950438,
+      "process_seconds_through_checkpoint": 24.959873195999535
+    },
+    "historical_baseline": {
+      "baseline_sha256": "bf58fea89c51f967ebcf59f9b74acb6fadb84f40a2720a679fe154436de43038",
+      "captured_step": 25400,
+      "historical_tokens_per_second": 307985.1565696424,
+      "scope": "Historical context; paired continuation is the causal implementation comparison",
+      "initialization": "Completed pretraining checkpoint, restored AdamW, final LR floor; not a pilot restart"
+    },
+    "initial_validation": {
+      "fineweb_edu": 2.6587655395269394,
+      "cosmopedia": 1.6827282086014748,
+      "mean": 2.170746874064207
+    },
+    "final_validation": {
+      "fineweb_edu": 2.6585001051425934,
+      "cosmopedia": 1.6816477850079536,
+      "mean": 2.1700739450752735
+    },
+    "batch_sha256": "b8c0439017c9037042592324992fe409427e4374902197e7829a10c9c4069106",
+    "ranks": [
+      {
+        "rank": 0,
+        "memory": [
+          {
+            "device": 0,
+            "peak_allocated_bytes": 12792688128,
+            "peak_reserved_bytes": 13071548416
+          },
+          {
+            "device": 1,
+            "peak_allocated_bytes": 0,
+            "peak_reserved_bytes": 0
+          }
+        ],
+        "graph": null,
+        "pipeline": null
+      },
+      {
+        "rank": 1,
+        "memory": [
+          {
+            "device": 0,
+            "peak_allocated_bytes": 0,
+            "peak_reserved_bytes": 0
+          },
+          {
+            "device": 1,
+            "peak_allocated_bytes": 12792688128,
+            "peak_reserved_bytes": 13071548416
+          }
+        ],
+        "graph": null,
+        "pipeline": null
+      }
+    ],
+    "profiled": false,
+    "torch_version": "2.14.1+cu130",
+    "cuda_version": "13.0",
+    "nccl_version": [
+      2,
+      30,
+      7
+    ],
+    "source_checkpoint": "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/pretrain/last.pt",
+    "checkpoint_sha256": "a8750f0766c65e60658245c7bee577c79798c53192fbae5a298a4cfba88d3d0c"
+  },
+  "normal-labels": {
+    "status": "complete",
+    "mode": "native",
+    "backend": {
+      "native_norms": 61,
+      "norm_mode": "compatible",
+      "norm_reductions": "PyTorch",
+      "native_swiglu": 30,
+      "shared_projection_cast_groups": 60,
+      "direct_gqa_layers": 30,
+      "native_rotary_layers": 30,
+      "loss_mode": "fused",
+      "loss_block_size": 2048,
+      "fused_loss_labels": true,
+      "checkpoint_layers": 0,
+      "peer_activation_storage": false,
+      "gemm_attention_optimizer_ddp": "PyTorch",
+      "higher_order_gradients": false,
+      "deterministic_algorithms": false,
+      "fill_uninitialized_memory": true,
+      "gradient_bucket_views": true,
+      "defer_loss_readbacks": true,
+      "cublas_workspace_config": null,
+      "attention_dispatch": "PyTorch SDPA automatic; constrained by determinism setting"
+    },
+    "steps": 100,
+    "start_step": 32768,
+    "completed_steps": 32868,
+    "physical_world_size": 2,
+    "logical_world_size": 2,
+    "global_tokens_per_step": 65536,
+    "parameters": 107604288,
+    "warmup_steps": 10,
+    "measured_steps": 90,
+    "tokens_per_second": 382311.0723156652,
+    "mean_step_seconds": 0.17142061725559568,
+    "measured_window_seconds": 15.42785555300361,
+    "instrumented_step_mean_seconds": 0.1711005550554546,
+    "timings_rank0": {
+      "initialization_seconds": 5.659197175002191,
+      "initial_validation_seconds": 0.5506691110058455,
+      "training_seconds_including_warmup": 17.380587369007117,
+      "final_validation_seconds": 0.3909346860018559,
+      "checkpoint_and_batch_record_seconds": 1.0699930949995178,
+      "process_seconds_through_checkpoint": 25.05731117799587
+    },
+    "historical_baseline": {
+      "baseline_sha256": "bf58fea89c51f967ebcf59f9b74acb6fadb84f40a2720a679fe154436de43038",
+      "captured_step": 25400,
+      "historical_tokens_per_second": 307985.1565696424,
+      "scope": "Historical context; paired continuation is the causal implementation comparison",
+      "initialization": "Completed pretraining checkpoint, restored AdamW, final LR floor; not a pilot restart"
+    },
+    "initial_validation": {
+      "fineweb_edu": 2.6587655395269394,
+      "cosmopedia": 1.6827282086014748,
+      "mean": 2.170746874064207
+    },
+    "final_validation": {
+      "fineweb_edu": 2.6585046350955963,
+      "cosmopedia": 1.681545414030552,
+      "mean": 2.170025024563074
+    },
+    "batch_sha256": "b8c0439017c9037042592324992fe409427e4374902197e7829a10c9c4069106",
+    "ranks": [
+      {
+        "rank": 0,
+        "memory": [
+          {
+            "device": 0,
+            "peak_allocated_bytes": 12362903040,
+            "peak_reserved_bytes": 12803112960
+          },
+          {
+            "device": 1,
+            "peak_allocated_bytes": 0,
+            "peak_reserved_bytes": 0
+          }
+        ],
+        "graph": null,
+        "pipeline": null
+      },
+      {
+        "rank": 1,
+        "memory": [
+          {
+            "device": 0,
+            "peak_allocated_bytes": 0,
+            "peak_reserved_bytes": 0
+          },
+          {
+            "device": 1,
+            "peak_allocated_bytes": 12362903040,
+            "peak_reserved_bytes": 12803112960
+          }
+        ],
+        "graph": null,
+        "pipeline": null
+      }
+    ],
+    "profiled": false,
+    "torch_version": "2.14.1+cu130",
+    "cuda_version": "13.0",
+    "nccl_version": [
+      2,
+      30,
+      7
+    ],
+    "source_checkpoint": "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/pretrain/last.pt",
+    "checkpoint_sha256": "563f244207f066406b091d9f2b84c6d5fe2e38e756111bb8b16862923b760c25",
+    "audit": {
+      "status": "passed",
+      "reference": "/home/ubuntu/ntransformer-h100/training/labels-graph-20261014/normal-control",
+      "candidate": "/home/ubuntu/ntransformer-h100/training/labels-graph-20261014/normal-labels",
+      "paired_throughput_ratio": 0.9929727230310793,
+      "historical_throughput_ratio": 1.2413295386500744,
+      "historical_ratio_scope": "Descriptive only: separate initialization and instrumentation",
+      "max_training_loss_delta": 0.00024902820587158203,
+      "final_validation_delta": 4.8920512199401855e-05,
+      "relative_update_difference": 0.017141360375647244,
+      "max_weight_difference": 0.00047850795090198517,
+      "updated_tensors": 273,
+      "total_tensors": 273,
+      "exact": {
+        "model_state_dict": false,
+        "optimizer_states": false,
+        "rng_states": true,
+        "recorded_metrics": false,
+        "validation": false
+      },
+      "require_exact": false,
+      "limits": {
+        "training_loss": 0.03,
+        "validation_loss": 0.02,
+        "relative_update_difference": 0.1
+      }
+    }
+  },
+  "normal-graph": {
+    "status": "complete",
+    "mode": "native",
+    "backend": {
+      "native_norms": 61,
+      "norm_mode": "compatible",
+      "norm_reductions": "PyTorch",
+      "native_swiglu": 30,
+      "shared_projection_cast_groups": 60,
+      "direct_gqa_layers": 30,
+      "native_rotary_layers": 30,
+      "loss_mode": "fused",
+      "loss_block_size": 2048,
+      "fused_loss_labels": true,
+      "checkpoint_layers": 0,
+      "peer_activation_storage": false,
+      "gemm_attention_optimizer_ddp": "PyTorch",
+      "higher_order_gradients": false,
+      "deterministic_algorithms": false,
+      "fill_uninitialized_memory": true,
+      "gradient_bucket_views": true,
+      "defer_loss_readbacks": true,
+      "cublas_workspace_config": null,
+      "attention_dispatch": "PyTorch SDPA automatic; constrained by determinism setting",
+      "graph_capture_seconds": 0.6780027529966901,
+      "training_graph": true
+    },
+    "steps": 100,
+    "start_step": 32768,
+    "completed_steps": 32868,
+    "physical_world_size": 2,
+    "logical_world_size": 2,
+    "global_tokens_per_step": 65536,
+    "parameters": 107604288,
+    "warmup_steps": 10,
+    "measured_steps": 90,
+    "tokens_per_second": 399001.8896403336,
+    "mean_step_seconds": 0.16424984868887502,
+    "measured_window_seconds": 14.782486381998751,
+    "instrumented_step_mean_seconds": 0.16393757723328437,
+    "timings_rank0": {
+      "initialization_seconds": 6.311629638999875,
+      "initial_validation_seconds": 0.4326533389976248,
+      "training_seconds_including_warmup": 16.491382567000983,
+      "final_validation_seconds": 0.38776213999517495,
+      "checkpoint_and_batch_record_seconds": 1.0647607670034631,
+      "process_seconds_through_checkpoint": 24.694033273997775
+    },
+    "historical_baseline": {
+      "baseline_sha256": "bf58fea89c51f967ebcf59f9b74acb6fadb84f40a2720a679fe154436de43038",
+      "captured_step": 25400,
+      "historical_tokens_per_second": 307985.1565696424,
+      "scope": "Historical context; paired continuation is the causal implementation comparison",
+      "initialization": "Completed pretraining checkpoint, restored AdamW, final LR floor; not a pilot restart"
+    },
+    "initial_validation": {
+      "fineweb_edu": 2.6587655395269394,
+      "cosmopedia": 1.6827282086014748,
+      "mean": 2.170746874064207
+    },
+    "final_validation": {
+      "fineweb_edu": 2.6585258543491364,
+      "cosmopedia": 1.6816094666719437,
+      "mean": 2.17006766051054
+    },
+    "batch_sha256": "b8c0439017c9037042592324992fe409427e4374902197e7829a10c9c4069106",
+    "ranks": [
+      {
+        "rank": 0,
+        "memory": [
+          {
+            "device": 0,
+            "peak_allocated_bytes": 2720868864,
+            "peak_reserved_bytes": 13186891776
+          },
+          {
+            "device": 1,
+            "peak_allocated_bytes": 0,
+            "peak_reserved_bytes": 0
+          }
+        ],
+        "graph": {
+          "forward_replays": 200,
+          "backward_replays": 200,
+          "input_reserved_bytes": 262144,
+          "input_addresses": [
+            140322281291776,
+            140322281422848
+          ],
+          "parameter_addresses_unchanged": true,
+          "captured": "model forward and backward",
+          "collective_optimizer": "eager",
+          "accumulation_storage": "separate persistent parameter gradients",
+          "live_forward": false
+        },
+        "pipeline": null
+      },
+      {
+        "rank": 1,
+        "memory": [
+          {
+            "device": 0,
+            "peak_allocated_bytes": 0,
+            "peak_reserved_bytes": 0
+          },
+          {
+            "device": 1,
+            "peak_allocated_bytes": 2720868864,
+            "peak_reserved_bytes": 13186891776
+          }
+        ],
+        "graph": {
+          "forward_replays": 200,
+          "backward_replays": 200,
+          "input_reserved_bytes": 262144,
+          "input_addresses": [
+            140676079222784,
+            140676079353856
+          ],
+          "parameter_addresses_unchanged": true,
+          "captured": "model forward and backward",
+          "collective_optimizer": "eager",
+          "accumulation_storage": "separate persistent parameter gradients",
+          "live_forward": false
+        },
+        "pipeline": null
+      }
+    ],
+    "profiled": false,
+    "torch_version": "2.14.1+cu130",
+    "cuda_version": "13.0",
+    "nccl_version": [
+      2,
+      30,
+      7
+    ],
+    "source_checkpoint": "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/pretrain/last.pt",
+    "checkpoint_sha256": "70cc47cbdf17db46ab7a79860613fa23a5a574df2fea1ed26288aaf2c2fca030",
+    "audit": {
+      "status": "passed",
+      "reference": "/home/ubuntu/ntransformer-h100/training/labels-graph-20261014/normal-control",
+      "candidate": "/home/ubuntu/ntransformer-h100/training/labels-graph-20261014/normal-graph",
+      "paired_throughput_ratio": 1.0363236158736646,
+      "historical_throughput_ratio": 1.2955231157385672,
+      "historical_ratio_scope": "Descriptive only: separate initialization and instrumentation",
+      "max_training_loss_delta": 0.0002551078796386719,
+      "final_validation_delta": 6.284564733505249e-06,
+      "relative_update_difference": 0.01740464965800202,
+      "max_weight_difference": 0.0005093812942504883,
+      "updated_tensors": 273,
+      "total_tensors": 273,
+      "exact": {
+        "model_state_dict": false,
+        "optimizer_states": false,
+        "rng_states": true,
+        "recorded_metrics": false,
+        "validation": false
+      },
+      "require_exact": false,
+      "limits": {
+        "training_loss": 0.03,
+        "validation_loss": 0.02,
+        "relative_update_difference": 0.1
+      }
+    }
+  },
+  "strict-graph-repeat": {
+    "status": "complete",
+    "mode": "native",
+    "backend": {
+      "native_norms": 61,
+      "norm_mode": "compatible",
+      "norm_reductions": "PyTorch",
+      "native_swiglu": 30,
+      "shared_projection_cast_groups": 60,
+      "direct_gqa_layers": 30,
+      "native_rotary_layers": 30,
+      "loss_mode": "fused",
+      "loss_block_size": 2048,
+      "fused_loss_labels": true,
+      "checkpoint_layers": 0,
+      "peer_activation_storage": false,
+      "gemm_attention_optimizer_ddp": "PyTorch",
+      "higher_order_gradients": false,
+      "deterministic_algorithms": true,
+      "fill_uninitialized_memory": false,
+      "gradient_bucket_views": true,
+      "defer_loss_readbacks": true,
+      "cublas_workspace_config": ":4096:8",
+      "attention_dispatch": "PyTorch SDPA automatic; constrained by determinism setting",
+      "graph_capture_seconds": 0.6589805940020597,
+      "training_graph": true
+    },
+    "steps": 100,
+    "start_step": 32768,
+    "completed_steps": 32868,
+    "physical_world_size": 2,
+    "logical_world_size": 2,
+    "global_tokens_per_step": 65536,
+    "parameters": 107604288,
+    "warmup_steps": 10,
+    "measured_steps": 90,
+    "tokens_per_second": 361312.476568654,
+    "mean_step_seconds": 0.18138316346667124,
+    "measured_window_seconds": 16.324484712000412,
+    "instrumented_step_mean_seconds": 0.1810749120895505,
+    "timings_rank0": {
+      "initialization_seconds": 6.295983562995389,
+      "initial_validation_seconds": 0.41457113600336015,
+      "training_seconds_including_warmup": 18.205551601997286,
+      "final_validation_seconds": 0.40816983699915,
+      "checkpoint_and_batch_record_seconds": 1.0656954049991327,
+      "process_seconds_through_checkpoint": 26.395808624998608
+    },
+    "historical_baseline": {
+      "baseline_sha256": "bf58fea89c51f967ebcf59f9b74acb6fadb84f40a2720a679fe154436de43038",
+      "captured_step": 25400,
+      "historical_tokens_per_second": 307985.1565696424,
+      "scope": "Historical context; paired continuation is the causal implementation comparison",
+      "initialization": "Completed pretraining checkpoint, restored AdamW, final LR floor; not a pilot restart"
+    },
+    "initial_validation": {
+      "fineweb_edu": 2.6587175726890564,
+      "cosmopedia": 1.6827719807624817,
+      "mean": 2.170744776725769
+    },
+    "final_validation": {
+      "fineweb_edu": 2.6584929823875427,
+      "cosmopedia": 1.6815914139151573,
+      "mean": 2.17004219815135
+    },
+    "batch_sha256": "b8c0439017c9037042592324992fe409427e4374902197e7829a10c9c4069106",
+    "ranks": [
+      {
+        "rank": 0,
+        "memory": [
+          {
+            "device": 0,
+            "peak_allocated_bytes": 2720868864,
+            "peak_reserved_bytes": 13186891776
+          },
+          {
+            "device": 1,
+            "peak_allocated_bytes": 0,
+            "peak_reserved_bytes": 0
+          }
+        ],
+        "graph": {
+          "forward_replays": 200,
+          "backward_replays": 200,
+          "input_reserved_bytes": 262144,
+          "input_addresses": [
+            140438513844224,
+            140438513975296
+          ],
+          "parameter_addresses_unchanged": true,
+          "captured": "model forward and backward",
+          "collective_optimizer": "eager",
+          "accumulation_storage": "separate persistent parameter gradients",
+          "live_forward": false
+        },
+        "pipeline": null
+      },
+      {
+        "rank": 1,
+        "memory": [
+          {
+            "device": 0,
+            "peak_allocated_bytes": 0,
+            "peak_reserved_bytes": 0
+          },
+          {
+            "device": 1,
+            "peak_allocated_bytes": 2720868864,
+            "peak_reserved_bytes": 13186891776
+          }
+        ],
+        "graph": {
+          "forward_replays": 200,
+          "backward_replays": 200,
+          "input_reserved_bytes": 262144,
+          "input_addresses": [
+            140516896997376,
+            140516897128448
+          ],
+          "parameter_addresses_unchanged": true,
+          "captured": "model forward and backward",
+          "collective_optimizer": "eager",
+          "accumulation_storage": "separate persistent parameter gradients",
+          "live_forward": false
+        },
+        "pipeline": null
+      }
+    ],
+    "profiled": false,
+    "torch_version": "2.14.1+cu130",
+    "cuda_version": "13.0",
+    "nccl_version": [
+      2,
+      30,
+      7
+    ],
+    "source_checkpoint": "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/pretrain/last.pt",
+    "checkpoint_sha256": "5dc0685a24d8757a5fc5982e850691f762dafda0e29ac2f05ee3818e09de539b",
+    "audit": {
+      "status": "passed",
+      "reference": "/home/ubuntu/ntransformer-h100/training/difference-review-20261013/deterministic-reference",
+      "candidate": "/home/ubuntu/ntransformer-h100/training/labels-graph-20261014/strict-graph-repeat",
+      "paired_throughput_ratio": 1.4043981925594835,
+      "historical_throughput_ratio": 1.1731489939092343,
+      "historical_ratio_scope": "Descriptive only: separate initialization and instrumentation",
+      "max_training_loss_delta": 0.0,
+      "final_validation_delta": 0.0,
+      "relative_update_difference": 0.0,
+      "max_weight_difference": 0.0,
+      "updated_tensors": 273,
+      "total_tensors": 273,
+      "exact": {
+        "model_state_dict": true,
+        "optimizer_states": true,
+        "rng_states": true,
+        "recorded_metrics": true,
+        "validation": true
+      },
+      "require_exact": true,
+      "limits": {
+        "training_loss": 0.03,
+        "validation_loss": 0.02,
+        "relative_update_difference": 0.1
+      }
+    }
+  },
+  "strict-labels-repeat": {
+    "status": "complete",
+    "mode": "native",
+    "backend": {
+      "native_norms": 61,
+      "norm_mode": "compatible",
+      "norm_reductions": "PyTorch",
+      "native_swiglu": 30,
+      "shared_projection_cast_groups": 60,
+      "direct_gqa_layers": 30,
+      "native_rotary_layers": 30,
+      "loss_mode": "fused",
+      "loss_block_size": 2048,
+      "fused_loss_labels": true,
+      "checkpoint_layers": 0,
+      "peer_activation_storage": false,
+      "gemm_attention_optimizer_ddp": "PyTorch",
+      "higher_order_gradients": false,
+      "deterministic_algorithms": true,
+      "fill_uninitialized_memory": false,
+      "gradient_bucket_views": true,
+      "defer_loss_readbacks": true,
+      "cublas_workspace_config": ":4096:8",
+      "attention_dispatch": "PyTorch SDPA automatic; constrained by determinism setting"
+    },
+    "steps": 100,
+    "start_step": 32768,
+    "completed_steps": 32868,
+    "physical_world_size": 2,
+    "logical_world_size": 2,
+    "global_tokens_per_step": 65536,
+    "parameters": 107604288,
+    "warmup_steps": 10,
+    "measured_steps": 90,
+    "tokens_per_second": 348492.5390478691,
+    "mean_step_seconds": 0.18805567596670394,
+    "measured_window_seconds": 16.925010837003356,
+    "instrumented_step_mean_seconds": 0.18771415984439146,
+    "timings_rank0": {
+      "initialization_seconds": 5.6622908000063035,
+      "initial_validation_seconds": 0.5041367909943801,
+      "training_seconds_including_warmup": 18.95556223300082,
+      "final_validation_seconds": 0.40946439300023485,
+      "checkpoint_and_batch_record_seconds": 1.0741535619963543,
+      "process_seconds_through_checkpoint": 26.611456556005578
+    },
+    "historical_baseline": {
+      "baseline_sha256": "bf58fea89c51f967ebcf59f9b74acb6fadb84f40a2720a679fe154436de43038",
+      "captured_step": 25400,
+      "historical_tokens_per_second": 307985.1565696424,
+      "scope": "Historical context; paired continuation is the causal implementation comparison",
+      "initialization": "Completed pretraining checkpoint, restored AdamW, final LR floor; not a pilot restart"
+    },
+    "initial_validation": {
+      "fineweb_edu": 2.6587175726890564,
+      "cosmopedia": 1.6827719807624817,
+      "mean": 2.170744776725769
+    },
+    "final_validation": {
+      "fineweb_edu": 2.6584929823875427,
+      "cosmopedia": 1.6815914139151573,
+      "mean": 2.17004219815135
+    },
+    "batch_sha256": "b8c0439017c9037042592324992fe409427e4374902197e7829a10c9c4069106",
+    "ranks": [
+      {
+        "rank": 0,
+        "memory": [
+          {
+            "device": 0,
+            "peak_allocated_bytes": 12792819200,
+            "peak_reserved_bytes": 13071548416
+          },
+          {
+            "device": 1,
+            "peak_allocated_bytes": 0,
+            "peak_reserved_bytes": 0
+          }
+        ],
+        "graph": null,
+        "pipeline": null
+      },
+      {
+        "rank": 1,
+        "memory": [
+          {
+            "device": 0,
+            "peak_allocated_bytes": 0,
+            "peak_reserved_bytes": 0
+          },
+          {
+            "device": 1,
+            "peak_allocated_bytes": 12792819200,
+            "peak_reserved_bytes": 13071548416
+          }
+        ],
+        "graph": null,
+        "pipeline": null
+      }
+    ],
+    "profiled": false,
+    "torch_version": "2.14.1+cu130",
+    "cuda_version": "13.0",
+    "nccl_version": [
+      2,
+      30,
+      7
+    ],
+    "source_checkpoint": "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/pretrain/last.pt",
+    "checkpoint_sha256": "1454d322b7565864200f607ee3b11da7fc4acf2a2f32a7fb45fe15b05ec44237",
+    "audit": {
+      "status": "passed",
+      "reference": "/home/ubuntu/ntransformer-h100/training/difference-review-20261013/deterministic-reference",
+      "candidate": "/home/ubuntu/ntransformer-h100/training/labels-graph-20261014/strict-labels-repeat",
+      "paired_throughput_ratio": 1.354567925822224,
+      "historical_throughput_ratio": 1.1315238141000052,
+      "historical_ratio_scope": "Descriptive only: separate initialization and instrumentation",
+      "max_training_loss_delta": 0.0,
+      "final_validation_delta": 0.0,
+      "relative_update_difference": 0.0,
+      "max_weight_difference": 0.0,
+      "updated_tensors": 273,
+      "total_tensors": 273,
+      "exact": {
+        "model_state_dict": true,
+        "optimizer_states": true,
+        "rng_states": true,
+        "recorded_metrics": true,
+        "validation": true
+      },
+      "require_exact": true,
+      "limits": {
+        "training_loss": 0.03,
+        "validation_loss": 0.02,
+        "relative_update_difference": 0.1
+      }
+    }
+  },
+  "strict-control-repeat": {
+    "status": "complete",
+    "mode": "native",
+    "backend": {
+      "native_norms": 61,
+      "norm_mode": "compatible",
+      "norm_reductions": "PyTorch",
+      "native_swiglu": 30,
+      "shared_projection_cast_groups": 60,
+      "direct_gqa_layers": 30,
+      "native_rotary_layers": 30,
+      "loss_mode": "fused",
+      "loss_block_size": 2048,
+      "fused_loss_labels": false,
+      "checkpoint_layers": 0,
+      "peer_activation_storage": false,
+      "gemm_attention_optimizer_ddp": "PyTorch",
+      "higher_order_gradients": false,
+      "deterministic_algorithms": true,
+      "fill_uninitialized_memory": false,
+      "gradient_bucket_views": true,
+      "defer_loss_readbacks": true,
+      "cublas_workspace_config": ":4096:8",
+      "attention_dispatch": "PyTorch SDPA automatic; constrained by determinism setting"
+    },
+    "steps": 100,
+    "start_step": 32768,
+    "completed_steps": 32868,
+    "physical_world_size": 2,
+    "logical_world_size": 2,
+    "global_tokens_per_step": 65536,
+    "parameters": 107604288,
+    "warmup_steps": 10,
+    "measured_steps": 90,
+    "tokens_per_second": 350288.64488039544,
+    "mean_step_seconds": 0.18709142005552873,
+    "measured_window_seconds": 16.838227804997587,
+    "instrumented_step_mean_seconds": 0.1867719650660648,
+    "timings_rank0": {
+      "initialization_seconds": 5.699125606995949,
+      "initial_validation_seconds": 0.5251657290064031,
+      "training_seconds_including_warmup": 18.84853328299505,
+      "final_validation_seconds": 0.4061880920053227,
+      "checkpoint_and_batch_record_seconds": 1.0650367479975102,
+      "process_seconds_through_checkpoint": 26.54703057900042
+    },
+    "historical_baseline": {
+      "baseline_sha256": "bf58fea89c51f967ebcf59f9b74acb6fadb84f40a2720a679fe154436de43038",
+      "captured_step": 25400,
+      "historical_tokens_per_second": 307985.1565696424,
+      "scope": "Historical context; paired continuation is the causal implementation comparison",
+      "initialization": "Completed pretraining checkpoint, restored AdamW, final LR floor; not a pilot restart"
+    },
+    "initial_validation": {
+      "fineweb_edu": 2.6587175726890564,
+      "cosmopedia": 1.6827719807624817,
+      "mean": 2.170744776725769
+    },
+    "final_validation": {
+      "fineweb_edu": 2.6584929823875427,
+      "cosmopedia": 1.6815914139151573,
+      "mean": 2.17004219815135
+    },
+    "batch_sha256": "b8c0439017c9037042592324992fe409427e4374902197e7829a10c9c4069106",
+    "ranks": [
+      {
+        "rank": 0,
+        "memory": [
+          {
+            "device": 0,
+            "peak_allocated_bytes": 12792688128,
+            "peak_reserved_bytes": 13071548416
+          },
+          {
+            "device": 1,
+            "peak_allocated_bytes": 0,
+            "peak_reserved_bytes": 0
+          }
+        ],
+        "graph": null,
+        "pipeline": null
+      },
+      {
+        "rank": 1,
+        "memory": [
+          {
+            "device": 0,
+            "peak_allocated_bytes": 0,
+            "peak_reserved_bytes": 0
+          },
+          {
+            "device": 1,
+            "peak_allocated_bytes": 12792688128,
+            "peak_reserved_bytes": 13071548416
+          }
+        ],
+        "graph": null,
+        "pipeline": null
+      }
+    ],
+    "profiled": false,
+    "torch_version": "2.14.1+cu130",
+    "cuda_version": "13.0",
+    "nccl_version": [
+      2,
+      30,
+      7
+    ],
+    "source_checkpoint": "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/pretrain/last.pt",
+    "checkpoint_sha256": "ddf46bd1ccd8aaea1c3cd8e11f9e8190e2f83520b31eb70dec2de54f34d49774",
+    "audit": {
+      "status": "passed",
+      "reference": "/home/ubuntu/ntransformer-h100/training/difference-review-20261013/deterministic-reference",
+      "candidate": "/home/ubuntu/ntransformer-h100/training/labels-graph-20261014/strict-control-repeat",
+      "paired_throughput_ratio": 1.3615492728512582,
+      "historical_throughput_ratio": 1.1373556075946383,
+      "historical_ratio_scope": "Descriptive only: separate initialization and instrumentation",
+      "max_training_loss_delta": 0.0,
+      "final_validation_delta": 0.0,
+      "relative_update_difference": 0.0,
+      "max_weight_difference": 0.0,
+      "updated_tensors": 273,
+      "total_tensors": 273,
+      "exact": {
+        "model_state_dict": true,
+        "optimizer_states": true,
+        "rng_states": true,
+        "recorded_metrics": true,
+        "validation": true
+      },
+      "require_exact": true,
+      "limits": {
+        "training_loss": 0.03,
+        "validation_loss": 0.02,
+        "relative_update_difference": 0.1
+      }
+    }
+  },
+  "normal-graph-repeat": {
+    "status": "complete",
+    "mode": "native",
+    "backend": {
+      "native_norms": 61,
+      "norm_mode": "compatible",
+      "norm_reductions": "PyTorch",
+      "native_swiglu": 30,
+      "shared_projection_cast_groups": 60,
+      "direct_gqa_layers": 30,
+      "native_rotary_layers": 30,
+      "loss_mode": "fused",
+      "loss_block_size": 2048,
+      "fused_loss_labels": true,
+      "checkpoint_layers": 0,
+      "peer_activation_storage": false,
+      "gemm_attention_optimizer_ddp": "PyTorch",
+      "higher_order_gradients": false,
+      "deterministic_algorithms": false,
+      "fill_uninitialized_memory": true,
+      "gradient_bucket_views": true,
+      "defer_loss_readbacks": true,
+      "cublas_workspace_config": null,
+      "attention_dispatch": "PyTorch SDPA automatic; constrained by determinism setting",
+      "graph_capture_seconds": 0.7392917309989571,
+      "training_graph": true
+    },
+    "steps": 100,
+    "start_step": 32768,
+    "completed_steps": 32868,
+    "physical_world_size": 2,
+    "logical_world_size": 2,
+    "global_tokens_per_step": 65536,
+    "parameters": 107604288,
+    "warmup_steps": 10,
+    "measured_steps": 90,
+    "tokens_per_second": 398405.1304365261,
+    "mean_step_seconds": 0.16449587365552562,
+    "measured_window_seconds": 14.804628628997307,
+    "instrumented_step_mean_seconds": 0.1641867002000961,
+    "timings_rank0": {
+      "initialization_seconds": 6.361173557997972,
+      "initial_validation_seconds": 0.43729855000128737,
+      "training_seconds_including_warmup": 16.516485476000526,
+      "final_validation_seconds": 0.39110475900088204,
+      "checkpoint_and_batch_record_seconds": 1.0676479250032571,
+      "process_seconds_through_checkpoint": 24.779617709995364
+    },
+    "historical_baseline": {
+      "baseline_sha256": "bf58fea89c51f967ebcf59f9b74acb6fadb84f40a2720a679fe154436de43038",
+      "captured_step": 25400,
+      "historical_tokens_per_second": 307985.1565696424,
+      "scope": "Historical context; paired continuation is the causal implementation comparison",
+      "initialization": "Completed pretraining checkpoint, restored AdamW, final LR floor; not a pilot restart"
+    },
+    "initial_validation": {
+      "fineweb_edu": 2.6587655395269394,
+      "cosmopedia": 1.6827282086014748,
+      "mean": 2.170746874064207
+    },
+    "final_validation": {
+      "fineweb_edu": 2.6585122495889664,
+      "cosmopedia": 1.6816666945815086,
+      "mean": 2.1700894720852375
+    },
+    "batch_sha256": "b8c0439017c9037042592324992fe409427e4374902197e7829a10c9c4069106",
+    "ranks": [
+      {
+        "rank": 0,
+        "memory": [
+          {
+            "device": 0,
+            "peak_allocated_bytes": 2720868864,
+            "peak_reserved_bytes": 13186891776
+          },
+          {
+            "device": 1,
+            "peak_allocated_bytes": 0,
+            "peak_reserved_bytes": 0
+          }
+        ],
+        "graph": {
+          "forward_replays": 200,
+          "backward_replays": 200,
+          "input_reserved_bytes": 262144,
+          "input_addresses": [
+            140698493583360,
+            140698493714432
+          ],
+          "parameter_addresses_unchanged": true,
+          "captured": "model forward and backward",
+          "collective_optimizer": "eager",
+          "accumulation_storage": "separate persistent parameter gradients",
+          "live_forward": false
+        },
+        "pipeline": null
+      },
+      {
+        "rank": 1,
+        "memory": [
+          {
+            "device": 0,
+            "peak_allocated_bytes": 0,
+            "peak_reserved_bytes": 0
+          },
+          {
+            "device": 1,
+            "peak_allocated_bytes": 2720868864,
+            "peak_reserved_bytes": 13186891776
+          }
+        ],
+        "graph": {
+          "forward_replays": 200,
+          "backward_replays": 200,
+          "input_reserved_bytes": 262144,
+          "input_addresses": [
+            140210746359808,
+            140210746490880
+          ],
+          "parameter_addresses_unchanged": true,
+          "captured": "model forward and backward",
+          "collective_optimizer": "eager",
+          "accumulation_storage": "separate persistent parameter gradients",
+          "live_forward": false
+        },
+        "pipeline": null
+      }
+    ],
+    "profiled": false,
+    "torch_version": "2.14.1+cu130",
+    "cuda_version": "13.0",
+    "nccl_version": [
+      2,
+      30,
+      7
+    ],
+    "source_checkpoint": "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/pretrain/last.pt",
+    "checkpoint_sha256": "ba77436a99d12e4631d2098800a9d1fc487935671a9c9179c118ba4a16e72d5a",
+    "audit": {
+      "status": "passed",
+      "reference": "/home/ubuntu/ntransformer-h100/training/labels-graph-20261014/normal-control",
+      "candidate": "/home/ubuntu/ntransformer-h100/training/labels-graph-20261014/normal-graph-repeat",
+      "paired_throughput_ratio": 1.0347736591643037,
+      "historical_throughput_ratio": 1.2935854924762833,
+      "historical_ratio_scope": "Descriptive only: separate initialization and instrumentation",
+      "max_training_loss_delta": 0.0002340078353881836,
+      "final_validation_delta": 1.5527009963989258e-05,
+      "relative_update_difference": 0.01729135517369733,
+      "max_weight_difference": 0.0003879331052303314,
+      "updated_tensors": 273,
+      "total_tensors": 273,
+      "exact": {
+        "model_state_dict": false,
+        "optimizer_states": false,
+        "rng_states": true,
+        "recorded_metrics": false,
+        "validation": false
+      },
+      "require_exact": false,
+      "limits": {
+        "training_loss": 0.03,
+        "validation_loss": 0.02,
+        "relative_update_difference": 0.1
+      }
+    }
+  },
+  "normal-labels-repeat": {
+    "status": "complete",
+    "mode": "native",
+    "backend": {
+      "native_norms": 61,
+      "norm_mode": "compatible",
+      "norm_reductions": "PyTorch",
+      "native_swiglu": 30,
+      "shared_projection_cast_groups": 60,
+      "direct_gqa_layers": 30,
+      "native_rotary_layers": 30,
+      "loss_mode": "fused",
+      "loss_block_size": 2048,
+      "fused_loss_labels": true,
+      "checkpoint_layers": 0,
+      "peer_activation_storage": false,
+      "gemm_attention_optimizer_ddp": "PyTorch",
+      "higher_order_gradients": false,
+      "deterministic_algorithms": false,
+      "fill_uninitialized_memory": true,
+      "gradient_bucket_views": true,
+      "defer_loss_readbacks": true,
+      "cublas_workspace_config": null,
+      "attention_dispatch": "PyTorch SDPA automatic; constrained by determinism setting"
+    },
+    "steps": 100,
+    "start_step": 32768,
+    "completed_steps": 32868,
+    "physical_world_size": 2,
+    "logical_world_size": 2,
+    "global_tokens_per_step": 65536,
+    "parameters": 107604288,
+    "warmup_steps": 10,
+    "measured_steps": 90,
+    "tokens_per_second": 382175.31252931996,
+    "mean_step_seconds": 0.1714815108445085,
+    "measured_window_seconds": 15.433335976005765,
+    "instrumented_step_mean_seconds": 0.17115806826606988,
+    "timings_rank0": {
+      "initialization_seconds": 5.676588775997516,
+      "initial_validation_seconds": 0.549529538002389,
+      "training_seconds_including_warmup": 17.382243797001138,
+      "final_validation_seconds": 0.389218668002286,
+      "checkpoint_and_batch_record_seconds": 1.0670390259983833,
+      "process_seconds_through_checkpoint": 25.070430586994917
+    },
+    "historical_baseline": {
+      "baseline_sha256": "bf58fea89c51f967ebcf59f9b74acb6fadb84f40a2720a679fe154436de43038",
+      "captured_step": 25400,
+      "historical_tokens_per_second": 307985.1565696424,
+      "scope": "Historical context; paired continuation is the causal implementation comparison",
+      "initialization": "Completed pretraining checkpoint, restored AdamW, final LR floor; not a pilot restart"
+    },
+    "initial_validation": {
+      "fineweb_edu": 2.6587655395269394,
+      "cosmopedia": 1.6827282086014748,
+      "mean": 2.170746874064207
+    },
+    "final_validation": {
+      "fineweb_edu": 2.6585730761289597,
+      "cosmopedia": 1.681605875492096,
+      "mean": 2.170089475810528
+    },
+    "batch_sha256": "b8c0439017c9037042592324992fe409427e4374902197e7829a10c9c4069106",
+    "ranks": [
+      {
+        "rank": 0,
+        "memory": [
+          {
+            "device": 0,
+            "peak_allocated_bytes": 12362903040,
+            "peak_reserved_bytes": 12803112960
+          },
+          {
+            "device": 1,
+            "peak_allocated_bytes": 0,
+            "peak_reserved_bytes": 0
+          }
+        ],
+        "graph": null,
+        "pipeline": null
+      },
+      {
+        "rank": 1,
+        "memory": [
+          {
+            "device": 0,
+            "peak_allocated_bytes": 0,
+            "peak_reserved_bytes": 0
+          },
+          {
+            "device": 1,
+            "peak_allocated_bytes": 12362903040,
+            "peak_reserved_bytes": 12803112960
+          }
+        ],
+        "graph": null,
+        "pipeline": null
+      }
+    ],
+    "profiled": false,
+    "torch_version": "2.14.1+cu130",
+    "cuda_version": "13.0",
+    "nccl_version": [
+      2,
+      30,
+      7
+    ],
+    "source_checkpoint": "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/pretrain/last.pt",
+    "checkpoint_sha256": "bdf7d2f14a1e9e33846319fc6c639c0e02e1a07c76eeb53c864bbed9fe4918e3",
+    "audit": {
+      "status": "passed",
+      "reference": "/home/ubuntu/ntransformer-h100/training/labels-graph-20261014/normal-control",
+      "candidate": "/home/ubuntu/ntransformer-h100/training/labels-graph-20261014/normal-labels-repeat",
+      "paired_throughput_ratio": 0.9926201154963071,
+      "historical_throughput_ratio": 1.2408887388795358,
+      "historical_ratio_scope": "Descriptive only: separate initialization and instrumentation",
+      "max_training_loss_delta": 0.00020420551300048828,
+      "final_validation_delta": 1.553073525428772e-05,
+      "relative_update_difference": 0.0171482303076531,
+      "max_weight_difference": 0.00043692439794540405,
+      "updated_tensors": 273,
+      "total_tensors": 273,
+      "exact": {
+        "model_state_dict": false,
+        "optimizer_states": false,
+        "rng_states": true,
+        "recorded_metrics": false,
+        "validation": false
+      },
+      "require_exact": false,
+      "limits": {
+        "training_loss": 0.03,
+        "validation_loss": 0.02,
+        "relative_update_difference": 0.1
+      }
+    }
+  },
+  "normal-control-repeat": {
+    "status": "complete",
+    "mode": "native",
+    "backend": {
+      "native_norms": 61,
+      "norm_mode": "compatible",
+      "norm_reductions": "PyTorch",
+      "native_swiglu": 30,
+      "shared_projection_cast_groups": 60,
+      "direct_gqa_layers": 30,
+      "native_rotary_layers": 30,
+      "loss_mode": "fused",
+      "loss_block_size": 2048,
+      "fused_loss_labels": false,
+      "checkpoint_layers": 0,
+      "peer_activation_storage": false,
+      "gemm_attention_optimizer_ddp": "PyTorch",
+      "higher_order_gradients": false,
+      "deterministic_algorithms": false,
+      "fill_uninitialized_memory": true,
+      "gradient_bucket_views": true,
+      "defer_loss_readbacks": true,
+      "cublas_workspace_config": null,
+      "attention_dispatch": "PyTorch SDPA automatic; constrained by determinism setting"
+    },
+    "steps": 100,
+    "start_step": 32768,
+    "completed_steps": 32868,
+    "physical_world_size": 2,
+    "logical_world_size": 2,
+    "global_tokens_per_step": 65536,
+    "parameters": 107604288,
+    "warmup_steps": 10,
+    "measured_steps": 90,
+    "tokens_per_second": 378432.4554219088,
+    "mean_step_seconds": 0.1731775355444471,
+    "measured_window_seconds": 15.585978199000238,
+    "instrumented_step_mean_seconds": 0.17285705270001522,
+    "timings_rank0": {
+      "initialization_seconds": 5.663832942998852,
+      "initial_validation_seconds": 0.5709835759989801,
+      "training_seconds_including_warmup": 17.549780285997258,
+      "final_validation_seconds": 0.39119090800522827,
+      "checkpoint_and_batch_record_seconds": 1.0639059789973544,
+      "process_seconds_through_checkpoint": 25.242628632004198
+    },
+    "historical_baseline": {
+      "baseline_sha256": "bf58fea89c51f967ebcf59f9b74acb6fadb84f40a2720a679fe154436de43038",
+      "captured_step": 25400,
+      "historical_tokens_per_second": 307985.1565696424,
+      "scope": "Historical context; paired continuation is the causal implementation comparison",
+      "initialization": "Completed pretraining checkpoint, restored AdamW, final LR floor; not a pilot restart"
+    },
+    "initial_validation": {
+      "fineweb_edu": 2.6587655395269394,
+      "cosmopedia": 1.6827282086014748,
+      "mean": 2.170746874064207
+    },
+    "final_validation": {
+      "fineweb_edu": 2.65855710208416,
+      "cosmopedia": 1.6816271468997002,
+      "mean": 2.17009212449193
+    },
+    "batch_sha256": "b8c0439017c9037042592324992fe409427e4374902197e7829a10c9c4069106",
+    "ranks": [
+      {
+        "rank": 0,
+        "memory": [
+          {
+            "device": 0,
+            "peak_allocated_bytes": 12792688128,
+            "peak_reserved_bytes": 13071548416
+          },
+          {
+            "device": 1,
+            "peak_allocated_bytes": 0,
+            "peak_reserved_bytes": 0
+          }
+        ],
+        "graph": null,
+        "pipeline": null
+      },
+      {
+        "rank": 1,
+        "memory": [
+          {
+            "device": 0,
+            "peak_allocated_bytes": 0,
+            "peak_reserved_bytes": 0
+          },
+          {
+            "device": 1,
+            "peak_allocated_bytes": 12792688128,
+            "peak_reserved_bytes": 13071548416
+          }
+        ],
+        "graph": null,
+        "pipeline": null
+      }
+    ],
+    "profiled": false,
+    "torch_version": "2.14.1+cu130",
+    "cuda_version": "13.0",
+    "nccl_version": [
+      2,
+      30,
+      7
+    ],
+    "source_checkpoint": "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/pretrain/last.pt",
+    "checkpoint_sha256": "f046d5a6ee954e21414b6bf1a1fc1a0b878b773e45317c0b9d16de1562393a07",
+    "audit": {
+      "status": "passed",
+      "reference": "/home/ubuntu/ntransformer-h100/training/labels-graph-20261014/normal-control",
+      "candidate": "/home/ubuntu/ntransformer-h100/training/labels-graph-20261014/normal-control-repeat",
+      "paired_throughput_ratio": 0.9828988301792195,
+      "historical_throughput_ratio": 1.2287360197384598,
+      "historical_ratio_scope": "Descriptive only: separate initialization and instrumentation",
+      "max_training_loss_delta": 0.00022995471954345703,
+      "final_validation_delta": 1.817941665649414e-05,
+      "relative_update_difference": 0.029445547862488423,
+      "max_weight_difference": 0.0004261992871761322,
+      "updated_tensors": 273,
+      "total_tensors": 273,
+      "exact": {
+        "model_state_dict": false,
+        "optimizer_states": false,
+        "rng_states": true,
+        "recorded_metrics": false,
+        "validation": false
+      },
+      "require_exact": false,
+      "limits": {
+        "training_loss": 0.03,
+        "validation_loss": 0.02,
+        "relative_update_difference": 0.1
+      }
+    }
+  },
+  "peer-control": {
+    "status": "complete",
+    "mode": "peer",
+    "backend": {
+      "native_norms": 61,
+      "norm_mode": "compatible",
+      "norm_reductions": "PyTorch",
+      "native_swiglu": 30,
+      "shared_projection_cast_groups": 60,
+      "direct_gqa_layers": 30,
+      "native_rotary_layers": 30,
+      "loss_mode": "fused",
+      "loss_block_size": 2048,
+      "fused_loss_labels": false,
+      "checkpoint_layers": 30,
+      "peer_activation_storage": true,
+      "gemm_attention_optimizer_ddp": "PyTorch",
+      "higher_order_gradients": false,
+      "deterministic_algorithms": true,
+      "fill_uninitialized_memory": false,
+      "gradient_bucket_views": true,
+      "defer_loss_readbacks": true,
+      "cublas_workspace_config": ":4096:8",
+      "attention_dispatch": "PyTorch SDPA automatic; constrained by determinism setting"
+    },
+    "steps": 100,
+    "start_step": 32768,
+    "completed_steps": 32868,
+    "physical_world_size": 2,
+    "logical_world_size": 2,
+    "global_tokens_per_step": 65536,
+    "parameters": 107604288,
+    "warmup_steps": 10,
+    "measured_steps": 90,
+    "tokens_per_second": 271954.80778883933,
+    "mean_step_seconds": 0.2409812149777685,
+    "measured_window_seconds": 21.688309347999166,
+    "instrumented_step_mean_seconds": 0.24065345163350382,
+    "timings_rank0": {
+      "initialization_seconds": 5.897363260002749,
+      "initial_validation_seconds": 0.5285141540007317,
+      "training_seconds_including_warmup": 24.194520058998023,
+      "final_validation_seconds": 0.4079944820041419,
+      "checkpoint_and_batch_record_seconds": 1.0668592699948931,
+      "process_seconds_through_checkpoint": 32.09809927199967
+    },
+    "historical_baseline": {
+      "baseline_sha256": "bf58fea89c51f967ebcf59f9b74acb6fadb84f40a2720a679fe154436de43038",
+      "captured_step": 25400,
+      "historical_tokens_per_second": 307985.1565696424,
+      "scope": "Historical context; paired continuation is the causal implementation comparison",
+      "initialization": "Completed pretraining checkpoint, restored AdamW, final LR floor; not a pilot restart"
+    },
+    "initial_validation": {
+      "fineweb_edu": 2.6587175726890564,
+      "cosmopedia": 1.6827719807624817,
+      "mean": 2.170744776725769
+    },
+    "final_validation": {
+      "fineweb_edu": 2.6584929823875427,
+      "cosmopedia": 1.6815914139151573,
+      "mean": 2.17004219815135
+    },
+    "batch_sha256": "b8c0439017c9037042592324992fe409427e4374902197e7829a10c9c4069106",
+    "ranks": [
+      {
+        "rank": 0,
+        "memory": [
+          {
+            "device": 0,
+            "peak_allocated_bytes": 2945062400,
+            "peak_reserved_bytes": 3877634048
+          },
+          {
+            "device": 1,
+            "peak_allocated_bytes": 1132462080,
+            "peak_reserved_bytes": 1132462080
+          }
+        ],
+        "graph": null,
+        "pipeline": {
+          "peer_device": 1,
+          "peer_blocks": 30,
+          "block_bytes": 37748736,
+          "reserved_peer_bytes": 1132462080,
+          "reserved_staging_bytes": 75497472,
+          "d2d_writes": 6000,
+          "d2d_reads": 6000,
+          "transferred_bytes": 452984832000,
+          "lookahead_prefetches": 5800,
+          "microbatches": 200
+        }
+      },
+      {
+        "rank": 1,
+        "memory": [
+          {
+            "device": 0,
+            "peak_allocated_bytes": 1132462080,
+            "peak_reserved_bytes": 1132462080
+          },
+          {
+            "device": 1,
+            "peak_allocated_bytes": 2944529920,
+            "peak_reserved_bytes": 3877634048
+          }
+        ],
+        "graph": null,
+        "pipeline": {
+          "peer_device": 0,
+          "peer_blocks": 30,
+          "block_bytes": 37748736,
+          "reserved_peer_bytes": 1132462080,
+          "reserved_staging_bytes": 75497472,
+          "d2d_writes": 6000,
+          "d2d_reads": 6000,
+          "transferred_bytes": 452984832000,
+          "lookahead_prefetches": 5800,
+          "microbatches": 200
+        }
+      }
+    ],
+    "profiled": false,
+    "torch_version": "2.14.1+cu130",
+    "cuda_version": "13.0",
+    "nccl_version": [
+      2,
+      30,
+      7
+    ],
+    "source_checkpoint": "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/pretrain/last.pt",
+    "checkpoint_sha256": "3e52d8c22e54c2115cfbc99427554dd193274420387bec2d3448444efa87fe6d",
+    "audit": {
+      "status": "passed",
+      "reference": "/home/ubuntu/ntransformer-h100/training/difference-review-20261013/deterministic-reference",
+      "candidate": "/home/ubuntu/ntransformer-h100/training/labels-graph-20261014/peer-control",
+      "paired_throughput_ratio": 1.0570707221175506,
+      "historical_throughput_ratio": 0.8830127101509978,
+      "historical_ratio_scope": "Descriptive only: separate initialization and instrumentation",
+      "max_training_loss_delta": 0.0,
+      "final_validation_delta": 0.0,
+      "relative_update_difference": 0.0,
+      "max_weight_difference": 0.0,
+      "updated_tensors": 273,
+      "total_tensors": 273,
+      "exact": {
+        "model_state_dict": true,
+        "optimizer_states": true,
+        "rng_states": true,
+        "recorded_metrics": true,
+        "validation": true
+      },
+      "require_exact": true,
+      "limits": {
+        "training_loss": 0.03,
+        "validation_loss": 0.02,
+        "relative_update_difference": 0.1
+      }
+    }
+  },
+  "peer-labels": {
+    "status": "complete",
+    "mode": "peer",
+    "backend": {
+      "native_norms": 61,
+      "norm_mode": "compatible",
+      "norm_reductions": "PyTorch",
+      "native_swiglu": 30,
+      "shared_projection_cast_groups": 60,
+      "direct_gqa_layers": 30,
+      "native_rotary_layers": 30,
+      "loss_mode": "fused",
+      "loss_block_size": 2048,
+      "fused_loss_labels": true,
+      "checkpoint_layers": 30,
+      "peer_activation_storage": true,
+      "gemm_attention_optimizer_ddp": "PyTorch",
+      "higher_order_gradients": false,
+      "deterministic_algorithms": true,
+      "fill_uninitialized_memory": false,
+      "gradient_bucket_views": true,
+      "defer_loss_readbacks": true,
+      "cublas_workspace_config": ":4096:8",
+      "attention_dispatch": "PyTorch SDPA automatic; constrained by determinism setting"
+    },
+    "steps": 100,
+    "start_step": 32768,
+    "completed_steps": 32868,
+    "physical_world_size": 2,
+    "logical_world_size": 2,
+    "global_tokens_per_step": 65536,
+    "parameters": 107604288,
+    "warmup_steps": 10,
+    "measured_steps": 90,
+    "tokens_per_second": 272135.5004860005,
+    "mean_step_seconds": 0.24082120812228014,
+    "measured_window_seconds": 21.673908731005213,
+    "instrumented_step_mean_seconds": 0.2405035757551054,
+    "timings_rank0": {
+      "initialization_seconds": 5.928843665002205,
+      "initial_validation_seconds": 0.513603046994831,
+      "training_seconds_including_warmup": 24.197871121999924,
+      "final_validation_seconds": 0.40918636599963065,
+      "checkpoint_and_batch_record_seconds": 1.0670157600034145,
+      "process_seconds_through_checkpoint": 32.12244459000067
+    },
+    "historical_baseline": {
+      "baseline_sha256": "bf58fea89c51f967ebcf59f9b74acb6fadb84f40a2720a679fe154436de43038",
+      "captured_step": 25400,
+      "historical_tokens_per_second": 307985.1565696424,
+      "scope": "Historical context; paired continuation is the causal implementation comparison",
+      "initialization": "Completed pretraining checkpoint, restored AdamW, final LR floor; not a pilot restart"
+    },
+    "initial_validation": {
+      "fineweb_edu": 2.6587175726890564,
+      "cosmopedia": 1.6827719807624817,
+      "mean": 2.170744776725769
+    },
+    "final_validation": {
+      "fineweb_edu": 2.6584929823875427,
+      "cosmopedia": 1.6815914139151573,
+      "mean": 2.17004219815135
+    },
+    "batch_sha256": "b8c0439017c9037042592324992fe409427e4374902197e7829a10c9c4069106",
+    "ranks": [
+      {
+        "rank": 0,
+        "memory": [
+          {
+            "device": 0,
+            "peak_allocated_bytes": 2945193472,
+            "peak_reserved_bytes": 3877634048
+          },
+          {
+            "device": 1,
+            "peak_allocated_bytes": 1132462080,
+            "peak_reserved_bytes": 1132462080
+          }
+        ],
+        "graph": null,
+        "pipeline": {
+          "peer_device": 1,
+          "peer_blocks": 30,
+          "block_bytes": 37748736,
+          "reserved_peer_bytes": 1132462080,
+          "reserved_staging_bytes": 75497472,
+          "d2d_writes": 6000,
+          "d2d_reads": 6000,
+          "transferred_bytes": 452984832000,
+          "lookahead_prefetches": 5800,
+          "microbatches": 200
+        }
+      },
+      {
+        "rank": 1,
+        "memory": [
+          {
+            "device": 0,
+            "peak_allocated_bytes": 1132462080,
+            "peak_reserved_bytes": 1132462080
+          },
+          {
+            "device": 1,
+            "peak_allocated_bytes": 2945193472,
+            "peak_reserved_bytes": 3877634048
+          }
+        ],
+        "graph": null,
+        "pipeline": {
+          "peer_device": 0,
+          "peer_blocks": 30,
+          "block_bytes": 37748736,
+          "reserved_peer_bytes": 1132462080,
+          "reserved_staging_bytes": 75497472,
+          "d2d_writes": 6000,
+          "d2d_reads": 6000,
+          "transferred_bytes": 452984832000,
+          "lookahead_prefetches": 5800,
+          "microbatches": 200
+        }
+      }
+    ],
+    "profiled": false,
+    "torch_version": "2.14.1+cu130",
+    "cuda_version": "13.0",
+    "nccl_version": [
+      2,
+      30,
+      7
+    ],
+    "source_checkpoint": "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/pretrain/last.pt",
+    "checkpoint_sha256": "9eee37da3a48a73674d288fb62dc73aed673d95e61e94b893eca2dcd46c8d5d8",
+    "audit": {
+      "status": "passed",
+      "reference": "/home/ubuntu/ntransformer-h100/training/difference-review-20261013/deterministic-reference",
+      "candidate": "/home/ubuntu/ntransformer-h100/training/labels-graph-20261014/peer-labels",
+      "paired_throughput_ratio": 1.0577730629271231,
+      "historical_throughput_ratio": 0.8835994030266342,
+      "historical_ratio_scope": "Descriptive only: separate initialization and instrumentation",
+      "max_training_loss_delta": 0.0,
+      "final_validation_delta": 0.0,
+      "relative_update_difference": 0.0,
+      "max_weight_difference": 0.0,
+      "updated_tensors": 273,
+      "total_tensors": 273,
+      "exact": {
+        "model_state_dict": true,
+        "optimizer_states": true,
+        "rng_states": true,
+        "recorded_metrics": true,
+        "validation": true
+      },
+      "require_exact": true,
+      "limits": {
+        "training_loss": 0.03,
+        "validation_loss": 0.02,
+        "relative_update_difference": 0.1
+      }
+    }
+  }
+}

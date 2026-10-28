@@ -1,0 +1,49 @@
+{
+  "payload_files_verified": 163,
+  "executed_sources_exact": true,
+  "trace_reanalysis": {
+    "strict-control/rank0": {
+      "profile_window_peak_allocated_bytes": 13171053056,
+      "summary_exact": true,
+      "rotary_pair_kernels": 0
+    },
+    "strict-control/rank1": {
+      "profile_window_peak_allocated_bytes": 13171053056,
+      "summary_exact": true,
+      "rotary_pair_kernels": 0
+    },
+    "strict-rope/rank0": {
+      "profile_window_peak_allocated_bytes": 13169947136,
+      "summary_exact": true,
+      "rotary_pair_kernels": 240
+    },
+    "strict-rope/rank1": {
+      "profile_window_peak_allocated_bytes": 13169947136,
+      "summary_exact": true,
+      "rotary_pair_kernels": 240
+    },
+    "normal-control/rank0": {
+      "profile_window_peak_allocated_bytes": 13171053056,
+      "summary_exact": true,
+      "rotary_pair_kernels": 0
+    },
+    "normal-control/rank1": {
+      "profile_window_peak_allocated_bytes": 13171053056,
+      "summary_exact": true,
+      "rotary_pair_kernels": 0
+    },
+    "normal-rope/rank0": {
+      "profile_window_peak_allocated_bytes": 13169947136,
+      "summary_exact": true,
+      "rotary_pair_kernels": 240
+    },
+    "normal-rope/rank1": {
+      "profile_window_peak_allocated_bytes": 13169947136,
+      "summary_exact": true,
+      "rotary_pair_kernels": 240
+    }
+  },
+  "python_compilation": "passed",
+  "measurement_tests": 4,
+  "queue_tests": 5
+}

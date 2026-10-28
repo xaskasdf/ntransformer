@@ -1,0 +1,170 @@
+{
+  "scope": "Small algebra/rounding probes; not trained Transformer results",
+  "seed": 20261014,
+  "numpy": "2.5.3",
+  "gqa_adjoint_absolute_error": 1.7763568394002505e-15,
+  "rmsnorm_jvp_max_error": 1.4017870197946536e-10,
+  "streamed_cross_entropy": {
+    "loss": 0.0,
+    "dh": 5.551115123125783e-17,
+    "dw": 2.7755575615628914e-17
+  },
+  "parallel_block_taylor": {
+    "samples": [
+      {
+        "alpha": 0.1,
+        "discrepancy_l2": 0.0787744846332944,
+        "first_order_remainder_l2": 0.0035220594128453284
+      },
+      {
+        "alpha": 0.05,
+        "discrepancy_l2": 0.040150372543146365,
+        "first_order_remainder_l2": 0.00088593993142155
+      },
+      {
+        "alpha": 0.025,
+        "discrepancy_l2": 0.020266018304966712,
+        "first_order_remainder_l2": 0.00022212088026027534
+      },
+      {
+        "alpha": 0.0125,
+        "discrepancy_l2": 0.010180686153940136,
+        "first_order_remainder_l2": 5.560702106396768e-05
+      }
+    ],
+    "halving_remainder_ratios": [
+      3.9755058869442177,
+      3.9885486244401207,
+      3.994475445911012
+    ]
+  },
+  "reversible_reconstruction": [
+    {
+      "state": "fp64",
+      "residual_scale": 0.1,
+      "anchor_interval": 30,
+      "worst_abs": 8.881784197001252e-16,
+      "worst_relative_l2": 2.0744830633909655e-16
+    },
+    {
+      "state": "fp64",
+      "residual_scale": 0.1,
+      "anchor_interval": 5,
+      "worst_abs": 4.440892098500626e-16,
+      "worst_relative_l2": 9.618234030342286e-17
+    },
+    {
+      "state": "fp64",
+      "residual_scale": 0.1,
+      "anchor_interval": 1,
+      "worst_abs": 4.440892098500626e-16,
+      "worst_relative_l2": 9.282145307766051e-17
+    },
+    {
+      "state": "fp64",
+      "residual_scale": 1.0,
+      "anchor_interval": 30,
+      "worst_abs": 1.7763568394002505e-15,
+      "worst_relative_l2": 7.688835390835333e-16
+    },
+    {
+      "state": "fp64",
+      "residual_scale": 1.0,
+      "anchor_interval": 5,
+      "worst_abs": 6.661338147750939e-16,
+      "worst_relative_l2": 2.3231880808338657e-16
+    },
+    {
+      "state": "fp64",
+      "residual_scale": 1.0,
+      "anchor_interval": 1,
+      "worst_abs": 4.440892098500626e-16,
+      "worst_relative_l2": 8.297479495269281e-17
+    },
+    {
+      "state": "fp32",
+      "residual_scale": 0.1,
+      "anchor_interval": 30,
+      "worst_abs": 2.384185791015625e-07,
+      "worst_relative_l2": 7.566693478927338e-08
+    },
+    {
+      "state": "fp32",
+      "residual_scale": 0.1,
+      "anchor_interval": 5,
+      "worst_abs": 2.384185791015625e-07,
+      "worst_relative_l2": 4.6246976770524944e-08
+    },
+    {
+      "state": "fp32",
+      "residual_scale": 0.1,
+      "anchor_interval": 1,
+      "worst_abs": 2.384185791015625e-07,
+      "worst_relative_l2": 4.484763326712399e-08
+    },
+    {
+      "state": "fp32",
+      "residual_scale": 1.0,
+      "anchor_interval": 30,
+      "worst_abs": 9.5367431640625e-07,
+      "worst_relative_l2": 3.1144120835218923e-07
+    },
+    {
+      "state": "fp32",
+      "residual_scale": 1.0,
+      "anchor_interval": 5,
+      "worst_abs": 4.76837158203125e-07,
+      "worst_relative_l2": 9.401062180074181e-08
+    },
+    {
+      "state": "fp32",
+      "residual_scale": 1.0,
+      "anchor_interval": 1,
+      "worst_abs": 4.76837158203125e-07,
+      "worst_relative_l2": 5.988855345604952e-08
+    },
+    {
+      "state": "bf16_state",
+      "residual_scale": 0.1,
+      "anchor_interval": 30,
+      "worst_abs": 0.0078125,
+      "worst_relative_l2": 0.0019158762106045223
+    },
+    {
+      "state": "bf16_state",
+      "residual_scale": 0.1,
+      "anchor_interval": 5,
+      "worst_abs": 0.00390625,
+      "worst_relative_l2": 0.0010996506598105096
+    },
+    {
+      "state": "bf16_state",
+      "residual_scale": 0.1,
+      "anchor_interval": 1,
+      "worst_abs": 0.00390625,
+      "worst_relative_l2": 0.0008176571148654431
+    },
+    {
+      "state": "bf16_state",
+      "residual_scale": 1.0,
+      "anchor_interval": 30,
+      "worst_abs": 0.0625,
+      "worst_relative_l2": 0.02324028250433182
+    },
+    {
+      "state": "bf16_state",
+      "residual_scale": 1.0,
+      "anchor_interval": 5,
+      "worst_abs": 0.0234375,
+      "worst_relative_l2": 0.008188752735620676
+    },
+    {
+      "state": "bf16_state",
+      "residual_scale": 1.0,
+      "anchor_interval": 1,
+      "worst_abs": 0.015625,
+      "worst_relative_l2": 0.002990694872438053
+    }
+  ],
+  "status": "passed"
+}

@@ -1,0 +1,17 @@
+{
+  "status": "passed",
+  "primitive_tests": [],
+  "model_tests": [
+    {
+      "mode": "checkpoint",
+      "bf16": false,
+      "loss": 4.606564521789551,
+      "reference_loss": 4.606564521789551,
+      "gradient_relative_l2": 0.0,
+      "worst_parameter_relative_l2": 0.0,
+      "update_max_abs": 0.0,
+      "gradient_tolerance": 1e-06,
+      "pipeline": null
+    }
+  ]
+}

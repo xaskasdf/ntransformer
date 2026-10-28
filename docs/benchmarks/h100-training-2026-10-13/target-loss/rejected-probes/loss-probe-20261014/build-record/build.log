@@ -1,0 +1,5 @@
+[1/5] Building CUDA object CMakeFiles/ntransformer_training.dir/src/training/rotary.cu.o
+[2/5] Building CUDA object CMakeFiles/ntransformer_training.dir/src/training/ops.cu.o
+[3/5] Building CUDA object CMakeFiles/ntransformer_training.dir/src/training/cross_entropy.cu.o
+[4/5] Building CUDA object CMakeFiles/ntransformer_training.dir/src/cuda/rmsnorm.cu.o
+[5/5] Linking CXX shared library libntransformer_training.so

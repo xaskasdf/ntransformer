@@ -1,0 +1,11 @@
+{
+  "hashes": {
+    "/home/ubuntu/ntransformer-h100/source/src/training/ops.cu": "ee5ab6e3074b1c85397fe5044b0857fde9d96984061a165b72ffac7df4ff2e46",
+    "/home/ubuntu/ntransformer-h100/source/python/ntransformer_training/ops.py": "7b2a4c7ee3887287b76bd4680e7df04e8cc6e059ac43f19410870d29850d8eb4",
+    "/home/ubuntu/ntransformer-h100/source/python/ntransformer_training/brandon.py": "cec581a0a2a9297c9cc579d8fa543f79ecfbb10165f81ab4bc8f641c7cab828b",
+    "/home/ubuntu/ntransformer-h100/source/scripts/train_verified_instructions.py": "17902e199dfa876dfec779808e6b7b5b33418e500b2674942e344cc742ff8f87",
+    "/home/ubuntu/ntransformer-h100/source/scripts/train_brandon_experiment.py": "370749c387e0a5e82d7b17d4b4a19fb3f0c229c410e9510960792d7b3b58caae",
+    "/home/ubuntu/ntransformer-h100/build-training/libntransformer_training.so": "b5039135d5c50d4c019ea57046d2ae9595269ea8584cd6fee10f9455f9f450ee",
+    "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/sft/best.pt": "6413763b4e7630f4aa4d532fe5e05879afb0b9ac8d2a1c015900908a22a5bf8d"
+  }
+}

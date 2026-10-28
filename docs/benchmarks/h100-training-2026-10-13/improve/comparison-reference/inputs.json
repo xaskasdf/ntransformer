@@ -1,0 +1,78 @@
+{
+  "hashes": {
+    "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/sft/best.pt": "6413763b4e7630f4aa4d532fe5e05879afb0b9ac8d2a1c015900908a22a5bf8d",
+    "/lambda/nfs/btiny/brandon-mini/sources/stage1-v1/data/tokenizer_8k.model": "c6808ff86d9b1422aa1ef5d0adb3cde5d993e870a4387fcd2a16a119083caae0",
+    "/lambda/nfs/btiny/brandon-mini/distillation/text-v1/source/evaluate_mini_instructions.py": "cb2e4fc5485949d21b5e9ce1ed553d41f357ccdf66acf133a4ccec49eb51e486",
+    "/lambda/nfs/btiny/brandon-mini/distillation/text-v1/requests.jsonl": "621cf5f37ba60f5b003774469b4b09349fef9724ba53e00c0a7ff05a0e8232ff",
+    "/lambda/nfs/btiny/brandon-mini/distillation/text-v1/filtered/train.jsonl": "52e821caf20a78ce9d2a8f9d00720e6bd2ee871cff93044c2bf31b757e6fe953",
+    "/lambda/nfs/btiny/brandon-mini/distillation/text-v1/filtered/validation.jsonl": "47922a4193403d4356fe3d0c0ce793c919586cbb402bfad2612212d5e4dfb348",
+    "/lambda/nfs/btiny/brandon-mini/distillation/text-v1/filtered/manifest.json": "8ec4eae0df2b56c3039398b4ea9ec940cca5cf3372d6f96cc48c0243ba5a879f",
+    "/lambda/nfs/btiny/brandon-mini/sources/stage1-v1/scripts/train_mini.py": "bc852dfef99ae7a3515767500bd0362c894849ad06ce8f6d67b6241eea6de243",
+    "/lambda/nfs/btiny/brandon-mini/sources/stage1-v1/src/model.py": "ce3f41f52d7f00e9d46637c7512a5e029acdb383fb80f4f59ea136ae13f3d0b0",
+    "/home/ubuntu/ntransformer-h100/source/scripts/run_verified_instructions.py": "663f4b14fbd62ba393a89b08821dbd7bf45a0bf5a8918cde1d605bc38ec1fead",
+    "/home/ubuntu/ntransformer-h100/source/scripts/train_verified_instructions.py": "fbdd0091683a1b120ba72c559777ac83be2168a3c1890220f8924b37db4746ab"
+  },
+  "initial_step": 1200,
+  "config": {
+    "model": {
+      "dim": 576,
+      "n_layers": 30,
+      "n_heads": 9,
+      "n_kv_heads": 3,
+      "vocab_size": 8192,
+      "hidden_dim": 1472,
+      "max_seq_len": 1024,
+      "dropout": 0.0,
+      "weight_tying": true,
+      "norm_eps": 1e-05,
+      "rope_theta": 10000.0,
+      "block_sharing": false,
+      "n_predict": 1,
+      "dense_former": false,
+      "value_residual": false,
+      "n_registers": 0,
+      "n_loops": 1,
+      "ternary": false,
+      "relu_squared": false,
+      "step_embedding": false,
+      "feedback": false
+    },
+    "tokenizer": {
+      "model_path": "/lambda/nfs/btiny/brandon-mini/sources/stage1-v1/data/tokenizer_8k.model"
+    },
+    "finetune": {
+      "max_steps": 100,
+      "warmup_steps": 10,
+      "batch_size": 8,
+      "gradient_accumulation_steps": 2,
+      "optimizer": "adamw",
+      "learning_rate": 5e-05,
+      "muon_learning_rate": 0.001,
+      "min_lr_ratio": 0.1,
+      "decay_fraction": 0.8,
+      "weight_decay": 0.01,
+      "grad_clip": 1.0,
+      "eval_interval": 50,
+      "eval_batches": 8,
+      "save_interval": 100,
+      "log_interval": 10,
+      "seed": 20261013
+    }
+  },
+  "train_examples": 391,
+  "validation_requests": 120,
+  "training_families": {
+    "uppercase": 76,
+    "join": 78,
+    "replace": 79,
+    "remove_marker": 80,
+    "brackets": 78
+  },
+  "accepted_validation_examples": 78,
+  "optimizer": "new state, same for both backends",
+  "quality": "last.pt after 100 updates; no selection by exact-match evaluation",
+  "limitations": [
+    "391 teacher-verified examples; no accepted JSON-family training examples",
+    "120 held-out input/paraphrase cases; original 60 are a separate skill diagnostic"
+  ]
+}

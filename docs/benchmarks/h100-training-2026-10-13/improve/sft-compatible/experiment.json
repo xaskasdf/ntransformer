@@ -1,0 +1,19 @@
+{
+  "mode": "native",
+  "trainer": "unchanged Brandon train_mini.run",
+  "initialization": "final SFT weights; new AdamW for synthetic curriculum",
+  "gemm_attention_optimizer_ddp": "PyTorch",
+  "native_norms": 61,
+  "norm_reductions": "PyTorch",
+  "native_swiglu": 30,
+  "checkpoint_layers": 0,
+  "peer_activation_storage": false,
+  "higher_order_gradients": false,
+  "seconds_including_load_eval_save": 25.0488151569989,
+  "starting_checkpoint_sha256": "6413763b4e7630f4aa4d532fe5e05879afb0b9ac8d2a1c015900908a22a5bf8d",
+  "trainer_sha256": "bc852dfef99ae7a3515767500bd0362c894849ad06ce8f6d67b6241eea6de243",
+  "model_source_sha256": "ce3f41f52d7f00e9d46637c7512a5e029acdb383fb80f4f59ea136ae13f3d0b0",
+  "torch": "2.14.1+cu130",
+  "cuda_build": "13.0",
+  "batch_record_scope": "Every train and validation fetch, in order, per rank"
+}

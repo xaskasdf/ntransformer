@@ -1,0 +1,152 @@
+{
+  "status": "passed",
+  "primitive_tests": [
+    {
+      "op": "rmsnorm",
+      "shape": [
+        1,
+        1
+      ],
+      "dx_relative": 1.2667635638733837e-06,
+      "dw_relative": 2.701693363753161e-08
+    },
+    {
+      "op": "rmsnorm",
+      "shape": [
+        3,
+        33
+      ],
+      "dx_relative": 1.1812105955348574e-07,
+      "dw_relative": 7.558015817521256e-08
+    },
+    {
+      "op": "rmsnorm",
+      "shape": [
+        257,
+        576
+      ],
+      "dx_relative": 6.286526530168612e-08,
+      "dw_relative": 2.2116037877917737e-07
+    },
+    {
+      "op": "rmsnorm",
+      "shape": [
+        9,
+        4097
+      ],
+      "dx_relative": 5.4917193649343815e-08,
+      "dw_relative": 7.313425611770576e-08
+    },
+    {
+      "op": "swiglu",
+      "dtype": "torch.float32",
+      "dx_relative": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "op": "swiglu",
+      "dtype": "torch.bfloat16",
+      "dx_relative": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "op": "swiglu_small_gradient_rounding",
+      "exact": true,
+      "cases": 3
+    }
+  ],
+  "model_tests": [
+    {
+      "mode": "native",
+      "bf16": false,
+      "loss": 11.103693962097168,
+      "reference_loss": 11.103693962097168,
+      "gradient_relative_l2": 0.0,
+      "worst_parameter_relative_l2": 0.0,
+      "update_max_abs": 0.0,
+      "gradient_tolerance": 0.002,
+      "pipeline": null
+    },
+    {
+      "mode": "checkpoint",
+      "bf16": false,
+      "loss": 11.103693962097168,
+      "reference_loss": 11.103693962097168,
+      "gradient_relative_l2": 0.0,
+      "worst_parameter_relative_l2": 0.0,
+      "update_max_abs": 0.0,
+      "gradient_tolerance": 0.002,
+      "pipeline": null
+    },
+    {
+      "mode": "peer",
+      "bf16": false,
+      "loss": 11.103693962097168,
+      "reference_loss": 11.103693962097168,
+      "gradient_relative_l2": 0.0,
+      "worst_parameter_relative_l2": 0.0,
+      "update_max_abs": 0.0,
+      "gradient_tolerance": 0.002,
+      "pipeline": {
+        "peer_device": 1,
+        "peer_blocks": 30,
+        "block_bytes": 147456,
+        "reserved_peer_bytes": 4423680,
+        "reserved_staging_bytes": 294912,
+        "d2d_writes": 30,
+        "d2d_reads": 30,
+        "transferred_bytes": 8847360,
+        "lookahead_prefetches": 29,
+        "microbatches": 1
+      }
+    },
+    {
+      "mode": "native",
+      "bf16": true,
+      "loss": 11.10302734375,
+      "reference_loss": 11.10302734375,
+      "gradient_relative_l2": 0.0,
+      "worst_parameter_relative_l2": 0.0,
+      "update_max_abs": 0.0,
+      "gradient_tolerance": 0.03,
+      "pipeline": null
+    },
+    {
+      "mode": "checkpoint",
+      "bf16": true,
+      "loss": 11.10302734375,
+      "reference_loss": 11.10302734375,
+      "gradient_relative_l2": 0.0,
+      "worst_parameter_relative_l2": 0.0,
+      "update_max_abs": 0.0,
+      "gradient_tolerance": 0.03,
+      "pipeline": null
+    },
+    {
+      "mode": "peer",
+      "bf16": true,
+      "loss": 11.10302734375,
+      "reference_loss": 11.10302734375,
+      "gradient_relative_l2": 0.0,
+      "worst_parameter_relative_l2": 0.0,
+      "update_max_abs": 0.0,
+      "gradient_tolerance": 0.03,
+      "pipeline": {
+        "peer_device": 1,
+        "peer_blocks": 30,
+        "block_bytes": 147456,
+        "reserved_peer_bytes": 4423680,
+        "reserved_staging_bytes": 294912,
+        "d2d_writes": 30,
+        "d2d_reads": 30,
+        "transferred_bytes": 8847360,
+        "lookahead_prefetches": 29,
+        "microbatches": 1
+      }
+    }
+  ]
+}

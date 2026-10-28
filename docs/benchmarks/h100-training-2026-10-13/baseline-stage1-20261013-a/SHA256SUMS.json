@@ -1,0 +1,23 @@
+{
+  "baseline.json": "bf58fea89c51f967ebcf59f9b74acb6fadb84f40a2720a679fe154436de43038",
+  "config.yaml": "4ca7760a7a2bb2c3daef1fd8d5772b4cc0217b1cea0e691980c5c3e82128f3cb",
+  "cpu.json": "2e4e7a77e4ac9bb5fa65405ae69ce6629f910879a9c3dd5710001934a4cab9de",
+  "data-manifest.json": "00d1669f6a919139d8b0b82c49aa1944e4954f67ab3d2d075cf071f2eed3ec84",
+  "gpu-samples.csv": "51e5bab5f831facb0288c75fc6271e4684747c886f3be9e51ef090c231a95a9f",
+  "gpu-topology.txt": "31e4ae3a39ab8a3ce876f97122d64206e233a5e59fcd41720055b5ca0c13b3df",
+  "identity.json": "2c7860fcb3abab45da9d657a3b496967218f78b57400d3739f928497f1019953",
+  "pretrain-metrics.jsonl": "1c8c2078b1ff784e0476d3b86a24858ce6363947d8b70e1dec5001a60df3ac01",
+  "quality-milestones.json": "810c00e014562a0ae6735d55803b576a6fafa3f67d5c85e3e575e85544be2c7c",
+  "REPORT.md": "c11abb9d759e45fac1ee810f852f79dfad350d7dc0d0a0128e070923e5c91bff",
+  "source\\configs\\mini_stage1_data.yaml": "983b4233799db1de9adaf67ed59aa272bde40d221e6ea6d2ed476cff0c71dd9a",
+  "source\\configs\\model_mini_108m_stage1.yaml": "69bad107b8a29a4d7a356154591d0dc3319c95f7ff511232233f5b4bd494225d",
+  "source\\scripts\\train_mini.py": "bc852dfef99ae7a3515767500bd0362c894849ad06ce8f6d67b6241eea6de243",
+  "source\\src\\data\\mini.py": "0c9946d86c1ce16f3ee9ba9ad964726349755108bb61d2b955a88b9502d364f1",
+  "source\\src\\model.py": "ce3f41f52d7f00e9d46637c7512a5e029acdb383fb80f4f59ea136ae13f3d0b0",
+  "source\\src\\tokenizer.py": "512c335cd659732ce3db1a29285bf07bb9c4a8455b0f62c770026eabacd81241",
+  "status.json": "a9a9428066ea2ae77e5c0b0a9240343c8224ac923b72981053dfc8bfbef10fd5",
+  "training-curves.png": "3a4ac86344f2e73162ca7de8c6613d49d30a0d61dec6e46290ccd29382b6e686",
+  "training-curves.svg": "86294f81cfa478dd53fe9f35c0183284d792eff099ac0bdd26036afcfd16fe30",
+  "training-windows.csv": "5df9ce54662fb0010ae45b90ac06cad16b958f141944e2cf3294b6cfc1c3c240",
+  "validation.csv": "9e8cf640a73577f57e189c66d6f4c872fe7ad343d3403cbc3884aa52506e5dce"
+}

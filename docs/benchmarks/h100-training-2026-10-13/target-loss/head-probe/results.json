@@ -1,0 +1,105 @@
+{
+  "reference-8192": {
+    "loss": 2.3237571716308594,
+    "dh": {
+      "exact": true,
+      "max_abs": 0.0,
+      "relative_l2": 0.0
+    },
+    "dw": {
+      "exact": true,
+      "max_abs": 0.0,
+      "relative_l2": 0.0
+    }
+  },
+  "fused-8192": {
+    "loss": 2.3237571716308594,
+    "dh": {
+      "exact": true,
+      "max_abs": 0.0,
+      "relative_l2": 0.0
+    },
+    "dw": {
+      "exact": true,
+      "max_abs": 0.0,
+      "relative_l2": 0.0
+    }
+  },
+  "vocab-stream-8192": {
+    "loss": 2.3237571716308594,
+    "dh": {
+      "exact": true,
+      "max_abs": 0.0,
+      "relative_l2": 0.0
+    },
+    "dw": {
+      "exact": true,
+      "max_abs": 0.0,
+      "relative_l2": 0.0
+    }
+  },
+  "vocab-stream-4096": {
+    "loss": 2.3237571716308594,
+    "dh": {
+      "exact": false,
+      "max_abs": 5.960464477539063e-08,
+      "relative_l2": 0.00023730750061899512
+    },
+    "dw": {
+      "exact": false,
+      "max_abs": 3.814697265625e-06,
+      "relative_l2": 1.5914016895082247e-05
+    }
+  },
+  "vocab-stream-2048": {
+    "loss": 2.3237571716308594,
+    "dh": {
+      "exact": false,
+      "max_abs": 5.960464477539063e-08,
+      "relative_l2": 0.0002834925788081822
+    },
+    "dw": {
+      "exact": false,
+      "max_abs": 1.52587890625e-05,
+      "relative_l2": 0.00023693248707833828
+    }
+  },
+  "vocab-stream-1024": {
+    "loss": 2.3237571716308594,
+    "dh": {
+      "exact": false,
+      "max_abs": 5.960464477539063e-08,
+      "relative_l2": 0.00030269171894020013
+    },
+    "dw": {
+      "exact": false,
+      "max_abs": 6.103515625e-05,
+      "relative_l2": 0.00032819412373837254
+    }
+  },
+  "fixed_dz_fp32_full": {
+    "exact": true,
+    "max_abs": 0.0,
+    "relative_l2": 0.0
+  },
+  "fixed_dz_fp32_blocks-4096": {
+    "exact": false,
+    "max_abs": 5.960464477539063e-08,
+    "relative_l2": 0.0002372708708305879
+  },
+  "fixed_dz_fp32_blocks-2048": {
+    "exact": false,
+    "max_abs": 5.960464477539063e-08,
+    "relative_l2": 0.00028345583563434737
+  },
+  "fixed_dz_fp32_blocks-1024": {
+    "exact": false,
+    "max_abs": 5.960464477539063e-08,
+    "relative_l2": 0.00030265451359162265
+  },
+  "fixed_dz_no_reduced_reduction": {
+    "exact": true,
+    "max_abs": 0.0,
+    "relative_l2": 0.0
+  }
+}

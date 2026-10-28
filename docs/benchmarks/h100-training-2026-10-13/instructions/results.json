@@ -1,0 +1,277 @@
+{
+  "evaluations": {
+    "before": {
+      "transformations": {
+        "correct": 0,
+        "total": 120,
+        "scores": {
+          "uppercase": {
+            "correct": 0,
+            "total": 20,
+            "accuracy": 0.0
+          },
+          "join": {
+            "correct": 0,
+            "total": 20,
+            "accuracy": 0.0
+          },
+          "replace": {
+            "correct": 0,
+            "total": 20,
+            "accuracy": 0.0
+          },
+          "remove_marker": {
+            "correct": 0,
+            "total": 20,
+            "accuracy": 0.0
+          },
+          "brackets": {
+            "correct": 0,
+            "total": 20,
+            "accuracy": 0.0
+          },
+          "json_record": {
+            "correct": 0,
+            "total": 20,
+            "accuracy": 0.0
+          }
+        },
+        "stopped": 103,
+        "exact_text": 0
+      },
+      "original": {
+        "correct": 0,
+        "total": 60,
+        "scores": {
+          "context_lookup": {
+            "correct": 0,
+            "total": 10,
+            "accuracy": 0.0
+          },
+          "sorting_format": {
+            "correct": 0,
+            "total": 10,
+            "accuracy": 0.0
+          },
+          "concept_role": {
+            "correct": 0,
+            "total": 10,
+            "accuracy": 0.0
+          },
+          "missing_information": {
+            "correct": 0,
+            "total": 10,
+            "accuracy": 0.0
+          },
+          "conditional_rule": {
+            "correct": 0,
+            "total": 10,
+            "accuracy": 0.0
+          },
+          "context_update": {
+            "correct": 0,
+            "total": 10,
+            "accuracy": 0.0
+          }
+        },
+        "stopped": 36,
+        "exact_text": 0
+      }
+    },
+    "reference": {
+      "transformations": {
+        "correct": 56,
+        "total": 120,
+        "scores": {
+          "uppercase": {
+            "correct": 3,
+            "total": 20,
+            "accuracy": 0.15
+          },
+          "join": {
+            "correct": 14,
+            "total": 20,
+            "accuracy": 0.7
+          },
+          "replace": {
+            "correct": 0,
+            "total": 20,
+            "accuracy": 0.0
+          },
+          "remove_marker": {
+            "correct": 20,
+            "total": 20,
+            "accuracy": 1.0
+          },
+          "brackets": {
+            "correct": 19,
+            "total": 20,
+            "accuracy": 0.95
+          },
+          "json_record": {
+            "correct": 0,
+            "total": 20,
+            "accuracy": 0.0
+          }
+        },
+        "stopped": 120,
+        "exact_text": 56
+      },
+      "original": {
+        "correct": 0,
+        "total": 60,
+        "scores": {
+          "context_lookup": {
+            "correct": 0,
+            "total": 10,
+            "accuracy": 0.0
+          },
+          "sorting_format": {
+            "correct": 0,
+            "total": 10,
+            "accuracy": 0.0
+          },
+          "concept_role": {
+            "correct": 0,
+            "total": 10,
+            "accuracy": 0.0
+          },
+          "missing_information": {
+            "correct": 0,
+            "total": 10,
+            "accuracy": 0.0
+          },
+          "conditional_rule": {
+            "correct": 0,
+            "total": 10,
+            "accuracy": 0.0
+          },
+          "context_update": {
+            "correct": 0,
+            "total": 10,
+            "accuracy": 0.0
+          }
+        },
+        "stopped": 60,
+        "exact_text": 0
+      }
+    },
+    "native": {
+      "transformations": {
+        "correct": 55,
+        "total": 120,
+        "scores": {
+          "uppercase": {
+            "correct": 1,
+            "total": 20,
+            "accuracy": 0.05
+          },
+          "join": {
+            "correct": 14,
+            "total": 20,
+            "accuracy": 0.7
+          },
+          "replace": {
+            "correct": 0,
+            "total": 20,
+            "accuracy": 0.0
+          },
+          "remove_marker": {
+            "correct": 20,
+            "total": 20,
+            "accuracy": 1.0
+          },
+          "brackets": {
+            "correct": 20,
+            "total": 20,
+            "accuracy": 1.0
+          },
+          "json_record": {
+            "correct": 0,
+            "total": 20,
+            "accuracy": 0.0
+          }
+        },
+        "stopped": 120,
+        "exact_text": 55
+      },
+      "original": {
+        "correct": 0,
+        "total": 60,
+        "scores": {
+          "context_lookup": {
+            "correct": 0,
+            "total": 10,
+            "accuracy": 0.0
+          },
+          "sorting_format": {
+            "correct": 0,
+            "total": 10,
+            "accuracy": 0.0
+          },
+          "concept_role": {
+            "correct": 0,
+            "total": 10,
+            "accuracy": 0.0
+          },
+          "missing_information": {
+            "correct": 0,
+            "total": 10,
+            "accuracy": 0.0
+          },
+          "conditional_rule": {
+            "correct": 0,
+            "total": 10,
+            "accuracy": 0.0
+          },
+          "context_update": {
+            "correct": 0,
+            "total": 10,
+            "accuracy": 0.0
+          }
+        },
+        "stopped": 57,
+        "exact_text": 0
+      }
+    }
+  },
+  "batch_hashes_match": true,
+  "reference": {
+    "phase": "sft",
+    "parameters": 107604288,
+    "world_size": 2,
+    "start_step": 0,
+    "completed_steps": 100,
+    "planned_steps": 100,
+    "initial_validation": {
+      "instructions": 2.781039579013649,
+      "mean": 2.781039579013649
+    },
+    "final_validation": {
+      "instructions": 0.3019062414782082,
+      "mean": 0.3019062414782082
+    },
+    "best_validation_loss": 0.3019062414782082,
+    "manifest_sha256": "8ec4eae0df2b56c3039398b4ea9ec940cca5cf3372d6f96cc48c0243ba5a879f",
+    "status": "complete"
+  },
+  "native": {
+    "phase": "sft",
+    "parameters": 107604288,
+    "world_size": 2,
+    "start_step": 0,
+    "completed_steps": 100,
+    "planned_steps": 100,
+    "initial_validation": {
+      "instructions": 2.780423637993809,
+      "mean": 2.780423637993809
+    },
+    "final_validation": {
+      "instructions": 0.30833702532764773,
+      "mean": 0.30833702532764773
+    },
+    "best_validation_loss": 0.30833702532764773,
+    "manifest_sha256": "8ec4eae0df2b56c3039398b4ea9ec940cca5cf3372d6f96cc48c0243ba5a879f",
+    "status": "complete"
+  }
+}

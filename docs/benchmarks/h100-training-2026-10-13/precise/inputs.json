@@ -1,0 +1,6 @@
+{
+  "/home/ubuntu/ntransformer-h100/source/CMakeLists.txt": "27874d21d0de20f4726bf01b24fa78307bd70169a88fb709cbc7ae45f2aa09c5",
+  "/home/ubuntu/ntransformer-h100/source/src/training/ops.cu": "a8914d6ff306d0e2f4a4ffdcb823457e92e27533fd63831ac78c98834f25c33a",
+  "/home/ubuntu/ntransformer-h100/source/python/ntransformer_training/brandon.py": "2805dbc19443dcde56bd4a2dfd694d3a447d7674bf59416bf63b59f8d7d531f3",
+  "/home/ubuntu/ntransformer-h100/build-training/libntransformer_training.so": "0c462225da0c52543b28e20e33e1b2aef215cb61498d4ebf28591ecc3f564459"
+}

@@ -1,0 +1,6 @@
+{
+  "library_sha256": "b5039135d5c50d4c019ea57046d2ae9595269ea8584cd6fee10f9455f9f450ee",
+  "source_checkpoint": "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/pretrain/last.pt",
+  "throughput_scope": "100 updates; first 10 excluded; continuous window with audit/logging",
+  "profile_scope": "Separate runs; offsets 11 and 12 only; excluded from throughput claims"
+}

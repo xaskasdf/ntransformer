@@ -1,0 +1,19 @@
+{"scale": 1.0, "logp": {"exact": true, "max_abs": 0.0, "relative_l2": 0.0}, "gradient": {"exact": true, "max_abs": 0.0, "relative_l2": 0.0}}
+{"scale": 6.0, "logp": {"exact": true, "max_abs": 0.0, "relative_l2": 0.0}, "gradient": {"exact": true, "max_abs": 0.0, "relative_l2": 0.0}}
+{"scale": 30.0, "logp": {"exact": true, "max_abs": 0.0, "relative_l2": 0.0}, "gradient": {"exact": true, "max_abs": 0.0, "relative_l2": 0.0}}
+{"mode": "fused", "shifted": true, "mask": "none", "loss": 9.34417724609375, "reference_loss": 9.345552444458008}
+Traceback (most recent call last):
+  File "/home/ubuntu/ntransformer-h100/training/loss-probe-20261014-r2/source-snapshot/tests/test_training_loss.py", line 171, in <module>
+    main()
+  File "/home/ubuntu/ntransformer-h100/training/loss-probe-20261014-r2/source-snapshot/tests/test_training_loss.py", line 165, in main
+    result = dict(primitives=primitives(), semantics=semantics(), model=model_checks(args), status='passed')
+                                                     ^^^^^^^^^^^
+  File "/home/ubuntu/ntransformer-h100/training/loss-probe-20261014-r2/source-snapshot/tests/test_training_loss.py", line 81, in semantics
+    torch.testing.assert_close(loss, expected[0], rtol=0, atol=2e-6, equal_nan=True)
+  File "/home/ubuntu/brandon-mini/.venv/lib/python3.12/site-packages/torch/testing/_comparison.py", line 1689, in assert_close
+    raise error_metas[0].to_error(msg)
+AssertionError: Scalars are not close!
+
+Expected 9.345552444458008 but got 9.34417724609375.
+Absolute difference: 0.0013751983642578125 (up to 2e-06 allowed)
+Relative difference: 0.00014715003446086453 (up to 0 allowed)

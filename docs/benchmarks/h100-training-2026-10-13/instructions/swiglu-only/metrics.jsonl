@@ -1,0 +1,13 @@
+{"event": "validation", "step": 0, "loss": {"instructions": 2.781039579013649, "mean": 2.781039579013649}}
+{"event": "train", "step": 10, "loss": 1.6965408905480552, "supervised_tokens_per_second": 1515.269606454131, "learning_rate": 5e-05, "grad_norm": 6.707955360412598}
+{"event": "train", "step": 20, "loss": 0.41207322957537446, "supervised_tokens_per_second": 1841.6389522757352, "learning_rate": 5e-05, "grad_norm": 2.8584256172180176}
+{"event": "train", "step": 30, "loss": 0.14289167386355406, "supervised_tokens_per_second": 2490.6816661359467, "learning_rate": 4.8287289481503954e-05, "grad_norm": 2.2161383628845215}
+{"event": "train", "step": 40, "loss": 0.05984752153347229, "supervised_tokens_per_second": 2589.6382556393464, "learning_rate": 4.340990257669732e-05, "grad_norm": 1.0585154294967651}
+{"event": "train", "step": 50, "loss": 0.03206416567836645, "supervised_tokens_per_second": 2599.72498450706, "learning_rate": 3.611037722821452e-05, "grad_norm": 0.7450538873672485}
+{"event": "validation", "step": 50, "loss": {"instructions": 0.3442181883218848, "mean": 0.3442181883218848}}
+{"event": "train", "step": 60, "loss": 0.01779135889940902, "supervised_tokens_per_second": 2628.2365081552343, "learning_rate": 2.7500000000000004e-05, "grad_norm": 1.2996336221694946}
+{"event": "train", "step": 70, "loss": 0.015173711331628112, "supervised_tokens_per_second": 2527.2458953137707, "learning_rate": 1.888962277178548e-05, "grad_norm": 0.8165780305862427}
+{"event": "train", "step": 80, "loss": 0.004545014348018746, "supervised_tokens_per_second": 2565.9705293396814, "learning_rate": 1.1590097423302684e-05, "grad_norm": 0.06670123338699341}
+{"event": "train", "step": 90, "loss": 0.0038761754526757436, "supervised_tokens_per_second": 2557.413249786788, "learning_rate": 6.712710518496049e-06, "grad_norm": 0.06340178102254868}
+{"event": "train", "step": 100, "loss": 0.002771637528611177, "supervised_tokens_per_second": 2500.125726500826, "learning_rate": 5e-06, "grad_norm": 0.07245655357837677}
+{"event": "validation", "step": 100, "loss": {"instructions": 0.29302889720759406, "mean": 0.29302889720759406}}

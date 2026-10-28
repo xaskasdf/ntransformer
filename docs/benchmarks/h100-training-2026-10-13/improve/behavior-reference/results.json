@@ -1,0 +1,40 @@
+{
+  "training": {
+    "phase": "sft",
+    "parameters": 107604288,
+    "world_size": 2,
+    "start_step": 0,
+    "completed_steps": 600,
+    "planned_steps": 600,
+    "initial_validation": {
+      "instructions": 2.4960399764142545,
+      "mean": 2.4960399764142545
+    },
+    "final_validation": {
+      "instructions": 0.6378829205855866,
+      "mean": 0.6378829205855866
+    },
+    "best_validation_loss": 0.6329251889416354,
+    "manifest_sha256": "6cc9a07c4c578ee2a00694b77e4c62f3147034ffa183af907e138d56504cbb56",
+    "status": "complete"
+  },
+  "generation": {
+    "original": {
+      "before": 0.0,
+      "after": 0.0,
+      "representable_cases": 60,
+      "before_representable": 0.0,
+      "after_representable": 0.0,
+      "cases": 60
+    },
+    "transformations": {
+      "before": 0.0,
+      "after": 0.43333333333333335,
+      "representable_cases": 94,
+      "before_representable": 0.0,
+      "after_representable": 0.5531914893617021,
+      "cases": 120
+    }
+  },
+  "limitations": "Targeted six-family curriculum. Transformation evaluation is within-family; original diagnostic families remain outside training."
+}

@@ -1,0 +1,27 @@
+{
+  "state": "running",
+  "pipeline_pid": 27108,
+  "run_dir": "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1",
+  "stage": "pretrain",
+  "command": [
+    "/home/ubuntu/brandon-mini/.venv/bin/python",
+    "-m",
+    "torch.distributed.run",
+    "--standalone",
+    "--nproc_per_node=2",
+    "scripts/train_mini.py",
+    "--phase",
+    "pretrain",
+    "--config",
+    "/lambda/nfs/btiny/brandon-mini/sources/stage1-v1/configs/model_mini_108m_stage1.yaml",
+    "--data-dir",
+    "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/data",
+    "--output-dir",
+    "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/pretrain",
+    "--init-checkpoint",
+    "/lambda/nfs/btiny/brandon-mini/runs/pilot-pretrain-v1/best.pt"
+  ],
+  "log": "/lambda/nfs/btiny/brandon-mini/stages/stage1-v1/pretrain.log",
+  "updated_at": "2026-10-13T19:21:36.681588+00:00",
+  "child_pid": 28048
+}

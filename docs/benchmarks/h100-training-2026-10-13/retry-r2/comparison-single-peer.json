@@ -1,0 +1,19 @@
+{
+  "status": "passed",
+  "reference": "/home/ubuntu/ntransformer-h100/training/experiment-20261013-r2/ddp-reference",
+  "candidate": "/home/ubuntu/ntransformer-h100/training/experiment-20261013-r2/single-peer",
+  "paired_throughput_ratio": 0.49400925644197924,
+  "historical_throughput_ratio": 0.48481811867940205,
+  "historical_ratio_scope": "Descriptive only: separate initialization and instrumentation",
+  "max_training_loss_delta": 0.0001696944236755371,
+  "final_validation_delta": 1.2703239917755127e-06,
+  "relative_update_difference": 0.017588823433456264,
+  "max_weight_difference": 0.0003907829523086548,
+  "updated_tensors": 273,
+  "total_tensors": 273,
+  "limits": {
+    "training_loss": 0.03,
+    "validation_loss": 0.02,
+    "relative_update_difference": 0.1
+  }
+}

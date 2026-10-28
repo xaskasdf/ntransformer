@@ -1,0 +1,7 @@
+{
+  "config_sha256": "69bad107b8a29a4d7a356154591d0dc3319c95f7ff511232233f5b4bd494225d",
+  "data_config_sha256": "983b4233799db1de9adaf67ed59aa272bde40d221e6ea6d2ed476cff0c71dd9a",
+  "initial_checkpoint_sha256": "13fb0427ef5e0377883b32899c5acb28d1559162856eee926fb6d9f3a22f650b",
+  "devices": 2,
+  "source_root": "/lambda/nfs/btiny/brandon-mini/sources/stage1-v1"
+}

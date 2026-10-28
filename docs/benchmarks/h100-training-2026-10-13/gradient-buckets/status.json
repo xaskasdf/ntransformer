@@ -1,0 +1,11 @@
+{
+  "state": "complete",
+  "stage": "done",
+  "verified_completed_cases": 18,
+  "original_runner_pid": 2235095,
+  "confirmation": {
+    "state": "deferred",
+    "waiting_helpers_stopped": true,
+    "reason": "Brandon robustness-replication-v1 acquired pipeline.lock after the completed suite; no confirmation GPU work launched"
+  }
+}

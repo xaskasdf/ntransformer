@@ -1,0 +1,47 @@
+{
+  "suite": "mini-instructions-v1",
+  "seed": 20261014,
+  "scoring": "case-sensitive exact match, ignoring outer whitespace only",
+  "limitations": "Six generated templates; not a general capability benchmark.",
+  "checkpoint": "/home/ubuntu/ntransformer-h100/training/instructions-20261013/native/last.pt",
+  "checkpoint_sha256": "c19dcf180e3994591e525bd2a7a82d776bba84c522cba2115a33707b99f6713f",
+  "tokenizer_sha256": "c6808ff86d9b1422aa1ef5d0adb3cde5d993e870a4387fcd2a16a119083caae0",
+  "decoding": {
+    "temperature": 0,
+    "max_new_tokens": 32,
+    "dtype": "torch.bfloat16"
+  },
+  "scores": {
+    "context_lookup": {
+      "correct": 0,
+      "total": 10,
+      "accuracy": 0.0
+    },
+    "sorting_format": {
+      "correct": 0,
+      "total": 10,
+      "accuracy": 0.0
+    },
+    "concept_role": {
+      "correct": 0,
+      "total": 10,
+      "accuracy": 0.0
+    },
+    "missing_information": {
+      "correct": 0,
+      "total": 10,
+      "accuracy": 0.0
+    },
+    "conditional_rule": {
+      "correct": 0,
+      "total": 10,
+      "accuracy": 0.0
+    },
+    "context_update": {
+      "correct": 0,
+      "total": 10,
+      "accuracy": 0.0
+    }
+  },
+  "exact_match_accuracy": 0.0
+}

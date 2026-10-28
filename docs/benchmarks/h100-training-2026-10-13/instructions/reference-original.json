@@ -1,0 +1,589 @@
+{
+  "suite": "mini-instructions-v1",
+  "seed": 20261014,
+  "scoring": "case-sensitive exact match, ignoring outer whitespace only",
+  "limitations": "Six generated templates; not a general capability benchmark.",
+  "cases": [
+    {
+      "id": "context_lookup-000",
+      "category": "context_lookup",
+      "prompt": "Lumi has the yellow box. Oren has the blue box. Who has the blue box? Reply with the name only.",
+      "expected": "Oren",
+      "response": "YELLOW BUTTON ORANGE FOREST",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "sorting_format-000",
+      "category": "sorting_format",
+      "prompt": "Sort these numbers from smallest to largest: 85, 75, 52, 91. Reply with numbers separated by commas, without spaces or other text.",
+      "expected": "52,75,85,91",
+      "response": "85, 75, 52, 91",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "concept_role-000",
+      "category": "concept_role",
+      "prompt": "In a fictional republic, a president is the person elected to lead the council. Lumi teaches at a school. Oren was elected to lead the council. Kelan repairs bridges. Who is the president? Reply with the name only.",
+      "expected": "Oren",
+      "response": "Oren the president is the person elected to lead the council.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "missing_information-000",
+      "category": "missing_information",
+      "prompt": "The register says: Lumi has a yellow bicycle. Using only this register, what color is Oren's bicycle? Reply with the color only, or UNKNOWN if the register does not say.",
+      "expected": "UNKNOWN",
+      "response": "Lumi has yellow bicycle",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "conditional_rule-000",
+      "category": "conditional_rule",
+      "prompt": "Rule: if the number is even, output yellow; otherwise output blue. The number is 85. Reply with the required word only.",
+      "expected": "blue",
+      "response": "YELLOW ORANGE FOREST",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "context_update-000",
+      "category": "context_update",
+      "prompt": "Lumi puts a key in the yellow box. Later, Oren moves that key to the blue box. Where is the key now? Reply with the box color only.",
+      "expected": "blue",
+      "response": "YELLOW ORANGE BUTTON ISLAND",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "context_lookup-001",
+      "category": "context_lookup",
+      "prompt": "Tavi has the blue box. Lumi has the orange box. Who has the orange box? Reply with the name only.",
+      "expected": "Lumi",
+      "response": "orange box orange box",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "sorting_format-001",
+      "category": "sorting_format",
+      "prompt": "Sort these numbers from smallest to largest: 49, 66, 65, 44. Reply with numbers separated by commas, without spaces or other text.",
+      "expected": "44,49,65,66",
+      "response": "49, 65, 65, 44 SILVER ISLAND SILVER",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "concept_role-001",
+      "category": "concept_role",
+      "prompt": "In a fictional republic, a president is the person elected to lead the council. Tavi teaches at a school. Lumi was elected to lead the council. Oren repairs bridges. Who is the president? Reply with the name only.",
+      "expected": "Lumi",
+      "response": "Tavi Teaches at a school",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "missing_information-001",
+      "category": "missing_information",
+      "prompt": "The register says: Tavi has a blue bicycle. Using only this register, what color is Lumi's bicycle? Reply with the color only, or UNKNOWN if the register does not say.",
+      "expected": "UNKNOWN",
+      "response": "Tavi has a blue bicycle. Using only this register, what color is Lumi's blue bicycle?",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "conditional_rule-001",
+      "category": "conditional_rule",
+      "prompt": "Rule: if the number is even, output blue; otherwise output orange. The number is 49. Reply with the required word only.",
+      "expected": "orange",
+      "response": "NOTEBOOK ORANGE CLOUD WINDOW",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "context_update-001",
+      "category": "context_update",
+      "prompt": "Tavi puts a key in the blue box. Later, Lumi moves that key to the orange box. Where is the key now? Reply with the box color only.",
+      "expected": "orange",
+      "response": "orange box color only.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "context_lookup-002",
+      "category": "context_lookup",
+      "prompt": "Kelan has the yellow box. Mira has the green box. Who has the green box? Reply with the name only.",
+      "expected": "Mira",
+      "response": "YELLOW BUTTON ISLAND Kelan has the yellow box.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "sorting_format-002",
+      "category": "sorting_format",
+      "prompt": "Sort these numbers from smallest to largest: 50, 43, 64, 82. Reply with numbers separated by commas, without spaces or other text.",
+      "expected": "43,50,64,82",
+      "response": "50, 43, 64, 82. Reply with numbers separated by commas, without any other text.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "concept_role-002",
+      "category": "concept_role",
+      "prompt": "In a fictional republic, a president is the person elected to lead the council. Kelan teaches at a school. Mira was elected to lead the council. Nora repairs bridges. Who is the president? Reply with the name only.",
+      "expected": "Mira",
+      "response": "The president is the person elected to lead the council.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "missing_information-002",
+      "category": "missing_information",
+      "prompt": "The register says: Kelan has a yellow bicycle. Using only this register, what color is Mira's bicycle? Reply with the color only, or UNKNOWN if the register does not say.",
+      "expected": "UNKNOWN",
+      "response": "Kelan has yellow bicycle",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "conditional_rule-002",
+      "category": "conditional_rule",
+      "prompt": "Rule: if the number is even, output yellow; otherwise output green. The number is 50. Reply with the required word only.",
+      "expected": "yellow",
+      "response": "NOTEBOOK ORANGE FOREST ORANGE",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "context_update-002",
+      "category": "context_update",
+      "prompt": "Kelan puts a key in the yellow box. Later, Mira moves that key to the green box. Where is the key now? Reply with the box color only.",
+      "expected": "green",
+      "response": "yellow box color only.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "context_lookup-003",
+      "category": "context_lookup",
+      "prompt": "Kelan has the blue box. Mira has the red box. Who has the red box? Reply with the name only.",
+      "expected": "Mira",
+      "response": "Mira has the red box",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "sorting_format-003",
+      "category": "sorting_format",
+      "prompt": "Sort these numbers from smallest to largest: 22, 11, 16, 57. Reply with numbers separated by commas, without spaces or other text.",
+      "expected": "11,16,22,57",
+      "response": "22, 11, 16, 57. Reply with numbers separated by commas, without any other text.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "concept_role-003",
+      "category": "concept_role",
+      "prompt": "In a fictional republic, a president is the person elected to lead the council. Kelan teaches at a school. Mira was elected to lead the council. Tavi repairs bridges. Who is the president? Reply with the name only.",
+      "expected": "Mira",
+      "response": "Tavi repairs bridges",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "missing_information-003",
+      "category": "missing_information",
+      "prompt": "The register says: Kelan has a blue bicycle. Using only this register, what color is Mira's bicycle? Reply with the color only, or UNKNOWN if the register does not say.",
+      "expected": "UNKNOWN",
+      "response": "Kelan has blue bicycle",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "conditional_rule-003",
+      "category": "conditional_rule",
+      "prompt": "Rule: if the number is even, output blue; otherwise output red. The number is 22. Reply with the required word only.",
+      "expected": "blue",
+      "response": "chance is the only information that can be provided for a given number.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "context_update-003",
+      "category": "context_update",
+      "prompt": "Kelan puts a key in the blue box. Later, Mira moves that key to the red box. Where is the key now? Reply with the box color only.",
+      "expected": "red",
+      "response": "BUTTON ORANGE BUTTON ISLAND",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "context_lookup-004",
+      "category": "context_lookup",
+      "prompt": "Tavi has the purple box. Nora has the yellow box. Who has the yellow box? Reply with the name only.",
+      "expected": "Nora",
+      "response": "YELLOW BUTTON ORANGE FOREST",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "sorting_format-004",
+      "category": "sorting_format",
+      "prompt": "Sort these numbers from smallest to largest: 26, 28, 44, 56. Reply with numbers separated by commas, without spaces or other text.",
+      "expected": "26,28,44,56",
+      "response": "26, 28, 44, 56",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "concept_role-004",
+      "category": "concept_role",
+      "prompt": "In a fictional republic, a president is the person elected to lead the council. Tavi teaches at a school. Nora was elected to lead the council. Mira repairs bridges. Who is the president? Reply with the name only.",
+      "expected": "Nora",
+      "response": "Tavi Teaches at a school",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "missing_information-004",
+      "category": "missing_information",
+      "prompt": "The register says: Tavi has a purple bicycle. Using only this register, what color is Nora's bicycle? Reply with the color only, or UNKNOWN if the register does not say.",
+      "expected": "UNKNOWN",
+      "response": "Tavi has a purple bicycle",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "conditional_rule-004",
+      "category": "conditional_rule",
+      "prompt": "Rule: if the number is even, output purple; otherwise output yellow. The number is 26. Reply with the required word only.",
+      "expected": "purple",
+      "response": "NOTEBOOK OCEAN ISLAND",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "context_update-004",
+      "category": "context_update",
+      "prompt": "Tavi puts a key in the purple box. Later, Nora moves that key to the yellow box. Where is the key now? Reply with the box color only.",
+      "expected": "yellow",
+      "response": "purple box color only.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "context_lookup-005",
+      "category": "context_lookup",
+      "prompt": "Mira has the red box. Tavi has the blue box. Who has the blue box? Reply with the name only.",
+      "expected": "Tavi",
+      "response": "blue box blue box",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "sorting_format-005",
+      "category": "sorting_format",
+      "prompt": "Sort these numbers from smallest to largest: 47, 76, 81, 10. Reply with numbers separated by commas, without spaces or other text.",
+      "expected": "10,47,76,81",
+      "response": "47, 76, 81, 10. Reply with numbers separated by commas, without any other text.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "concept_role-005",
+      "category": "concept_role",
+      "prompt": "In a fictional republic, a president is the person elected to lead the council. Mira teaches at a school. Tavi was elected to lead the council. Kelan repairs bridges. Who is the president? Reply with the name only.",
+      "expected": "Tavi",
+      "response": "Mira repairs bridges. Kelan repairs bridges. Kelan repairs bridges.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "missing_information-005",
+      "category": "missing_information",
+      "prompt": "The register says: Mira has a red bicycle. Using only this register, what color is Tavi's bicycle? Reply with the color only, or UNKNOWN if the register does not say.",
+      "expected": "UNKNOWN",
+      "response": "Mira has a red bicycle. Using only this register, what color is Tavi's bicycle?",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "conditional_rule-005",
+      "category": "conditional_rule",
+      "prompt": "Rule: if the number is even, output red; otherwise output blue. The number is 47. Reply with the required word only.",
+      "expected": "blue",
+      "response": "BUTTON ORANGE BUTTON ISLAND",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "context_update-005",
+      "category": "context_update",
+      "prompt": "Mira puts a key in the red box. Later, Tavi moves that key to the blue box. Where is the key now? Reply with the box color only.",
+      "expected": "blue",
+      "response": "BUTTON ORANGE BUTTON ISLAND",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "context_lookup-006",
+      "category": "context_lookup",
+      "prompt": "Mira has the green box. Tavi has the orange box. Who has the orange box? Reply with the name only.",
+      "expected": "Tavi",
+      "response": "orange box orange box",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "sorting_format-006",
+      "category": "sorting_format",
+      "prompt": "Sort these numbers from smallest to largest: 22, 55, 10, 43. Reply with numbers separated by commas, without spaces or other text.",
+      "expected": "10,22,43,55",
+      "response": "22, 55, 10, 43.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "concept_role-006",
+      "category": "concept_role",
+      "prompt": "In a fictional republic, a president is the person elected to lead the council. Mira teaches at a school. Tavi was elected to lead the council. Lumi repairs bridges. Who is the president? Reply with the name only.",
+      "expected": "Tavi",
+      "response": "Tavi's father is elected to lead the council.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "missing_information-006",
+      "category": "missing_information",
+      "prompt": "The register says: Mira has a green bicycle. Using only this register, what color is Tavi's bicycle? Reply with the color only, or UNKNOWN if the register does not say.",
+      "expected": "UNKNOWN",
+      "response": "Tavi's green bicycle",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "conditional_rule-006",
+      "category": "conditional_rule",
+      "prompt": "Rule: if the number is even, output green; otherwise output orange. The number is 22. Reply with the required word only.",
+      "expected": "green",
+      "response": "NOTEBOOK ORANGE FOREST",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "context_update-006",
+      "category": "context_update",
+      "prompt": "Mira puts a key in the green box. Later, Tavi moves that key to the orange box. Where is the key now? Reply with the box color only.",
+      "expected": "orange",
+      "response": "green box color only.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "context_lookup-007",
+      "category": "context_lookup",
+      "prompt": "Mira has the yellow box. Lumi has the red box. Who has the red box? Reply with the name only.",
+      "expected": "Lumi",
+      "response": "yellow box yellow box",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "sorting_format-007",
+      "category": "sorting_format",
+      "prompt": "Sort these numbers from smallest to largest: 11, 31, 37, 80. Reply with numbers separated by commas, without spaces or other text.",
+      "expected": "11,31,37,80",
+      "response": "11, 31, 37, 80",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "concept_role-007",
+      "category": "concept_role",
+      "prompt": "In a fictional republic, a president is the person elected to lead the council. Mira teaches at a school. Lumi was elected to lead the council. Nora repairs bridges. Who is the president? Reply with the name only.",
+      "expected": "Lumi",
+      "response": "Mira repairs bridges",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "missing_information-007",
+      "category": "missing_information",
+      "prompt": "The register says: Mira has a yellow bicycle. Using only this register, what color is Lumi's bicycle? Reply with the color only, or UNKNOWN if the register does not say.",
+      "expected": "UNKNOWN",
+      "response": "Lumi's yellow bicycle",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "conditional_rule-007",
+      "category": "conditional_rule",
+      "prompt": "Rule: if the number is even, output yellow; otherwise output red. The number is 11. Reply with the required word only.",
+      "expected": "red",
+      "response": "NOTEBOOK YELLOW ORANGE FOREST",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "context_update-007",
+      "category": "context_update",
+      "prompt": "Mira puts a key in the yellow box. Later, Lumi moves that key to the red box. Where is the key now? Reply with the box color only.",
+      "expected": "red",
+      "response": "yellow box color only.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "context_lookup-008",
+      "category": "context_lookup",
+      "prompt": "Tavi has the green box. Kelan has the red box. Who has the red box? Reply with the name only.",
+      "expected": "Kelan",
+      "response": "green box Kelan has the green box",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "sorting_format-008",
+      "category": "sorting_format",
+      "prompt": "Sort these numbers from smallest to largest: 28, 22, 84, 85. Reply with numbers separated by commas, without spaces or other text.",
+      "expected": "22,28,84,85",
+      "response": "28, 22, 84, 85.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "concept_role-008",
+      "category": "concept_role",
+      "prompt": "In a fictional republic, a president is the person elected to lead the council. Tavi teaches at a school. Kelan was elected to lead the council. Lumi repairs bridges. Who is the president? Reply with the name only.",
+      "expected": "Kelan",
+      "response": "Tavi Teaches at a school",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "missing_information-008",
+      "category": "missing_information",
+      "prompt": "The register says: Tavi has a green bicycle. Using only this register, what color is Kelan's bicycle? Reply with the color only, or UNKNOWN if the register does not say.",
+      "expected": "UNKNOWN",
+      "response": "Tavi has a green bicycle",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "conditional_rule-008",
+      "category": "conditional_rule",
+      "prompt": "Rule: if the number is even, output green; otherwise output red. The number is 28. Reply with the required word only.",
+      "expected": "green",
+      "response": "MEADOW WINTER COPPER SILVER",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "context_update-008",
+      "category": "context_update",
+      "prompt": "Tavi puts a key in the green box. Later, Kelan moves that key to the red box. Where is the key now? Reply with the box color only.",
+      "expected": "red",
+      "response": "green box color only.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "context_lookup-009",
+      "category": "context_lookup",
+      "prompt": "Kelan has the yellow box. Lumi has the blue box. Who has the blue box? Reply with the name only.",
+      "expected": "Lumi",
+      "response": "yellow box yellow box",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "sorting_format-009",
+      "category": "sorting_format",
+      "prompt": "Sort these numbers from smallest to largest: 78, 43, 75, 29. Reply with numbers separated by commas, without spaces or other text.",
+      "expected": "29,43,75,78",
+      "response": "78, 43, 75, 29",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "concept_role-009",
+      "category": "concept_role",
+      "prompt": "In a fictional republic, a president is the person elected to lead the council. Kelan teaches at a school. Lumi was elected to lead the council. Mira repairs bridges. Who is the president? Reply with the name only.",
+      "expected": "Lumi",
+      "response": "The president is the person elected to lead the council.",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "missing_information-009",
+      "category": "missing_information",
+      "prompt": "The register says: Kelan has a yellow bicycle. Using only this register, what color is Lumi's bicycle? Reply with the color only, or UNKNOWN if the register does not say.",
+      "expected": "UNKNOWN",
+      "response": "Kelan has yellow bicycle",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "conditional_rule-009",
+      "category": "conditional_rule",
+      "prompt": "Rule: if the number is even, output yellow; otherwise output blue. The number is 78. Reply with the required word only.",
+      "expected": "yellow",
+      "response": "NOTEBOOK ORANGE FOREST",
+      "stopped": true,
+      "correct": false
+    },
+    {
+      "id": "context_update-009",
+      "category": "context_update",
+      "prompt": "Kelan puts a key in the yellow box. Later, Lumi moves that key to the blue box. Where is the key now? Reply with the box color only.",
+      "expected": "blue",
+      "response": "yellow box color only.",
+      "stopped": true,
+      "correct": false
+    }
+  ],
+  "checkpoint": "/home/ubuntu/ntransformer-h100/training/instructions-20261013/reference/last.pt",
+  "checkpoint_sha256": "32ac2810e7ff4dd06ae4240dc370fdc6ce69dc1a02ac2bf864436e24ff534cdd",
+  "tokenizer_sha256": "c6808ff86d9b1422aa1ef5d0adb3cde5d993e870a4387fcd2a16a119083caae0",
+  "decoding": {
+    "temperature": 0,
+    "max_new_tokens": 32,
+    "dtype": "torch.bfloat16"
+  },
+  "scores": {
+    "context_lookup": {
+      "correct": 0,
+      "total": 10,
+      "accuracy": 0.0
+    },
+    "sorting_format": {
+      "correct": 0,
+      "total": 10,
+      "accuracy": 0.0
+    },
+    "concept_role": {
+      "correct": 0,
+      "total": 10,
+      "accuracy": 0.0
+    },
+    "missing_information": {
+      "correct": 0,
+      "total": 10,
+      "accuracy": 0.0
+    },
+    "conditional_rule": {
+      "correct": 0,
+      "total": 10,
+      "accuracy": 0.0
+    },
+    "context_update": {
+      "correct": 0,
+      "total": 10,
+      "accuracy": 0.0
+    }
+  },
+  "exact_match_accuracy": 0.0
+}
