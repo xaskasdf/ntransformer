@@ -1,4 +1,5 @@
 #include "glm5_model.h"
+#include "glm5_gpu.h"
 #include "../ds41/ds41_model.h"
 #include <algorithm>
 #include <cstdlib>
@@ -6,6 +7,7 @@
 #include <cstdio>
 #include <cmath>
 #include <thread>
+#include <atomic>
 
 #if defined(__AVX2__)
 #include <immintrin.h>
@@ -201,6 +203,47 @@ bool Model::load(const std::string& path, std::string& err) {
     if (!load_config(loader_, cfg_, err)) {
         return false;
     }
+    const char* pack_dir = getenv("GLM5_BACKBONE_PACK");
+    if (pack_dir && pack_dir[0]) {
+        // Non-expert tensors from the backbone pack; experts from the raw
+        // NVMe store through gpu-nvme-direct (see glm5_gpu.cu).
+        FileMap bm;
+        if (!map_file_read(std::string(pack_dir) + "/glm5_backbone.bin", bm) || !bm.ptr) {
+            err = "backbone pack: cannot map glm5_backbone.bin";
+            return false;
+        }
+        backbone_base_ = static_cast<const uint8_t*>(bm.ptr);
+        backbone_size_ = bm.size;
+
+        FILE* f = fopen((std::string(pack_dir) + "/glm5_backbone_manifest.bin").c_str(), "rb");
+        if (!f) { err = "backbone pack: missing glm5_backbone_manifest.bin"; return false; }
+        char magic[4]; uint32_t n = 0;
+        if (fread(magic, 1, 4, f) != 4 || memcmp(magic, "MBN1", 4) != 0 || fread(&n, 4, 1, f) != 1) {
+            err = "backbone pack: bad manifest header"; fclose(f); return false;
+        }
+        for (uint32_t i = 0; i < n; i++) {
+            uint16_t nl = 0;
+            if (fread(&nl, 2, 1, f) != 1) break;
+            std::string name(nl, '\0');
+            if (nl && fread(&name[0], 1, nl, f) != nl) break;
+            PackTensor pt{};
+            uint8_t nd = 0; uint64_t dims[4] = {0, 0, 0, 0}; uint32_t gt = 0;
+            if (fread(&pt.offset, 8, 1, f) != 1 || fread(&pt.nbytes, 8, 1, f) != 1 ||
+                fread(&nd, 1, 1, f) != 1 || fread(dims, 8, 4, f) != 4 || fread(&gt, 4, 1, f) != 1) break;
+            pack_.emplace(std::move(name), pt);
+        }
+        fclose(f);
+
+        const char* lba = getenv("GLM5_LBA_BIN");
+        const char* g = getenv("GLM5_GPNVME");
+        if (!lba || !g || atoi(g) == 0 || !glm5_gpnvme_init(lba, getenv("GPUNVME_PCI_BDF"))) {
+            err = "backbone pack requires GLM5_GPNVME=1 and a valid GLM5_LBA_BIN";
+            return false;
+        }
+        pack_mode_ = true;
+        fprintf(stderr, "pack: %zu backbone tensors (%.1f GB mapped); experts via gpu-nvme-direct\n",
+                pack_.size(), backbone_size_ / 1e9);
+    }
     n_threads = (int)std::thread::hardware_concurrency();
     return true;
 }
@@ -209,10 +252,42 @@ TensorRef Model::tensor(const std::string& name) const {
     TensorRef r;
     const GGUFTensorInfo* ti = loader_.tensor_info(name);
     if (!ti) return r;
-    r.data = static_cast<const uint8_t*>(loader_.tensor_data(name));
     r.dtype = ggml_to_dtype(ti->ggml_type);
     for (int i = 0; i < 4; i++) r.ne[i] = (i < (int)ti->shape.size()) ? ti->shape[i] : 1;
     r.name = name;
+    if (pack_mode_) {
+        auto it = pack_.find(name);
+        if (it != pack_.end()) {
+            r.data = backbone_base_ + it->second.offset;
+            return r;
+        }
+        // expert tensor living in the raw store: deterministic synthetic base,
+        // never dereferenced on the host (fills go through gpu-nvme-direct).
+        // name: "blk.<il>.ffn_{gate,up,down}_exps.weight"
+        if (name.size() > 8 && name.compare(0, 4, "blk.") == 0) {
+            const size_t dot1 = name.find('.', 4);
+            if (dot1 != std::string::npos && name.find("_exps.weight") != std::string::npos) {
+                const int il = atoi(name.c_str() + 4);
+                int kind = -1;
+                if (name.compare(dot1 + 1, 9, "ffn_gate_") == 0) kind = 0;
+                else if (name.compare(dot1 + 1, 7, "ffn_up_") == 0) kind = 1;
+                else if (name.compare(dot1 + 1, 9, "ffn_down_") == 0) kind = 2;
+                if (il >= 0 && kind >= 0) {
+                    r.data = (const uint8_t*)glm5_gpnvme_fake_base(il, kind);
+                    static std::atomic<int> once{0};
+                    if (once.fetch_add(1) < 3)
+                        fprintf(stderr, "tensor: %s -> fake %p\n", name.c_str(), r.data);
+                    return r;
+                }
+            }
+        }
+        static std::atomic<int> miss{0};
+        if (miss.fetch_add(1) < 3)
+            fprintf(stderr, "tensor: %s -> NOT FOUND in pack (no data)\n", name.c_str());
+        r.data = nullptr;  // unknown tensor in pack mode: fail loudly
+        return r;
+    }
+    r.data = static_cast<const uint8_t*>(loader_.tensor_data(name));
     return r;
 }
 

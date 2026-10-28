@@ -4,6 +4,8 @@
 #include <functional>
 #include <vector>
 #include <string>
+#include <unordered_map>
+#include <cstdint>
 
 namespace nt {
 namespace glm5 {
@@ -44,6 +46,15 @@ public:
 private:
     GGUFLoader loader_;
     Config cfg_;
+
+    // GLM5_BACKBONE_PACK mode: non-expert tensors come from a packed file,
+    // expert tensors live in the raw NVMe store and are reached through
+    // gpu-nvme-direct via synthetic base pointers (never host memory).
+    bool pack_mode_ = false;
+    const uint8_t* backbone_base_ = nullptr;
+    uint64_t backbone_size_ = 0;
+    struct PackTensor { uint64_t offset; uint64_t nbytes; };
+    std::unordered_map<std::string, PackTensor> pack_;
 };
 
 void parallel_for(int64_t n, int n_threads, const std::function<void(int64_t, int)>& fn);

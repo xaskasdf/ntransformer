@@ -28,12 +28,70 @@
 using HANDLE = void*;
 #endif
 
+#ifdef USE_GPUNVME
+#include "gpunvme/layer_loader.h"
+#endif
+
 namespace nt {
 namespace glm5 {
 namespace {
 
 constexpr int kMaxUsed = 8;
 constexpr int kThreads = 256;
+
+#ifdef USE_GPUNVME
+// ---- gpu-nvme-direct expert fills ----
+struct GpNvmeRun { uint64_t lba; uint32_t nbytes; uint8_t disk; };
+struct GpNvmeTensor {
+    std::vector<int> in_off;                   // per expert: slice start inside first sector
+    std::vector<std::vector<GpNvmeRun>> runs;  // per expert: contiguous LBA runs
+};
+struct GpNvmeCheck { int pos; uint8_t bytes[16]; };
+struct GpNvmeState {
+    static constexpr int kDisks = 2;
+    bool active = false;        // LBA index loaded (GLM5_GPNVME=1)
+    int n_tensors = 0;          // populated slots (il*3+kind indexing, holes allowed)
+    std::vector<GpNvmeTensor> tensors;
+    gpunvme_layer_loader_t loader[kDisks]{};
+    bool loader_ready[kDisks] = {false, false};
+    std::string bdf[kDisks];
+    std::mutex mtx[kDisks];     // one mutex per disk: fills on different disks run in parallel
+    std::unordered_map<uint64_t, std::vector<GpNvmeCheck>> verify;  // tidx*1024+expert -> checks
+    int verify_left = 0;
+};
+static constexpr uint64_t kGpNvmeFakeBase = 0x500000000000ull;
+static constexpr uint64_t kGpNvmeTensorStride = 3ull << 30;  // 3GiB per expert tensor
+static GpNvmeState& gpnvme_state() { static GpNvmeState s; return s; }
+static int hexval_c(char c) {
+    if (c >= '0' && c <= '9') return c - '0';
+    if (c >= 'a' && c <= 'f') return c - 'a' + 10;
+    if (c >= 'A' && c <= 'F') return c - 'A' + 10;
+    return -1;
+}
+
+// ---- GLM5_FILL_HASH=1: detección determinista de fills corruptos.
+// Hash muestreado del ring tras cada fill; el mismo slice (re-llenado tras un
+// evict) debe producir el mismo hash SIEMPRE. Un mismatch = bug de transporte.
+struct FillHashState {
+    bool on = false;
+    std::unordered_map<uint64_t, uint64_t> by_src;  // src ptr -> last hash
+    int compares = 0, mismatches = 0;
+};
+static FillHashState& fill_hash_state() { static FillHashState s; return s; }
+static bool fill_hash_on() {
+    static const bool v = getenv("GLM5_FILL_HASH") != nullptr;
+    return v;
+}
+static inline uint64_t sample_hash(const uint8_t* p, size_t slice) {
+    uint64_t h = 1469598103934665603ull;
+    const size_t step = slice / 4;
+    for (int s = 0; s < 4; s++) {
+        const uint8_t* q = p + std::min<size_t>(s * step, slice > 1024 ? slice - 1024 : 0);
+        for (int i = 0; i < 1024; i++) { h ^= q[i]; h *= 1099511628211ull; }
+    }
+    return h;
+}
+#endif
 
 struct Batch8 {
     const uint8_t* gate[kMaxUsed];
@@ -466,9 +524,11 @@ struct ExpertEngine {
         std::atomic<int> state{0};   // 0 free, 1 filling, 2 ready, 3 h2d
         uint64_t key = 0;
         int last_use = 0;
+        int in_off = 0;              // gpnvme: slice starts here inside buf
     };
     std::unique_ptr<Ring[]> rings;
     int n_rings = 0;
+    std::vector<uint8_t*> worker_scratch;  // gpnvme multi-run staging (page-aligned)
     std::unordered_map<uint64_t, int> by_key;
     size_t slice = 0;
     int use_counter = 0;
@@ -483,8 +543,11 @@ struct ExpertEngine {
         if (n > 256) n = 256;
         rings.reset(new Ring[n]);
         n_rings = n;
+        worker_scratch.assign(n, nullptr);
         for (int i = 0; i < n; i++) {
-            if (cudaMallocHost((void**)&rings[i].buf, slice_bytes) != cudaSuccess) rings[i].buf = nullptr;
+            // +512: gpnvme runs start at the aligned sector, the slice begins
+            // in_off bytes in; the H2D copies from buf+in_off.
+            if (cudaMallocHost((void**)&rings[i].buf, slice_bytes + 512) != cudaSuccess) rings[i].buf = nullptr;
         }
         slice = slice_bytes;
         int nw = 8;
@@ -520,9 +583,117 @@ struct ExpertEngine {
     }
 
     // read one expert slice into the ring: ReadFile when the shard is
-    // registered, page-fault memcpy otherwise
+    // registered, page-faulting memcpy otherwise. With USE_GPUNVME + GLM5_GPNVME=1
+    // the slice is read straight off the raw NVMe device by the GPU.
     void fill_slice(int wid, int ring, const uint8_t* src) {
         uint8_t* dst = rings[ring].buf;
+#ifdef USE_GPUNVME
+        if (gpnvme_state().active &&
+            (uint64_t)src >= kGpNvmeFakeBase &&
+            (uint64_t)src < kGpNvmeFakeBase + (uint64_t)gpnvme_state().n_tensors * kGpNvmeTensorStride) {
+            const uint64_t d = (uint64_t)src - kGpNvmeFakeBase;
+            const int tidx   = (int)(d / kGpNvmeTensorStride);
+            const int expert = (int)((d % kGpNvmeTensorStride) / slice);
+            auto& T = gpnvme_state().tensors[tidx];
+            if (expert < 0 || expert >= (int)T.in_off.size()) return;
+            rings[ring].in_off = T.in_off[expert];
+            // PRPs must be page-aligned: single contiguous runs go straight to
+            // the ring; multi-run slices land on a per-worker aligned scratch
+            // and get copied in (they are ~2% of all slices). Runs carry a disk
+            // id: fills on different disks hold different mutexes and run in
+            // parallel on different controller streams.
+            int verify_base = -1;
+            const bool single = (T.runs[expert].size() == 1);
+            const uint8_t disk0 = T.runs[expert].front().disk;
+            auto& st = gpnvme_state();
+            if (single) {
+                const auto& r0 = T.runs[expert][0];
+                std::lock_guard<std::mutex> lk(st.mtx[r0.disk]);
+                if (!st.loader_ready[r0.disk]) {
+                    if (st.bdf[r0.disk].empty()) { fprintf(stderr, "gpnvme: no BDF for disk %u\n", r0.disk); return; }
+                    gpunvme_err_t e0 = gpunvme_layer_loader_init(&st.loader[r0.disk], st.bdf[r0.disk].c_str(), slice + 512, 8);
+                    if (e0 != GPUNVME_OK) { fprintf(stderr, "gpnvme: loader init failed (disk %u): %d\n", r0.disk, (int)e0); return; }
+                    st.loader_ready[r0.disk] = true;
+                    fprintf(stderr, "gpnvme: loader ready disk %u (bdf=%s, slice=%zu)\n", r0.disk, st.bdf[r0.disk].c_str(), slice);
+                }
+                gpunvme_err_t e = gpunvme_load_layer(&st.loader[r0.disk], r0.lba, r0.nbytes, dst);
+                if (e != GPUNVME_OK) {
+                    fprintf(stderr, "gpnvme fill: t%d e%d disk%u lba=%llu err=%d\n",
+                            tidx, expert, r0.disk, (unsigned long long)r0.lba, (int)e);
+                }
+                verify_base = T.in_off[expert];
+            } else {
+                if (!worker_scratch[wid]) {
+                    if (cudaMallocHost((void**)&worker_scratch[wid], slice + 1024) != cudaSuccess) return;
+                }
+                uint8_t* sc = worker_scratch[wid];
+                uint64_t copied = 0;
+                const bool first_is_padded = (T.in_off[expert] > 0);
+                for (const auto& r : T.runs[expert]) {
+                    std::lock_guard<std::mutex> lk(st.mtx[r.disk]);
+                    if (!st.loader_ready[r.disk]) {
+                        if (st.bdf[r.disk].empty()) { fprintf(stderr, "gpnvme: no BDF for disk %u\n", r.disk); break; }
+                        gpunvme_err_t e0 = gpunvme_layer_loader_init(&st.loader[r.disk], st.bdf[r.disk].c_str(), slice + 512, 8);
+                        if (e0 != GPUNVME_OK) { fprintf(stderr, "gpnvme: loader init failed (disk %u): %d\n", r.disk, (int)e0); break; }
+                        st.loader_ready[r.disk] = true;
+                        fprintf(stderr, "gpnvme: loader ready disk %u (bdf=%s, slice=%zu)\n", r.disk, st.bdf[r.disk].c_str(), slice);
+                    }
+                    gpunvme_err_t e = gpunvme_load_layer(&st.loader[r.disk], r.lba, r.nbytes, sc);
+                    if (e != GPUNVME_OK) {
+                        fprintf(stderr, "gpnvme fill: t%d e%d disk%u lba=%llu err=%d\n",
+                                tidx, expert, r.disk, (unsigned long long)r.lba, (int)e);
+                        break;
+                    }
+                    const uint64_t skip = (&r == &T.runs[expert].front() && first_is_padded)
+                                              ? (uint64_t)T.in_off[expert] : 0;
+                    const uint64_t avail = r.nbytes - skip;
+                    const uint64_t take = std::min<uint64_t>(avail, slice - copied);
+                    memcpy(dst + copied, sc + skip, take);
+                    copied += take;
+                    if (copied >= slice) break;
+                }
+                rings[ring].in_off = 0;  // copy already normalized the slice to dst[0..]
+                verify_base = 0;
+            }
+            // GLM5_VERIFY: on-device fill content verification (first match per slice)
+            {
+                auto& st = gpnvme_state();
+                uint64_t vk = ((uint64_t)tidx << 10) | (uint64_t)expert;
+                auto it = st.verify.find(vk);
+                if (it != st.verify.end()) {
+                    const int base = (T.runs[expert].size() == 1) ? T.in_off[expert] : 0;
+                    int bad = 0;
+                    for (auto& c : it->second) {
+                        if (memcmp(dst + base + c.pos, c.bytes, 16) != 0) bad++;
+                    }
+                    fprintf(stderr, "gpnvme verify t%d e%d: %s (%d/%zu bad)\n",
+                            tidx, expert, bad ? "FAIL" : "OK", bad, it->second.size());
+                    st.verify.erase(it);
+                }
+            }
+            // GLM5_FILL_HASH: determinismo del fill (mismo slice -> mismo hash siempre)
+            if (fill_hash_on()) {
+                auto& fh = fill_hash_state();
+                uint64_t h = sample_hash(dst, slice);
+                auto it = fh.by_src.find((uint64_t)src);
+                if (it != fh.by_src.end()) {
+                    fh.compares++;
+                    if (it->second != h) {
+                        fh.mismatches++;
+                        fprintf(stderr, "FILL HASH MISMATCH src=%p prev=%llx now=%llx (compares=%d)\n",
+                                (const void*)src, (unsigned long long)it->second,
+                                (unsigned long long)h, fh.compares);
+                        it->second = h;
+                    }
+                } else {
+                    fh.by_src[(uint64_t)src] = h;
+                }
+            }
+            (void)verify_base;
+            return;
+        }
+        rings[ring].in_off = 0;
+#endif
 #ifdef _WIN32
         {
             std::lock_guard<std::mutex> lk(m);
@@ -569,6 +740,18 @@ struct ExpertEngine {
 
     // submit a fill without waiting; returns ring index
     int submit(uint64_t key, const uint8_t* src) {
+#ifdef USE_GPUNVME
+        if (gpnvme_state().active) {
+            const uint64_t lo = kGpNvmeFakeBase;
+            const uint64_t hi = kGpNvmeFakeBase + (uint64_t)gpnvme_state().n_tensors * kGpNvmeTensorStride;
+            static std::atomic<int> bad{0};
+            if (((uint64_t)src < lo || (uint64_t)src >= hi) && bad.fetch_add(1) < 1) {
+                fprintf(stderr, "gpnvme BUG: non-fake src=%p key=%llu — aborting for backtrace\n",
+                        (const void*)src, (unsigned long long)key);
+                abort();
+            }
+        }
+#endif
         std::unique_lock<std::mutex> lk(m);
         auto it = by_key.find(key);
         if (it != by_key.end()) return it->second;
@@ -633,15 +816,10 @@ struct ExpertEngine {
             for (int i = 0; i < n_rings; i++) {
                 if (rings[i].state == 0) return i;
             }
-            int best = -1, best_use = INT_MAX;
-            for (int i = 0; i < n_rings; i++) {
-                if (rings[i].state == 2 && rings[i].last_use < best_use) { best_use = rings[i].last_use; best = i; }
-            }
-            if (best >= 0) {
-                by_key.erase(rings[best].key);
-                return best;
-            }
-            // everything is filling or queued for h2d: wait for progress
+            // SIN robar rings state=2 (completados pendientes de H2D): robarlos
+            // hacía que el caller viejo hiciera H2D del dato del fill nuevo
+            // (slices cruzados -> divergencia intermitente del prefill chunked).
+            // Los workers notifican cv_ready al completar: aquí hay progreso.
             cv_ready.wait(lk);
         }
     }
@@ -903,10 +1081,13 @@ bool glm5_gpu_experts(const float* x, int64_t hidden,
     const uint8_t* bases[3] = { (const uint8_t*)gate_base, (const uint8_t*)up_base, (const uint8_t*)down_base };
     uint8_t* slot_of[3][kMaxUsed];
 
+    struct RingUse { int ring; uint8_t* slot; };
+    std::vector<RingUse> ring_uses;
+    static const int slot_verify_mod = getenv("GLM5_VERIFY_SLOTS") ? atoi(getenv("GLM5_VERIFY_SLOTS")) : 0;
+    int slot_verify_seen = 0;
     {
         // pass 1: LRU lookups (reserve slots) and parallel fill submission
-        struct RingUse { int ring; uint8_t* slot; };
-        std::vector<RingUse> ring_uses;
+        ring_uses.clear();
         for (int k = 0; k < n_used; k++) {
             for (int t = 0; t < 3; t++) {
                 const uint64_t key = s.make_key(bases[t], experts[k]);
@@ -923,7 +1104,7 @@ bool glm5_gpu_experts(const float* x, int64_t hidden,
         // wait for all fills (they ran in parallel), then H2D
         for (auto& ru : ring_uses) e.wait_ready(ru.ring);
         for (auto& ru : ring_uses) {
-            cudaMemcpyAsync(ru.slot, e.rings[ru.ring].buf, slice, cudaMemcpyHostToDevice, s.stream);
+            cudaMemcpyAsync(ru.slot, e.rings[ru.ring].buf + e.rings[ru.ring].in_off, slice, cudaMemcpyHostToDevice, s.stream);
             e.rings[ru.ring].state = 3;
         }
         s.seconds_stage += std::chrono::duration<double>(t1 - t0).count();
@@ -958,6 +1139,20 @@ bool glm5_gpu_experts(const float* x, int64_t hidden,
     if (host_work) host_work();
 
     cudaStreamSynchronize(s.stream);
+    if (slot_verify_mod) {
+        static uint8_t* vbuf = nullptr;
+        if (!vbuf && cudaMallocHost((void**)&vbuf, 1 << 16) != cudaSuccess) vbuf = nullptr;
+        for (auto& ru : ring_uses) {
+            if (++slot_verify_seen % slot_verify_mod) continue;
+            if (!vbuf) break;
+            cudaMemcpy(vbuf, ru.slot, 1 << 14, cudaMemcpyDeviceToHost);
+            const int rr = ru.ring;
+            if (memcmp(vbuf, e.rings[rr].buf + e.rings[rr].in_off, 1 << 14) != 0) {
+                fprintf(stderr, "SLOT VERIFY MISMATCH ring=%d slot=%p (VRAM != ring)\n",
+                        rr, (void*)ru.slot);
+            }
+        }
+    }
     memcpy(out, po, hidden * 4);
 
     s.seconds_kernels += std::chrono::duration<double>(std::chrono::steady_clock::now() - t0).count()
@@ -1056,7 +1251,7 @@ void glm5_gpu_load_experts(const void* gate_base, const void* up_base, const voi
     }
     for (auto& ru : rus) e.wait_ready(ru.ring);
     for (auto& ru : rus) {
-        cudaMemcpyAsync(ru.slot, e.rings[ru.ring].buf, slice, cudaMemcpyHostToDevice, s.stream);
+        cudaMemcpyAsync(ru.slot, e.rings[ru.ring].buf + e.rings[ru.ring].in_off, slice, cudaMemcpyHostToDevice, s.stream);
         e.rings[ru.ring].state = 3;
     }
     cudaStreamSynchronize(s.stream);
@@ -1098,7 +1293,7 @@ bool glm5_gpu_stage_experts(const void* gate_base, const void* up_base, const vo
     cudaStream_t us = (cudaStream_t)user_stream;
     for (auto& ru : rus) {
         if (ru.ring >= 0) {
-            cudaMemcpyAsync(ru.slot, e.rings[ru.ring].buf, slice, cudaMemcpyHostToDevice, us);
+            cudaMemcpyAsync(ru.slot, e.rings[ru.ring].buf + e.rings[ru.ring].in_off, slice, cudaMemcpyHostToDevice, us);
             e.rings[ru.ring].state = 3;
         }
     }
@@ -1161,6 +1356,121 @@ void glm5_warm_slices(const void* gate_base, const void* up_base, const void* do
     if (cnt) PrefetchVirtualMemory(GetCurrentProcess(), cnt, entries, 0);
 #endif
 }
+
+#ifdef USE_GPUNVME
+bool glm5_gpnvme_active() {
+    return gpnvme_state().active;
+}
+
+uintptr_t glm5_gpnvme_fake_base(int il, int kind) {
+    return (uintptr_t)(kGpNvmeFakeBase + (uint64_t)(il * 3 + kind) * kGpNvmeTensorStride);
+}
+
+bool glm5_gpnvme_init(const char* lba_bin_path, const char* pci_bdf) {
+    (void)pci_bdf;  // per-disk BDFs come from the environment (authoritative)
+    auto& st = gpnvme_state();
+    if (st.active) return true;
+    st.bdf[0] = getenv("GPUNVME_PCI_BDF") ? getenv("GPUNVME_PCI_BDF") : "";
+    st.bdf[1] = getenv("GPUNVME_PCI_BDF1") ? getenv("GPUNVME_PCI_BDF1") : "";
+    if (st.bdf[0].empty()) { fprintf(stderr, "gpnvme: GPUNVME_PCI_BDF not set\n"); return false; }
+    FILE* f = fopen(lba_bin_path, "rb");
+    if (!f) { fprintf(stderr, "gpnvme: cannot open %s\n", lba_bin_path); return false; }
+    char magic[4]; uint32_t n_layers = 0, n_experts = 0, slice_bytes = 0;
+    if (fread(magic, 1, 4, f) != 4 ||
+        (memcmp(magic, "LBA1", 4) != 0 && memcmp(magic, "LBA2", 4) != 0) ||
+        fread(&n_layers, 4, 1, f) != 1 || fread(&n_experts, 4, 1, f) != 1 ||
+        fread(&slice_bytes, 4, 1, f) != 1) {
+        fprintf(stderr, "gpnvme: bad LBA index header\n"); fclose(f); return false;
+    }
+    const bool v2 = memcmp(magic, "LBA2", 4) == 0;
+    st.n_tensors = 46 * 3;
+    st.tensors.assign(st.n_tensors, GpNvmeTensor{});
+    for (uint32_t l = 0; l < n_layers; l++) {
+        for (uint32_t k = 0; k < 3; k++) {
+            // layer ids in the file are 3..44 in order; index = il*3+kind
+            const int il = 3 + (int)l;
+            auto& T = st.tensors[(size_t)(il * 3 + k)];
+            T.in_off.resize(n_experts);
+            T.runs.resize(n_experts);
+            for (uint32_t e = 0; e < n_experts; e++) {
+                uint32_t in_off = 0, n_runs = 0;
+                if (fread(&in_off, 4, 1, f) != 1 || fread(&n_runs, 4, 1, f) != 1) {
+                    fprintf(stderr, "gpnvme: truncated index\n"); fclose(f); return false;
+                }
+                T.in_off[e] = (int)in_off;
+                T.runs[e].resize(n_runs);
+                for (uint32_t r = 0; r < n_runs; r++) {
+                    uint64_t lba; uint32_t nb; uint8_t disk = 0;
+                    if (fread(&lba, 8, 1, f) != 1 || fread(&nb, 4, 1, f) != 1) {
+                        fprintf(stderr, "gpnvme: truncated index\n"); fclose(f); return false;
+                    }
+                    if (v2 && fread(&disk, 1, 1, f) != 1) {
+                        fprintf(stderr, "gpnvme: truncated index\n"); fclose(f); return false;
+                    }
+                    if (disk >= GpNvmeState::kDisks) {
+                        fprintf(stderr, "gpnvme: run references disk %u (max %u)\n",
+                                disk, GpNvmeState::kDisks - 1);
+                        fclose(f); return false;
+                    }
+                    T.runs[e][r] = {lba, nb, disk};
+                }
+            }
+        }
+    }
+    fclose(f);
+    st.active = true;
+    fprintf(stderr, "gpnvme: LBA index loaded (%s: %u layers x 3, %u experts, slice=%u)\n",
+            v2 ? "LBA2" : "LBA1", n_layers, n_experts, slice_bytes);    // Optional on-device fill verification (GLM5_VERIFY=probe3_vectors.json)
+    if (const char* vf = getenv("GLM5_VERIFY")) {
+        FILE* vf_file = fopen(vf, "rb");
+        if (vf_file) {
+            std::string js;
+            char tmp[65536]; size_t got;
+            while ((got = fread(tmp, 1, sizeof tmp, vf_file)) > 0) js.append(tmp, got);
+            fclose(vf_file);
+            long pos = 0;
+            int total_checks = 0;
+            while ((pos = (long)js.find("\"layer\"", pos + 1)) > 0) {
+                const int il = (int)strtol(js.c_str() + js.find(':', pos) + 1, nullptr, 10);
+                long kp = (long)js.find("\"key\": \"", pos);
+                std::string keyname;
+                for (long q = kp + 8; q < (long)js.size() && js[q] != '"'; q++) keyname += js[q];
+                const int kind = keyname == "gate" ? 0 : (keyname == "up" ? 1 : 2);
+                const int expert = (int)strtol(js.c_str() + js.find("\"expert\": ", pos) + 10, nullptr, 10);
+                long cp = (long)js.find("\"checks\"", pos);
+                long end = (long)js.find("\"layer\"", pos + 1);
+                if (end < 0) end = (long)js.size();
+                std::vector<GpNvmeCheck> checks;
+                long q = cp;
+                while ((q = (long)js.find("\"pos\": ", q + 1)) > 0 && q < end) {
+                    GpNvmeCheck c{};
+                    c.pos = (int)strtol(js.c_str() + q + 7, nullptr, 10);
+                    long hp = (long)js.find("\"hex\": \"", q);
+                    if (hp < 0 || hp > end) break;
+                    const char* hx = js.c_str() + hp + 8;
+                    for (int b = 0; b < 16; b++) {
+                        int hi = hexval_c(hx[b * 2]), lo = hexval_c(hx[b * 2 + 1]);
+                        if (hi < 0 || lo < 0) break;
+                        c.bytes[b] = (uint8_t)(hi * 16 + lo);
+                    }
+                    checks.push_back(c);
+                    total_checks++;
+                }
+                if (!checks.empty()) {
+                    st.verify[((uint64_t)(il * 3 + kind) << 10) | (uint64_t)expert] = std::move(checks);
+                }
+            }
+            st.verify_left = total_checks;
+            fprintf(stderr, "gpnvme: verify loaded (%d checks)\n", total_checks);
+        }
+    }
+    return true;
+}
+#else
+bool glm5_gpnvme_active() { return false; }
+uintptr_t glm5_gpnvme_fake_base(int, int) { return 0; }
+bool glm5_gpnvme_init(const char*, const char*) { return false; }
+#endif
 
 } // namespace glm5
 } // namespace nt

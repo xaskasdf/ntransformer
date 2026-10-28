@@ -83,5 +83,16 @@ void glm5_prefetch_layer(const void* gate_base, const void* up_base, const void*
 void glm5_warm_slices(const void* gate_base, const void* up_base, const void* down_base,
                       int64_t slice, const int* experts, int n);
 
+// ---- gpu-nvme-direct expert fills (Linux, VFIO-bound raw store) ----
+// When GLM5_GPNVME=1, expert slices are filled straight from the NVMe device
+// by the GPU (no filesystem, no page cache). Model tensors that live in the
+// raw store get a deterministic synthetic base pointer so ExpertEngine can
+// recover (tensor, expert) by pointer arithmetic alone.
+bool glm5_gpnvme_active();                       // GLM5_GPNVME=1 and index loaded
+uintptr_t glm5_gpnvme_fake_base(int il, int kind); // kind: 0=gate 1=up 2=down
+// Loads the LBA index (glm5_lba.bin from the kit) + creates nothing heavy.
+// Heavy controller init happens lazily on the first expert fill.
+bool glm5_gpnvme_init(const char* lba_bin_path, const char* pci_bdf);
+
 } // namespace glm5
 } // namespace nt
