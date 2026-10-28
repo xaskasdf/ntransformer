@@ -29,6 +29,7 @@ public:
     int bos_id() const { return bos_id_; }
     int eos_id() const { return eos_id_; }
     int vocab_size() const { return (int)tokens_.size(); }
+    bool has_merges() const { return !merge_rank_.empty(); }
 
 private:
     std::vector<std::string> tokens_;
@@ -42,6 +43,10 @@ private:
     int eos_id_ = 2;
     bool use_gpt2_encoding_ = false;  // true for Llama 3 (GPT-2 BPE), false for Llama 1/2 (SentencePiece)
 
+    // GPT-2 style merges (DeepSeek and friends): "left right" -> rank
+    std::unordered_map<std::string, int> merge_rank_;
+    std::string pre_;
+
     // BPE merge step
     struct BPEMerge {
         int left;
@@ -52,6 +57,8 @@ private:
 
     // Internal BPE encode
     void bpe_encode(const std::string& text, std::vector<int>& output) const;
+    // GPT-2 BPE with an explicit merges list and pre-tokenization
+    void gpt2_merges_encode(const std::string& text, std::vector<int>& output) const;
 
     // Byte-level fallback
     int byte_token(uint8_t byte) const;

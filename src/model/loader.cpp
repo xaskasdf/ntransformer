@@ -4,57 +4,163 @@
 #include <cinttypes>
 #include <algorithm>
 
-#include <fcntl.h>
-#include <unistd.h>
-#include <sys/mman.h>
-#include <sys/stat.h>
-
 namespace nt {
 
+// ============================================================
+// GGML type sizes (bytes for `n` elements), independent of DType
+// ============================================================
+static size_t ggml_type_nbytes(GGMLType t, uint64_t n, bool& known) {
+    known = true;
+    switch (t) {
+        case GGMLType::F32:  return n * 4;
+        case GGMLType::F16:  return n * 2;
+        case GGMLType::BF16: return n * 2;
+        case GGMLType::Q4_0: return (n / 32) * 18;
+        case GGMLType::Q4_1: return (n / 32) * 20;
+        case GGMLType::Q5_0: return (n / 32) * 22;
+        case GGMLType::Q5_1: return (n / 32) * 24;
+        case GGMLType::Q8_0: return (n / 32) * 34;
+        case GGMLType::Q8_1: return (n / 32) * 40;
+        case GGMLType::Q2_K: return (n / 256) * 84;
+        case GGMLType::Q3_K: return (n / 256) * 110;
+        case GGMLType::Q4_K: return (n / 256) * 144;
+        case GGMLType::Q5_K: return (n / 256) * 176;
+        case GGMLType::Q6_K: return (n / 256) * 210;
+        case GGMLType::Q8_K: return (n / 256) * 292;
+        case GGMLType::IQ2_XXS: return (n / 256) * 66;
+        case GGMLType::IQ2_XS:  return (n / 256) * 74;
+        case GGMLType::IQ3_XXS: return (n / 256) * 98;
+        case GGMLType::IQ1_S:   return (n / 256) * 50;
+        case GGMLType::IQ4_NL:  return (n / 32) * 18;
+        case GGMLType::IQ3_S:   return (n / 256) * 110;
+        case GGMLType::IQ2_S:   return (n / 256) * 82;
+        case GGMLType::IQ4_XS:  return (n / 256) * 136;
+        case GGMLType::I8:  return n;
+        case GGMLType::I16: return n * 2;
+        case GGMLType::I32: return n * 4;
+        case GGMLType::I64: return n * 8;
+        case GGMLType::F64: return n * 8;
+        case GGMLType::IQ1_M: return (n / 256) * 56;
+        case GGMLType::MXFP4: return (n / 32) * 17;
+        default:
+            known = false;
+            return 0;
+    }
+}
+
 GGUFLoader::~GGUFLoader() {
-    if (mmap_ptr_ && mmap_ptr_ != MAP_FAILED) {
-        munmap(mmap_ptr_, file_size_);
+    for (auto& s : shards_) {
+        unmap_file(s.map);
     }
-    if (fd_ >= 0) {
-        close(fd_);
+}
+
+bool GGUFLoader::open_shard(Shard& s) {
+    if (!map_file_read(s.path, s.map)) {
+        fprintf(stderr, "Failed to map %s\n", s.path.c_str());
+        return false;
     }
+#ifndef _WIN32
+    madvise(s.map.ptr, s.map.size, MADV_SEQUENTIAL);
+#endif
+    return true;
+}
+
+bool GGUFLoader::derive_shard_paths(const std::string& path, uint64_t count, std::vector<std::string>& out) const {
+    // find the "NNNNN-of-MMMMM" pattern
+    auto is_digits = [](const std::string& s, size_t pos, size_t n) {
+        if (pos + n > s.size()) return false;
+        for (size_t i = 0; i < n; i++) {
+            if (s[pos + i] < '0' || s[pos + i] > '9') return false;
+        }
+        return true;
+    };
+
+    size_t of_pos = std::string::npos;
+    size_t num_pos = std::string::npos;
+    size_t width = 5;
+    for (size_t i = 0; i + 5 + 4 <= path.size(); i++) {
+        if (path[i] == '-' && is_digits(path, i + 1, 5) &&
+            path.compare(i + 6, 4, "-of-") == 0 && is_digits(path, i + 10, 5)) {
+            of_pos = i;
+            num_pos = i + 1;
+            break;
+        }
+    }
+    if (of_pos == std::string::npos) {
+        fprintf(stderr, "Cannot derive split shard paths from %s\n", path.c_str());
+        return false;
+    }
+
+    out.clear();
+    for (uint64_t i = 0; i < count; i++) {
+        char num[16];
+        snprintf(num, sizeof(num), "%0*llu", (int)width, (unsigned long long)(i + 1));
+        std::string p = path;
+        // skip the first shard (already open)
+        p.replace(num_pos, width, num);
+        out.push_back(p);
+    }
+    return true;
 }
 
 bool GGUFLoader::load(const std::string& path) {
     path_ = path;
 
-    fd_ = open(path.c_str(), O_RDONLY);
-    if (fd_ < 0) {
-        fprintf(stderr, "Failed to open %s\n", path.c_str());
-        return false;
-    }
+    Shard first;
+    first.path = path;
+    if (!open_shard(first)) return false;
 
-    struct stat st;
-    if (fstat(fd_, &st) != 0) {
-        fprintf(stderr, "Failed to stat %s\n", path.c_str());
-        return false;
-    }
-    file_size_ = st.st_size;
-
-    mmap_ptr_ = mmap(nullptr, file_size_, PROT_READ, MAP_PRIVATE, fd_, 0);
-    if (mmap_ptr_ == MAP_FAILED) {
-        fprintf(stderr, "Failed to mmap %s\n", path.c_str());
-        return false;
-    }
-
-    madvise(mmap_ptr_, file_size_, MADV_SEQUENTIAL);
-
-    // Parse header
-    if (!parse_header()) {
+    // Parse shard 0 fully (stores KV + tensors)
+    if (!parse_shard(first, 0, true)) {
         fprintf(stderr, "Failed to parse GGUF header\n");
+        unmap_file(first.map);
         return false;
+    }
+
+    if (split_no_ != 0) {
+        fprintf(stderr, "This is split shard %" PRIu64 "; load the first shard instead\n", split_no_ + 1);
+        unmap_file(first.map);
+        return false;
+    }
+
+    shards_.push_back(first);
+    total_size_ += first.map.size;
+    data_size_ += first.map.size - first.data_offset;
+
+    // Open remaining shards
+    if (split_count_ > 1) {
+        std::vector<std::string> paths;
+        if (!derive_shard_paths(path, split_count_, paths)) {
+            return false;
+        }
+        for (uint64_t i = 1; i < split_count_; i++) {
+            Shard s;
+            s.path = paths[i];
+            if (!open_shard(s)) return false;
+            if (!parse_shard(s, (int)i, false)) {
+                fprintf(stderr, "Failed to parse shard %s\n", s.path.c_str());
+                return false;
+            }
+            shards_.push_back(s);
+            total_size_ += s.map.size;
+            data_size_ += s.map.size - s.data_offset;
+        }
+        fprintf(stderr, "Loaded %" PRIu64 " split shards, %zu tensors total\n",
+                split_count_, tensors_.size());
+    }
+
+    // Build model config from metadata
+    config_.from_gguf_metadata(config_.metadata);
+
+    if ((int)vocab_.tokens.size() != config_.vocab_size && !vocab_.tokens.empty()) {
+        config_.vocab_size = vocab_.tokens.size();
     }
 
     return true;
 }
 
-bool GGUFLoader::parse_header() {
-    const uint8_t* base = static_cast<const uint8_t*>(mmap_ptr_);
+bool GGUFLoader::parse_shard(Shard& s, int shard_index, bool store) {
+    const uint8_t* base = static_cast<const uint8_t*>(s.map.ptr);
     const uint8_t* ptr = base;
 
     // Magic
@@ -79,13 +185,24 @@ bool GGUFLoader::parse_header() {
     uint64_t n_kv = *reinterpret_cast<const uint64_t*>(ptr);
     ptr += 8;
 
-    fprintf(stderr, "GGUF v%u: %" PRIu64 " tensors, %" PRIu64 " metadata entries\n", version, n_tensors, n_kv);
+    if (store) {
+        fprintf(stderr, "GGUF v%u: %" PRIu64 " tensors, %" PRIu64 " metadata entries\n", version, n_tensors, n_kv);
+    }
 
-    // Parse metadata key-value pairs
     std::unordered_map<std::string, std::variant<int, float, std::string, bool>> metadata;
     std::vector<std::string> vocab_tokens;
     std::vector<float> vocab_scores;
     std::vector<int> vocab_types;
+    std::vector<std::string> vocab_merges;
+    std::string vocab_pre;
+
+    auto skip_array = [&](const uint8_t*& p, GGUFType elem_type, uint64_t n_elems) {
+        for (uint64_t j = 0; j < n_elems; j++) skip_value(p, elem_type);
+    };
+
+    int alignment = alignment_;
+    uint64_t split_count_local = 1;
+    uint64_t split_no_local = 0;
 
     for (uint64_t i = 0; i < n_kv; i++) {
         std::string key = read_string(ptr);
@@ -93,58 +210,98 @@ bool GGUFLoader::parse_header() {
         ptr += 4;
 
         if (type == GGUFType::ARRAY) {
-            // Handle arrays (token list, scores, etc.)
+            const uint8_t* arr_ptr = ptr;
             GGUFType elem_type = static_cast<GGUFType>(*reinterpret_cast<const uint32_t*>(ptr));
             ptr += 4;
             uint64_t n_elems = *reinterpret_cast<const uint64_t*>(ptr);
             ptr += 8;
 
-            if (key == "tokenizer.ggml.tokens" && elem_type == GGUFType::STRING) {
+            if (store && key == "tokenizer.ggml.tokens" && elem_type == GGUFType::STRING) {
                 vocab_tokens.reserve(n_elems);
                 for (uint64_t j = 0; j < n_elems; j++) {
                     vocab_tokens.push_back(read_string(ptr));
                 }
-            } else if (key == "tokenizer.ggml.scores" && elem_type == GGUFType::FLOAT32) {
+            } else if (store && key == "tokenizer.ggml.scores" && elem_type == GGUFType::FLOAT32) {
                 vocab_scores.reserve(n_elems);
                 for (uint64_t j = 0; j < n_elems; j++) {
                     vocab_scores.push_back(*reinterpret_cast<const float*>(ptr));
                     ptr += 4;
                 }
-            } else if (key == "tokenizer.ggml.token_type" && elem_type == GGUFType::INT32) {
+            } else if (store && key == "tokenizer.ggml.token_type" && elem_type == GGUFType::INT32) {
                 vocab_types.reserve(n_elems);
                 for (uint64_t j = 0; j < n_elems; j++) {
                     vocab_types.push_back(*reinterpret_cast<const int32_t*>(ptr));
                     ptr += 4;
                 }
-            } else {
-                // Skip array elements we don't need
+            } else if (store && key == "tokenizer.ggml.merges" && elem_type == GGUFType::STRING) {
+                vocab_merges.reserve(n_elems);
                 for (uint64_t j = 0; j < n_elems; j++) {
-                    skip_value(ptr, elem_type);
+                    vocab_merges.push_back(read_string(ptr));
                 }
+            } else if (store) {
+                // keep rich arrays (engram constants etc.)
+                const uint8_t* rp = arr_ptr;
+                GGUFValue v = read_value_rich(rp, type);
+                kv_rich_[key] = std::move(v);
+                ptr = rp;
+            } else {
+                skip_array(ptr, elem_type, n_elems);
             }
         } else {
-            auto val = read_value(ptr, type);
-            metadata[key] = val;
+            if (store) {
+                GGUFValue v = read_value_rich(ptr, type);
+                if (key == "general.alignment" && v.is_numeric()) {
+                    alignment = (int)v.i;
+                }
+                if (key == "split.count") split_count_local = (uint64_t)v.i;
+                if (key == "split.no")    split_no_local = (uint64_t)v.i;
+                if (key == "tokenizer.ggml.pre" && v.is_string()) {
+                    vocab_pre = v.s;
+                }
+                // legacy metadata view for the Llama ModelConfig path
+                {
+                    std::variant<int, float, std::string, bool> legacy;
+                    switch (type) {
+                        case GGUFType::STRING:  legacy = v.s; break;
+                        case GGUFType::FLOAT32:
+                        case GGUFType::FLOAT64: legacy = (float)v.f; break;
+                        case GGUFType::BOOL:    legacy = v.b; break;
+                        default:                legacy = (int)v.i; break;
+                    }
+                    metadata[key] = legacy;
+                }
+                kv_rich_[key] = std::move(v);
+            } else {
+                skip_value(ptr, type);
+            }
         }
     }
 
-    // Build config
-    config_.from_gguf_metadata(metadata);
+    if (store) {
+        split_count_ = split_count_local;
+        split_no_ = split_no_local;
+        alignment_ = alignment;
 
-    // Build vocab
-    vocab_.tokens = std::move(vocab_tokens);
-    vocab_.scores = std::move(vocab_scores);
-    vocab_.token_types = std::move(vocab_types);
+        // Build legacy metadata map for ModelConfig (already collected above)
+        config_.metadata = metadata;
 
-    if ((int)vocab_.tokens.size() != config_.vocab_size && !vocab_.tokens.empty()) {
-        config_.vocab_size = vocab_.tokens.size();
+        // Build vocab
+        vocab_.tokens = std::move(vocab_tokens);
+        vocab_.scores = std::move(vocab_scores);
+        vocab_.token_types = std::move(vocab_types);
+        vocab_.merges = std::move(vocab_merges);
+        vocab_.pre = std::move(vocab_pre);
+
+        // start data offset calculation right after the KV section (header_size is
+        // refined below once tensor infos are parsed)
     }
 
     // Parse tensor infos
-    tensors_.resize(n_tensors);
+    tensors_.reserve(tensors_.size() + n_tensors);
     for (uint64_t i = 0; i < n_tensors; i++) {
-        GGUFTensorInfo& ti = tensors_[i];
+        GGUFTensorInfo ti;
         ti.name = read_string(ptr);
+        ti.shard = shard_index;
 
         uint32_t n_dims = *reinterpret_cast<const uint32_t*>(ptr);
         ptr += 4;
@@ -162,27 +319,41 @@ bool GGUFLoader::parse_header() {
         ptr += 8;
 
         // Compute nbytes
-        DType dt = ggml_to_dtype(ti.ggml_type);
-        int64_t n = 1;
-        for (auto s : ti.shape) n *= s;
-        ti.nbytes = dtype_row_size(dt, n);
+        uint64_t n = 1;
+        for (auto dim : ti.shape) n *= dim;
+        bool known = true;
+        ti.nbytes = ggml_type_nbytes(ti.ggml_type, n, known);
+        if (!known) {
+            fprintf(stderr, "Tensor %s uses unsupported GGML type %u\n",
+                    ti.name.c_str(), (unsigned)ti.ggml_type);
+            return false;
+        }
 
-        tensor_map_[ti.name] = i;
+        tensor_map_[ti.name] = tensors_.size();
+        tensors_.push_back(std::move(ti));
     }
 
     // Data section starts at aligned offset after header
     size_t header_size = ptr - base;
-    // GGUF aligns data to 32 bytes (or the alignment specified in metadata)
-    int alignment = 32;
-    auto it = metadata.find("general.alignment");
-    if (it != metadata.end()) {
-        if (auto* v = std::get_if<int>(&it->second)) {
-            alignment = *v;
+    s.data_offset = (header_size + alignment - 1) & ~((size_t)alignment - 1);
+    if (store) {
+    }
+
+    // Bounds sanity: all tensors must fit inside the shard
+    for (const auto& ti : tensors_) {
+        if (ti.shard != shard_index) continue;
+        size_t end = s.data_offset + (size_t)ti.offset + ti.nbytes;
+        if (end > s.map.size) {
+            fprintf(stderr, "WARNING: tensor %s extends beyond shard %s (end=%zu, size=%llu)\n",
+                    ti.name.c_str(), s.path.c_str(), end, (unsigned long long)s.map.size);
         }
     }
-    data_offset_ = (header_size + alignment - 1) & ~(alignment - 1);
-    data_size_ = file_size_ - data_offset_;
 
+    return true;
+}
+
+bool GGUFLoader::parse_header() {
+    // Kept for interface compatibility; parse_shard is the real implementation
     return true;
 }
 
@@ -212,6 +383,78 @@ std::variant<int, float, std::string, bool> GGUFLoader::read_value(
         case GGUFType::STRING:  { return read_string(ptr); }
         default: return 0;
     }
+}
+
+GGUFValue GGUFLoader::read_value_rich(const uint8_t*& ptr, GGUFType type) const {
+    GGUFValue v;
+    v.type = type;
+    switch (type) {
+        case GGUFType::UINT8:   { v.i = *ptr; ptr += 1; break; }
+        case GGUFType::INT8:    { v.i = *reinterpret_cast<const int8_t*>(ptr); ptr += 1; break; }
+        case GGUFType::UINT16:  { v.i = *reinterpret_cast<const uint16_t*>(ptr); ptr += 2; break; }
+        case GGUFType::INT16:   { v.i = *reinterpret_cast<const int16_t*>(ptr); ptr += 2; break; }
+        case GGUFType::UINT32:  { v.i = *reinterpret_cast<const uint32_t*>(ptr); ptr += 4; break; }
+        case GGUFType::INT32:   { v.i = *reinterpret_cast<const int32_t*>(ptr); ptr += 4; break; }
+        case GGUFType::UINT64:  { v.i = (int64_t)*reinterpret_cast<const uint64_t*>(ptr); ptr += 8; break; }
+        case GGUFType::INT64:   { v.i = *reinterpret_cast<const int64_t*>(ptr); ptr += 8; break; }
+        case GGUFType::FLOAT32: { v.f = *reinterpret_cast<const float*>(ptr); ptr += 4; break; }
+        case GGUFType::FLOAT64: { v.f = *reinterpret_cast<const double*>(ptr); ptr += 8; break; }
+        case GGUFType::BOOL:    { v.b = *ptr != 0; ptr += 1; break; }
+        case GGUFType::STRING:  { v.s = read_string(ptr); break; }
+        case GGUFType::ARRAY: {
+            GGUFType elem_type = static_cast<GGUFType>(*reinterpret_cast<const uint32_t*>(ptr));
+            ptr += 4;
+            uint64_t n_elems = *reinterpret_cast<const uint64_t*>(ptr);
+            ptr += 8;
+            v.array.elem_type = elem_type;
+            switch (elem_type) {
+                case GGUFType::UINT8:
+                case GGUFType::INT8:
+                case GGUFType::UINT16:
+                case GGUFType::INT16:
+                case GGUFType::UINT32:
+                case GGUFType::INT32:
+                case GGUFType::UINT64:
+                case GGUFType::INT64: {
+                    v.array.ints.reserve(n_elems);
+                    for (uint64_t j = 0; j < n_elems; j++) {
+                        GGUFValue e = read_value_rich(ptr, elem_type);
+                        v.array.ints.push_back(e.i);
+                    }
+                    break;
+                }
+                case GGUFType::FLOAT32:
+                case GGUFType::FLOAT64: {
+                    v.array.reals.reserve(n_elems);
+                    for (uint64_t j = 0; j < n_elems; j++) {
+                        GGUFValue e = read_value_rich(ptr, elem_type);
+                        v.array.reals.push_back(e.f);
+                    }
+                    break;
+                }
+                case GGUFType::BOOL: {
+                    v.array.ints.reserve(n_elems);
+                    for (uint64_t j = 0; j < n_elems; j++) {
+                        GGUFValue e = read_value_rich(ptr, elem_type);
+                        v.array.ints.push_back(e.b ? 1 : 0);
+                    }
+                    break;
+                }
+                case GGUFType::STRING: {
+                    v.array.strings.reserve(n_elems);
+                    for (uint64_t j = 0; j < n_elems; j++) {
+                        v.array.strings.push_back(read_string(ptr));
+                    }
+                    break;
+                }
+                default:
+                    for (uint64_t j = 0; j < n_elems; j++) skip_value(ptr, elem_type);
+                    break;
+            }
+            break;
+        }
+    }
+    return v;
 }
 
 void GGUFLoader::skip_value(const uint8_t*& ptr, GGUFType type) const {
@@ -249,7 +492,8 @@ const void* GGUFLoader::tensor_data(const std::string& name) const {
     auto it = tensor_map_.find(name);
     if (it == tensor_map_.end()) return nullptr;
     const GGUFTensorInfo& ti = tensors_[it->second];
-    return static_cast<const uint8_t*>(mmap_ptr_) + data_offset_ + ti.offset;
+    const Shard& s = shards_[ti.shard];
+    return static_cast<const uint8_t*>(s.map.ptr) + s.data_offset + ti.offset;
 }
 
 Tensor GGUFLoader::get_tensor(const std::string& name) const {
@@ -258,14 +502,15 @@ Tensor GGUFLoader::get_tensor(const std::string& name) const {
 
     const GGUFTensorInfo& ti = tensors_[it->second];
     DType dt = ggml_to_dtype(ti.ggml_type);
+    const Shard& s = shards_[ti.shard];
 
     // Bounds check: verify tensor data is within the mmap'd region
-    size_t tensor_end = data_offset_ + ti.offset + ti.nbytes;
-    if (tensor_end > file_size_) {
-        fprintf(stderr, "\nERROR: Tensor '%s' extends beyond file! "
-            "data_offset=%zu, tensor_offset=%zu, nbytes=%zu, file_size=%zu, overrun=%zu\n",
-            name.c_str(), data_offset_, (size_t)ti.offset, ti.nbytes, file_size_,
-            tensor_end - file_size_);
+    size_t tensor_end = s.data_offset + ti.offset + ti.nbytes;
+    if (tensor_end > s.map.size) {
+        fprintf(stderr, "\nERROR: Tensor '%s' extends beyond shard %s! "
+            "data_offset=%zu, tensor_offset=%zu, nbytes=%zu, size=%llu, overrun=%zu\n",
+            name.c_str(), s.path.c_str(), s.data_offset, (size_t)ti.offset, ti.nbytes,
+            (unsigned long long)s.map.size, (size_t)(tensor_end - s.map.size));
         abort();
     }
 
@@ -286,11 +531,11 @@ std::vector<std::string> GGUFLoader::tensor_names() const {
 
 void GGUFLoader::print_info() const {
     fprintf(stderr, "=== GGUF File: %s ===\n", path_.c_str());
-    fprintf(stderr, "File size: %.2f GB\n", file_size_ / (1024.0 * 1024 * 1024));
-    fprintf(stderr, "Tensor data: %.2f GB at offset 0x%zX\n",
-        data_size_ / (1024.0 * 1024 * 1024), data_offset_);
+    fprintf(stderr, "File size: %.2f GB across %zu shard(s)\n",
+        total_size_ / (1024.0 * 1024 * 1024), shards_.size());
+    fprintf(stderr, "Tensor data: %.2f GB\n", data_size_ / (1024.0 * 1024 * 1024));
     fprintf(stderr, "Tensors: %zu\n", tensors_.size());
-    fprintf(stderr, "Vocab: %zu tokens\n", vocab_.tokens.size());
+    fprintf(stderr, "Vocab: %zu tokens, %zu merges\n", vocab_.tokens.size(), vocab_.merges.size());
 
     // Print first few tensors
     int count = 0;
@@ -301,7 +546,7 @@ void GGUFLoader::print_info() const {
             fprintf(stderr, "%" PRId64, t.shape[i]);
         }
         DType dt = ggml_to_dtype(t.ggml_type);
-        fprintf(stderr, "] %s (%.2f MB)\n", dtype_name(dt), t.nbytes / (1024.0 * 1024));
+        fprintf(stderr, "] %s (%.2f MB, shard %d)\n", dtype_name(dt), t.nbytes / (1024.0 * 1024), t.shard);
         if (++count >= 20) {
             fprintf(stderr, "  ... and %zu more\n", tensors_.size() - 20);
             break;

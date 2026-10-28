@@ -125,7 +125,7 @@ void test_tensor_dtype_sizes() {
     assert(dtype_size(DType::F32) == 4);
     assert(dtype_size(DType::F16) == 2);
     assert(dtype_size(DType::Q4_0) == 18);
-    assert(dtype_size(DType::Q8_0) == 36);
+    assert(dtype_size(DType::Q8_0) == 34);
 
     assert(dtype_block_size(DType::F32) == 1);
     assert(dtype_block_size(DType::Q4_0) == 32);

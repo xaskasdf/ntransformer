@@ -31,6 +31,8 @@ enum class DType : uint8_t {
     Q5_K   = 6,
     Q2_K   = 7,  // For KV-cache RotateKV
     I32    = 8,
+    BF16   = 9,
+    MXFP4  = 10, // OCP microscaling FP4 (e2m1 values, e8m0 block scale)
     COUNT
 };
 
@@ -46,6 +48,8 @@ inline size_t dtype_size(DType dt) {
         case DType::Q5_K:   return 176;                          // K-quant 5-bit block
         case DType::Q6_K:   return 210;
         case DType::Q2_K:   return 84;
+        case DType::BF16:   return 2;
+        case DType::MXFP4:  return 17;                           // 1 byte e8m0 + 16 bytes nibbles
         default: return 0;
     }
 }
@@ -61,6 +65,7 @@ inline size_t dtype_block_size(DType dt) {
         case DType::Q5_K:   return 256;
         case DType::Q6_K:   return 256;
         case DType::Q2_K:   return 256;
+        case DType::MXFP4:  return 32;
         default: return 1;
     }
 }
@@ -76,6 +81,8 @@ inline const char* dtype_name(DType dt) {
         case DType::Q6_K:   return "Q6_K";
         case DType::Q2_K:   return "Q2_K";
         case DType::I32:    return "I32";
+        case DType::BF16:   return "BF16";
+        case DType::MXFP4:  return "MXFP4";
         default: return "UNKNOWN";
     }
 }
@@ -137,6 +144,66 @@ struct BlockQ6_K {
 };
 static_assert(sizeof(BlockQ6_K) == 210, "BlockQ6_K size mismatch");
 
+// MXFP4 (OCP microscaling): 32 weights per block
+// Layout: 1 byte e8m0 scale (2^(e-127), e=0 -> 2^-128), 16 bytes = 32 x 4-bit e2m1 values
+struct BlockMXFP4 {
+    uint8_t e;         // E8M0 scale
+    uint8_t qs[16];    // nibbles: 32 x 4-bit (low nibbles first half, high nibbles second half)
+};
+static_assert(sizeof(BlockMXFP4) == 17, "BlockMXFP4 size mismatch");
+
+// e2m1 values, doubled (the block scale is halved when dequantizing)
+inline constexpr int8_t kMXFP4Values[16] = {
+    0, 1, 2, 3, 4, 6, 8, 12, 0, -1, -2, -3, -4, -6, -8, -12
+};
+
+// 2^(x-128): e8m0 scale for MXFP4 (block scale is 2^(e-127), values doubled -> half scale)
+inline float e8m0_to_fp32_mxfp4(uint8_t x) {
+    if (x < 2) {
+        uint32_t bits = (x == 0) ? 0x00200000u : 0x00400000u;  // 2^-128, 2^-127
+        float r;
+        memcpy(&r, &bits, sizeof(float));
+        return r;
+    }
+    uint32_t bits = (uint32_t)x << 23;
+    float r;
+    memcpy(&r, &bits, sizeof(float));
+    return r / 2.0f;
+}
+
+// FP16 <-> FP32 conversions usable from host code (device code uses CUDA's half)
+inline float fp16_to_fp32_host(uint16_t h) {
+    uint32_t sign = (uint32_t)(h >> 15) & 1u;
+    uint32_t exp  = (uint32_t)(h >> 10) & 0x1Fu;
+    uint32_t mant = (uint32_t)h & 0x3FFu;
+    uint32_t f;
+    if (exp == 0) {
+        if (mant == 0) {
+            f = sign << 31;
+        } else {
+            // subnormal
+            exp = 127 - 15 + 1;
+            while ((mant & 0x400u) == 0) { mant <<= 1; exp--; }
+            mant &= 0x3FFu;
+            f = (sign << 31) | (exp << 23) | (mant << 13);
+        }
+    } else if (exp == 31) {
+        f = (sign << 31) | 0x7F800000u | (mant << 13);
+    } else {
+        f = (sign << 31) | ((exp - 15 + 127) << 23) | (mant << 13);
+    }
+    float r;
+    memcpy(&r, &f, sizeof(float));
+    return r;
+}
+
+inline float bf16_to_fp32_host(uint16_t h) {
+    uint32_t f = (uint32_t)h << 16;
+    float r;
+    memcpy(&r, &f, sizeof(float));
+    return r;
+}
+
 // ============================================================
 // Device enum
 // ============================================================
@@ -197,6 +264,8 @@ enum class GGMLType : uint32_t {
     I64     = 27,
     F64     = 28,
     IQ1_M   = 29,
+    BF16    = 30,
+    MXFP4   = 39,
 };
 
 inline DType ggml_to_dtype(GGMLType t) {
@@ -210,6 +279,8 @@ inline DType ggml_to_dtype(GGMLType t) {
         case GGMLType::Q6_K: return DType::Q6_K;
         case GGMLType::Q2_K: return DType::Q2_K;
         case GGMLType::I32:  return DType::I32;
+        case GGMLType::BF16: return DType::BF16;
+        case GGMLType::MXFP4: return DType::MXFP4;
         default:             return DType::F32;  // fallback
     }
 }
@@ -231,11 +302,19 @@ inline DType ggml_to_dtype(GGMLType t) {
 // Cross-platform aligned memory allocation
 // ============================================================
 inline void* nt_aligned_alloc(size_t alignment, size_t size) {
+#ifdef _WIN32
+    return _aligned_malloc(size, alignment);
+#else
     return aligned_alloc(alignment, size);
+#endif
 }
 
 inline void nt_aligned_free(void* ptr) {
+#ifdef _WIN32
+    _aligned_free(ptr);
+#else
     ::free(ptr);
+#endif
 }
 
 } // namespace nt
