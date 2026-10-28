@@ -1,298 +1,152 @@
-# NTransformer - Project Guide
+# CLAUDE.md
 
-## What Is This
-High-efficiency C++/CUDA LLM inference engine. Goal: run Llama 70B at Q8-equivalent quality on a single RTX 3090 (24GB VRAM) by combining 6 memory-optimization techniques.
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Current State
-**Phase 2 (SLEP) - COMPLETE. 3-tier adaptive caching — 33x speedup on 70B.**
-- Phase 1 fully working: Llama 3.1 8B Q8_0 at 48.9 tok/s decode (resident), 0.9 tok/s (streaming)
-- Phase 2 SLEP streaming: pipelined layer streaming via PCIe with worker thread
-- **3-tier adaptive caching**: VRAM resident + pinned RAM + NVMe/mmap (auto-sized from hardware)
-- 70B Q6_K: 29 VRAM + 51 RAM → **0.2 tok/s** (33x over mmap baseline), 23 GB VRAM
-- 8B Q8_0: auto-promotes all 32 layers to VRAM → 48.8 tok/s (equivalent to resident)
-- Q6_K quantization support: 70B Llama running on single RTX 3090
-- `--streaming` CLI flag enables tiered mode (auto-selects best tier per layer)
-- All unit tests passing (7/7 tensor, 6/6 kernel)
-- **gpu-nvme-direct integrated and verified** — NVMe reads at 3,315 MB/s sustained (95% PCIe 4.0 x4)
-- Worker thread pipeline: fallback path when NVMe unavailable or mmap pinning succeeds
-- **Ported from Windows/MSVC/CUDA 12.4 to Linux/gcc-14/CUDA 13.1 (C++20 unified)**
-- Setup/restore scripts: `scripts/setup_nvme.sh`, `scripts/restore_nvme.sh`
+## What This Is
 
-## Development Setup
-- **Platform:** Linux (Ubuntu, kernel 6.17+)
-- **Compiler:** gcc-14 / g++-14 (gcc-15 is incompatible with CUDA 13.1)
-- **CUDA:** Toolkit 13.1, C++20 for both host and device code
-- **GPU:** RTX 3090 24GB, Compute 8.6
-- **Build requirements:** CMake 3.24+, CUDA Toolkit 13.1, C++20, gcc-14
-- **No external dependencies** beyond CUDA Toolkit (no PyTorch, no cuBLAS)
-- **Test models:** Configure paths via `-m` flag
+NTransformer is a C++20/CUDA LLM inference engine with no dependencies beyond the CUDA Toolkit (no cuBLAS, no PyTorch). It is built to run models far larger than VRAM on a single GPU; the original target was Llama 70B on one RTX 3090. The repo now holds four loosely coupled tracks:
 
-### Build Commands
+| Track | Where | State |
+|---|---|---|
+| Llama inference + tiered layer streaming | `src/{core,cuda,memory,model,inference}` | Mature. 8B Q8_0 ≈ 49 tok/s resident; 70B tiered 0.2–0.5 tok/s |
+| MoE models: DeepSeek-V4.1-Flash (`ds41`), GLM-5.3-Flash (`glm5`) | `src/model/ds41/`, `src/model/glm5/` | Active. Exact CPU reference + GPU offload |
+| NTRPU: custom FPGA inference accelerator | `src/ntrpu/` (simulator), `fpga/` (HLS/RTL), `tools/` | Active research. Needs no CUDA |
+| Experimental H100 training ops | `src/training/`, `python/ntransformer_training/` | Opt-in, Linux only |
+
+Design records, benchmarks, and decisions for each track live in `docs/` (see the docs map below), not in commit messages.
+
+## Build
+
+CMake options: `NTRANSFORMER_ENABLE_CUDA` (ON), `NTRANSFORMER_BUILD_NTRPU_SIM` (ON), `BUILD_TESTING` (ON, via `include(CTest)`), `USE_GPUNVME` (OFF; links prebuilt static libs from `../gpu-nvme-direct/build-hw/`), and `NTRANSFORMER_BUILD_TRAINING` (OFF). The default CUDA architectures are `80;86;89;90`. Pass `-DCMAKE_CUDA_ARCHITECTURES=86` (RTX 3090) or `90` (H100) for faster builds.
+
+**Linux** (gcc-14 + CUDA 13.1). gcc-15 is incompatible with CUDA 13.1, and CMake automatically picks `gcc-14` as the CUDA host compiler:
 ```bash
-mkdir build && cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release \
-  -DCMAKE_C_COMPILER=gcc-14 \
-  -DCMAKE_CXX_COMPILER=g++-14 \
-  -DCMAKE_CUDA_COMPILER=/usr/local/cuda-13.1/bin/nvcc
-cmake --build . --config Release -j
-# Tests
-./Release/test_tensor
-./Release/test_gemm
-# Run
-./Release/ntransformer -m /path/to/model.gguf -p "Hello" -n 128
-./Release/ntransformer -m /path/to/model.gguf --chat
-./Release/ntransformer -m /path/to/model.gguf --benchmark -n 64
-# Phase 2: Streaming mode (streams layers from CPU via PCIe)
-./Release/ntransformer -m /path/to/model.gguf -p "Hello" -n 128 --streaming
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_CXX_COMPILER=g++-14 -DCMAKE_CUDA_COMPILER=/usr/local/cuda-13.1/bin/nvcc
+cmake --build build -j
 ```
 
-### Build with gpu-nvme-direct (NVMe backend for streaming)
+**Windows** (MSVC 14.5x + CUDA 13.2 + Ninja, run from a VS x64 developer environment). This matches the existing `build/win` configuration:
+```powershell
+cmake -S . -B build/win -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_CUDA_ARCHITECTURES=86 `
+  -DNTRANSFORMER_BUILD_NTRPU_SIM=OFF -DBUILD_TESTING=OFF
+cmake --build build/win
+```
+OS-specific code is confined to `src/core/filemap_{posix,win}.inl` (file mapping and host-RAM queries). gpu-nvme-direct/VFIO is Linux-only.
+
+**NTRPU simulator only** (any C++20 compiler, no CUDA toolkit):
 ```bash
-cmake .. -DCMAKE_BUILD_TYPE=Release -DUSE_GPUNVME=ON \
-  -DCMAKE_C_COMPILER=gcc-14 \
-  -DCMAKE_CXX_COMPILER=g++-14 \
-  -DCMAKE_CUDA_COMPILER=/usr/local/cuda-13.1/bin/nvcc
-cmake --build . --config Release -j
-
-# Setup NVMe for VFIO (once after reboot)
-sudo ./scripts/setup_nvme.sh 0000:01:00.0
-
-# Write GGUF to NVMe raw device (once per model)
-sudo ./scripts/restore_nvme.sh 0000:01:00.0   # bind to kernel driver
-sudo dd if=/path/to/model.gguf of=/dev/nvme0n1 bs=1M oflag=direct status=progress
-sudo ./scripts/setup_nvme.sh 0000:01:00.0      # rebind to VFIO
-
-# Run with NVMe backend
-sudo GPUNVME_PCI_BDF=0000:01:00.0 GPUNVME_GGUF_LBA=0 \
-  ./build/ntransformer -m /path/to/model.gguf -p "Hello" -n 128 --streaming
-
-# Restore NVMe to kernel driver when done
-sudo ./scripts/restore_nvme.sh 0000:01:00.0
+cmake -S . -B build/ntrpu-sim -DNTRANSFORMER_ENABLE_CUDA=OFF -DBUILD_TESTING=ON -DCMAKE_BUILD_TYPE=Release
+cmake --build build/ntrpu-sim --config Release --parallel
 ```
 
-## Architecture Overview
+**Training library** (Linux; uses `-Wl,--no-undefined`): configure with `-DNTRANSFORMER_BUILD_TRAINING=ON -DNTRANSFORMER_BUILD_NTRPU_SIM=OFF`, build target `ntransformer_training`, then `export NTRANSFORMER_TRAINING_LIB=$PWD/build-training/libntransformer_training.so`. The Python package loads it through ctypes.
 
-### Namespace & Conventions
-- Everything in `namespace nt`, CUDA kernels in `namespace nt::cuda`
-- CUDA launchers: `launch_*()` (e.g., `launch_rmsnorm`, `launch_gemv`)
-- C-linkage device ops: `nt_cuda_*()` (for .cpp files compiled without nvcc)
-- Error macros: `NT_CHECK(cond, msg)`, `NT_CUDA_CHECK(err)` — both call `abort()` on failure
+`build/` also contains per-experiment output directories, not just CMake trees. Don't clean it wholesale.
 
-### Directory Layout
-```
-src/
-├── core/           # Fundamental: types, tensor, allocator, GPU device
-├── cuda/           # CUDA kernels (.cu files) + kernels.h declarations
-├── memory/         # Phase 2: SLEP layer streaming (streamer.h/cu)
-├── model/          # Transformer components: config, loader, norm, attention, ffn, transformer
-├── inference/      # High-level: tokenizer, sampler, engine
-├── utils/          # Timer, logger, profiler
-├── main.cpp        # CLI entry point
-include/            # Public C API (ntransformer.h)
-tests/              # Unit tests
-scripts/            # Python utilities (Phase 3+)
-```
+### Fast-math gotcha
+Release CUDA builds add `--use_fast_math` to every target **unless** the target sets the `NTRANSFORMER_PRECISE_MATH` property. The training library and the `ntransformer_ds41_shared` object library (`ds41_shared.cu`, `ds41_attention.cu`) set it so their results match the CPU reference reduction order. Put new CUDA code that must agree numerically with a CPU reference in such a target. Overriding `--fmad`/`--ftz` alone does not undo fast-math's `expf` mapping.
 
-### Data Flow (Forward Pass)
-```
-tokens[seq_len] (CPU)
-  → embed_tokens(): CPU lookup + H2D copy → hidden_state[seq_len, hidden_size] (GPU)
-  → for each layer:
-      norm → attention(+RoPE, KV cache, GQA) → residual add
-      norm → FFN(SwiGLU: gate↦SiLU, up, down) → residual add
-  → output_norm (last token only)
-  → LM head GEMV → logits[vocab_size] (GPU)
-  → D2H copy → sampling (CPU) → next token
-```
+## Run
 
-### Streaming Pipeline (Phase 2)
+```bash
+./build/ntransformer -m model.gguf -p "Hello" -n 128                 # resident
+./build/ntransformer -m model.gguf -p "Hello" -n 32 --streaming      # tiered (model > VRAM)
+./build/ntransformer -m model.gguf --benchmark -n 64
+./build/ntransformer -m model.gguf --streaming --skip-threshold 0.98 # layer skip
+./build/ntransformer -m model.gguf --self-spec --draft-k 3           # self-speculative
+CUDA_VISIBLE_DEVICES=0,1 ./build/ntransformer -m model.gguf --peer-gpu 1 --local-layers 16 -p "..."
+# Parity hooks (all model families): bypass the tokenizer, dump prompt logits as F32
+./build/ntransformer -m model.gguf --token-ids 785,6722,315 --dump-logits out.bin -n 12 -t 0 --repeat-penalty 1.0
 ```
-Worker thread:  [memcpy L0→stg0][memcpy L1→stg1][memcpy L2→stg0]...
-H2D DMA:        [              ][stg0→gpu0     ][stg1→gpu1     ]...
-GPU Compute:    [              ][              ][layer 0       ]...
-```
-Three-stage pipeline: worker memcpy (CPU cores), async H2D (PCIe DMA), GPU compute (SMs).
+`-c/--ctx-size` (default 4096) caps the model's context and sizes the KV cache. The KV cache competes with resident layers for VRAM: 70B Q6_K gets 29 VRAM layers at ctx 512 versus 24 at ctx 4096. For deterministic comparisons, use `-t 0 --repeat-penalty 1.0`.
 
-**With gpu-nvme-direct (eliminates CPU from data path):**
-```
-GPU MMIO:       [doorbell L0  ][doorbell L1  ][doorbell L2  ]...
-NVMe DMA:       [DMA L0→stg0  ][DMA L1→stg1  ][DMA L2→stg0 ]...
-H2D:            [              ][stg0→gpu0    ][stg1→gpu1    ]...
-GPU Compute:    [              ][              ][layer 0      ]...
-```
-See `GPU_NVME_DIRECT_INTEGRATION.md` for full integration guide.
+NVMe direct (Linux, root, `-DUSE_GPUNVME=ON`): `sudo GPUNVME_PCI_BDF=0000:01:00.0 GPUNVME_GGUF_LBA=0 ./build/ntransformer ... --streaming`. The GGUF must first be `dd`'d to the raw device, and the device bound to VFIO via `scripts/setup_nvme.sh` (re-run after every reboot). Read `docs/GPU_NVME_DIRECT_INTEGRATION.md` first.
 
-### Key Buffers & Memory Layout
-| Buffer | Shape | Notes |
-|--------|-------|-------|
-| hidden_buf | [max_seq, hidden_size] | Main hidden state, F32 GPU |
-| residual_buf | [max_seq, hidden_size] | Temp for norm→attn/ffn output |
-| k_cache | [n_layers, max_seq, n_kv_heads, head_dim] | F32 GPU |
-| v_cache | [n_layers, max_seq, n_kv_heads, head_dim] | F32 GPU |
-| workspace | [max(attn_ws, ffn_ws)] | Shared, reused between attn/ffn |
-| logits_buf | [vocab_size] | Final output, F32 GPU |
-| gpu_buf_[2] | [layer_size] | Streaming: double-buffer for layer weights |
-| staging_buf_[2] | [layer_size] | Streaming: pinned staging for CPU→GPU pipeline |
+## Tests
 
-### GGUF Tensor Names (Llama)
-```
-token_embd.weight                    # Embedding table
-output.weight                        # LM head (may share with embedding)
-output_norm.weight                   # Final RMSNorm
-blk.{i}.attn_norm.weight             # Pre-attention norm
-blk.{i}.attn_q.weight               # Query projection
-blk.{i}.attn_k.weight               # Key projection
-blk.{i}.attn_v.weight               # Value projection
-blk.{i}.attn_output.weight          # Output projection
-blk.{i}.ffn_norm.weight             # Pre-FFN norm
-blk.{i}.ffn_gate.weight             # SwiGLU gate
-blk.{i}.ffn_up.weight               # SwiGLU up
-blk.{i}.ffn_down.weight             # SwiGLU down
+There is no test framework. Each test is a standalone executable (`tests/test_<feature>.cpp|.cu`) registered in the root `CMakeLists.txt` or `src/ntrpu/CMakeLists.txt`, often several times with different argv modes or env vars.
+
+```bash
+ctest --test-dir build -V                                # everything
+ctest --test-dir build -R '^test_ds41_router' -V         # one test plus its env variants
+./build/test_ds41_backbone tail                          # run directly with a mode argument
+DS41_GPU=0 ./build/test_ds41_router disabled             # reproduce a CTest env variant by hand
+ctest --test-dir build/ntrpu-sim -C Release -R 'ntrpu_(hls|q8_0)' --output-on-failure
+python -B -m unittest discover -s tests -p test_ntrpu_buffer_pool_model.py -v
 ```
 
-### Quantization Formats Supported
-| Format | Block Size | Bytes/Block | Layout |
-|--------|-----------|-------------|--------|
-| Q4_0 | 32 weights | 18 bytes | FP16 scale + 16 nibble bytes |
-| Q8_0 | 32 weights | 34 bytes | FP16 scale + 32 int8 |
-| Q4_K_M | 256 weights | 144 bytes | FP16 d/dmin + 12 sub-scales + 128 nibbles |
-| Q6_K | 256 weights | 210 bytes | 128 ql + 64 qh + 16 scales + FP16 d |
-| F16 | 1 | 2 bytes | IEEE 754 half |
-| F32 | 1 | 4 bytes | IEEE 754 float |
+- **Exit code 77 means SKIP** (no CUDA, fewer than two GPUs, no P2P). A green CTest run can hide skips, and some failures don't set the exit status. Read the verbose output for `FAIL`/`SKIP`.
+- Release defines `NDEBUG`. Reconfigure with `-DCMAKE_BUILD_TYPE=Debug` when a test relies on `assert`.
+- The CUDA tests use synthetic tensors and need no model files.
+- `tests/test_training_*.py` need PyTorch, CUDA, and `NTRANSFORMER_TRAINING_LIB`. Many `tests/test_ntrpu_*_r<N>.cpp` and the HLS/RTL checks are not in CTest. `tools/run_ntrpu_*.py` and `scripts/run_ntrpu_hls.py` drive them, and synthesis/co-simulation needs Vivado/Vitis (`docs/fpga/HLS.md`, `docs/fpga/CLOUD_HLS.md`).
+- `test_nvme_layer` needs real NVMe hardware and is intentionally not registered.
 
-### CUDA Streams
-- `STREAM_COMPUTE` (0): All kernel execution
-- `STREAM_TRANSFER0` (1): For Phase 2 SLEP buffer A
-- `STREAM_TRANSFER1` (2): For Phase 2 SLEP buffer B
+## Architecture
 
-## Known Limitations
+### Model dispatch (`src/main.cpp`)
+The CLI peeks at the GGUF's `general.architecture` and tries `glm5::run_cli` (`"glm5-next"`), then `ds41::run_cli` (`"deepseek41"`). Each returns `-1` to decline. Anything else falls through to the Llama `Engine`. The Llama-only flags (`--streaming`, `--peer-gpu`, `--self-spec`, `--skip-threshold`, `--draft-model`, …) do **not** reach DS41/GLM5. Those paths are configured entirely through `DS41_*` / `GLM5_*` environment variables (grep `getenv` in `src/model/{ds41,glm5}`).
 
-1. **Embedding lookup on CPU** — CPU dequant (Q8_0/Q4_0/Q6_K/F16/F32) + H2D copy. Acceptable for Phase 1-2.
-2. **GEMV per-token for prefill** — attention.cpp loops GEMV per token instead of batched GEMM. Slow prefill.
-3. **No graceful error recovery** — `NT_CHECK` calls `abort()`. Missing tensor = crash.
-4. **Chat mode is stateless** — each turn is independent, no conversation history management.
-5. **Special token handling** — Chat template tokens (`<|start_header_id|>` etc.) not parsed; use raw text prompts.
-6. **NVMe requires root** — `/proc/self/pagemap` needs `CAP_SYS_ADMIN` for physical address translation. Run with `sudo`.
-7. **NVMe setup required after reboot** — Must run `scripts/setup_nvme.sh` to force D0 power state + enable BusMaster before NVMe backend works.
+### Llama path
+`inference/engine.cpp` (generate/chat/benchmark/speculative) → `model/transformer.cpp` (`forward`, `forward_streaming`, `forward_tiered`, `forward_draft*`) → `memory/streamer.cu` (`LayerStreamer`).
 
-## Phase Roadmap
+- At load time, `TierConfig::compute` assigns each layer a `LayerTier` of `VRAM`, `PEER`, `RAM`, or `NVME`. Sizing comes from `cudaMemGetInfo`, `host_avail_ram()`, and the KV/workspace reserve.
+  - Non-resident layers flow through two GPU slots: the H2D copy of layer N+1 on `STREAM_TRANSFER0/1` overlaps compute of layer N on `STREAM_COMPUTE`, and CUDA events order them.
+  - Tier-C sources, auto-selected: gpu-nvme-direct (including BAR1 NVMe→VRAM DMA), pinned mmap, or a worker thread doing memcpy into pinned staging.
+- `memory/peer_cache.cu` implements the `PEER` tier: overflow layers live in a second GPU's VRAM and are staged by P2P DMA into the same double buffers.
+- The tiered bottleneck is PCIe H2D bandwidth, not compute (≈100 ms per 70B layer at Gen3 x8 versus <1 ms of compute). Evaluate optimizations by bytes moved per token.
+- Embedding lookup is CPU dequant plus an H2D copy. Prefill attention loops GEMV per token.
+- Delta-encoded streaming (`--delta-model`, `.ntd`) and CUDA Graphs were tried and documented as negative results (`docs/OPTIMIZATIONS.md`, `docs/research/`).
 
-### Phase 1: Foundation ✅ (complete)
-Run Llama 8B Q8_0. Actual: 38.8 tok/s decode, 10.9 GB VRAM (after kernel optimization).
+### DS41 / GLM5 (MoE) path
+- Each model has a CPU `Session` that is the exact reference and correctness oracle, plus GPU offload toggled by env (`DS41_GPU=0` disables it; `GLM5_GPU=1` enables the GPU engine and `GLM5_FAST=1` the device-resident fast path in `glm5_gpu2.cu`).
+- Routed experts stream into a VRAM LRU expert cache (`ds41_cache.h`).
+- GLM5 reuses DS41's `ExpertCacheIndex` and the mHC hyper-connections in `ds41_hc.h`. Keep both models working when touching these files.
+- Both reuse `GGUFLoader` and `Tokenizer`.
 
-### Phase 2: SLEP (Streaming Layer Execution) ✅ (complete)
-Double-buffer layer streaming via PCIe. Llama 70B Q6_K on single RTX 3090 (7.3 GB VRAM).
-- `src/memory/streamer.h/cu` — Pipelined engine with worker thread + double staging
-- **gpu-nvme-direct backend**: NVMe reads directly to pinned staging at 3,315 MB/s
-- Three data paths (auto-selected): (1) mmap pinned, (2) NVMe direct, (3) CPU worker memcpy
-- Worker thread overlaps CPU memcpy (mmap→staging) with H2D DMA and GPU compute
-- `transformer.cpp` — `forward_streaming()` with 3-stage pipeline
-- Norm weights preloaded to GPU; layer weights streamed per-token
-- CLI: `--streaming` flag + env vars `GPUNVME_PCI_BDF` / `GPUNVME_GGUF_LBA`
-- Q6_K GEMV kernel + embedding dequant for 70B support
-- Setup/restore scripts for NVMe VFIO binding
+Correctness bar: greedy parity with pinned llama.cpp references (DS41: `vcruz305/llama.cpp` branch `runtime/deepseek41`; GLM5: llama.cpp `glm5-next`, PR #27754). Bugs are found by bisecting stage dumps against the CPU reference.
 
-### Phase 3: Advanced Quantization
-RotateKV (Walsh-Hadamard + INT2 KV-cache) + adaptive per-layer precision.
-- `src/cuda/hadamard.cu`
-- `src/quant/kv_quant.h/cpp`
-- `src/quant/adaptive.h/cpp`
-- `scripts/convert_model.py`
+The stated DS41 direction (`docs/DEEPSEEK_PERFORMANCE_GAP.md`) is to remove the CPU from the steady-state per-token critical path. Bit-identical logits are not required, but any arithmetic change needs likelihood/quality measurements, and a logit diff alone proves nothing either way.
 
-### Phase 4: Novel Architectures
-MLA retrofit via SVD, Mamba/SSM support, neuromorphic sparsity, speculative decoding.
-- `src/model/ssm.h/cpp`, `src/cuda/ssm.cu`
-- `src/cuda/sparsity.cu`
-- `src/inference/speculative.h/cpp`
+Known GLM5 parity hazards:
+- Large prefill chunks race in the union expert load (evict versus H2D in flight). The verified configuration is `GLM5_CHUNK=3`.
+- `GLM5_PREFETCH=2` races.
+- On Windows/WDDM, the VRAM cache plus resident weights must stay under ≈21.5 GB or the driver silently pages.
+- On Linux gpnvme, NaN logits or `!!!!` output mean expert DMA is dead. Every VFIO rebind needs `setpci 84.W=0x0008` and `COMMAND=0x0006`, both read back.
 
-### Phase 5: Polish
-Optimization, benchmarks, public C API, documentation.
+The GLM5 gpu-nvme-direct path is merged into `src/model/glm5/`: `GLM5_GPNVME`, `GLM5_BACKBONE_PACK`, `GLM5_LBA_BIN`, all guarded by `USE_GPUNVME`. `linux_port/` holds what is specific to the Linux host: the runbook, runner scripts, LBA indexes, and the gpu-nvme-direct `layer_loader` patch. `tools/linux/` holds the Windows-side `D:\linux_kit` bridge tools. Linux runs from a live USB because the model's NVMe disk is bound to VFIO and the live USB needs a different kernel.
 
-## Performance Results
+### NTRPU (FPGA)
+The goal is an accelerator with up to 512 GB DDR4 that runs inference **without an NVIDIA GPU or CUDA**. Adding another data source to `LayerStreamer` would not meet that goal.
 
-### 8B Q8_0 (Llama 3.1 8B Instruct)
-| Mode | Decode | Prefill | VRAM | Tier Split |
-|------|--------|---------|------|------------|
-| Resident | 48.9 tok/s | 50.9 tok/s | 10.0 GB | N/A |
-| Tiered (auto) | 48.8 tok/s | 50.9 tok/s | 10.3 GB | 32 VRAM + 0 RAM |
-| Streaming (mmap pinned) | 0.9 tok/s | 1.8 tok/s | 3.4 GB | Pure streaming |
+- `src/ntrpu/` (`nt::ntrpu`, C++20) is a deterministic, single-threaded functional simulator: sparse memory, tensor directory, DMA queues, distributed GEMV/FFN.
+- The HLS kernels in `fpga/hls/*/` are C++14 and are compiled into the simulator as `ntrpu_hls_host`, so the same source is CPU-tested and Vitis-synthesized.
+- SystemVerilog lives in `fpga/rtl/` and `fpga/experimental/`, testbenches in `fpga/tb/`. The current hardware target is Llama 3.2 1B (`fpga/profiles/`).
+- Revisions are append-only: a changed block becomes a new `_r<N+1>` file (RTL, HLS, tools, and tests together). Previously qualified revisions are not edited in place because validation records reference them.
 
-### 70B Q6_K (Llama 3.1 70B Instruct)
-| Mode | Decode | VRAM | Tier Split | Speedup |
-|------|--------|------|------------|---------|
-| Streaming (mmap staging) | 0.006 tok/s | 7.3 GB | Pure streaming | 1x |
-| Streaming (NVMe direct) | 0.03 tok/s | 7.3 GB | Pure streaming | 5x |
-| **Tiered (ctx=4096)** | **0.2 tok/s** | **23.0 GB** | **24 VRAM + 54 RAM + 2 NVMe** | **33x** |
-| **Tiered (ctx=512)** | **0.2 tok/s** | **23.1 GB** | **29 VRAM + 51 RAM + 0 NVMe** | **33x** |
+### Training
+`src/training/*.cu` exposes a C ABI (`nt_train_*`) for RMSNorm/SwiGLU/rotary/cross-entropy kernels. `python/ntransformer_training/` wraps it for PyTorch, which handles GEMM, attention, AdamW, and DDP. Experiments target the "Brandon" model on H100 (`scripts/train_*.py`, `scripts/queue_brandon_training.py`).
 
-### Tiered Caching Performance
-- **Bottleneck**: PCIe H2D at Gen3 x8 (~6.5 GB/s) — B450 runs GPU at x8 due to M.2 lane sharing
-- **Per tier B layer**: 669 MB / 6.5 GB/s ≈ 103 ms H2D (compute is only ~0.7 ms)
-- **Auto-sizing**: VRAM reserve computed from KV cache + workspace + buffers. RAM from `/proc/meminfo` MemAvailable
-- **With B550/X570 (Gen4 x16)**: expected ~0.5-0.7 tok/s (H2D at 25 GB/s, compute-bound)
+## Conventions
 
-### NVMe Direct Performance
-- **Sustained throughput**: 3,300–3,330 MB/s (95% of PCIe 4.0 x4 theoretical max)
-- **Per-layer read**: ~202 ms for 670 MB (80 layers, 670 NVMe commands each)
-- **Hardware**: WD SN740 512GB (DRAM-less), MDTS=1024K, pipeline depth=32
-- **Speedup vs mmap staging**: 4.7–5x (126s vs 633s total for 5 tokens)
+- Namespaces: `nt`, `nt::cuda` (kernels), `nt::ds41`, `nt::glm5`, `nt::ntrpu`. Kernel launchers are named `launch_*()`. C-linkage device helpers for non-nvcc `.cpp` files are named `nt_cuda_*()`.
+- Style: PascalCase types, snake_case functions and files, trailing `_` on private members, four-space indent, same-line braces. No formatter is configured; match surrounding code.
+- `NT_CHECK(cond, msg)` / `NT_CUDA_CHECK(err)` call `abort()`. There is no error recovery.
+- `DType` (internal, `src/core/types.h`) is **not** numbered like ggml types. `GGMLType` holds the on-disk ids, and `types.h` maps between them. Supported formats are F32, F16, BF16, Q8_0, Q4_0, Q4_K_M, Q5_K, Q6_K, and MXFP4.
+- Any compile definition that changes a struct layout (e.g. `USE_GPUNVME` inside `LayerStreamer`) must be `PUBLIC` on `ntransformer_lib`. A mismatch between translation units silently corrupts adjacent objects.
+- `include/ntransformer.h` declares a C API that is not implemented yet.
+- Commits use descriptive subjects prefixed by subsystem (e.g. `Async NVMe prefetch: ...`). Performance changes should report before/after tok/s and VRAM, plus the hardware used.
+- Docs language varies: `docs/fpga/`, `docs/GLM5_*`, and `linux_port/` are in Spanish, the rest in English. Match the file you are editing.
 
-### Performance Targets
-| Metric | Ph1 (7B) | Ph2 (70B) | Ph3 (+Quant) | Ph4 (Full) |
-|--------|---------|----------|-------------|------------|
-| VRAM | 4 GB | 6 GB | 5 GB | 8 GB |
-| Decode | 30-50 t/s | 0.7-1 t/s | 0.8-1.2 t/s | 1.5-3 t/s |
-| Prefill | 500+ t/s | 20-40 t/s | 25-50 t/s | 40-80 t/s |
+## Hardware Safety
 
-## Key Technical Constants
-```
-GGUF_MAGIC       = 0x46554747  (little-endian "GGUF")
-GGUF alignment   = 32 bytes (or metadata-specified)
-RoPE theta       = 10000.0 (default Llama), 500000.0 (Llama 3.1)
-RMSNorm eps      = 1e-5
-CUDA target SMs  = 80, 86, 89, 90
-```
+`scripts/setup_system.sh`, `setup_nvme.sh`, and `restore_nvme.sh`, raw `dd` to `/dev/nvme*`, and the `linux_port/tools` disk-fill scripts rebind PCIe devices and overwrite whole drives. A wrong-disk fill has already destroyed data on this project (`docs/GLM5_LINUX_BENCH.md`). Never run these without explicit user confirmation and a verified target (BDF and serial). Never target the boot drive.
 
-## Bugs Fixed During Bringup
-- **GGUF_MAGIC byte order** — was `0x46475547`, correct is `0x46554747` (LE "GGUF")
-- **BlockQ8_0 size** — GGML uses FP16 scale (2 bytes, total 34), not float (4 bytes, total 36)
-- **output_weight_ on CPU** — was passing mmap'd CPU pointer to CUDA kernel; now copied to GPU
-- **Windows mmap** — ported POSIX mmap to `CreateFileMapping`/`MapViewOfFile`
-- **aligned_alloc** — MSVC uses `_aligned_malloc`/`_aligned_free`
-- **CUDA C++20** — nvcc 12.4 + MSVC 14.42 crashed with C++20; resolved with CUDA 13.1 + gcc-14
-- **Context size OOM** — Llama 3.1 has 131K context; cap with `--ctx-size`
-- **Tokenizer encoding** — Llama 3 uses GPT-2 byte BPE (Ġ), not SentencePiece (▁)
+## Docs Map
 
-## gpu-nvme-direct Integration
-
-**Status**: Fully integrated and verified. 5x speedup on 70B Q6_K.
-
-**Layer Loader API** (`../gpu-nvme-direct/include/gpunvme/layer_loader.h`):
-```c
-gpunvme_layer_loader_init(&loader, "0000:01:00.0", max_layer_bytes, 32);
-gpunvme_load_layer(&loader, start_lba, size_bytes, dest_pinned);  // repeated
-gpunvme_layer_loader_destroy(&loader);
-```
-
-**Integration point**: `LayerStreamer::prefetch_staging()` — NVMe reads replace worker thread
-memcpy when available. Falls back to mmap if NVMe init fails or env vars not set.
-
-**Build with NVMe**: `cmake .. -DUSE_GPUNVME=ON` (links against pre-built gpu-nvme-direct libs)
-
-**Environment variables**: `GPUNVME_PCI_BDF=0000:01:00.0 GPUNVME_GGUF_LBA=0`
-
-**Setup scripts**:
-- `scripts/setup_nvme.sh` — Loads VFIO, binds device, forces D0, enables BusMaster
-- `scripts/restore_nvme.sh` — Rebinds to kernel nvme driver for dd/mount
-
-**Full guide**: `GPU_NVME_DIRECT_INTEGRATION.md`
-
-## Bugs Fixed During NVMe Integration
-- **Struct layout corruption** — `#ifdef USE_GPUNVME` in `LayerStreamer` caused sizeof mismatch between compilation units, corrupting adjacent `Tokenizer` object. Fixed by ensuring consistent compile definitions across all sources.
-- **NVMe controller fatal state** — After dd + VFIO rebind, controller stuck in D3 power state. Fixed with `setup_nvme.sh` that forces D0 via `setpci` and enables BusMaster.
-- **Pagemap requires root** — `/proc/self/pagemap` physical address translation needs `CAP_SYS_ADMIN`. NVMe backend must run with sudo.
-
-## Documentation
-- `GPU_NVME_DIRECT_INTEGRATION.md` — NVMe integration spec, dev/test guide, troubleshooting
-- `DEVELOPMENT.md` — Detailed progress log, per-file status, design decisions
-- This file (`CLAUDE.md`) — Project context for AI-assisted development
+- Llama engine: `docs/INFERENCE_PIPELINE.md`, `docs/TIERED_CACHING.md`, `docs/OPTIMIZATIONS.md`, `docs/GPU_NVME_DIRECT_INTEGRATION.md`, `docs/DEVELOPMENT.md` (history), `docs/research/`
+- DS41: `docs/DEEPSEEK_INFERENCE_OPTIMIZATION.md`, `docs/DEEPSEEK_PERFORMANCE_GAP.md`, `docs/DEEPSEEK_PRECISION_SELECTION.md`
+- GLM5: `docs/GLM5_PROJECT.md` (master: env flags, findings, Linux setup), `docs/GLM5_LINUX_BENCH.md` (bench, verification, incidents), `docs/GLM5_LINUX_HANDOFF.md`, `docs/GLM5_GPU_UNLOCK.md`, `linux_port/README_LINUX_PORT.md`
+- H100 / peer cache / training: `docs/H100_BENCHMARKS.md`, `docs/H100_TRAINING_EXPERIMENT.md`, `docs/TRAINING_RESEARCH.md`
+- NTRPU: `docs/fpga/README.md` (start here), `docs/fpga/SIMULATOR.md`, `docs/fpga/HLS.md`
+- Benchmark records: `docs/benchmarks/<host>-<date>/`
