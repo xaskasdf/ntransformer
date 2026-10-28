@@ -5,11 +5,6 @@
 #include <cstring>
 #include <cmath>
 #include <algorithm>
-#include <sys/sysinfo.h>
-#include <sys/mman.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <unistd.h>
 
 namespace nt {
 
@@ -156,7 +151,8 @@ size_t LayerStreamer::requantize_q6k_to_q4km(void* data, size_t nbytes_q6k) {
 // TierConfig: auto-compute tier sizes from hardware
 // ============================================================
 TierConfig TierConfig::compute(int n_layers, size_t layer_bytes,
-                               size_t vram_reserve, size_t ram_reserve) {
+                               size_t vram_reserve, size_t ram_reserve,
+                               int max_vram_layers) {
     TierConfig tc;
     tc.layer_bytes = layer_bytes;
 
@@ -179,11 +175,8 @@ TierConfig TierConfig::compute(int n_layers, size_t layer_bytes,
         fclose(f);
     }
     if (ram_free == 0) {
-        // Fallback to sysinfo if /proc/meminfo unavailable
-        struct sysinfo si;
-        sysinfo(&si);
-        ram_free = (size_t)si.freeram * si.mem_unit +
-                   (size_t)si.bufferram * si.mem_unit;
+        // Fallback if /proc/meminfo unavailable
+        ram_free = (size_t)nt::host_avail_ram();
     }
 
     fprintf(stderr, "TierConfig: VRAM free=%.1f GB, RAM available=%.1f GB\n",
@@ -195,8 +188,7 @@ TierConfig TierConfig::compute(int n_layers, size_t layer_bytes,
     size_t ram_avail  = (ram_free > ram_reserve) ? (ram_free - ram_reserve) : 0;
 
     tc.n_vram = std::min(n_layers, (int)(vram_avail / layer_bytes));
-    int remaining = n_layers - tc.n_vram;
-    tc.n_ram  = std::min(remaining, (int)(ram_avail / layer_bytes));
+    if (max_vram_layers >= 0) tc.n_vram = std::min(tc.n_vram, max_vram_layers);
 
     // Allow env var overrides to cap tier A/B (forces layers to tier C for testing)
     const char* max_vram_str = getenv("GPUNVME_MAX_VRAM_LAYERS");
@@ -208,6 +200,8 @@ TierConfig TierConfig::compute(int n_layers, size_t layer_bytes,
             tc.n_vram = cap;
         }
     }
+    int remaining = n_layers - tc.n_vram;
+    tc.n_ram = std::min(remaining, (int)(ram_avail / layer_bytes));
     if (max_ram_str) {
         int cap = atoi(max_ram_str);
         remaining = n_layers - tc.n_vram;
@@ -226,8 +220,9 @@ TierConfig TierConfig::compute(int n_layers, size_t layer_bytes,
 }
 
 void TierConfig::print() const {
-    fprintf(stderr, "TierConfig: %d VRAM (%.1f GB) + %d RAM (%.1f GB) + %d NVMe\n",
+    fprintf(stderr, "TierConfig: %d VRAM (%.1f GB) + %d peer VRAM (%.1f GB) + %d RAM (%.1f GB) + %d NVMe\n",
             n_vram, vram_used / (1024.0 * 1024 * 1024),
+            n_peer, peer_vram_used / (1024.0 * 1024 * 1024),
             n_ram,  ram_used / (1024.0 * 1024 * 1024),
             n_nvme);
     fprintf(stderr, "  Per-layer: %.1f MB\n", layer_bytes / (1024.0 * 1024));
@@ -350,6 +345,7 @@ void LayerStreamer::init(const GGUFLoader& loader, const ModelConfig& config) {
 
     if (pin_err == cudaSuccess) {
         mmap_pinned_ = true;
+        registered_mmap_ = const_cast<void*>(data_ptr);
         fprintf(stderr, "LayerStreamer: mmap region pinned (%.1f GB) — true async DMA enabled\n",
             data_size / (1024.0 * 1024.0 * 1024.0));
     } else {
@@ -559,7 +555,19 @@ void LayerStreamer::init_tiered(const GGUFLoader& loader, const ModelConfig& con
             misc_bytes / (1024.0 * 1024 * 1024));
 
     // Step 3: compute tier sizes
-    tier_config_ = TierConfig::compute(n_layers, buf_size_, vram_reserve);
+    tier_config_ = TierConfig::compute(n_layers, buf_size_, vram_reserve, 6ULL << 30, max_local_layers_);
+    if (peer_device_ >= 0) {
+        NT_CHECK(peer_cache_.init(CUDADevice::instance().info().device_id, peer_device_, buf_size_),
+                 "Failed to initialize native CUDA peer cache");
+        int requested = n_layers - tier_config_.n_vram;
+        if (max_peer_layers_ >= 0) requested = std::min(requested, max_peer_layers_);
+        tier_config_.n_peer = peer_cache_.allocate(requested);
+        tier_config_.peer_vram_used = peer_cache_.allocated_bytes();
+        int remaining = n_layers - tier_config_.n_vram - tier_config_.n_peer;
+        tier_config_.n_ram = std::min(tier_config_.n_ram, remaining);
+        tier_config_.n_nvme = remaining - tier_config_.n_ram;
+        tier_config_.ram_used = (size_t)tier_config_.n_ram * buf_size_;
+    }
     tier_config_.print();
 
     // Step 3: assign per-layer tiers
@@ -567,7 +575,9 @@ void LayerStreamer::init_tiered(const GGUFLoader& loader, const ModelConfig& con
     for (int i = 0; i < n_layers; i++) {
         if (i < tier_config_.n_vram)
             layer_tier_[i] = LayerTier::VRAM;
-        else if (i < tier_config_.n_vram + tier_config_.n_ram)
+        else if (i < tier_config_.n_vram + tier_config_.n_peer)
+            layer_tier_[i] = LayerTier::PEER;
+        else if (i < tier_config_.n_vram + tier_config_.n_peer + tier_config_.n_ram)
             layer_tier_[i] = LayerTier::RAM;
         else
             layer_tier_[i] = LayerTier::NVME;
@@ -596,11 +606,28 @@ void LayerStreamer::init_tiered(const GGUFLoader& loader, const ModelConfig& con
         }
     }
 
+    // Peer VRAM: load each block once, then stage it through native P2P DMA.
+    for (int i = 0; i < tier_config_.n_peer; i++) {
+        const LayerLayout& lay = layers_[tier_config_.n_vram + i];
+        const TensorSlot* slots[] = {
+            &lay.attn_q, &lay.attn_k, &lay.attn_v, &lay.attn_output,
+            &lay.ffn_gate, &lay.ffn_up, &lay.ffn_down
+        };
+        for (int t = 0; t < 7; t++) {
+            NT_CHECK(peer_cache_.upload(i, slots[t]->gpu_offset, slots[t]->cpu_ptr, slots[t]->nbytes),
+                     "Failed to upload peer layer weights");
+        }
+        if ((i + 1) % 10 == 0 || i + 1 == tier_config_.n_peer) {
+            fprintf(stderr, "  Loaded peer layer %d/%d to GPU %d\n", i + 1,
+                    tier_config_.n_peer, peer_device_);
+        }
+    }
+
     // Step 5: Tier B — allocate pinned RAM buffers and copy from mmap
     ram_cache_.resize(tier_config_.n_ram);
     size_t requant_saved = 0;
     for (int i = 0; i < tier_config_.n_ram; i++) {
-        int layer_idx = tier_config_.n_vram + i;
+        int layer_idx = tier_config_.n_vram + tier_config_.n_peer + i;
         cudaError_t err = cudaMallocHost(&ram_cache_[i], buf_size_);
         NT_CHECK(err == cudaSuccess, "Failed to allocate pinned RAM cache buffer");
 
@@ -649,30 +676,20 @@ void LayerStreamer::init_tiered(const GGUFLoader& loader, const ModelConfig& con
 // ============================================================
 bool LayerStreamer::init_delta(const std::string& ntd_path, const ModelConfig& config) {
     // Open and mmap the .ntd file
-    delta_mmap_fd_ = open(ntd_path.c_str(), O_RDONLY);
-    if (delta_mmap_fd_ < 0) {
-        fprintf(stderr, "init_delta: cannot open %s\n", ntd_path.c_str());
+    if (!map_file_read(ntd_path, delta_map_)) {
+        fprintf(stderr, "init_delta: cannot map %s\n", ntd_path.c_str());
         return false;
     }
-
-    struct stat st;
-    fstat(delta_mmap_fd_, &st);
-    delta_mmap_size_ = st.st_size;
-
-    delta_mmap_ = mmap(nullptr, delta_mmap_size_, PROT_READ, MAP_PRIVATE, delta_mmap_fd_, 0);
-    if (delta_mmap_ == MAP_FAILED) {
-        fprintf(stderr, "init_delta: mmap failed\n");
-        close(delta_mmap_fd_);
-        delta_mmap_fd_ = -1;
-        return false;
-    }
+    delta_mmap_ = delta_map_.ptr;
+    delta_mmap_size_ = (size_t)delta_map_.size;
 
     // Parse header (64 bytes)
     const uint8_t* hdr = static_cast<const uint8_t*>(delta_mmap_);
     if (memcmp(hdr, "NTD1", 4) != 0) {
         fprintf(stderr, "init_delta: bad magic\n");
-        munmap(delta_mmap_, delta_mmap_size_);
-        close(delta_mmap_fd_);
+        unmap_file(delta_map_);
+        delta_mmap_ = nullptr;
+        delta_mmap_size_ = 0;
         return false;
     }
 
@@ -698,8 +715,9 @@ bool LayerStreamer::init_delta(const std::string& ntd_path, const ModelConfig& c
     if ((int)n_layers != config.n_layers || (int)hidden_size != config.hidden_size) {
         fprintf(stderr, "init_delta: config mismatch (layers %u vs %d, hidden %u vs %d)\n",
                 n_layers, config.n_layers, hidden_size, config.hidden_size);
-        munmap(delta_mmap_, delta_mmap_size_);
-        close(delta_mmap_fd_);
+        unmap_file(delta_map_);
+        delta_mmap_ = nullptr;
+        delta_mmap_size_ = 0;
         return false;
     }
 
@@ -745,8 +763,9 @@ bool LayerStreamer::init_delta(const std::string& ntd_path, const ModelConfig& c
     if (err != cudaSuccess) {
         fprintf(stderr, "init_delta: failed to allocate base VRAM (%.1f MB)\n",
                 delta_base_size_ / (1024.0 * 1024.0));
-        munmap(delta_mmap_, delta_mmap_size_);
-        close(delta_mmap_fd_);
+        unmap_file(delta_map_);
+        delta_mmap_ = nullptr;
+        delta_mmap_size_ = 0;
         return false;
     }
 
@@ -876,14 +895,15 @@ DeltaWeightPtrs LayerStreamer::get_delta_weights(int slot) const {
 // Shutdown: free everything
 // ============================================================
 void LayerStreamer::shutdown() {
+    peer_cache_.shutdown();
     // Free delta resources
     if (delta_base_buf_) { cudaFree(delta_base_buf_); delta_base_buf_ = nullptr; }
     if (delta_temp_) { cudaFree(delta_temp_); delta_temp_ = nullptr; }
     if (delta_mmap_) {
-        munmap(delta_mmap_, delta_mmap_size_);
+        unmap_file(delta_map_);
         delta_mmap_ = nullptr;
+        delta_mmap_size_ = 0;
     }
-    if (delta_mmap_fd_ >= 0) { close(delta_mmap_fd_); delta_mmap_fd_ = -1; }
     delta_layers_.clear();
     delta_mode_ = false;
 
@@ -939,6 +959,10 @@ void LayerStreamer::shutdown() {
         }
     }
 
+    if (registered_mmap_) {
+        cudaHostUnregister(registered_mmap_);
+        registered_mmap_ = nullptr;
+    }
     mmap_pinned_ = false;
 
     for (int s = 0; s < 2; s++) {
@@ -1042,7 +1066,7 @@ LayerWeightPtrs LayerStreamer::get_resident_weights(int layer_idx) const {
 // Get weight pointers for a RAM-cached layer (tier B) — zero-copy
 // ============================================================
 LayerWeightPtrs LayerStreamer::get_ram_weights(int layer_idx) const {
-    int ram_idx = layer_idx - tier_config_.n_vram;
+    int ram_idx = layer_idx - tier_config_.n_vram - tier_config_.n_peer;
     NT_CHECK(tiered_mode_ && ram_idx >= 0 && ram_idx < (int)ram_cache_.size(),
              "get_ram_weights: layer not in RAM tier");
 
@@ -1159,6 +1183,7 @@ void LayerStreamer::memcpy_layer_to_staging(int layer_idx, int slot) {
 // Queue background CPU memcpy (non-blocking)
 // ============================================================
 void LayerStreamer::prefetch_staging(int layer_idx, int slot) {
+    if (tiered_mode_ && layer_tier_[layer_idx] == LayerTier::PEER) return;
     if (tiered_mode_ && layer_tier_[layer_idx] == LayerTier::VRAM) {
         // VRAM layers don't need staging
         return;
@@ -1306,10 +1331,18 @@ bar1_fallthrough:
 
     uint8_t* gpu_base = static_cast<uint8_t*>(gpu_buf_[slot]);
 
+    if (tiered_mode_ && layer_tier_[layer_idx] == LayerTier::PEER) {
+        const int peer_index = layer_idx - tier_config_.n_vram;
+        NT_CHECK(peer_cache_.copy_to_compute(peer_index, gpu_base, layer_transfer_size(layer_idx),
+                 dev.stream(xfer)), "Native CUDA P2P layer transfer failed");
+        dev.record_event(transfer_done_[slot], xfer);
+        return;
+    }
+
     // Tier B: async H2D from pinned RAM cache (per-tensor to handle requant)
     // In delta mode, tier B also uses the delta path (gpu_buf_ was resized to delta_buf_size_)
     if (tiered_mode_ && layer_tier_[layer_idx] == LayerTier::RAM && !delta_mode_) {
-        int ram_idx = layer_idx - tier_config_.n_vram;
+        int ram_idx = layer_idx - tier_config_.n_vram - tier_config_.n_peer;
         uint8_t* ram_base = static_cast<uint8_t*>(ram_cache_[ram_idx]);
         const LayerLayout& lay = layers_[layer_idx];
         const TensorSlot* slots[] = {

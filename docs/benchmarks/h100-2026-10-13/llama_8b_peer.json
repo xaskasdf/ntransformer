@@ -1,0 +1,514 @@
+{
+  "shared_training_load": true,
+  "model": "/home/ubuntu/ntransformer-h100/models/llama-8b/Meta-Llama-3.1-8B-Instruct.Q8_0.gguf",
+  "prompt": "The capital of France is",
+  "max_tokens": 128,
+  "repeats": 2,
+  "groups": [
+    {
+      "label": "resident-r0",
+      "wall_seconds_including_load": 5.774622562999866,
+      "generated_tokens_per_wall_second_including_load": 22.16595086580085,
+      "gpu_before": [
+        "0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 99, 21321, 553.15",
+        "1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 98, 21321, 566.38"
+      ],
+      "gpu_after": [
+        "0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 97, 21321, 464.53",
+        "1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 97, 21321, 386.87"
+      ],
+      "processes": [
+        {
+          "gpu": 0,
+          "model": "/home/ubuntu/ntransformer-h100/models/llama-8b/Meta-Llama-3.1-8B-Instruct.Q8_0.gguf",
+          "streaming": false,
+          "command": [
+            "/home/ubuntu/ntransformer-h100/build-release/ntransformer",
+            "-m",
+            "/home/ubuntu/ntransformer-h100/models/llama-8b/Meta-Llama-3.1-8B-Instruct.Q8_0.gguf",
+            "-p",
+            "The capital of France is",
+            "-n",
+            "128",
+            "-c",
+            "256",
+            "-t",
+            "0",
+            "--repeat-penalty",
+            "1.0",
+            "--seed",
+            "42"
+          ],
+          "pid": 33551,
+          "prompt_tokens": 6,
+          "prefill_ms": 149.4,
+          "decode_steps": 127,
+          "decode_ms": 3936.8,
+          "decode_tokens_per_second": 32.3,
+          "generated_tokens": 128,
+          "sampled_peak_process_memory_mib": 8420,
+          "sampled_peak_process_memory_by_gpu_uuid_mib": {
+            "GPU-6a34fe2e-f584-4389-b055-e5251ac91454": 8420
+          },
+          "log": "/home/ubuntu/ntransformer-h100/logs/peer-8b/resident-r0-gpu0.log",
+          "generation_sha256": "49813026a82527c3ff938c8212caf333887db246e117c6ed9c2d192f169de4b8"
+        }
+      ],
+      "mode": "resident"
+    },
+    {
+      "label": "resident-r1",
+      "wall_seconds_including_load": 5.790900826999859,
+      "generated_tokens_per_wall_second_including_load": 22.103642218012915,
+      "gpu_before": [
+        "0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 99, 21321, 469.72",
+        "1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 96, 21321, 387.12"
+      ],
+      "gpu_after": [
+        "0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 99, 21321, 458.37",
+        "1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 98, 21321, 398.99"
+      ],
+      "processes": [
+        {
+          "gpu": 0,
+          "model": "/home/ubuntu/ntransformer-h100/models/llama-8b/Meta-Llama-3.1-8B-Instruct.Q8_0.gguf",
+          "streaming": false,
+          "command": [
+            "/home/ubuntu/ntransformer-h100/build-release/ntransformer",
+            "-m",
+            "/home/ubuntu/ntransformer-h100/models/llama-8b/Meta-Llama-3.1-8B-Instruct.Q8_0.gguf",
+            "-p",
+            "The capital of France is",
+            "-n",
+            "128",
+            "-c",
+            "256",
+            "-t",
+            "0",
+            "--repeat-penalty",
+            "1.0",
+            "--seed",
+            "42"
+          ],
+          "pid": 33611,
+          "prompt_tokens": 6,
+          "prefill_ms": 158.0,
+          "decode_steps": 127,
+          "decode_ms": 3938.4,
+          "decode_tokens_per_second": 32.2,
+          "generated_tokens": 128,
+          "sampled_peak_process_memory_mib": 8420,
+          "sampled_peak_process_memory_by_gpu_uuid_mib": {
+            "GPU-6a34fe2e-f584-4389-b055-e5251ac91454": 8420
+          },
+          "log": "/home/ubuntu/ntransformer-h100/logs/peer-8b/resident-r1-gpu0.log",
+          "generation_sha256": "49813026a82527c3ff938c8212caf333887db246e117c6ed9c2d192f169de4b8"
+        }
+      ],
+      "mode": "resident"
+    },
+    {
+      "label": "host-r0",
+      "wall_seconds_including_load": 13.866517237000153,
+      "generated_tokens_per_wall_second_including_load": 9.230868704252316,
+      "gpu_before": [
+        "0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 95, 21321, 462.50",
+        "1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 95, 21321, 398.66"
+      ],
+      "gpu_after": [
+        "0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 97, 21321, 531.44",
+        "1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 97, 21321, 535.65"
+      ],
+      "processes": [
+        {
+          "gpu": 0,
+          "model": "/home/ubuntu/ntransformer-h100/models/llama-8b/Meta-Llama-3.1-8B-Instruct.Q8_0.gguf",
+          "streaming": true,
+          "command": [
+            "/home/ubuntu/ntransformer-h100/build-release/ntransformer",
+            "-m",
+            "/home/ubuntu/ntransformer-h100/models/llama-8b/Meta-Llama-3.1-8B-Instruct.Q8_0.gguf",
+            "-p",
+            "The capital of France is",
+            "-n",
+            "128",
+            "-c",
+            "256",
+            "-t",
+            "0",
+            "--repeat-penalty",
+            "1.0",
+            "--seed",
+            "42",
+            "--peer-gpu",
+            "1",
+            "--local-layers",
+            "16",
+            "--peer-layers",
+            "0"
+          ],
+          "pid": 33670,
+          "prompt_tokens": 6,
+          "prefill_ms": 165.0,
+          "decode_steps": 127,
+          "decode_ms": 10150.5,
+          "decode_tokens_per_second": 12.5,
+          "generated_tokens": 128,
+          "sampled_peak_process_memory_mib": 5638,
+          "sampled_peak_process_memory_by_gpu_uuid_mib": {
+            "GPU-6a34fe2e-f584-4389-b055-e5251ac91454": 5120,
+            "GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c": 518
+          },
+          "log": "/home/ubuntu/ntransformer-h100/logs/peer-8b/host-r0-gpu0.log",
+          "generation_sha256": "49813026a82527c3ff938c8212caf333887db246e117c6ed9c2d192f169de4b8"
+        }
+      ],
+      "mode": "host"
+    },
+    {
+      "label": "host-r1",
+      "wall_seconds_including_load": 13.813129427000604,
+      "generated_tokens_per_wall_second_including_load": 9.26654605507407,
+      "gpu_before": [
+        "0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 95, 21321, 534.14",
+        "1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 95, 21321, 543.57"
+      ],
+      "gpu_after": [
+        "0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 97, 21321, 529.57",
+        "1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 97, 21321, 526.86"
+      ],
+      "processes": [
+        {
+          "gpu": 0,
+          "model": "/home/ubuntu/ntransformer-h100/models/llama-8b/Meta-Llama-3.1-8B-Instruct.Q8_0.gguf",
+          "streaming": true,
+          "command": [
+            "/home/ubuntu/ntransformer-h100/build-release/ntransformer",
+            "-m",
+            "/home/ubuntu/ntransformer-h100/models/llama-8b/Meta-Llama-3.1-8B-Instruct.Q8_0.gguf",
+            "-p",
+            "The capital of France is",
+            "-n",
+            "128",
+            "-c",
+            "256",
+            "-t",
+            "0",
+            "--repeat-penalty",
+            "1.0",
+            "--seed",
+            "42",
+            "--peer-gpu",
+            "1",
+            "--local-layers",
+            "16",
+            "--peer-layers",
+            "0"
+          ],
+          "pid": 33863,
+          "prompt_tokens": 6,
+          "prefill_ms": 157.5,
+          "decode_steps": 127,
+          "decode_ms": 10161.8,
+          "decode_tokens_per_second": 12.5,
+          "generated_tokens": 128,
+          "sampled_peak_process_memory_mib": 5638,
+          "sampled_peak_process_memory_by_gpu_uuid_mib": {
+            "GPU-6a34fe2e-f584-4389-b055-e5251ac91454": 5120,
+            "GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c": 518
+          },
+          "log": "/home/ubuntu/ntransformer-h100/logs/peer-8b/host-r1-gpu0.log",
+          "generation_sha256": "49813026a82527c3ff938c8212caf333887db246e117c6ed9c2d192f169de4b8"
+        }
+      ],
+      "mode": "host"
+    },
+    {
+      "label": "peer_half-r0",
+      "wall_seconds_including_load": 7.18551834200025,
+      "generated_tokens_per_wall_second_including_load": 17.813607022867654,
+      "gpu_before": [
+        "0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 95, 21321, 532.26",
+        "1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 97, 21321, 534.11"
+      ],
+      "gpu_after": [
+        "0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 96, 21321, 506.56",
+        "1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 97, 21321, 493.43"
+      ],
+      "processes": [
+        {
+          "gpu": 0,
+          "model": "/home/ubuntu/ntransformer-h100/models/llama-8b/Meta-Llama-3.1-8B-Instruct.Q8_0.gguf",
+          "streaming": true,
+          "command": [
+            "/home/ubuntu/ntransformer-h100/build-release/ntransformer",
+            "-m",
+            "/home/ubuntu/ntransformer-h100/models/llama-8b/Meta-Llama-3.1-8B-Instruct.Q8_0.gguf",
+            "-p",
+            "The capital of France is",
+            "-n",
+            "128",
+            "-c",
+            "256",
+            "-t",
+            "0",
+            "--repeat-penalty",
+            "1.0",
+            "--seed",
+            "42",
+            "--peer-gpu",
+            "1",
+            "--local-layers",
+            "16"
+          ],
+          "pid": 33991,
+          "prompt_tokens": 6,
+          "prefill_ms": 139.7,
+          "decode_steps": 127,
+          "decode_ms": 5145.8,
+          "decode_tokens_per_second": 24.7,
+          "generated_tokens": 128,
+          "sampled_peak_process_memory_mib": 9190,
+          "sampled_peak_process_memory_by_gpu_uuid_mib": {
+            "GPU-6a34fe2e-f584-4389-b055-e5251ac91454": 5120,
+            "GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c": 4070
+          },
+          "log": "/home/ubuntu/ntransformer-h100/logs/peer-8b/peer_half-r0-gpu0.log",
+          "generation_sha256": "49813026a82527c3ff938c8212caf333887db246e117c6ed9c2d192f169de4b8",
+          "peer_cache": {
+            "visible_device": 1,
+            "blocks": 16,
+            "allocated_gib": 3.453,
+            "copies": 2048,
+            "transferred_gib": 442.0
+          }
+        }
+      ],
+      "mode": "peer_half"
+    },
+    {
+      "label": "peer_half-r1",
+      "wall_seconds_including_load": 7.135394777999863,
+      "generated_tokens_per_wall_second_including_load": 17.938741160426716,
+      "gpu_before": [
+        "0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 99, 21321, 511.48",
+        "1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 99, 21321, 493.13"
+      ],
+      "gpu_after": [
+        "0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 97, 21321, 503.62",
+        "1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 97, 21321, 471.77"
+      ],
+      "processes": [
+        {
+          "gpu": 0,
+          "model": "/home/ubuntu/ntransformer-h100/models/llama-8b/Meta-Llama-3.1-8B-Instruct.Q8_0.gguf",
+          "streaming": true,
+          "command": [
+            "/home/ubuntu/ntransformer-h100/build-release/ntransformer",
+            "-m",
+            "/home/ubuntu/ntransformer-h100/models/llama-8b/Meta-Llama-3.1-8B-Instruct.Q8_0.gguf",
+            "-p",
+            "The capital of France is",
+            "-n",
+            "128",
+            "-c",
+            "256",
+            "-t",
+            "0",
+            "--repeat-penalty",
+            "1.0",
+            "--seed",
+            "42",
+            "--peer-gpu",
+            "1",
+            "--local-layers",
+            "16"
+          ],
+          "pid": 34061,
+          "prompt_tokens": 6,
+          "prefill_ms": 154.0,
+          "decode_steps": 127,
+          "decode_ms": 5128.1,
+          "decode_tokens_per_second": 24.8,
+          "generated_tokens": 128,
+          "sampled_peak_process_memory_mib": 9190,
+          "sampled_peak_process_memory_by_gpu_uuid_mib": {
+            "GPU-6a34fe2e-f584-4389-b055-e5251ac91454": 5120,
+            "GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c": 4070
+          },
+          "log": "/home/ubuntu/ntransformer-h100/logs/peer-8b/peer_half-r1-gpu0.log",
+          "generation_sha256": "49813026a82527c3ff938c8212caf333887db246e117c6ed9c2d192f169de4b8",
+          "peer_cache": {
+            "visible_device": 1,
+            "blocks": 16,
+            "allocated_gib": 3.453,
+            "copies": 2048,
+            "transferred_gib": 442.0
+          }
+        }
+      ],
+      "mode": "peer_half"
+    },
+    {
+      "label": "peer_all-r0",
+      "wall_seconds_including_load": 8.572488155999963,
+      "generated_tokens_per_wall_second_including_load": 14.93148752972165,
+      "gpu_before": [
+        "0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 96, 21321, 508.47",
+        "1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 95, 21321, 472.36"
+      ],
+      "gpu_after": [
+        "0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 98, 21321, 514.30",
+        "1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 97, 21321, 492.81"
+      ],
+      "processes": [
+        {
+          "gpu": 0,
+          "model": "/home/ubuntu/ntransformer-h100/models/llama-8b/Meta-Llama-3.1-8B-Instruct.Q8_0.gguf",
+          "streaming": true,
+          "command": [
+            "/home/ubuntu/ntransformer-h100/build-release/ntransformer",
+            "-m",
+            "/home/ubuntu/ntransformer-h100/models/llama-8b/Meta-Llama-3.1-8B-Instruct.Q8_0.gguf",
+            "-p",
+            "The capital of France is",
+            "-n",
+            "128",
+            "-c",
+            "256",
+            "-t",
+            "0",
+            "--repeat-penalty",
+            "1.0",
+            "--seed",
+            "42",
+            "--peer-gpu",
+            "1",
+            "--local-layers",
+            "0"
+          ],
+          "pid": 34131,
+          "prompt_tokens": 6,
+          "prefill_ms": 157.6,
+          "decode_steps": 127,
+          "decode_ms": 6602.0,
+          "decode_tokens_per_second": 19.2,
+          "generated_tokens": 128,
+          "sampled_peak_process_memory_mib": 9190,
+          "sampled_peak_process_memory_by_gpu_uuid_mib": {
+            "GPU-6a34fe2e-f584-4389-b055-e5251ac91454": 1568,
+            "GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c": 7622
+          },
+          "log": "/home/ubuntu/ntransformer-h100/logs/peer-8b/peer_all-r0-gpu0.log",
+          "generation_sha256": "49813026a82527c3ff938c8212caf333887db246e117c6ed9c2d192f169de4b8",
+          "peer_cache": {
+            "visible_device": 1,
+            "blocks": 32,
+            "allocated_gib": 6.906,
+            "copies": 4096,
+            "transferred_gib": 884.0
+          }
+        }
+      ],
+      "mode": "peer_all"
+    },
+    {
+      "label": "peer_all-r1",
+      "wall_seconds_including_load": 8.588325639000686,
+      "generated_tokens_per_wall_second_including_load": 14.90395280527506,
+      "gpu_before": [
+        "0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 99, 21321, 517.15",
+        "1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 95, 21321, 493.18"
+      ],
+      "gpu_after": [
+        "0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 97, 21321, 511.06",
+        "1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 97, 21321, 490.96"
+      ],
+      "processes": [
+        {
+          "gpu": 0,
+          "model": "/home/ubuntu/ntransformer-h100/models/llama-8b/Meta-Llama-3.1-8B-Instruct.Q8_0.gguf",
+          "streaming": true,
+          "command": [
+            "/home/ubuntu/ntransformer-h100/build-release/ntransformer",
+            "-m",
+            "/home/ubuntu/ntransformer-h100/models/llama-8b/Meta-Llama-3.1-8B-Instruct.Q8_0.gguf",
+            "-p",
+            "The capital of France is",
+            "-n",
+            "128",
+            "-c",
+            "256",
+            "-t",
+            "0",
+            "--repeat-penalty",
+            "1.0",
+            "--seed",
+            "42",
+            "--peer-gpu",
+            "1",
+            "--local-layers",
+            "0"
+          ],
+          "pid": 34336,
+          "prompt_tokens": 6,
+          "prefill_ms": 153.7,
+          "decode_steps": 127,
+          "decode_ms": 6606.0,
+          "decode_tokens_per_second": 19.2,
+          "generated_tokens": 128,
+          "sampled_peak_process_memory_mib": 9190,
+          "sampled_peak_process_memory_by_gpu_uuid_mib": {
+            "GPU-6a34fe2e-f584-4389-b055-e5251ac91454": 1568,
+            "GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c": 7622
+          },
+          "log": "/home/ubuntu/ntransformer-h100/logs/peer-8b/peer_all-r1-gpu0.log",
+          "generation_sha256": "49813026a82527c3ff938c8212caf333887db246e117c6ed9c2d192f169de4b8",
+          "peer_cache": {
+            "visible_device": 1,
+            "blocks": 32,
+            "allocated_gib": 6.906,
+            "copies": 4096,
+            "transferred_gib": 884.0
+          }
+        }
+      ],
+      "mode": "peer_all"
+    }
+  ],
+  "summary": {
+    "resident": {
+      "median_decode_tokens_per_second": 32.25,
+      "median_prefill_ms": 153.7,
+      "generated_tokens": [
+        128,
+        128
+      ]
+    },
+    "host": {
+      "median_decode_tokens_per_second": 12.5,
+      "median_prefill_ms": 161.25,
+      "generated_tokens": [
+        128,
+        128
+      ]
+    },
+    "peer_half": {
+      "median_decode_tokens_per_second": 24.75,
+      "median_prefill_ms": 146.85,
+      "generated_tokens": [
+        128,
+        128
+      ]
+    },
+    "peer_all": {
+      "median_decode_tokens_per_second": 19.2,
+      "median_prefill_ms": 155.64999999999998,
+      "generated_tokens": [
+        128,
+        128
+      ]
+    }
+  },
+  "identical_generated_text": true
+}

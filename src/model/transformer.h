@@ -70,6 +70,10 @@ public:
     // Compressed transfer: requantize Q6_K → Q4_K_M for tier B (call before load)
     void set_requant_q4k(bool enable) { streamer_.set_requant_q4k(enable); }
 
+    // Configure before load(); automatically enables the tiered P2P path.
+    bool set_peer_cache(int device, int max_local_layers = -1, int max_peer_layers = -1);
+    const PeerCache& peer_cache() const { return streamer_.peer_cache(); }
+
     // Delta encoding: set .ntd file path (call before load)
     void set_delta_model(const std::string& path) { delta_model_path_ = path; }
 

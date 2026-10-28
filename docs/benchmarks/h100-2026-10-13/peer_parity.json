@@ -1,0 +1,44 @@
+{
+  "f16-local0": {
+    "logits_checked": 180224,
+    "all_finite": true,
+    "max_abs_error_vs_resident": 0.0,
+    "prefill_max_abs_error_vs_resident": 0.0,
+    "top1_matches": 22
+  },
+  "f16-local15": {
+    "logits_checked": 180224,
+    "all_finite": true,
+    "max_abs_error_vs_resident": 0.0,
+    "prefill_max_abs_error_vs_resident": 0.0,
+    "top1_matches": 22
+  },
+  "q8_0-local0": {
+    "logits_checked": 180224,
+    "all_finite": true,
+    "max_abs_error_vs_resident": 0.0,
+    "prefill_max_abs_error_vs_resident": 0.0,
+    "top1_matches": 22
+  },
+  "q8_0-local15": {
+    "logits_checked": 180224,
+    "all_finite": true,
+    "max_abs_error_vs_resident": 0.0,
+    "prefill_max_abs_error_vs_resident": 0.0,
+    "top1_matches": 22
+  },
+  "f16-mixed": {
+    "logits_checked": 180224,
+    "all_finite": true,
+    "max_abs_error_vs_resident": 0.0,
+    "prefill_max_abs_error_vs_resident": 0.0,
+    "top1_matches": 22
+  },
+  "f16-mmap": {
+    "logits_checked": 180224,
+    "all_finite": true,
+    "max_abs_error_vs_resident": 0.0,
+    "prefill_max_abs_error_vs_resident": 0.0,
+    "top1_matches": 22
+  }
+}

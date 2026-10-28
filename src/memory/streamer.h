@@ -1,15 +1,16 @@
 #pragma once
 
 #include "../core/types.h"
+#include "../core/filemap.h"
 #include "../model/config.h"
 #include "../model/loader.h"
+#include "peer_cache.h"
 #include <vector>
 #include <string>
 #include <thread>
 #include <mutex>
 #include <condition_variable>
 #include <atomic>
-#include <sys/sysinfo.h>
 
 #ifdef USE_GPUNVME
 #include <gpunvme/layer_loader.h>
@@ -33,20 +34,23 @@ struct DeltaWeightPtrs {
 // ============================================================
 // 3-Tier Adaptive Layer Caching
 // ============================================================
-enum class LayerTier { VRAM, RAM, NVME };
+enum class LayerTier { VRAM, PEER, RAM, NVME };
 
 struct TierConfig {
     int n_vram = 0;              // tier A count (GPU resident)
+    int n_peer = 0;              // peer GPU blocks, streamed by native P2P DMA
     int n_ram  = 0;              // tier B count (pinned host RAM)
     int n_nvme = 0;              // tier C count (NVMe cold storage)
     size_t vram_used = 0;        // bytes allocated for tier A
+    size_t peer_vram_used = 0;
     size_t ram_used  = 0;        // bytes allocated for tier B
     size_t layer_bytes = 0;      // per-layer buffer size
 
     // Auto-compute tier sizes from available hardware resources
     static TierConfig compute(int n_layers, size_t layer_bytes,
                               size_t vram_reserve = 512ULL << 20,
-                              size_t ram_reserve = 6ULL << 30);
+                              size_t ram_reserve = 6ULL << 30,
+                              int max_vram_layers = -1);
     void print() const;
 };
 
@@ -124,6 +128,14 @@ public:
     // Enable Q6_K → Q4_K_M requantization for tier B (call before init_tiered)
     void set_requant_q4k(bool enable) { requant_tier_b_ = enable; }
 
+    void set_peer_cache(int device, int max_local_layers = -1, int max_peer_layers = -1) {
+        peer_device_ = device;
+        max_local_layers_ = max_local_layers;
+        max_peer_layers_ = max_peer_layers;
+    }
+    const PeerCache& peer_cache() const { return peer_cache_; }
+    bool peer_cache_requested() const { return peer_device_ >= 0; }
+
     // Total size of one GPU layer buffer
     size_t buffer_size() const { return buf_size_; }
 
@@ -168,6 +180,7 @@ private:
 
     // Pinned memory strategy
     bool mmap_pinned_ = false;       // true if cudaHostRegister succeeded
+    void* registered_mmap_ = nullptr;
 
     // Double staging buffers (used when mmap is NOT pinned)
     void* staging_buf_[2] = {};      // two pinned staging buffers
@@ -195,6 +208,10 @@ private:
     std::vector<void*> ram_cache_;           // pinned RAM buffers [n_ram]
     bool tiered_mode_ = false;
     bool requant_tier_b_ = false;            // Q6_K → Q4_K_M for tier B
+    PeerCache peer_cache_;
+    int peer_device_ = -1;
+    int max_local_layers_ = -1;
+    int max_peer_layers_ = -1;
 
     // Q6_K → Q4_K_M in-place requantization (returns new byte count)
     static size_t requantize_q6k_to_q4km(void* data, size_t nbytes_q6k);
@@ -213,7 +230,7 @@ private:
     float* delta_temp_ = nullptr;           // VRAM: rank floats scratch
     void* delta_mmap_ = nullptr;            // mmap'd .ntd file
     size_t delta_mmap_size_ = 0;
-    int delta_mmap_fd_ = -1;
+    FileMap delta_map_;
 
     // Per-weight-type base offsets within delta_base_buf_ (7 entries)
     size_t delta_base_offsets_[7] = {};

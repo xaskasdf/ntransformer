@@ -1,0 +1,86 @@
+UpdateCTestConfiguration  from :/home/ubuntu/ntransformer-h100/build-debug/DartConfiguration.tcl
+Parse Config file:/home/ubuntu/ntransformer-h100/build-debug/DartConfiguration.tcl
+Test project /home/ubuntu/ntransformer-h100/build-debug
+Constructing a list of tests
+Done constructing a list of tests
+Updating test list for fixtures
+Added 0 tests to meet fixture requirements
+Checking test dependency graph...
+Checking test dependency graph end
+test 1
+    Start 1: test_tensor
+
+1: Test command: /home/ubuntu/ntransformer-h100/build-debug/test_tensor
+1: Working Directory: /home/ubuntu/ntransformer-h100/build-debug
+1: Test timeout computed to be: 1500
+1: === Tensor Tests ===
+1: test_tensor_basic...
+1:   Tensor(shape=[3, 4], dtype=F32, device=CPU)
+1:   PASS
+1: test_tensor_zeros...
+1:   PASS
+1: test_tensor_from_ptr...
+1:   PASS
+1: test_tensor_view...
+1:   PASS
+1: test_tensor_move...
+1:   PASS
+1: test_tensor_dtype_sizes...
+1:   PASS
+1: test_tensor_gpu...
+1:   PASS
+1: 
+1: All tensor tests passed!
+1/3 Test #1: test_tensor ......................   Passed    0.39 sec
+test 2
+    Start 2: test_gemm
+
+2: Test command: /home/ubuntu/ntransformer-h100/build-debug/test_gemm
+2: Working Directory: /home/ubuntu/ntransformer-h100/build-debug
+2: Test timeout computed to be: 1500
+2: === GEMM/Kernel Tests ===
+2: test_gemv_f32...
+2:   PASS
+2: test_gemv_q4_0...
+2:   y[0] = 32.000000 (expected 32.000000)
+2:   y[1] = -16.000000 (expected -16.000000)
+2:   PASS
+2: test_gemv_q6_k...
+2:   y[0] = 256.000000 (expected 256.000000)
+2:   y[1] = -256.000000 (expected -256.000000)
+2:   PASS
+2: test_gemv_q6_k_large (no-smem path)...
+2:   y[0] = 32768.000000 (expected 32768.000000)
+2:   y[1] = -32768.000000 (expected -32768.000000)
+2:   PASS
+2: test_silu_mul...
+2:   silu_mul[0] = 0.000000 (expected ~0.000000)
+2:   silu_mul[1] = 0.731059 (expected ~0.731000)
+2:   silu_mul[2] = -0.268941 (expected ~-0.269000)
+2:   silu_mul[3] = 1.761594 (expected ~1.762000)
+2:   PASS
+2: test_rmsnorm...
+2:   rmsnorm[0] = 0.365148 (expected 0.365148)
+2:   rmsnorm[1] = 0.730296 (expected 0.730297)
+2:   rmsnorm[2] = 1.095444 (expected 1.095445)
+2:   rmsnorm[3] = 1.460593 (expected 1.460593)
+2:   PASS
+2: 
+2: All kernel tests passed!
+2/3 Test #2: test_gemm ........................   Passed    0.42 sec
+test 3
+    Start 3: test_peer_cache
+
+3: Test command: /home/ubuntu/ntransformer-h100/build-debug/test_peer_cache
+3: Working Directory: /home/ubuntu/ntransformer-h100/build-debug
+3: Test timeout computed to be: 1500
+3: PeerCache: requires two distinct visible GPUs and nonempty blocks
+3: PeerCache: requires two distinct visible GPUs and nonempty blocks
+3: PeerCache: GPU 1 cache -> GPU 0 compute, 1.0 MiB/block, 55.8 GiB available after reserve
+3: PeerCache: GPU 1 cache -> GPU 0 compute, 1.0 MiB/block, 55.8 GiB available after reserve
+3: PASS: native P2P allocation, upload, copies, numerical output and teardown
+3/3 Test #3: test_peer_cache ..................   Passed    0.78 sec
+
+100% tests passed out of 3
+
+Total Test time (real) =   1.59 sec

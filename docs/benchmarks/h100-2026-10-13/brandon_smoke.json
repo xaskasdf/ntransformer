@@ -1,0 +1,860 @@
+{
+  "shared_gpu_smoke": true,
+  "prompt": "La inteligencia artificial",
+  "max_tokens": 32,
+  "repeats": 3,
+  "groups": [
+    {
+      "label": "brandon-mini-108m-f16-resident-r0",
+      "wall_seconds_including_load": 0.8601730370000951,
+      "generated_tokens_per_wall_second_including_load": 37.20181710368639,
+      "gpu_before": [
+        "0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 99, 21321, 549.07",
+        "1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 99, 21321, 570.08"
+      ],
+      "gpu_after": [
+        "0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 98, 21321, 502.85",
+        "1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 98, 21321, 523.61"
+      ],
+      "processes": [
+        {
+          "gpu": 0,
+          "model": "/home/ubuntu/ntransformer-h100/models/brandon-mini-108m-f16.gguf",
+          "streaming": false,
+          "command": [
+            "/home/ubuntu/ntransformer-h100/build-release/ntransformer",
+            "-m",
+            "/home/ubuntu/ntransformer-h100/models/brandon-mini-108m-f16.gguf",
+            "-p",
+            "La inteligencia artificial",
+            "-n",
+            "32",
+            "-c",
+            "256",
+            "-t",
+            "0",
+            "--repeat-penalty",
+            "1.0",
+            "--seed",
+            "42"
+          ],
+          "pid": 31503,
+          "prompt_tokens": 9,
+          "prefill_ms": 29.7,
+          "decode_steps": 31,
+          "decode_ms": 201.9,
+          "decode_tokens_per_second": 153.5,
+          "generated_tokens": 32,
+          "sampled_peak_process_memory_mib": 764,
+          "log": "/home/ubuntu/ntransformer-h100/logs/smoke/brandon-mini-108m-f16-resident-r0-gpu0.log"
+        }
+      ]
+    },
+    {
+      "label": "brandon-mini-108m-f16-resident-r1",
+      "wall_seconds_including_load": 0.8359141820001241,
+      "generated_tokens_per_wall_second_including_load": 38.281441670761424,
+      "gpu_before": [
+        "0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 97, 21321, 501.52",
+        "1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 95, 21321, 524.91"
+      ],
+      "gpu_after": [
+        "0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 99, 21321, 508.76",
+        "1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 97, 21321, 521.39"
+      ],
+      "processes": [
+        {
+          "gpu": 0,
+          "model": "/home/ubuntu/ntransformer-h100/models/brandon-mini-108m-f16.gguf",
+          "streaming": false,
+          "command": [
+            "/home/ubuntu/ntransformer-h100/build-release/ntransformer",
+            "-m",
+            "/home/ubuntu/ntransformer-h100/models/brandon-mini-108m-f16.gguf",
+            "-p",
+            "La inteligencia artificial",
+            "-n",
+            "32",
+            "-c",
+            "256",
+            "-t",
+            "0",
+            "--repeat-penalty",
+            "1.0",
+            "--seed",
+            "42"
+          ],
+          "pid": 31518,
+          "prompt_tokens": 9,
+          "prefill_ms": 31.8,
+          "decode_steps": 31,
+          "decode_ms": 187.1,
+          "decode_tokens_per_second": 165.7,
+          "generated_tokens": 32,
+          "sampled_peak_process_memory_mib": 764,
+          "log": "/home/ubuntu/ntransformer-h100/logs/smoke/brandon-mini-108m-f16-resident-r1-gpu0.log"
+        }
+      ]
+    },
+    {
+      "label": "brandon-mini-108m-f16-resident-r2",
+      "wall_seconds_including_load": 0.8433539380002912,
+      "generated_tokens_per_wall_second_including_load": 37.94373697462826,
+      "gpu_before": [
+        "0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 95, 21321, 509.37",
+        "1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 96, 21321, 523.29"
+      ],
+      "gpu_after": [
+        "0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 97, 21321, 501.85",
+        "1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 97, 21321, 507.65"
+      ],
+      "processes": [
+        {
+          "gpu": 0,
+          "model": "/home/ubuntu/ntransformer-h100/models/brandon-mini-108m-f16.gguf",
+          "streaming": false,
+          "command": [
+            "/home/ubuntu/ntransformer-h100/build-release/ntransformer",
+            "-m",
+            "/home/ubuntu/ntransformer-h100/models/brandon-mini-108m-f16.gguf",
+            "-p",
+            "La inteligencia artificial",
+            "-n",
+            "32",
+            "-c",
+            "256",
+            "-t",
+            "0",
+            "--repeat-penalty",
+            "1.0",
+            "--seed",
+            "42"
+          ],
+          "pid": 31533,
+          "prompt_tokens": 9,
+          "prefill_ms": 31.3,
+          "decode_steps": 31,
+          "decode_ms": 195.3,
+          "decode_tokens_per_second": 158.7,
+          "generated_tokens": 32,
+          "sampled_peak_process_memory_mib": 764,
+          "log": "/home/ubuntu/ntransformer-h100/logs/smoke/brandon-mini-108m-f16-resident-r2-gpu0.log"
+        }
+      ]
+    },
+    {
+      "label": "brandon-mini-108m-f16-resident-r0",
+      "wall_seconds_including_load": 0.8365407000001142,
+      "generated_tokens_per_wall_second_including_load": 38.252771204073674,
+      "gpu_before": [
+        "0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 99, 21321, 502.62",
+        "1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 98, 21321, 509.03"
+      ],
+      "gpu_after": [
+        "0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 98, 21321, 508.92",
+        "1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 98, 21321, 518.54"
+      ],
+      "processes": [
+        {
+          "gpu": 1,
+          "model": "/home/ubuntu/ntransformer-h100/models/brandon-mini-108m-f16.gguf",
+          "streaming": false,
+          "command": [
+            "/home/ubuntu/ntransformer-h100/build-release/ntransformer",
+            "-m",
+            "/home/ubuntu/ntransformer-h100/models/brandon-mini-108m-f16.gguf",
+            "-p",
+            "La inteligencia artificial",
+            "-n",
+            "32",
+            "-c",
+            "256",
+            "-t",
+            "0",
+            "--repeat-penalty",
+            "1.0",
+            "--seed",
+            "42"
+          ],
+          "pid": 31548,
+          "prompt_tokens": 9,
+          "prefill_ms": 13.3,
+          "decode_steps": 31,
+          "decode_ms": 197.1,
+          "decode_tokens_per_second": 157.3,
+          "generated_tokens": 32,
+          "sampled_peak_process_memory_mib": 764,
+          "log": "/home/ubuntu/ntransformer-h100/logs/smoke/brandon-mini-108m-f16-resident-r0-gpu1.log"
+        }
+      ]
+    },
+    {
+      "label": "brandon-mini-108m-f16-resident-r1",
+      "wall_seconds_including_load": 0.8345113200002743,
+      "generated_tokens_per_wall_second_including_load": 38.34579499771134,
+      "gpu_before": [
+        "0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 99, 21321, 508.04",
+        "1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 98, 21321, 519.04"
+      ],
+      "gpu_after": [
+        "0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 98, 21321, 486.15",
+        "1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 100, 21321, 522.46"
+      ],
+      "processes": [
+        {
+          "gpu": 1,
+          "model": "/home/ubuntu/ntransformer-h100/models/brandon-mini-108m-f16.gguf",
+          "streaming": false,
+          "command": [
+            "/home/ubuntu/ntransformer-h100/build-release/ntransformer",
+            "-m",
+            "/home/ubuntu/ntransformer-h100/models/brandon-mini-108m-f16.gguf",
+            "-p",
+            "La inteligencia artificial",
+            "-n",
+            "32",
+            "-c",
+            "256",
+            "-t",
+            "0",
+            "--repeat-penalty",
+            "1.0",
+            "--seed",
+            "42"
+          ],
+          "pid": 31563,
+          "prompt_tokens": 9,
+          "prefill_ms": 29.9,
+          "decode_steps": 31,
+          "decode_ms": 189.3,
+          "decode_tokens_per_second": 163.8,
+          "generated_tokens": 32,
+          "sampled_peak_process_memory_mib": 764,
+          "log": "/home/ubuntu/ntransformer-h100/logs/smoke/brandon-mini-108m-f16-resident-r1-gpu1.log"
+        }
+      ]
+    },
+    {
+      "label": "brandon-mini-108m-f16-resident-r2",
+      "wall_seconds_including_load": 0.8574608090002585,
+      "generated_tokens_per_wall_second_including_load": 37.31948989868102,
+      "gpu_before": [
+        "0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 99, 21321, 499.56",
+        "1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 95, 21321, 522.51"
+      ],
+      "gpu_after": [
+        "0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 98, 21321, 487.41",
+        "1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 98, 21321, 525.25"
+      ],
+      "processes": [
+        {
+          "gpu": 1,
+          "model": "/home/ubuntu/ntransformer-h100/models/brandon-mini-108m-f16.gguf",
+          "streaming": false,
+          "command": [
+            "/home/ubuntu/ntransformer-h100/build-release/ntransformer",
+            "-m",
+            "/home/ubuntu/ntransformer-h100/models/brandon-mini-108m-f16.gguf",
+            "-p",
+            "La inteligencia artificial",
+            "-n",
+            "32",
+            "-c",
+            "256",
+            "-t",
+            "0",
+            "--repeat-penalty",
+            "1.0",
+            "--seed",
+            "42"
+          ],
+          "pid": 31578,
+          "prompt_tokens": 9,
+          "prefill_ms": 30.8,
+          "decode_steps": 31,
+          "decode_ms": 201.7,
+          "decode_tokens_per_second": 153.7,
+          "generated_tokens": 32,
+          "sampled_peak_process_memory_mib": 764,
+          "log": "/home/ubuntu/ntransformer-h100/logs/smoke/brandon-mini-108m-f16-resident-r2-gpu1.log"
+        }
+      ]
+    },
+    {
+      "label": "brandon-mini-108m-q8_0-resident-r0",
+      "wall_seconds_including_load": 0.83334737199948,
+      "generated_tokens_per_wall_second_including_load": 38.399353109161744,
+      "gpu_before": [
+        "0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 95, 21321, 489.36",
+        "1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 98, 21321, 524.86"
+      ],
+      "gpu_after": [
+        "0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 99, 21321, 502.44",
+        "1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 97, 21321, 522.90"
+      ],
+      "processes": [
+        {
+          "gpu": 0,
+          "model": "/home/ubuntu/ntransformer-h100/models/brandon-mini-108m-q8_0.gguf",
+          "streaming": false,
+          "command": [
+            "/home/ubuntu/ntransformer-h100/build-release/ntransformer",
+            "-m",
+            "/home/ubuntu/ntransformer-h100/models/brandon-mini-108m-q8_0.gguf",
+            "-p",
+            "La inteligencia artificial",
+            "-n",
+            "32",
+            "-c",
+            "256",
+            "-t",
+            "0",
+            "--repeat-penalty",
+            "1.0",
+            "--seed",
+            "42"
+          ],
+          "pid": 31593,
+          "prompt_tokens": 9,
+          "prefill_ms": 35.6,
+          "decode_steps": 31,
+          "decode_ms": 189.7,
+          "decode_tokens_per_second": 163.5,
+          "generated_tokens": 32,
+          "sampled_peak_process_memory_mib": 650,
+          "log": "/home/ubuntu/ntransformer-h100/logs/smoke/brandon-mini-108m-q8_0-resident-r0-gpu0.log"
+        }
+      ]
+    },
+    {
+      "label": "brandon-mini-108m-q8_0-resident-r1",
+      "wall_seconds_including_load": 0.8347394709999207,
+      "generated_tokens_per_wall_second_including_load": 38.335314324681114,
+      "gpu_before": [
+        "0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 96, 21321, 503.57",
+        "1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 96, 21321, 522.37"
+      ],
+      "gpu_after": [
+        "0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 99, 21321, 509.31",
+        "1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 98, 21321, 505.68"
+      ],
+      "processes": [
+        {
+          "gpu": 0,
+          "model": "/home/ubuntu/ntransformer-h100/models/brandon-mini-108m-q8_0.gguf",
+          "streaming": false,
+          "command": [
+            "/home/ubuntu/ntransformer-h100/build-release/ntransformer",
+            "-m",
+            "/home/ubuntu/ntransformer-h100/models/brandon-mini-108m-q8_0.gguf",
+            "-p",
+            "La inteligencia artificial",
+            "-n",
+            "32",
+            "-c",
+            "256",
+            "-t",
+            "0",
+            "--repeat-penalty",
+            "1.0",
+            "--seed",
+            "42"
+          ],
+          "pid": 31608,
+          "prompt_tokens": 9,
+          "prefill_ms": 35.6,
+          "decode_steps": 31,
+          "decode_ms": 185.9,
+          "decode_tokens_per_second": 166.8,
+          "generated_tokens": 32,
+          "sampled_peak_process_memory_mib": 650,
+          "log": "/home/ubuntu/ntransformer-h100/logs/smoke/brandon-mini-108m-q8_0-resident-r1-gpu0.log"
+        }
+      ]
+    },
+    {
+      "label": "brandon-mini-108m-q8_0-resident-r2",
+      "wall_seconds_including_load": 0.8304519029998119,
+      "generated_tokens_per_wall_second_including_load": 38.53323700554787,
+      "gpu_before": [
+        "0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 99, 21321, 509.16",
+        "1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 97, 21321, 505.61"
+      ],
+      "gpu_after": [
+        "0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 98, 21321, 512.86",
+        "1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 96, 21321, 520.46"
+      ],
+      "processes": [
+        {
+          "gpu": 0,
+          "model": "/home/ubuntu/ntransformer-h100/models/brandon-mini-108m-q8_0.gguf",
+          "streaming": false,
+          "command": [
+            "/home/ubuntu/ntransformer-h100/build-release/ntransformer",
+            "-m",
+            "/home/ubuntu/ntransformer-h100/models/brandon-mini-108m-q8_0.gguf",
+            "-p",
+            "La inteligencia artificial",
+            "-n",
+            "32",
+            "-c",
+            "256",
+            "-t",
+            "0",
+            "--repeat-penalty",
+            "1.0",
+            "--seed",
+            "42"
+          ],
+          "pid": 31623,
+          "prompt_tokens": 9,
+          "prefill_ms": 13.2,
+          "decode_steps": 31,
+          "decode_ms": 199.4,
+          "decode_tokens_per_second": 155.5,
+          "generated_tokens": 32,
+          "sampled_peak_process_memory_mib": 650,
+          "log": "/home/ubuntu/ntransformer-h100/logs/smoke/brandon-mini-108m-q8_0-resident-r2-gpu0.log"
+        }
+      ]
+    },
+    {
+      "label": "brandon-mini-108m-q8_0-resident-r0",
+      "wall_seconds_including_load": 0.8361427219997495,
+      "generated_tokens_per_wall_second_including_load": 38.27097833665003,
+      "gpu_before": [
+        "0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 96, 21321, 513.08",
+        "1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 96, 21321, 520.53"
+      ],
+      "gpu_after": [
+        "0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 99, 21321, 503.89",
+        "1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 99, 21321, 509.93"
+      ],
+      "processes": [
+        {
+          "gpu": 1,
+          "model": "/home/ubuntu/ntransformer-h100/models/brandon-mini-108m-q8_0.gguf",
+          "streaming": false,
+          "command": [
+            "/home/ubuntu/ntransformer-h100/build-release/ntransformer",
+            "-m",
+            "/home/ubuntu/ntransformer-h100/models/brandon-mini-108m-q8_0.gguf",
+            "-p",
+            "La inteligencia artificial",
+            "-n",
+            "32",
+            "-c",
+            "256",
+            "-t",
+            "0",
+            "--repeat-penalty",
+            "1.0",
+            "--seed",
+            "42"
+          ],
+          "pid": 31638,
+          "prompt_tokens": 9,
+          "prefill_ms": 35.1,
+          "decode_steps": 31,
+          "decode_ms": 187.2,
+          "decode_tokens_per_second": 165.6,
+          "generated_tokens": 32,
+          "sampled_peak_process_memory_mib": 650,
+          "log": "/home/ubuntu/ntransformer-h100/logs/smoke/brandon-mini-108m-q8_0-resident-r0-gpu1.log"
+        }
+      ]
+    },
+    {
+      "label": "brandon-mini-108m-q8_0-resident-r1",
+      "wall_seconds_including_load": 0.8408822760002295,
+      "generated_tokens_per_wall_second_including_load": 38.055267560415636,
+      "gpu_before": [
+        "0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 98, 21321, 503.70",
+        "1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 99, 21321, 519.28"
+      ],
+      "gpu_after": [
+        "0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 97, 21321, 491.54",
+        "1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 95, 21321, 523.86"
+      ],
+      "processes": [
+        {
+          "gpu": 1,
+          "model": "/home/ubuntu/ntransformer-h100/models/brandon-mini-108m-q8_0.gguf",
+          "streaming": false,
+          "command": [
+            "/home/ubuntu/ntransformer-h100/build-release/ntransformer",
+            "-m",
+            "/home/ubuntu/ntransformer-h100/models/brandon-mini-108m-q8_0.gguf",
+            "-p",
+            "La inteligencia artificial",
+            "-n",
+            "32",
+            "-c",
+            "256",
+            "-t",
+            "0",
+            "--repeat-penalty",
+            "1.0",
+            "--seed",
+            "42"
+          ],
+          "pid": 31653,
+          "prompt_tokens": 9,
+          "prefill_ms": 33.3,
+          "decode_steps": 31,
+          "decode_ms": 197.0,
+          "decode_tokens_per_second": 157.3,
+          "generated_tokens": 32,
+          "sampled_peak_process_memory_mib": 650,
+          "log": "/home/ubuntu/ntransformer-h100/logs/smoke/brandon-mini-108m-q8_0-resident-r1-gpu1.log"
+        }
+      ]
+    },
+    {
+      "label": "brandon-mini-108m-q8_0-resident-r2",
+      "wall_seconds_including_load": 0.8381882690000566,
+      "generated_tokens_per_wall_second_including_load": 38.17758036410533,
+      "gpu_before": [
+        "0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 97, 21321, 492.53",
+        "1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 98, 21321, 525.16"
+      ],
+      "gpu_after": [
+        "0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 95, 21321, 495.36",
+        "1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 95, 21321, 530.50"
+      ],
+      "processes": [
+        {
+          "gpu": 1,
+          "model": "/home/ubuntu/ntransformer-h100/models/brandon-mini-108m-q8_0.gguf",
+          "streaming": false,
+          "command": [
+            "/home/ubuntu/ntransformer-h100/build-release/ntransformer",
+            "-m",
+            "/home/ubuntu/ntransformer-h100/models/brandon-mini-108m-q8_0.gguf",
+            "-p",
+            "La inteligencia artificial",
+            "-n",
+            "32",
+            "-c",
+            "256",
+            "-t",
+            "0",
+            "--repeat-penalty",
+            "1.0",
+            "--seed",
+            "42"
+          ],
+          "pid": 31668,
+          "prompt_tokens": 9,
+          "prefill_ms": 35.3,
+          "decode_steps": 31,
+          "decode_ms": 185.0,
+          "decode_tokens_per_second": 167.5,
+          "generated_tokens": 32,
+          "sampled_peak_process_memory_mib": 650,
+          "log": "/home/ubuntu/ntransformer-h100/logs/smoke/brandon-mini-108m-q8_0-resident-r2-gpu1.log"
+        }
+      ]
+    },
+    {
+      "label": "tiered",
+      "wall_seconds_including_load": 0.7521220209991952,
+      "generated_tokens_per_wall_second_including_load": 42.54628784500679,
+      "gpu_before": [
+        "0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 95, 21321, 508.33",
+        "1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 100, 21321, 530.02"
+      ],
+      "gpu_after": [
+        "0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 100, 21321, 486.93",
+        "1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 95, 21321, 525.13"
+      ],
+      "processes": [
+        {
+          "gpu": 0,
+          "model": "/home/ubuntu/ntransformer-h100/models/brandon-mini-108m-f16.gguf",
+          "streaming": true,
+          "command": [
+            "/home/ubuntu/ntransformer-h100/build-release/ntransformer",
+            "-m",
+            "/home/ubuntu/ntransformer-h100/models/brandon-mini-108m-f16.gguf",
+            "-p",
+            "La inteligencia artificial",
+            "-n",
+            "32",
+            "-c",
+            "256",
+            "-t",
+            "0",
+            "--repeat-penalty",
+            "1.0",
+            "--seed",
+            "42",
+            "--streaming"
+          ],
+          "pid": 31683,
+          "prompt_tokens": 9,
+          "prefill_ms": 30.6,
+          "decode_steps": 31,
+          "decode_ms": 198.3,
+          "decode_tokens_per_second": 156.3,
+          "generated_tokens": 32,
+          "sampled_peak_process_memory_mib": 800,
+          "log": "/home/ubuntu/ntransformer-h100/logs/smoke/tiered-gpu0.log"
+        }
+      ]
+    },
+    {
+      "label": "concurrent-r0",
+      "wall_seconds_including_load": 1.1558888649997243,
+      "generated_tokens_per_wall_second_including_load": 55.368644804805925,
+      "gpu_before": [
+        "0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 100, 21321, 487.95",
+        "1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 95, 21321, 528.51"
+      ],
+      "gpu_after": [
+        "0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 95, 21321, 505.83",
+        "1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 96, 21321, 520.02"
+      ],
+      "processes": [
+        {
+          "gpu": 0,
+          "model": "/home/ubuntu/ntransformer-h100/models/brandon-mini-108m-f16.gguf",
+          "streaming": false,
+          "command": [
+            "/home/ubuntu/ntransformer-h100/build-release/ntransformer",
+            "-m",
+            "/home/ubuntu/ntransformer-h100/models/brandon-mini-108m-f16.gguf",
+            "-p",
+            "La inteligencia artificial",
+            "-n",
+            "32",
+            "-c",
+            "256",
+            "-t",
+            "0",
+            "--repeat-penalty",
+            "1.0",
+            "--seed",
+            "42"
+          ],
+          "pid": 31696,
+          "prompt_tokens": 9,
+          "prefill_ms": 31.9,
+          "decode_steps": 31,
+          "decode_ms": 186.0,
+          "decode_tokens_per_second": 166.7,
+          "generated_tokens": 32,
+          "sampled_peak_process_memory_mib": 764,
+          "log": "/home/ubuntu/ntransformer-h100/logs/smoke/concurrent-r0-gpu0.log"
+        },
+        {
+          "gpu": 1,
+          "model": "/home/ubuntu/ntransformer-h100/models/brandon-mini-108m-f16.gguf",
+          "streaming": false,
+          "command": [
+            "/home/ubuntu/ntransformer-h100/build-release/ntransformer",
+            "-m",
+            "/home/ubuntu/ntransformer-h100/models/brandon-mini-108m-f16.gguf",
+            "-p",
+            "La inteligencia artificial",
+            "-n",
+            "32",
+            "-c",
+            "256",
+            "-t",
+            "0",
+            "--repeat-penalty",
+            "1.0",
+            "--seed",
+            "42"
+          ],
+          "pid": 31697,
+          "prompt_tokens": 9,
+          "prefill_ms": 32.4,
+          "decode_steps": 31,
+          "decode_ms": 187.3,
+          "decode_tokens_per_second": 165.5,
+          "generated_tokens": 32,
+          "sampled_peak_process_memory_mib": 764,
+          "log": "/home/ubuntu/ntransformer-h100/logs/smoke/concurrent-r0-gpu1.log"
+        }
+      ]
+    },
+    {
+      "label": "concurrent-r1",
+      "wall_seconds_including_load": 1.1719223640002383,
+      "generated_tokens_per_wall_second_including_load": 54.61112610014752,
+      "gpu_before": [
+        "0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 95, 21321, 505.48",
+        "1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 96, 21321, 522.02"
+      ],
+      "gpu_after": [
+        "0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 99, 21321, 500.85",
+        "1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 98, 21321, 524.15"
+      ],
+      "processes": [
+        {
+          "gpu": 0,
+          "model": "/home/ubuntu/ntransformer-h100/models/brandon-mini-108m-f16.gguf",
+          "streaming": false,
+          "command": [
+            "/home/ubuntu/ntransformer-h100/build-release/ntransformer",
+            "-m",
+            "/home/ubuntu/ntransformer-h100/models/brandon-mini-108m-f16.gguf",
+            "-p",
+            "La inteligencia artificial",
+            "-n",
+            "32",
+            "-c",
+            "256",
+            "-t",
+            "0",
+            "--repeat-penalty",
+            "1.0",
+            "--seed",
+            "42"
+          ],
+          "pid": 31716,
+          "prompt_tokens": 9,
+          "prefill_ms": 29.4,
+          "decode_steps": 31,
+          "decode_ms": 187.2,
+          "decode_tokens_per_second": 165.6,
+          "generated_tokens": 32,
+          "sampled_peak_process_memory_mib": 764,
+          "log": "/home/ubuntu/ntransformer-h100/logs/smoke/concurrent-r1-gpu0.log"
+        },
+        {
+          "gpu": 1,
+          "model": "/home/ubuntu/ntransformer-h100/models/brandon-mini-108m-f16.gguf",
+          "streaming": false,
+          "command": [
+            "/home/ubuntu/ntransformer-h100/build-release/ntransformer",
+            "-m",
+            "/home/ubuntu/ntransformer-h100/models/brandon-mini-108m-f16.gguf",
+            "-p",
+            "La inteligencia artificial",
+            "-n",
+            "32",
+            "-c",
+            "256",
+            "-t",
+            "0",
+            "--repeat-penalty",
+            "1.0",
+            "--seed",
+            "42"
+          ],
+          "pid": 31717,
+          "prompt_tokens": 9,
+          "prefill_ms": 31.2,
+          "decode_steps": 31,
+          "decode_ms": 187.0,
+          "decode_tokens_per_second": 165.8,
+          "generated_tokens": 32,
+          "sampled_peak_process_memory_mib": 764,
+          "log": "/home/ubuntu/ntransformer-h100/logs/smoke/concurrent-r1-gpu1.log"
+        }
+      ]
+    },
+    {
+      "label": "concurrent-r2",
+      "wall_seconds_including_load": 1.158039117000044,
+      "generated_tokens_per_wall_second_including_load": 55.265836067606315,
+      "gpu_before": [
+        "0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 99, 21321, 500.57",
+        "1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 98, 21321, 524.86"
+      ],
+      "gpu_after": [
+        "0, GPU-6a34fe2e-f584-4389-b055-e5251ac91454, NVIDIA H100 80GB HBM3, 95, 21321, 500.17",
+        "1, GPU-67e3ec29-9bbc-da80-baf1-8f982193ee6c, NVIDIA H100 80GB HBM3, 98, 21321, 519.21"
+      ],
+      "processes": [
+        {
+          "gpu": 0,
+          "model": "/home/ubuntu/ntransformer-h100/models/brandon-mini-108m-f16.gguf",
+          "streaming": false,
+          "command": [
+            "/home/ubuntu/ntransformer-h100/build-release/ntransformer",
+            "-m",
+            "/home/ubuntu/ntransformer-h100/models/brandon-mini-108m-f16.gguf",
+            "-p",
+            "La inteligencia artificial",
+            "-n",
+            "32",
+            "-c",
+            "256",
+            "-t",
+            "0",
+            "--repeat-penalty",
+            "1.0",
+            "--seed",
+            "42"
+          ],
+          "pid": 31736,
+          "prompt_tokens": 9,
+          "prefill_ms": 31.7,
+          "decode_steps": 31,
+          "decode_ms": 188.1,
+          "decode_tokens_per_second": 164.8,
+          "generated_tokens": 32,
+          "sampled_peak_process_memory_mib": 764,
+          "log": "/home/ubuntu/ntransformer-h100/logs/smoke/concurrent-r2-gpu0.log"
+        },
+        {
+          "gpu": 1,
+          "model": "/home/ubuntu/ntransformer-h100/models/brandon-mini-108m-f16.gguf",
+          "streaming": false,
+          "command": [
+            "/home/ubuntu/ntransformer-h100/build-release/ntransformer",
+            "-m",
+            "/home/ubuntu/ntransformer-h100/models/brandon-mini-108m-f16.gguf",
+            "-p",
+            "La inteligencia artificial",
+            "-n",
+            "32",
+            "-c",
+            "256",
+            "-t",
+            "0",
+            "--repeat-penalty",
+            "1.0",
+            "--seed",
+            "42"
+          ],
+          "pid": 31737,
+          "prompt_tokens": 9,
+          "prefill_ms": 31.8,
+          "decode_steps": 31,
+          "decode_ms": 190.9,
+          "decode_tokens_per_second": 162.4,
+          "generated_tokens": 32,
+          "sampled_peak_process_memory_mib": 764,
+          "log": "/home/ubuntu/ntransformer-h100/logs/smoke/concurrent-r2-gpu1.log"
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "brandon-mini-108m-f16-gpu0": {
+      "median_decode_tokens_per_second": 158.7,
+      "min_decode_tokens_per_second": 153.5,
+      "max_decode_tokens_per_second": 165.7
+    },
+    "brandon-mini-108m-f16-gpu1": {
+      "median_decode_tokens_per_second": 157.3,
+      "min_decode_tokens_per_second": 153.7,
+      "max_decode_tokens_per_second": 163.8
+    },
+    "brandon-mini-108m-q8_0-gpu0": {
+      "median_decode_tokens_per_second": 163.5,
+      "min_decode_tokens_per_second": 155.5,
+      "max_decode_tokens_per_second": 166.8
+    },
+    "brandon-mini-108m-q8_0-gpu1": {
+      "median_decode_tokens_per_second": 165.6,
+      "min_decode_tokens_per_second": 157.3,
+      "max_decode_tokens_per_second": 167.5
+    }
+  }
+}

@@ -1,0 +1,3 @@
+{"event": "train", "step": 8500, "loss": 2.648033556342125, "supervised_tokens_per_second": 259554.972496959, "learning_rate": 0.0003, "grad_norm": 0.3252919912338257}
+{"event": "train", "step": 8600, "loss": 2.6277437025308608, "supervised_tokens_per_second": 242870.9267235373, "learning_rate": 0.0003, "grad_norm": 0.31423479318618774}
+{"event": "train", "step": 8700, "loss": 2.630077917575836, "supervised_tokens_per_second": 219348.3738954729, "learning_rate": 0.0003, "grad_norm": 0.31444454193115234}

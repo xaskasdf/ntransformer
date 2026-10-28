@@ -8,6 +8,23 @@
 
 namespace nt {
 
+bool Transformer::set_peer_cache(int device, int max_local_layers, int max_peer_layers) {
+    if (device < 0 || max_local_layers < -1 || max_peer_layers < -1) return false;
+    if (!CUDADevice::instance().init()) return false;
+    int count = 0, capable = 0;
+    if (cudaGetDeviceCount(&count) != cudaSuccess || device >= count ||
+        device == CUDADevice::instance().info().device_id) {
+        fprintf(stderr, "Peer cache requires a second visible GPU\n");
+        return false;
+    }
+    if (cudaDeviceCanAccessPeer(&capable, CUDADevice::instance().info().device_id, device) != cudaSuccess || !capable) {
+        fprintf(stderr, "Peer cache requires native CUDA P2P access\n");
+        return false;
+    }
+    streamer_.set_peer_cache(device, max_local_layers, max_peer_layers);
+    return true;
+}
+
 // ============================================================
 // Destructor
 // ============================================================
@@ -57,6 +74,13 @@ void Transformer::set_layer_skip(float threshold) {
 // ============================================================
 
 bool Transformer::load(const std::string& gguf_path, int max_context, bool streaming) {
+    if (streamer_.peer_cache_requested()) {
+        if (!delta_model_path_.empty()) {
+            fprintf(stderr, "Native CUDA peer cache does not support delta weights\n");
+            return false;
+        }
+        streaming = true;
+    }
     fprintf(stderr, "Loading model: %s%s\n", gguf_path.c_str(),
         streaming ? " [STREAMING MODE]" : "");
 

@@ -1,0 +1,8 @@
+{"gpu":0,"direction":"H2D","bytes_per_copy":67108864,"repeats":8,"ms":9.753952,"payload_GB_s":55.041,"shared_training_load":true}
+{"gpu":0,"direction":"D2H","bytes_per_copy":67108864,"repeats":8,"ms":9.987232,"payload_GB_s":53.756,"shared_training_load":true}
+{"gpu":0,"direction":"D2D","bytes_per_copy":67108864,"repeats":8,"ms":0.384704,"payload_GB_s":1395.543,"shared_training_load":true}
+{"gpu":1,"direction":"H2D","bytes_per_copy":67108864,"repeats":8,"ms":9.795680,"payload_GB_s":54.807,"shared_training_load":true}
+{"gpu":1,"direction":"D2H","bytes_per_copy":67108864,"repeats":8,"ms":9.938688,"payload_GB_s":54.018,"shared_training_load":true}
+{"gpu":1,"direction":"D2D","bytes_per_copy":67108864,"repeats":8,"ms":0.386592,"payload_GB_s":1388.727,"shared_training_load":true}
+{"gpu_source":1,"gpu_dest":0,"direction":"P2P","bytes_per_copy":67108864,"repeats":8,"ms":1.763904,"payload_GB_s":304.365,"shared_training_load":true}
+{"gpu_source":0,"gpu_dest":1,"direction":"P2P","bytes_per_copy":67108864,"repeats":8,"ms":2.415328,"payload_GB_s":222.277,"shared_training_load":true}
