@@ -1,15 +1,18 @@
 #include "streamer.h"
 #include "../core/device.h"
+#include "../core/platform.h"
 #include <cuda_runtime.h>
 #include <cstdio>
 #include <cstring>
 #include <cmath>
 #include <algorithm>
+#ifndef _WIN32
 #include <sys/sysinfo.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#endif
 
 namespace nt {
 
@@ -164,8 +167,11 @@ TierConfig TierConfig::compute(int n_layers, size_t layer_bytes,
     size_t vram_free = 0, vram_total = 0;
     cudaMemGetInfo(&vram_free, &vram_total);
 
-    // Query available RAM via /proc/meminfo (includes reclaimable page cache)
+    // Query available RAM
     size_t ram_free = 0;
+#ifdef _WIN32
+    ram_free = nt_available_ram();
+#else
     FILE* f = fopen("/proc/meminfo", "r");
     if (f) {
         char line[256];
@@ -179,12 +185,12 @@ TierConfig TierConfig::compute(int n_layers, size_t layer_bytes,
         fclose(f);
     }
     if (ram_free == 0) {
-        // Fallback to sysinfo if /proc/meminfo unavailable
         struct sysinfo si;
         sysinfo(&si);
         ram_free = (size_t)si.freeram * si.mem_unit +
                    (size_t)si.bufferram * si.mem_unit;
     }
+#endif
 
     fprintf(stderr, "TierConfig: VRAM free=%.1f GB, RAM available=%.1f GB\n",
             vram_free / (1024.0 * 1024 * 1024), ram_free / (1024.0 * 1024 * 1024));
@@ -324,6 +330,9 @@ void LayerStreamer::init(const GGUFLoader& loader, const ModelConfig& config) {
     size_t data_size = loader.tensor_data_size();
 
     size_t total_ram = 0;
+#ifdef _WIN32
+    total_ram = nt_total_ram();
+#else
     FILE* mi = fopen("/proc/meminfo", "r");
     if (mi) {
         char line[256];
@@ -336,6 +345,7 @@ void LayerStreamer::init(const GGUFLoader& loader, const ModelConfig& config) {
         }
         fclose(mi);
     }
+#endif
 
     bool skip_pin = (total_ram > 0 && data_size > total_ram / 2);
     cudaError_t pin_err = cudaErrorMemoryAllocation;  // default to "failed"
@@ -649,6 +659,19 @@ void LayerStreamer::init_tiered(const GGUFLoader& loader, const ModelConfig& con
 // ============================================================
 bool LayerStreamer::init_delta(const std::string& ntd_path, const ModelConfig& config) {
     // Open and mmap the .ntd file
+#ifdef _WIN32
+    {
+        NtMmap m = nt_mmap_open(ntd_path.c_str());
+        if (!m.ptr) {
+            fprintf(stderr, "init_delta: cannot open %s\n", ntd_path.c_str());
+            return false;
+        }
+        delta_mmap_         = m.ptr;
+        delta_mmap_size_    = m.size;
+        delta_file_handle_  = static_cast<void*>(m.file_handle);
+        delta_map_handle_   = static_cast<void*>(m.map_handle);
+    }
+#else
     delta_mmap_fd_ = open(ntd_path.c_str(), O_RDONLY);
     if (delta_mmap_fd_ < 0) {
         fprintf(stderr, "init_delta: cannot open %s\n", ntd_path.c_str());
@@ -666,13 +689,25 @@ bool LayerStreamer::init_delta(const std::string& ntd_path, const ModelConfig& c
         delta_mmap_fd_ = -1;
         return false;
     }
+#endif
 
     // Parse header (64 bytes)
     const uint8_t* hdr = static_cast<const uint8_t*>(delta_mmap_);
     if (memcmp(hdr, "NTD1", 4) != 0) {
         fprintf(stderr, "init_delta: bad magic\n");
+#ifdef _WIN32
+        {
+            NtMmap m;
+            m.ptr         = delta_mmap_;
+            m.file_handle = static_cast<HANDLE>(delta_file_handle_);
+            m.map_handle  = static_cast<HANDLE>(delta_map_handle_);
+            nt_mmap_close(m);
+            delta_mmap_ = nullptr; delta_file_handle_ = nullptr; delta_map_handle_ = nullptr;
+        }
+#else
         munmap(delta_mmap_, delta_mmap_size_);
         close(delta_mmap_fd_);
+#endif
         return false;
     }
 
@@ -698,8 +733,14 @@ bool LayerStreamer::init_delta(const std::string& ntd_path, const ModelConfig& c
     if ((int)n_layers != config.n_layers || (int)hidden_size != config.hidden_size) {
         fprintf(stderr, "init_delta: config mismatch (layers %u vs %d, hidden %u vs %d)\n",
                 n_layers, config.n_layers, hidden_size, config.hidden_size);
+#ifdef _WIN32
+        { NtMmap m; m.ptr = delta_mmap_; m.file_handle = static_cast<HANDLE>(delta_file_handle_);
+          m.map_handle = static_cast<HANDLE>(delta_map_handle_); nt_mmap_close(m);
+          delta_mmap_ = nullptr; delta_file_handle_ = nullptr; delta_map_handle_ = nullptr; }
+#else
         munmap(delta_mmap_, delta_mmap_size_);
         close(delta_mmap_fd_);
+#endif
         return false;
     }
 
@@ -745,8 +786,14 @@ bool LayerStreamer::init_delta(const std::string& ntd_path, const ModelConfig& c
     if (err != cudaSuccess) {
         fprintf(stderr, "init_delta: failed to allocate base VRAM (%.1f MB)\n",
                 delta_base_size_ / (1024.0 * 1024.0));
+#ifdef _WIN32
+        { NtMmap m; m.ptr = delta_mmap_; m.file_handle = static_cast<HANDLE>(delta_file_handle_);
+          m.map_handle = static_cast<HANDLE>(delta_map_handle_); nt_mmap_close(m);
+          delta_mmap_ = nullptr; delta_file_handle_ = nullptr; delta_map_handle_ = nullptr; }
+#else
         munmap(delta_mmap_, delta_mmap_size_);
         close(delta_mmap_fd_);
+#endif
         return false;
     }
 
@@ -880,10 +927,18 @@ void LayerStreamer::shutdown() {
     if (delta_base_buf_) { cudaFree(delta_base_buf_); delta_base_buf_ = nullptr; }
     if (delta_temp_) { cudaFree(delta_temp_); delta_temp_ = nullptr; }
     if (delta_mmap_) {
+#ifdef _WIN32
+        { NtMmap m; m.ptr = delta_mmap_; m.file_handle = static_cast<HANDLE>(delta_file_handle_);
+          m.map_handle = static_cast<HANDLE>(delta_map_handle_); nt_mmap_close(m);
+          delta_file_handle_ = nullptr; delta_map_handle_ = nullptr; }
+#else
         munmap(delta_mmap_, delta_mmap_size_);
+#endif
         delta_mmap_ = nullptr;
     }
+#ifndef _WIN32
     if (delta_mmap_fd_ >= 0) { close(delta_mmap_fd_); delta_mmap_fd_ = -1; }
+#endif
     delta_layers_.clear();
     delta_mode_ = false;
 

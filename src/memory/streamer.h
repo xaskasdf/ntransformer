@@ -9,7 +9,9 @@
 #include <mutex>
 #include <condition_variable>
 #include <atomic>
+#ifndef _WIN32
 #include <sys/sysinfo.h>
+#endif
 
 #ifdef USE_GPUNVME
 #include <gpunvme/layer_loader.h>
@@ -213,7 +215,13 @@ private:
     float* delta_temp_ = nullptr;           // VRAM: rank floats scratch
     void* delta_mmap_ = nullptr;            // mmap'd .ntd file
     size_t delta_mmap_size_ = 0;
+#ifdef _WIN32
+    void* delta_file_handle_ = nullptr;     // Windows HANDLE for .ntd file
+    void* delta_map_handle_  = nullptr;     // Windows HANDLE for file mapping
+    int delta_mmap_fd_ = -1;               // unused on Windows; kept for ABI uniformity
+#else
     int delta_mmap_fd_ = -1;
+#endif
 
     // Per-weight-type base offsets within delta_base_buf_ (7 entries)
     size_t delta_base_offsets_[7] = {};

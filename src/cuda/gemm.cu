@@ -77,7 +77,7 @@ __global__ void gemv_q4_0_kernel(
     // Warp reduction
     #pragma unroll
     for (int offset = 16; offset > 0; offset >>= 1) {
-        sum += __shfl_xor_sync(0xFFFFFFFF, sum, offset);
+        sum += __shfl_xor_sync(NT_WARP_MASK, sum, offset);
     }
 
     if (tid == 0) {
@@ -143,7 +143,7 @@ __global__ void gemv_q8_0_kernel(
     // Warp reduction
     #pragma unroll
     for (int offset = 16; offset > 0; offset >>= 1) {
-        sum += __shfl_xor_sync(0xFFFFFFFF, sum, offset);
+        sum += __shfl_xor_sync(NT_WARP_MASK, sum, offset);
     }
 
     if (tid == 0) {
@@ -246,7 +246,7 @@ __global__ void gemv_q4_k_kernel(
     // Warp reduction
     #pragma unroll
     for (int offset = 16; offset > 0; offset >>= 1) {
-        sum += __shfl_xor_sync(0xFFFFFFFF, sum, offset);
+        sum += __shfl_xor_sync(NT_WARP_MASK, sum, offset);
     }
 
     if (tid == 0) {
@@ -356,7 +356,7 @@ __global__ void gemv_q5_k_kernel(
     // Warp reduction
     #pragma unroll
     for (int offset = 16; offset > 0; offset >>= 1) {
-        sum += __shfl_xor_sync(0xFFFFFFFF, sum, offset);
+        sum += __shfl_xor_sync(NT_WARP_MASK, sum, offset);
     }
 
     if (tid == 0) {
@@ -461,7 +461,7 @@ __global__ void gemv_q6_k_kernel(
     // Warp reduction
     #pragma unroll
     for (int offset = 16; offset > 0; offset >>= 1) {
-        sum += __shfl_xor_sync(0xFFFFFFFF, sum, offset);
+        sum += __shfl_xor_sync(NT_WARP_MASK, sum, offset);
     }
 
     if (tid == 0) {
@@ -531,7 +531,7 @@ __global__ void gemv_f16_add_kernel(
     // Warp reduction
     #pragma unroll
     for (int offset = 16; offset > 0; offset >>= 1) {
-        sum += __shfl_xor_sync(0xFFFFFFFF, sum, offset);
+        sum += __shfl_xor_sync(NT_WARP_MASK, sum, offset);
     }
 
     if (tid == 0) {
@@ -603,7 +603,7 @@ __global__ void gemv_f16_kernel(
     // Warp reduction
     #pragma unroll
     for (int offset = 16; offset > 0; offset >>= 1) {
-        sum += __shfl_xor_sync(0xFFFFFFFF, sum, offset);
+        sum += __shfl_xor_sync(NT_WARP_MASK, sum, offset);
     }
 
     if (tid == 0) {
@@ -662,7 +662,7 @@ __global__ void gemv_f32_kernel(
     // Warp reduction
     #pragma unroll
     for (int offset = 16; offset > 0; offset >>= 1) {
-        sum += __shfl_xor_sync(0xFFFFFFFF, sum, offset);
+        sum += __shfl_xor_sync(NT_WARP_MASK, sum, offset);
     }
 
     if (tid == 0) {

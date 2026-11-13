@@ -1,28 +1,55 @@
 #include "loader.h"
+#include "../core/platform.h"
 #include <cstdio>
 #include <cstring>
 #include <cinttypes>
 #include <algorithm>
 
+#ifndef _WIN32
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
+#endif
 
 namespace nt {
 
 GGUFLoader::~GGUFLoader() {
+#ifdef _WIN32
+    if (mmap_ptr_) {
+        NtMmap m;
+        m.ptr         = mmap_ptr_;
+        m.file_handle = static_cast<HANDLE>(win_file_handle_);
+        m.map_handle  = static_cast<HANDLE>(win_map_handle_);
+        nt_mmap_close(m);
+        mmap_ptr_         = nullptr;
+        win_file_handle_  = nullptr;
+        win_map_handle_   = nullptr;
+    }
+#else
     if (mmap_ptr_ && mmap_ptr_ != MAP_FAILED) {
         munmap(mmap_ptr_, file_size_);
     }
     if (fd_ >= 0) {
         close(fd_);
     }
+#endif
 }
 
 bool GGUFLoader::load(const std::string& path) {
     path_ = path;
 
+#ifdef _WIN32
+    NtMmap m = nt_mmap_open(path.c_str());
+    if (!m.ptr) {
+        fprintf(stderr, "Failed to open/mmap %s\n", path.c_str());
+        return false;
+    }
+    mmap_ptr_        = m.ptr;
+    file_size_       = m.size;
+    win_file_handle_ = static_cast<void*>(m.file_handle);
+    win_map_handle_  = static_cast<void*>(m.map_handle);
+#else
     fd_ = open(path.c_str(), O_RDONLY);
     if (fd_ < 0) {
         fprintf(stderr, "Failed to open %s\n", path.c_str());
@@ -43,6 +70,7 @@ bool GGUFLoader::load(const std::string& path) {
     }
 
     madvise(mmap_ptr_, file_size_, MADV_SEQUENTIAL);
+#endif
 
     // Parse header
     if (!parse_header()) {

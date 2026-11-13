@@ -145,7 +145,7 @@ __global__ void attention_decode_generic_kernel(
     }
     // Warp reduce max
     for (int offset = warpSize / 2; offset > 0; offset >>= 1) {
-        local_max = fmaxf(local_max, __shfl_xor_sync(0xFFFFFFFF, local_max, offset));
+        local_max = fmaxf(local_max, __shfl_xor_sync(NT_WARP_MASK, local_max, offset));
     }
     __shared__ float shared_vals[32];
     int lane = tid % warpSize;
@@ -155,7 +155,7 @@ __global__ void attention_decode_generic_kernel(
     if (wid == 0) {
         local_max = (tid < blockDim.x / warpSize) ? shared_vals[lane] : -FLT_MAX;
         for (int offset = warpSize / 2; offset > 0; offset >>= 1) {
-            local_max = fmaxf(local_max, __shfl_xor_sync(0xFFFFFFFF, local_max, offset));
+            local_max = fmaxf(local_max, __shfl_xor_sync(NT_WARP_MASK, local_max, offset));
         }
     }
     __shared__ float s_max;
@@ -170,14 +170,14 @@ __global__ void attention_decode_generic_kernel(
         local_sum += val;
     }
     for (int offset = warpSize / 2; offset > 0; offset >>= 1) {
-        local_sum += __shfl_xor_sync(0xFFFFFFFF, local_sum, offset);
+        local_sum += __shfl_xor_sync(NT_WARP_MASK, local_sum, offset);
     }
     if (lane == 0) shared_vals[wid] = local_sum;
     __syncthreads();
     if (wid == 0) {
         local_sum = (tid < blockDim.x / warpSize) ? shared_vals[lane] : 0.0f;
         for (int offset = warpSize / 2; offset > 0; offset >>= 1) {
-            local_sum += __shfl_xor_sync(0xFFFFFFFF, local_sum, offset);
+            local_sum += __shfl_xor_sync(NT_WARP_MASK, local_sum, offset);
         }
     }
     __shared__ float s_sum_inv;
@@ -255,7 +255,7 @@ __global__ void attention_prefill_kernel(
         local_max = fmaxf(local_max, smem[pos]);
     }
     for (int offset = warpSize / 2; offset > 0; offset >>= 1) {
-        local_max = fmaxf(local_max, __shfl_xor_sync(0xFFFFFFFF, local_max, offset));
+        local_max = fmaxf(local_max, __shfl_xor_sync(NT_WARP_MASK, local_max, offset));
     }
     __shared__ float sv[32];
     int lane = tid % warpSize;
@@ -265,7 +265,7 @@ __global__ void attention_prefill_kernel(
     if (wid == 0) {
         local_max = (tid < blockDim.x / warpSize) ? sv[lane] : -FLT_MAX;
         for (int offset = warpSize / 2; offset > 0; offset >>= 1) {
-            local_max = fmaxf(local_max, __shfl_xor_sync(0xFFFFFFFF, local_max, offset));
+            local_max = fmaxf(local_max, __shfl_xor_sync(NT_WARP_MASK, local_max, offset));
         }
     }
     __shared__ float s_max;
@@ -279,14 +279,14 @@ __global__ void attention_prefill_kernel(
         local_sum += val;
     }
     for (int offset = warpSize / 2; offset > 0; offset >>= 1) {
-        local_sum += __shfl_xor_sync(0xFFFFFFFF, local_sum, offset);
+        local_sum += __shfl_xor_sync(NT_WARP_MASK, local_sum, offset);
     }
     if (lane == 0) sv[wid] = local_sum;
     __syncthreads();
     if (wid == 0) {
         local_sum = (tid < blockDim.x / warpSize) ? sv[lane] : 0.0f;
         for (int offset = warpSize / 2; offset > 0; offset >>= 1) {
-            local_sum += __shfl_xor_sync(0xFFFFFFFF, local_sum, offset);
+            local_sum += __shfl_xor_sync(NT_WARP_MASK, local_sum, offset);
         }
     }
     __shared__ float s_sum_inv;
