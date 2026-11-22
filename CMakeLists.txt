@@ -8,7 +8,10 @@ project(ntransformer LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-option(NTRANSFORMER_ENABLE_CUDA "Build the CUDA inference engine" ON)
+option(NTRANSFORMER_ENABLE_CUDA "Build the GPU inference engine (CUDA, or HIP with USE_HIP)" ON)
+# Backend selection: USE_HIP=ON targets ROCm/AMD (the .cu kernels are compiled
+# as HIP); OFF keeps the original CUDA/NVIDIA build unchanged.
+option(USE_HIP "Build the GPU kernels with HIP for AMD ROCm targets" OFF)
 option(NTRANSFORMER_BUILD_NTRPU_SIM "Build the CPU-only NTRPU simulator" ON)
 include(CTest)
 
@@ -17,49 +20,65 @@ if(NTRANSFORMER_BUILD_NTRPU_SIM)
 endif()
 
 if(NOT NTRANSFORMER_ENABLE_CUDA)
-    message(STATUS "CUDA inference engine: disabled (no CUDA toolkit required)")
+    message(STATUS "GPU inference engine: disabled (no CUDA/HIP toolkit required)")
     return()
 endif()
-
-# CUDA 13.1 supports C++20 with gcc-14
-set(CMAKE_CUDA_STANDARD 20)
-set(CMAKE_CUDA_STANDARD_REQUIRED ON)
-
-# CUDA architecture - target SM 86 (RTX 3090) and above
-# Also include SM 80 (A100) for compatibility
-if(NOT CMAKE_CUDA_ARCHITECTURES)
-    set(CMAKE_CUDA_ARCHITECTURES "80;86;89;90")
-endif()
-
-# Optimization flags (gcc on Linux, MSVC on Windows)
-if(MSVC)
-    set(CMAKE_CXX_FLAGS_RELEASE "/O2 /DNDEBUG /arch:AVX2")
-    set(CMAKE_CUDA_FLAGS_RELEASE "-O3 -DNDEBUG")
-else()
-    set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG -march=native")
-    set(CMAKE_CUDA_FLAGS_RELEASE "-O3 -DNDEBUG -Xcompiler=-march=native")
-endif()
-# Fast transcendental intrinsics must not leak from inference into training.
-# Overriding fmad/ftz/div/sqrt alone does not undo --use_fast_math's expf mapping.
-add_compile_options("$<$<AND:$<COMPILE_LANGUAGE:CUDA>,$<CONFIG:Release>,$<NOT:$<BOOL:$<TARGET_PROPERTY:NTRANSFORMER_PRECISE_MATH>>>>:--use_fast_math>")
 
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif()
 
-# ============================================================
-# CUDA Toolkit
-# ============================================================
-# Force gcc-14 as CUDA host compiler (gcc-15 is incompatible with CUDA 13.1)
-if(NOT WIN32 AND NOT CMAKE_CUDA_HOST_COMPILER)
-    find_program(GCC14 gcc-14)
-    if(GCC14)
-        set(CMAKE_CUDA_HOST_COMPILER ${GCC14})
+if(USE_HIP)
+    set(CMAKE_HIP_STANDARD 20)
+    set(CMAKE_HIP_STANDARD_REQUIRED ON)
+    # enable_language(HIP) honors an explicit -DCMAKE_HIP_ARCHITECTURES,
+    # otherwise auto-detects the host GPU(s), and otherwise errors on a build
+    # host with no AMD GPU.
+    if(WIN32)
+        # clang-cl (MSVC frontend) uses /O2 style flags; -march is not accepted
+        set(CMAKE_CXX_FLAGS_RELEASE "/O2 /DNDEBUG")
+    else()
+        set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG -march=native")
     endif()
-endif()
+    set(CMAKE_HIP_FLAGS_RELEASE "-O3 -DNDEBUG")
+    # Same rule as CUDA below: targets with NTRANSFORMER_PRECISE_MATH opt out.
+    add_compile_options("$<$<AND:$<COMPILE_LANGUAGE:HIP>,$<CONFIG:Release>,$<NOT:$<BOOL:$<TARGET_PROPERTY:NTRANSFORMER_PRECISE_MATH>>>>:-ffast-math>")
+    enable_language(HIP)
+    find_package(hip REQUIRED)
+else()
+    # CUDA 13.1 supports C++20 with gcc-14
+    set(CMAKE_CUDA_STANDARD 20)
+    set(CMAKE_CUDA_STANDARD_REQUIRED ON)
 
-enable_language(CUDA)
-find_package(CUDAToolkit REQUIRED)
+    # CUDA architecture - target SM 86 (RTX 3090) and above
+    # Also include SM 80 (A100) for compatibility
+    if(NOT CMAKE_CUDA_ARCHITECTURES)
+        set(CMAKE_CUDA_ARCHITECTURES "80;86;89;90")
+    endif()
+
+    # Optimization flags (gcc on Linux, MSVC on Windows)
+    if(MSVC)
+        set(CMAKE_CXX_FLAGS_RELEASE "/O2 /DNDEBUG /arch:AVX2")
+        set(CMAKE_CUDA_FLAGS_RELEASE "-O3 -DNDEBUG")
+    else()
+        set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG -march=native")
+        set(CMAKE_CUDA_FLAGS_RELEASE "-O3 -DNDEBUG -Xcompiler=-march=native")
+    endif()
+    # Fast transcendental intrinsics must not leak from inference into training.
+    # Overriding fmad/ftz/div/sqrt alone does not undo --use_fast_math's expf mapping.
+    add_compile_options("$<$<AND:$<COMPILE_LANGUAGE:CUDA>,$<CONFIG:Release>,$<NOT:$<BOOL:$<TARGET_PROPERTY:NTRANSFORMER_PRECISE_MATH>>>>:--use_fast_math>")
+
+    # Force gcc-14 as CUDA host compiler (gcc-15 is incompatible with CUDA 13.1)
+    if(NOT WIN32 AND NOT CMAKE_CUDA_HOST_COMPILER)
+        find_program(GCC14 gcc-14)
+        if(GCC14)
+            set(CMAKE_CUDA_HOST_COMPILER ${GCC14})
+        endif()
+    endif()
+
+    enable_language(CUDA)
+    find_package(CUDAToolkit REQUIRED)
+endif()
 
 # ============================================================
 # Source files
@@ -109,6 +128,9 @@ set(CUDA_SOURCES
 option(USE_GPUNVME "Enable gpu-nvme-direct backend for NVMe streaming" OFF)
 option(NTRANSFORMER_BUILD_TRAINING "Build experimental training CUDA operations" OFF)
 
+if(NTRANSFORMER_BUILD_TRAINING AND USE_HIP)
+    message(FATAL_ERROR "NTRANSFORMER_BUILD_TRAINING is CUDA-only; it cannot be combined with USE_HIP")
+endif()
 if(NTRANSFORMER_BUILD_TRAINING)
     add_library(ntransformer_training SHARED
         src/training/ops.cu src/training/rotary.cu src/training/cross_entropy.cu src/cuda/rmsnorm.cu)
@@ -131,30 +153,58 @@ endif()
 # ============================================================
 # Main library (static)
 # ============================================================
+if(USE_HIP)
+    # The HIP port covers the Llama path only. The DS41/GLM5 MoE engines use
+    # CUDA surface the compat shim does not alias (bf16, 32-lane sub-warp
+    # shuffles); moe_unavailable.cpp stands in for their run_cli entry points.
+    list(FILTER CORE_SOURCES EXCLUDE REGEX "^src/model/(ds41|glm5)/")
+    list(FILTER CUDA_SOURCES EXCLUDE REGEX "^src/model/(ds41|glm5)/")
+    list(APPEND CORE_SOURCES src/model/moe_unavailable.cpp)
+    # Compile the .cu kernels as HIP without renaming any source file.
+    set_source_files_properties(${CUDA_SOURCES} tests/test_peer_cache.cu
+        PROPERTIES LANGUAGE HIP)
+endif()
+
 add_library(ntransformer_lib STATIC ${CORE_SOURCES} ${CUDA_SOURCES})
 
-# Shared-expert arithmetic retains CPU Q8 reduction order and uses the precise
-# CUDA math library; do not inherit inference's --use_fast_math expf mapping.
-add_library(ntransformer_ds41_shared OBJECT src/model/ds41/ds41_shared.cu src/model/ds41/ds41_attention.cu)
-set_target_properties(ntransformer_ds41_shared PROPERTIES
-    CUDA_SEPARABLE_COMPILATION OFF NTRANSFORMER_PRECISE_MATH ON)
-target_sources(ntransformer_lib PRIVATE $<TARGET_OBJECTS:ntransformer_ds41_shared>)
+if(NOT USE_HIP)
+    # Shared-expert arithmetic retains CPU Q8 reduction order and uses the precise
+    # CUDA math library; do not inherit inference's --use_fast_math expf mapping.
+    add_library(ntransformer_ds41_shared OBJECT
+        src/model/ds41/ds41_shared.cu src/model/ds41/ds41_attention.cu)
+    set_target_properties(ntransformer_ds41_shared PROPERTIES
+        CUDA_SEPARABLE_COMPILATION OFF NTRANSFORMER_PRECISE_MATH ON)
+    target_sources(ntransformer_lib PRIVATE $<TARGET_OBJECTS:ntransformer_ds41_shared>)
+endif()
 
 target_include_directories(ntransformer_lib PUBLIC
     ${CMAKE_SOURCE_DIR}/include
     ${CMAKE_SOURCE_DIR}/src
 )
 
-target_link_libraries(ntransformer_lib PUBLIC
-    CUDA::cudart
-)
+if(USE_HIP)
+    # The compat-shim directory satisfies the project's literal
+    # `#include <cuda_runtime.h>` / `<cuda_fp16.h>` with HIP aliases; it is on
+    # the path only for this build, so the NVIDIA path is untouched.
+    target_include_directories(ntransformer_lib BEFORE PUBLIC
+        ${CMAKE_SOURCE_DIR}/src/core/hip_compat
+    )
+    target_link_libraries(ntransformer_lib PUBLIC hip::host)
+    set_target_properties(ntransformer_lib PROPERTIES
+        POSITION_INDEPENDENT_CODE ON
+    )
+else()
+    target_link_libraries(ntransformer_lib PUBLIC
+        CUDA::cudart
+    )
 
-# Enable position-independent code for potential shared library
-set_target_properties(ntransformer_lib PROPERTIES
-    POSITION_INDEPENDENT_CODE ON
-    CUDA_SEPARABLE_COMPILATION OFF
-    CUDA_RESOLVE_DEVICE_SYMBOLS ON
-)
+    # Enable position-independent code for potential shared library
+    set_target_properties(ntransformer_lib PROPERTIES
+        POSITION_INDEPENDENT_CODE ON
+        CUDA_SEPARABLE_COMPILATION OFF
+        CUDA_RESOLVE_DEVICE_SYMBOLS ON
+    )
+endif()
 
 if(USE_GPUNVME)
     set(GPUNVME_DIR "${CMAKE_SOURCE_DIR}/../gpu-nvme-direct")
@@ -201,7 +251,10 @@ if(BUILD_TESTING)
     target_link_libraries(test_peer_cache PRIVATE ntransformer_lib)
     add_test(NAME test_peer_cache COMMAND test_peer_cache)
     set_tests_properties(test_peer_cache PROPERTIES SKIP_RETURN_CODE 77)
+endif()
 
+# DS41 tests need the MoE engines, which the HIP build leaves out.
+if(BUILD_TESTING AND NOT USE_HIP)
     add_executable(test_ds41_cache tests/test_ds41_cache.cpp)
     target_include_directories(test_ds41_cache PRIVATE ${CMAKE_SOURCE_DIR}/src)
     add_test(NAME test_ds41_cache COMMAND test_ds41_cache)
@@ -330,7 +383,9 @@ if(BUILD_TESTING)
     add_executable(test_ds41_hc tests/test_ds41_hc.cpp)
     target_link_libraries(test_ds41_hc PRIVATE ntransformer_lib)
     add_test(NAME test_ds41_hc COMMAND test_ds41_hc)
+endif()
 
+if(BUILD_TESTING)
     if(USE_GPUNVME)
         add_executable(test_nvme_layer tests/test_nvme_layer.cu)
         target_link_libraries(test_nvme_layer PRIVATE ntransformer_lib)
@@ -351,7 +406,13 @@ install(FILES include/ntransformer.h DESTINATION include)
 # ============================================================
 message(STATUS "=== NTransformer Build Configuration ===")
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
-message(STATUS "CUDA architectures: ${CMAKE_CUDA_ARCHITECTURES}")
-message(STATUS "CUDA toolkit: ${CUDAToolkit_VERSION}")
+if(USE_HIP)
+    message(STATUS "GPU backend: HIP (ROCm)")
+    message(STATUS "HIP architectures: ${CMAKE_HIP_ARCHITECTURES}")
+else()
+    message(STATUS "GPU backend: CUDA")
+    message(STATUS "CUDA architectures: ${CMAKE_CUDA_ARCHITECTURES}")
+    message(STATUS "CUDA toolkit: ${CUDAToolkit_VERSION}")
+endif()
 message(STATUS "C++ standard: ${CMAKE_CXX_STANDARD}")
 message(STATUS "gpu-nvme-direct: ${USE_GPUNVME}")

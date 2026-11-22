@@ -36,7 +36,7 @@ __global__ void rmsnorm_kernel(
 
     // Warp reduction
     for (int offset = warpSize / 2; offset > 0; offset >>= 1) {
-        sum_sq += __shfl_xor_sync(0xFFFFFFFF, sum_sq, offset);
+        sum_sq += __shfl_xor_sync(NT_WARP_MASK, sum_sq, offset);
     }
 
     // Cross-warp reduction via shared memory
@@ -50,7 +50,7 @@ __global__ void rmsnorm_kernel(
     if (wid == 0) {
         sum_sq = (tid < (BLOCK_SIZE / warpSize)) ? shared[lane] : 0.0f;
         for (int offset = warpSize / 2; offset > 0; offset >>= 1) {
-            sum_sq += __shfl_xor_sync(0xFFFFFFFF, sum_sq, offset);
+            sum_sq += __shfl_xor_sync(NT_WARP_MASK, sum_sq, offset);
         }
     }
 
@@ -91,7 +91,7 @@ __global__ void rmsnorm_f16_kernel(
     }
 
     for (int offset = warpSize / 2; offset > 0; offset >>= 1) {
-        sum_sq += __shfl_xor_sync(0xFFFFFFFF, sum_sq, offset);
+        sum_sq += __shfl_xor_sync(NT_WARP_MASK, sum_sq, offset);
     }
 
     __shared__ float shared[32];
@@ -104,7 +104,7 @@ __global__ void rmsnorm_f16_kernel(
     if (wid == 0) {
         sum_sq = (tid < (BLOCK_SIZE / warpSize)) ? shared[lane] : 0.0f;
         for (int offset = warpSize / 2; offset > 0; offset >>= 1) {
-            sum_sq += __shfl_xor_sync(0xFFFFFFFF, sum_sq, offset);
+            sum_sq += __shfl_xor_sync(NT_WARP_MASK, sum_sq, offset);
         }
     }
 
