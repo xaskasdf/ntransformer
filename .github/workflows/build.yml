@@ -108,9 +108,12 @@ jobs:
           "CUDA_PATH=$cuda" >> $env:GITHUB_ENV
           "$cuda\bin" >> $env:GITHUB_PATH
 
+      # CUDA 13.2's cudafe++ crashes (0xC0000005) under MSVC 14.52, the
+      # image's VS 2026 default; 14.51 (local) and the 14.44 toolset work.
       - uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: x64
+          toolset: '14.44'
 
       - name: Install Ninja
         run: python -m pip install --disable-pip-version-check ninja
