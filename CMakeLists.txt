@@ -185,13 +185,13 @@ if(USE_HIP)
     endif()
     # Compile the .cu kernels as HIP without renaming any source file.
     set_source_files_properties(${CUDA_SOURCES} tests/test_peer_cache.cu
-        src/model/ds41/ds41_shared.cu src/model/ds41/ds41_attention.cu
+        tests/test_ds41_q8.cu src/model/ds41/ds41_shared.cu src/model/ds41/ds41_attention.cu
         PROPERTIES LANGUAGE HIP)
     # nvcc's --use_fast_math keeps IEEE infinities; clang's -ffast-math also
     # implies -ffinite-math-only, under which the MoE kernels' -INFINITY
     # sentinels (top-k selection, indexer padding, pooled softmax max) are UB.
     set_source_files_properties(src/model/ds41/ds41_gpu.cu src/model/glm5/glm5_gpu.cu
-        src/model/glm5/glm5_gpu2.cu
+        src/model/glm5/glm5_gpu2.cu tests/test_ds41_q8.cu
         PROPERTIES COMPILE_OPTIONS -fno-finite-math-only)
 endif()
 
@@ -293,8 +293,8 @@ if(BUILD_TESTING)
     set_tests_properties(test_peer_cache PROPERTIES SKIP_RETURN_CODE 77)
 endif()
 
-# DS41 tests need the MoE engines, which the HIP build leaves out.
-if(BUILD_TESTING AND NOT USE_HIP)
+# DS41 tests need the MoE engines, which wave64 HIP builds leave out.
+if(BUILD_TESTING AND NT_MOE_ENGINES)
     add_executable(test_ds41_cache tests/test_ds41_cache.cpp)
     target_include_directories(test_ds41_cache PRIVATE ${CMAKE_SOURCE_DIR}/src)
     add_test(NAME test_ds41_cache COMMAND test_ds41_cache)
