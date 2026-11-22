@@ -525,6 +525,7 @@ struct ExpertEngine {
         uint64_t key = 0;
         int last_use = 0;
         int in_off = 0;              // gpnvme: slice starts here inside buf
+        bool claimed = false;        // held by a demand caller until reclaim_h2d (guarded by m)
     };
     std::unique_ptr<Ring[]> rings;
     int n_rings = 0;
@@ -756,12 +757,18 @@ struct ExpertEngine {
 #endif
         std::unique_lock<std::mutex> lk(m);
         auto it = by_key.find(key);
-        if (it != by_key.end()) return it->second;
+        if (it != by_key.end()) {
+            // a prefetch may have filled it: claim it so no one refills it
+            // before this caller's H2D is issued and synced
+            rings[it->second].claimed = true;
+            return it->second;
+        }
         int r = pick_ring_locked(lk, block);
         if (r < 0) return -1;
         rings[r].key = key;
         rings[r].state = 1;
         rings[r].last_use = ++use_counter;
+        rings[r].claimed = true;
         by_key[key] = r;
         tasks.push_front({r, src, true});   // demand fill: highest priority
         cv_work.notify_one();
@@ -798,9 +805,11 @@ struct ExpertEngine {
         if (r < 0) {
             int best = -1, best_use = INT_MAX;
             for (int i = 0; i < n_rings; i++) {
-                if (rings[i].state == 2 && rings[i].last_use < best_use) { best_use = rings[i].last_use; best = i; }
+                if (rings[i].state == 2 && !rings[i].claimed && rings[i].last_use < best_use) {
+                    best_use = rings[i].last_use; best = i;
+                }
             }
-            if (best < 0) return;
+            if (best < 0) return;   // only claimed rings: drop the prefetch
             r = best;
             by_key.erase(rings[r].key);
             ++pf_stolen;
@@ -819,10 +828,21 @@ struct ExpertEngine {
             for (int i = 0; i < n_rings; i++) {
                 if (rings[i].state == 0) return i;
             }
-            if (!block) return -1;
             // SIN robar rings state=2 (completados pendientes de H2D): robarlos
             // hacía que el caller viejo hiciera H2D del dato del fill nuevo
             // (slices cruzados -> divergencia intermitente del prefill chunked).
+            // An unclaimed ready ring is a prefetch nobody holds: reuse the LRU one.
+            int best = -1, best_use = INT_MAX;
+            for (int i = 0; i < n_rings; i++) {
+                if (rings[i].state == 2 && !rings[i].claimed && rings[i].last_use < best_use) {
+                    best_use = rings[i].last_use; best = i;
+                }
+            }
+            if (best >= 0) {
+                by_key.erase(rings[best].key);
+                return best;
+            }
+            if (!block) return -1;
             // Los workers notifican cv_ready al completar: aquí hay progreso.
             cv_ready.wait(lk);
         }
@@ -836,6 +856,7 @@ struct ExpertEngine {
                 by_key.erase(rings[i].key);
                 rings[i].state = 0;
                 rings[i].key = 0;
+                rings[i].claimed = false;
             }
         }
     }
