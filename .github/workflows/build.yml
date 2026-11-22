@@ -97,7 +97,9 @@ jobs:
           $v = $env:CUDA_MAJOR_MINOR
           $url = "https://developer.download.nvidia.com/compute/cuda/$env:CUDA_VERSION/network_installers/cuda_$($env:CUDA_VERSION)_windows_network.exe"
           Invoke-WebRequest $url -OutFile cuda_installer.exe
-          $pkgs = @("nvcc_$v", "crt_$v", "nvvm_$v", "cudart_$v", "cccl_$v", "visual_studio_integration_$v")
+          # Subpackage names as the 13.2 installer registers them; there is no
+          # separate cccl package before 13.5 and Ninja needs no VS integration.
+          $pkgs = @("nvcc_$v", "crt_$v", "nvvm_$v", "cudart_$v")
           $p = Start-Process -FilePath .\cuda_installer.exe -ArgumentList (@('-s') + $pkgs) -Wait -PassThru
           if ($p.ExitCode -ne 0) { throw "CUDA installer exited with $($p.ExitCode)" }
           $cuda = "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v$v"
