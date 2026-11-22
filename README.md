@@ -1,5 +1,10 @@
 # NTransformer
 
+<p>
+<a href="https://hackergit.org/r/xaskasdf/ntransformer"><img src="https://hackergit.org/badge/xaskasdf/ntransformer.svg?style=rank&rank=week&scope=show" alt="Hacker News rank via HackerGit" width="250" height="55"></a>
+<a href="https://hackergit.org/r/xaskasdf/ntransformer"><img src="https://hackergit.org/badge/xaskasdf/ntransformer.svg?style=rank&rank=day" alt="Hacker News rank via HackerGit" width="250" height="55"></a>
+</p>
+
 High-efficiency C++/CUDA LLM inference engine. Runs Llama 70B on a single RTX 3090 (24GB VRAM) by streaming model layers through GPU memory via PCIe, with optional NVMe direct I/O that bypasses the CPU entirely. It also runs the 320B-parameter GLM-5.3-Flash MoE (Q8_0, 341 GB) on the same RTX 3090 by streaming experts straight from a raw NVMe drive, and DeepSeek-V4.1-Flash on H100s.
 
 ## Key Results
