@@ -525,6 +525,7 @@ struct ExpertEngine {
         uint64_t key = 0;
         int last_use = 0;
         int in_off = 0;              // gpnvme: slice starts here inside buf
+        bool claimed = false;        // held by a demand caller until reclaim_h2d (guarded by m)
     };
     std::unique_ptr<Ring[]> rings;
     int n_rings = 0;
@@ -738,8 +739,10 @@ struct ExpertEngine {
         memcpy(dst, src, slice);
     }
 
-    // submit a fill without waiting; returns ring index
-    int submit(uint64_t key, const uint8_t* src) {
+    // submit a fill without waiting; returns ring index. With block=false it
+    // returns -1 instead of waiting when no ring is free: only the caller
+    // frees its own rings (reclaim_h2d), so it must drain them and retry.
+    int submit(uint64_t key, const uint8_t* src, bool block = true) {
 #ifdef USE_GPUNVME
         if (gpnvme_state().active) {
             const uint64_t lo = kGpNvmeFakeBase;
@@ -754,11 +757,18 @@ struct ExpertEngine {
 #endif
         std::unique_lock<std::mutex> lk(m);
         auto it = by_key.find(key);
-        if (it != by_key.end()) return it->second;
-        int r = pick_ring_locked(lk);
+        if (it != by_key.end()) {
+            // a prefetch may have filled it: claim it so no one refills it
+            // before this caller's H2D is issued and synced
+            rings[it->second].claimed = true;
+            return it->second;
+        }
+        int r = pick_ring_locked(lk, block);
+        if (r < 0) return -1;
         rings[r].key = key;
         rings[r].state = 1;
         rings[r].last_use = ++use_counter;
+        rings[r].claimed = true;
         by_key[key] = r;
         tasks.push_front({r, src, true});   // demand fill: highest priority
         cv_work.notify_one();
@@ -795,9 +805,11 @@ struct ExpertEngine {
         if (r < 0) {
             int best = -1, best_use = INT_MAX;
             for (int i = 0; i < n_rings; i++) {
-                if (rings[i].state == 2 && rings[i].last_use < best_use) { best_use = rings[i].last_use; best = i; }
+                if (rings[i].state == 2 && !rings[i].claimed && rings[i].last_use < best_use) {
+                    best_use = rings[i].last_use; best = i;
+                }
             }
-            if (best < 0) return;
+            if (best < 0) return;   // only claimed rings: drop the prefetch
             r = best;
             by_key.erase(rings[r].key);
             ++pf_stolen;
@@ -811,7 +823,7 @@ struct ExpertEngine {
         cv_work.notify_one();
     }
 
-    int pick_ring_locked(std::unique_lock<std::mutex>& lk) {
+    int pick_ring_locked(std::unique_lock<std::mutex>& lk, bool block = true) {
         for (;;) {
             for (int i = 0; i < n_rings; i++) {
                 if (rings[i].state == 0) return i;
@@ -819,6 +831,18 @@ struct ExpertEngine {
             // SIN robar rings state=2 (completados pendientes de H2D): robarlos
             // hacía que el caller viejo hiciera H2D del dato del fill nuevo
             // (slices cruzados -> divergencia intermitente del prefill chunked).
+            // An unclaimed ready ring is a prefetch nobody holds: reuse the LRU one.
+            int best = -1, best_use = INT_MAX;
+            for (int i = 0; i < n_rings; i++) {
+                if (rings[i].state == 2 && !rings[i].claimed && rings[i].last_use < best_use) {
+                    best_use = rings[i].last_use; best = i;
+                }
+            }
+            if (best >= 0) {
+                by_key.erase(rings[best].key);
+                return best;
+            }
+            if (!block) return -1;
             // Los workers notifican cv_ready al completar: aquí hay progreso.
             cv_ready.wait(lk);
         }
@@ -832,6 +856,7 @@ struct ExpertEngine {
                 by_key.erase(rings[i].key);
                 rings[i].state = 0;
                 rings[i].key = 0;
+                rings[i].claimed = false;
             }
         }
     }
@@ -1237,25 +1262,47 @@ void glm5_gpu_load_experts(const void* gate_base, const void* up_base, const voi
     e.ensure(slice);
     s.index.begin_batch();
     const uint8_t* bases[3] = { (const uint8_t*)gate_base, (const uint8_t*)up_base, (const uint8_t*)down_base };
-    struct RU { int ring; uint8_t* slot; };
-    std::vector<RU> rus;
+    // reserve every slot first (one batch: none can be evicted in this call)
+    struct Miss { uint64_t key; const uint8_t* src; uint8_t* slot; };
+    std::vector<Miss> misses;
     for (int k = 0; k < n; k++) {
         for (int t = 0; t < 3; t++) {
             const uint64_t key = s.make_key(bases[t], experts[k]);
             auto r = s.index.lookup_or_reserve(key);
             if (!r.hit) {
                 ++s.expert_misses;
-                rus.push_back({e.submit(key, bases[t] + (size_t)experts[k] * slice), s.slot_ptr(r.slot)});
+                misses.push_back({key, bases[t] + (size_t)experts[k] * slice, s.slot_ptr(r.slot)});
             }
         }
     }
-    for (auto& ru : rus) e.wait_ready(ru.ring);
-    for (auto& ru : rus) {
-        cudaMemcpyAsync(ru.slot, e.rings[ru.ring].buf + e.rings[ru.ring].in_off, slice, cudaMemcpyHostToDevice, s.stream);
-        e.rings[ru.ring].state = 3;
+    // The union can exceed the ring count and only this thread frees its
+    // rings, so fill in batches: submit until no ring is free, then copy,
+    // sync and reclaim the batch before submitting more.
+    struct RU { int ring; uint8_t* slot; };
+    std::vector<RU> rus;
+    const auto drain = [&] {
+        for (auto& ru : rus) e.wait_ready(ru.ring);
+        for (auto& ru : rus) {
+            cudaMemcpyAsync(ru.slot, e.rings[ru.ring].buf + e.rings[ru.ring].in_off, slice, cudaMemcpyHostToDevice, s.stream);
+            e.rings[ru.ring].state = 3;
+        }
+        cudaStreamSynchronize(s.stream);
+        e.reclaim_h2d();
+        rus.clear();
+    };
+    for (size_t i = 0; i < misses.size();) {
+        int r = e.submit(misses[i].key, misses[i].src, /*block=*/false);
+        if (r < 0) {
+            const bool had_batch = !rus.empty();
+            drain();   // frees this batch's rings (and stale state-3 ones)
+            if (had_batch) continue;
+            // nothing of ours left to free: fall back to the blocking submit
+            r = e.submit(misses[i].key, misses[i].src);
+        }
+        rus.push_back({r, misses[i].slot});
+        ++i;
     }
-    cudaStreamSynchronize(s.stream);
-    e.reclaim_h2d();
+    drain();
 }
 
 bool glm5_gpu_stage_experts(const void* gate_base, const void* up_base, const void* down_base,
