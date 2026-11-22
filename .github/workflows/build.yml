@@ -52,7 +52,7 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Install build tools
         run: |
@@ -76,7 +76,7 @@ jobs:
           cp build/ntransformer README.md "dist/$name/"
           tar -C dist -czf "$name.tar.gz" "$name"
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: ntransformer-linux-x86_64-cuda13
           path: ntransformer-linux-x86_64-cuda13.tar.gz
@@ -90,7 +90,7 @@ jobs:
       run:
         shell: pwsh
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Install CUDA toolkit (compiler + runtime only)
         run: |
@@ -133,7 +133,7 @@ jobs:
           Copy-Item build/ntransformer.exe, README.md "dist/$name/"
           Compress-Archive -Path "dist/$name" -DestinationPath "$name.zip"
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: ntransformer-windows-x86_64-cuda13
           path: ntransformer-windows-x86_64-cuda13.zip
@@ -148,7 +148,7 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Install build tools
         run: |
@@ -174,7 +174,7 @@ jobs:
           cp build/ntransformer README.md "dist/$name/"
           tar -C dist -czf "$name.tar.gz" "$name"
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: ntransformer-linux-x86_64-rocm7
           path: ntransformer-linux-x86_64-rocm7.tar.gz
@@ -188,7 +188,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           path: dist
           merge-multiple: true
