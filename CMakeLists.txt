@@ -138,6 +138,9 @@ set(CUDA_SOURCES
 option(USE_GPUNVME "Enable gpu-nvme-direct backend for NVMe streaming" OFF)
 option(NTRANSFORMER_BUILD_TRAINING "Build experimental training CUDA operations" OFF)
 
+if(USE_GPUNVME AND USE_HIP)
+    message(FATAL_ERROR "USE_GPUNVME (gpu-nvme-direct) is NVIDIA-only; it cannot be combined with USE_HIP")
+endif()
 if(NTRANSFORMER_BUILD_TRAINING AND USE_HIP)
     message(FATAL_ERROR "NTRANSFORMER_BUILD_TRAINING is CUDA-only; it cannot be combined with USE_HIP")
 endif()
@@ -163,27 +166,52 @@ endif()
 # ============================================================
 # Main library (static)
 # ============================================================
+set(NT_MOE_ENGINES ON)
 if(USE_HIP)
-    # The HIP port covers the Llama path only. The DS41/GLM5 MoE engines use
-    # CUDA surface the compat shim does not alias (bf16, 32-lane sub-warp
-    # shuffles); moe_unavailable.cpp stands in for their run_cli entry points.
-    list(FILTER CORE_SOURCES EXCLUDE REGEX "^src/model/(ds41|glm5)/")
-    list(FILTER CUDA_SOURCES EXCLUDE REGEX "^src/model/(ds41|glm5)/")
-    list(APPEND CORE_SOURCES src/model/moe_unavailable.cpp)
+    # The DS41/GLM5 MoE kernels assume 32-lane warps (lane = tid & 31, 16..1
+    # shuffle reductions), which holds on RDNA (gfx10/11/12, wave32) only. On
+    # wave64 targets (gfx9: GCN/CDNA) the build keeps the Llama path and
+    # moe_unavailable.cpp stands in for the MoE run_cli entry points.
+    foreach(arch IN LISTS CMAKE_HIP_ARCHITECTURES)
+        if(arch MATCHES "^gfx9")
+            set(NT_MOE_ENGINES OFF)
+        endif()
+    endforeach()
+    if(NOT NT_MOE_ENGINES)
+        message(STATUS "DS41/GLM5 MoE engines: disabled (wave64 HIP target in ${CMAKE_HIP_ARCHITECTURES})")
+        list(FILTER CORE_SOURCES EXCLUDE REGEX "^src/model/(ds41|glm5)/")
+        list(FILTER CUDA_SOURCES EXCLUDE REGEX "^src/model/(ds41|glm5)/")
+        list(APPEND CORE_SOURCES src/model/moe_unavailable.cpp)
+    endif()
     # Compile the .cu kernels as HIP without renaming any source file.
     set_source_files_properties(${CUDA_SOURCES} tests/test_peer_cache.cu
+        src/model/ds41/ds41_shared.cu src/model/ds41/ds41_attention.cu
         PROPERTIES LANGUAGE HIP)
+    # nvcc's --use_fast_math keeps IEEE infinities; clang's -ffast-math also
+    # implies -ffinite-math-only, under which the MoE kernels' -INFINITY
+    # sentinels (top-k selection, indexer padding, pooled softmax max) are UB.
+    set_source_files_properties(src/model/ds41/ds41_gpu.cu src/model/glm5/glm5_gpu.cu
+        src/model/glm5/glm5_gpu2.cu
+        PROPERTIES COMPILE_OPTIONS -fno-finite-math-only)
 endif()
 
 add_library(ntransformer_lib STATIC ${CORE_SOURCES} ${CUDA_SOURCES})
 
-if(NOT USE_HIP)
+if(NT_MOE_ENGINES)
     # Shared-expert arithmetic retains CPU Q8 reduction order and uses the precise
     # CUDA math library; do not inherit inference's --use_fast_math expf mapping.
     add_library(ntransformer_ds41_shared OBJECT
         src/model/ds41/ds41_shared.cu src/model/ds41/ds41_attention.cu)
     set_target_properties(ntransformer_ds41_shared PROPERTIES
         CUDA_SEPARABLE_COMPILATION OFF NTRANSFORMER_PRECISE_MATH ON)
+    if(USE_HIP)
+        # Same -ffast-math opt-out (NTRANSFORMER_PRECISE_MATH); the compat
+        # headers must shadow <cuda_runtime_api.h> here as in ntransformer_lib.
+        target_include_directories(ntransformer_ds41_shared BEFORE PRIVATE
+            ${CMAKE_SOURCE_DIR}/src/core/hip_compat)
+        target_link_libraries(ntransformer_ds41_shared PRIVATE hip::host)
+        set_target_properties(ntransformer_ds41_shared PROPERTIES POSITION_INDEPENDENT_CODE ON)
+    endif()
     target_sources(ntransformer_lib PRIVATE $<TARGET_OBJECTS:ntransformer_ds41_shared>)
 endif()
 
