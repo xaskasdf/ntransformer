@@ -17,7 +17,15 @@ Design records, benchmarks, and decisions for each track live in `docs/` (see th
 
 ## Build
 
-CMake options: `NTRANSFORMER_ENABLE_CUDA` (ON), `NTRANSFORMER_BUILD_NTRPU_SIM` (ON), `BUILD_TESTING` (ON, via `include(CTest)`), `USE_GPUNVME` (OFF; links prebuilt static libs from `../gpu-nvme-direct/build-hw/`), and `NTRANSFORMER_BUILD_TRAINING` (OFF). The default CUDA architectures are `80;86;89;90`. Pass `-DCMAKE_CUDA_ARCHITECTURES=86` (RTX 3090) or `90` (H100) for faster builds.
+CMake options: `NTRANSFORMER_ENABLE_CUDA` (ON; the GPU engine, CUDA or HIP), `USE_HIP` (OFF), `NTRANSFORMER_BUILD_NTRPU_SIM` (ON), `BUILD_TESTING` (ON, via `include(CTest)`), `USE_GPUNVME` (OFF; links prebuilt static libs from `../gpu-nvme-direct/build-hw/`), `NTRANSFORMER_BUILD_TRAINING` (OFF), `NTRANSFORMER_NATIVE_ARCH` (ON; OFF swaps `-march=native` for `x86-64-v3`), and `NTRANSFORMER_STATIC_CUDART` (OFF). The default CUDA architectures are `80;86;89;90`. Pass `-DCMAKE_CUDA_ARCHITECTURES=86` (RTX 3090) or `90` (H100) for faster builds.
+
+**CI** (`.github/workflows/build.yml`) runs compile-only jobs, because the runners have no GPU: Linux CUDA in a `nvidia/cuda` container (it also builds the CUDA tests), Windows CUDA (network installer plus MSVC plus Ninja), and Linux HIP in a `rocm/dev-ubuntu-24.04` container. The CUDA and ROCm versions are pinned in the workflow. The jobs build with `NATIVE_ARCH=OFF` and `STATIC_CUDART=ON` and upload the binaries as artifacts. A `v*` tag also creates a GitHub Release. Pushes that touch only docs, `fpga/`, `tools/`, `scripts/`, `python/`, or `linux_port/` skip the workflow. The NTRPU simulator is not in CI.
+
+**HIP/ROCm** (`-DUSE_HIP=ON -DCMAKE_HIP_ARCHITECTURES=gfx1100 -DCMAKE_HIP_COMPILER=/opt/rocm/llvm/bin/clang++`) covers the Llama path only.
+- The `.cu` files compile as HIP unchanged.
+- `src/core/hip_compat/` resolves `<cuda_runtime.h>`/`<cuda_fp16.h>` to `src/core/cuda_to_hip.h`, a 1:1 alias list. Add an alias there when Llama-path code starts using a new CUDA API.
+- Warp shuffles use `NT_WARP_MASK` (64-bit on HIP).
+- The DS41/GLM5 sources are excluded. `src/model/moe_unavailable.cpp` replaces their `run_cli` and reports the model as unsupported.
 
 **Linux** (gcc-14 + CUDA 13.1). gcc-15 is incompatible with CUDA 13.1, and CMake automatically picks `gcc-14` as the CUDA host compiler:
 ```bash

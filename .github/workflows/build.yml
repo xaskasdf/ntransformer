@@ -1,0 +1,199 @@
+name: Build
+
+# Compile-only pipelines (GitHub runners have no GPU): every push builds the
+# Linux CUDA, Windows CUDA and Linux HIP/ROCm binaries and uploads them as
+# workflow artifacts; a v* tag also publishes them as a GitHub Release.
+
+on:
+  push:
+    branches: ['**']
+    tags: ['v*']
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
+      - 'fpga/**'
+      - 'linux_port/**'
+      - 'tools/**'
+      - 'scripts/**'
+      - 'python/**'
+  pull_request:
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
+      - 'fpga/**'
+      - 'linux_port/**'
+      - 'tools/**'
+      - 'scripts/**'
+      - 'python/**'
+  workflow_dispatch:
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  CUDA_VERSION: 13.2.1
+  CUDA_MAJOR_MINOR: '13.2'
+  # Must match the default list in CMakeLists.txt; each entry also embeds PTX,
+  # so newer GPUs (e.g. Blackwell) JIT from compute_90.
+  CUDA_ARCHS: '80;86;89;90'
+  HIP_ARCHS: 'gfx90a;gfx942;gfx1100;gfx1101;gfx1151;gfx1201'
+
+jobs:
+  linux-cuda:
+    name: Linux x86_64 · CUDA
+    runs-on: ubuntu-24.04
+    container: nvidia/cuda:13.2.1-devel-ubuntu24.04
+    timeout-minutes: 150
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install build tools
+        run: |
+          apt-get update
+          DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends cmake ninja-build
+
+      - name: Configure
+        run: >
+          cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
+          "-DCMAKE_CUDA_ARCHITECTURES=${CUDA_ARCHS}"
+          -DNTRANSFORMER_BUILD_NTRPU_SIM=OFF -DBUILD_TESTING=ON
+          -DNTRANSFORMER_NATIVE_ARCH=OFF -DNTRANSFORMER_STATIC_CUDART=ON
+
+      - name: Build (engine + CUDA tests, compile only)
+        run: cmake --build build --parallel 4
+
+      - name: Package
+        run: |
+          name=ntransformer-linux-x86_64-cuda13
+          mkdir -p "dist/$name"
+          cp build/ntransformer README.md "dist/$name/"
+          tar -C dist -czf "$name.tar.gz" "$name"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ntransformer-linux-x86_64-cuda13
+          path: ntransformer-linux-x86_64-cuda13.tar.gz
+          if-no-files-found: error
+
+  windows-cuda:
+    name: Windows x86_64 · CUDA
+    runs-on: windows-2025
+    timeout-minutes: 150
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install CUDA toolkit (compiler + runtime only)
+        run: |
+          $v = $env:CUDA_MAJOR_MINOR
+          $url = "https://developer.download.nvidia.com/compute/cuda/$env:CUDA_VERSION/network_installers/cuda_$($env:CUDA_VERSION)_windows_network.exe"
+          Invoke-WebRequest $url -OutFile cuda_installer.exe
+          $pkgs = @("nvcc_$v", "crt_$v", "nvvm_$v", "cudart_$v", "cccl_$v", "visual_studio_integration_$v")
+          $p = Start-Process -FilePath .\cuda_installer.exe -ArgumentList (@('-s') + $pkgs) -Wait -PassThru
+          if ($p.ExitCode -ne 0) { throw "CUDA installer exited with $($p.ExitCode)" }
+          $cuda = "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v$v"
+          if (-not (Test-Path "$cuda\bin\nvcc.exe")) { throw "nvcc.exe not found under $cuda" }
+          & "$cuda\bin\nvcc.exe" --version
+          "CUDA_PATH=$cuda" >> $env:GITHUB_ENV
+          "$cuda\bin" >> $env:GITHUB_PATH
+
+      - uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+
+      - name: Install Ninja
+        run: python -m pip install --disable-pip-version-check ninja
+
+      - name: Configure
+        run: >
+          cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
+          "-DCMAKE_CUDA_COMPILER=$($env:CUDA_PATH -replace '\\','/')/bin/nvcc.exe"
+          "-DCMAKE_CUDA_ARCHITECTURES=$env:CUDA_ARCHS"
+          -DNTRANSFORMER_BUILD_NTRPU_SIM=OFF -DBUILD_TESTING=OFF
+          -DNTRANSFORMER_STATIC_CUDART=ON
+
+      - name: Build
+        run: cmake --build build --parallel 4
+
+      - name: Package
+        run: |
+          $name = 'ntransformer-windows-x86_64-cuda13'
+          New-Item -ItemType Directory -Force "dist/$name" | Out-Null
+          Copy-Item build/ntransformer.exe, README.md "dist/$name/"
+          Compress-Archive -Path "dist/$name" -DestinationPath "$name.zip"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ntransformer-windows-x86_64-cuda13
+          path: ntransformer-windows-x86_64-cuda13.zip
+          if-no-files-found: error
+
+  linux-hip:
+    name: Linux x86_64 · HIP/ROCm (Llama path)
+    runs-on: ubuntu-24.04
+    container: rocm/dev-ubuntu-24.04:7.2.4
+    timeout-minutes: 90
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install build tools
+        run: |
+          apt-get update
+          DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends cmake ninja-build g++
+
+      - name: Configure
+        run: >
+          cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DUSE_HIP=ON
+          -DCMAKE_HIP_COMPILER=/opt/rocm/llvm/bin/clang++
+          "-DCMAKE_HIP_ARCHITECTURES=${HIP_ARCHS}"
+          -DCMAKE_PREFIX_PATH=/opt/rocm
+          -DNTRANSFORMER_BUILD_NTRPU_SIM=OFF -DBUILD_TESTING=ON
+          -DNTRANSFORMER_NATIVE_ARCH=OFF
+
+      - name: Build (engine + tests, compile only)
+        run: cmake --build build --parallel 4
+
+      - name: Package
+        run: |
+          name=ntransformer-linux-x86_64-rocm7
+          mkdir -p "dist/$name"
+          cp build/ntransformer README.md "dist/$name/"
+          tar -C dist -czf "$name.tar.gz" "$name"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ntransformer-linux-x86_64-rocm7
+          path: ntransformer-linux-x86_64-rocm7.tar.gz
+          if-no-files-found: error
+
+  release:
+    name: GitHub Release
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [linux-cuda, windows-cuda, linux-hip]
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" dist/* \
+            --repo "$GITHUB_REPOSITORY" --title "$GITHUB_REF_NAME" --generate-notes

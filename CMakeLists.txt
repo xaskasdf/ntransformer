@@ -28,6 +28,16 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif()
 
+# Redistributable builds (CI artifacts) turn these OFF/ON; local builds keep the
+# defaults: host code tuned for the build machine, shared CUDA runtime.
+option(NTRANSFORMER_NATIVE_ARCH "Tune host code for the build CPU (-march=native); OFF targets x86-64-v3 (AVX2)" ON)
+option(NTRANSFORMER_STATIC_CUDART "Link the CUDA runtime statically (no cudart DLL/.so needed at run time)" OFF)
+if(NTRANSFORMER_NATIVE_ARCH)
+    set(NT_HOST_MARCH "-march=native")
+else()
+    set(NT_HOST_MARCH "-march=x86-64-v3")
+endif()
+
 if(USE_HIP)
     set(CMAKE_HIP_STANDARD 20)
     set(CMAKE_HIP_STANDARD_REQUIRED ON)
@@ -38,7 +48,7 @@ if(USE_HIP)
         # clang-cl (MSVC frontend) uses /O2 style flags; -march is not accepted
         set(CMAKE_CXX_FLAGS_RELEASE "/O2 /DNDEBUG")
     else()
-        set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG -march=native")
+        set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG ${NT_HOST_MARCH}")
     endif()
     set(CMAKE_HIP_FLAGS_RELEASE "-O3 -DNDEBUG")
     # Same rule as CUDA below: targets with NTRANSFORMER_PRECISE_MATH opt out.
@@ -61,8 +71,8 @@ else()
         set(CMAKE_CXX_FLAGS_RELEASE "/O2 /DNDEBUG /arch:AVX2")
         set(CMAKE_CUDA_FLAGS_RELEASE "-O3 -DNDEBUG")
     else()
-        set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG -march=native")
-        set(CMAKE_CUDA_FLAGS_RELEASE "-O3 -DNDEBUG -Xcompiler=-march=native")
+        set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG ${NT_HOST_MARCH}")
+        set(CMAKE_CUDA_FLAGS_RELEASE "-O3 -DNDEBUG -Xcompiler=${NT_HOST_MARCH}")
     endif()
     # Fast transcendental intrinsics must not leak from inference into training.
     # Overriding fmad/ftz/div/sqrt alone does not undo --use_fast_math's expf mapping.
@@ -194,9 +204,11 @@ if(USE_HIP)
         POSITION_INDEPENDENT_CODE ON
     )
 else()
-    target_link_libraries(ntransformer_lib PUBLIC
-        CUDA::cudart
-    )
+    if(NTRANSFORMER_STATIC_CUDART)
+        target_link_libraries(ntransformer_lib PUBLIC CUDA::cudart_static)
+    else()
+        target_link_libraries(ntransformer_lib PUBLIC CUDA::cudart)
+    endif()
 
     # Enable position-independent code for potential shared library
     set_target_properties(ntransformer_lib PROPERTIES

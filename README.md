@@ -38,8 +38,11 @@ Bottleneck is PCIe H2D bandwidth at Gen3 x8 (~6.5 GB/s). Q4_K_M fits 10 more lay
 - Linux (tested on Ubuntu, kernel 6.17+) with CUDA Toolkit 13.1 and gcc-14 / g++-14
 - or Windows with MSVC (VS 2026 Build Tools) + CUDA 13.2 + Ninja (no NVMe direct I/O)
 - NVIDIA GPU with Compute Capability 8.0+ (RTX 3090 tested)
+- or AMD GPU with ROCm 7.x (`-DUSE_HIP=ON`, Linux or Windows): **Llama path only**. The DS41/GLM5 MoE engines are CUDA-only, and a HIP build reports them as unavailable.
 - CMake 3.24+
 - (Optional) NVMe SSD on separate PCIe slot + [gpu-nvme-direct](https://github.com/xaskasdf/gpu-nvme-direct) library
+
+Prebuilt binaries: every push runs `.github/workflows/build.yml`, which compiles Linux CUDA, Windows CUDA and Linux ROCm builds and attaches them to the run as artifacts. Pushing a `v*` tag also publishes them as a GitHub Release. CUDA builds target sm_80/86/89/90 and link the CUDA runtime statically, so they need only the NVIDIA driver. The Windows build also needs the Visual C++ 2015–2022 Redistributable. Linux builds need glibc 2.39+ (Ubuntu 24.04). The runners have no GPU, so the pipeline compiles but does not run tests.
 
 ## Quick Start
 
